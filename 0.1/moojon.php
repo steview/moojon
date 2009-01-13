@@ -1,4 +1,4 @@
-<?php
+<?php 
 //require_once('classes/moojon.request.class.php');
 //$request = new moojon_request(require_once('config/moojon.config.php'));
 include('classes/moojon.base.class.php');
