@@ -74,14 +74,20 @@ include('models/player.model.class.php');
 include('models/skill.model.class.php');
 include('models/player_skill.model.class.php');
 
-$con = con::init('10.0.1.196', 'bloodbowl', 'bloodbowl99', 'bloodbowl');
+$con = moojon_connection::init('localhost', 'bloodbowl', 'bloodbowl99', 'bloodbowl');
 
-$player = player::read('id=1', null, null, null, null);
-echo $player->first->first_name;
-//$player->first->skills;
-/*foreach ($player->skills as $skill) {
-	echo $skill->name.'<br />';	
-}*/
+foreach (player::read() as $player) {
+	echo "=====================================================<br />";
+	echo '[Player]: '.$player->first_name.' [Skills count]: '.$player->skills->length;
+	if ($player->skills->count > 0) {
+		echo ' [Skills]: ';
+		foreach ($player->skills as $skill) {
+			echo $skill->name.', ';	
+		}
+	}
+	echo '<br />';
+}
+echo "=====================================================<br />";
 
 $con->close();
 ?>

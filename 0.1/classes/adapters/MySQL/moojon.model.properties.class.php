@@ -6,6 +6,7 @@ class moojon_model_properties {
 	final private function __construct() {}
 	
 	final public function get_foreign_key($obj) {
+		$obj = moojon_base_model::strip_base($obj);
 		return moojon_inflect::singularize($obj).'_'.self::DEFAULT_PRIMARY_KEY;
 	}
 	

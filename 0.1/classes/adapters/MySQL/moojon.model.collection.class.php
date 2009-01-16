@@ -1,12 +1,18 @@
 <?php
 final class moojon_model_collection extends ArrayObject
 {
+	private $accessor;
 	private $relationship;
 	private $iterator;
 	private $errors = array();
 	
-	final public function __construct(moojon_base_relationship $relationship = null) {
-		$this->relationship = $relationship;
+	final public function __construct(moojon_base_model $accessor = null, $key = null) {
+		$this->accessor = $accessor;
+		if ($accessor != null && $key != null) {
+			$this->relationship = $this->accessor->get_relationship($key);
+			$this->key = $key;
+		}
+		$this->iterator = $this->getIterator();		
 	}
 	
 	final public function __get($key) {
@@ -15,27 +21,39 @@ final class moojon_model_collection extends ArrayObject
 				if (count($this)) {
 					return $this[0];
 				} else {
-					//error
+					moojon_base::handle_error('moojon_model_collection empty');
 				}
 				break;
-			case 'first':
+			case 'last':
 				if ($count = count($this)) {
 					return $this[($count - 1)];
 				} else {
-					//error
+					moojon_base::handle_error('moojon_model_collection empty');
 				}
 				break;
+			case 'count':
+			case 'length':
+				return count($this);
+				break;
 			default:
-				//error
+				if ($this->iterator->valid()) {
+					if ($this->iterator->current()->has_property($key)) {
+						return $this->iterator->current()->$key;
+					} else {
+						moojon_base::handle_error("moojon_model_collection get what? ($key)");
+					}
+				} else {
+					moojon_base::handle_error('moojon_model_collection empty');
+				}
 				break;
 		}
 	}
 	
-	final public function get(moojon_base_model $accessor) {
-		if (is_subclass_of($this->relationship, 'moojon_base_relationship')) {
+	final public function get() {
+		if ($this->relationship != null) {
 			$foreign_class_name = moojon_inflect::singularize($this->relationship->get_foreign_obj());
 			$foreign_class = new $foreign_class_name;
-			$records = $foreign_class->read($this->relationship->get_where(), null, null, $accessor);
+			$records = $foreign_class->read($this->relationship->get_where($this->accessor), null, null, $this->accessor);
 			switch (get_class($this->relationship)) {
 				case 'moojon_has_one_relationship':
 					return $this->first;
@@ -46,9 +64,6 @@ final class moojon_model_collection extends ArrayObject
 					break;
 			}
 		} else {
-			if ($this->iterator == null) {
-				$this->iterator = $this->getIterator();
-			}
 			if ($this->iterator->valid()) {
 				$return = $this->iterator->current();
 			    $this->iterator->next();
@@ -84,12 +99,12 @@ final class moojon_model_collection extends ArrayObject
 	}
 	
 	final public function add(moojon_base_model $model) {
-		$key1 = $this->relationship->get_key1();
-		$key2 = $this->relationship->get_key2();
+		$key = $this->relationship->get_key();
+		$foreign_key = $this->relationship->get_foreign_key();
 		$accessor = $this->relationship->get_accessor();
 		switch (get_class($this->relationship)) {
 			case 'moojon_has_many_relationship':
-				$model->$key2 = $accessor->$key1;
+				$model->$foreign_key = $accessor->$key;
 				break;
 			case 'moojon_has_many_to_many_relationship':
 				if ($model->new_record) {
@@ -97,9 +112,9 @@ final class moojon_model_collection extends ArrayObject
 				}
 				$class_name = $this->relationship->get_class();
 				$class = new $class_name;
-				$class->$key2 = $model->$key1;
-				$key_property = moojon_model_properties::get_foreign_key($accessor->get_class());
-				$class->$key_property = $accessor->$key1;
+				$class->$foreign_key = $model->$key;
+				$key_property = moojon_model_properties::get_foreign_key($accessor);
+				$class->$key_property = $accessor->$key;
 				break;
 		}
 		$this[] = $model;

@@ -263,6 +263,11 @@ class moojon_query_builder extends moojon_query_utilities
 		return moojon_query::run($this);
 	}
 	
+	final public function render()
+	{
+		return moojon_query::builder($this);
+	}
+	
 	final public function test($test = true)
 	{
 		$this->test = $test;

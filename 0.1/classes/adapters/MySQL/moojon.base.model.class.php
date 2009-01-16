@@ -13,14 +13,15 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	abstract protected function setup();
 	
-	public function test() {
-		echo get_class($this);
-	}
-	
-	final protected function init($class) {
+	final static public function strip_base($class) {
 		if (substr($class, 0, 5) == 'base_') {
 			$class = substr($class, 5);
 		}
+		return $class;
+	}
+	
+	final protected function init($class) {
+		$class = self::strip_base($class);
 		$instance->class = $class;
 		$instance = new $class;
 		$instance->obj = moojon_inflect::pluralize($class);
@@ -44,7 +45,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	final public function __get($key) {
 		if ($this->has_relationship($key)) {
 			if (is_subclass_of($this->relationships[$key], 'moojon_base_relationship')) {
-				$records = new moojon_model_collection($this->relationships[$key]);
+				$records = new moojon_model_collection($this, $key);
 				$this->relationships[$key] = $records->get($this);
 			}
 			return $this->relationships[$key];
@@ -57,7 +58,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		}	
 	}
 	
-	final private function has_property($key) {
+	final public function has_property($key) {
 		if ($this->has_relationship($key)) {
 			return true;
 		}
@@ -72,8 +73,12 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	final private function get_relationship_type($key) {
+		return get_class($this->get_relationship($key));
+	}
+	
+	final public function get_relationship($key) {
 		if ($this->has_relationship($key)) {
-			return get_class($this->relationships[$key]);
+			return $this->relationships[$key];
 		} else {
 			self::handle_error("no such relationship ($key)");
 		}
@@ -83,10 +88,14 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		return array_key_exists($key, $this->columns);
 	}
 	
-	final private function add_relationship($relationship_type, $foreign_obj, $foreign_key, $key) {
-		if ($this->has_property($foreign_obj)) {
-			self::handle_error("duplicate property when adding relationship ($foreign_key)");
+	final private function add_relationship($relationship_type, $name , $foreign_obj, $foreign_key, $key) {
+		if ($this->has_property($name)) {
+			self::handle_error("duplicate property when adding relationship ($name)");
 		}
+		if ($foreign_obj == null) {
+			$foreign_obj = $name;
+		}
+		$foreign_obj = self::strip_base($foreign_obj);
 		if ($foreign_key == null) {
 			$foreign_key = moojon_model_properties::get_foreign_key(get_class($this));
 		}
@@ -96,7 +105,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		if (!$this->has_column($key)) {
 			self::handle_error("no such column to use as key for relationship ($key)");
 		}
-		$this->relationships[$foreign_key] = new $relationship_type($foreign_obj, $foreign_key, $key);
+		$this->relationships[$name] = new $relationship_type($name, $foreign_obj, $foreign_key, $key);
 	}
 	
 	final protected function add_column(moojon_base_column $column) {
@@ -107,16 +116,16 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		}		
 	}
 	
-	final protected function has_many($foreign_obj, $foreign_key = null, $key = null) {
-		$this->add_relationship('moojon_has_many_relationship', $foreign_obj, $foreign_key, $key);
+	final protected function has_many($name, $foreign_obj = null, $foreign_key = null, $key = null) {
+		$this->add_relationship('moojon_has_many_relationship', $name, $foreign_obj, $foreign_key, $key);
 	}
 	
-	final protected function has_one($foreign_obj, $foreign_key = null, $key = null) {
-		$this->add_relationship('moojon_has_one_relationship', $foreign_obj, $foreign_key, $key);
+	final protected function has_one($name, $foreign_obj = null, $foreign_key = null, $key = null) {
+		$this->add_relationship('moojon_has_one_relationship', $name, $foreign_obj, $foreign_key, $key);
 	}
 	
-	final protected function has_many_to_many($foreign_obj, $foreign_key = null, $key = null) {
-		$this->add_relationship('moojon_has_many_to_many_relationship', $foreign_obj, $foreign_key, $key);
+	final protected function has_many_to_many($name, $foreign_obj = null, $foreign_key = null, $key = null) {
+		$this->add_relationship('moojon_has_many_to_many_relationship', $name, $foreign_obj, $foreign_key, $key);
 	}
 		
 	final public function get_class() {
@@ -231,6 +240,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	final static protected function base_read($class, $where, $order, $limit, $accessor) {
+		$class = self::strip_base($class);
 		$args = func_get_args();
 		array_shift($args);
 		$builder = self::find_builder($args);
@@ -240,17 +250,12 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		$instance = self::init($class);
 		$columns = array();
 		foreach($instance->columns as $column) {
-			$columns[moojon_inflect::singularize(get_class($instance)).'.'.$column->get_name()] = strtoupper(moojon_inflect::singularize(get_class($instance)).'_'.$column->get_name());
+			$columns[$instance->obj.'.'.$column->get_name()] = strtoupper(moojon_inflect::singularize(get_class($instance)).'_'.$column->get_name());
 		}
-		$key = null;
-		$relationship = null;
-		if ($accessor != null) {
-			$relationship_class = $accessor->get_relationship_type();
-			$new_relationship = new $relationship_class($relationship->get_accessor(), $relationship->get_obj1(), $relationship->get_obj2());
-		}
-		$records = new moojon_model_collection($new_relationship);
-		foreach(moojon_query_runner::select($instance->obj, $columns, $where, $order, $limit) as $row) {
-			$record = new $class;
+		$records = new moojon_model_collection($accessor);
+		$rows = moojon_query_runner::select($instance->obj, $columns, $where, $order, $limit);
+		foreach($rows as $row) {
+			$record = self::init($class);
 			foreach($instance->columns as $column) {
 				$column_name = $column->get_name();
 				$record->$column_name = $row[strtoupper($class.'_'.$column_name)];

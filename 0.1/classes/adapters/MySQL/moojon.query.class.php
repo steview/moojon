@@ -3,8 +3,7 @@ class moojon_query extends moojon_query_utilities
 {
 	final private function __construct() {}
 	
-	final static public function run($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array(), $test = false)
-	{
+	final static public function build($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array()) {
 		$builder = self::find_builder(func_get_args());
 		$joins = self::resolve($joins, $builder, 'joins');
 		$join_string = ' ';
@@ -31,8 +30,7 @@ class moojon_query extends moojon_query_utilities
 		$where = self::resolve($where, $builder, 'where', ' WHERE %s');
 		$order = self::resolve($order, $builder, 'order', ' ORDER BY %s ');
 		$limit = self::resolve($limit, $builder, 'limit', ' LIMIT %s');
-		$test = self::resolve($test, $builder, 'test');
-		$sql = "$command ";
+		$query = "$command ";
 		switch ($command)
 		{
 			case 'SELECT':
@@ -52,7 +50,7 @@ class moojon_query extends moojon_query_utilities
 					$data_string = substr($data_string, 2);
 					$data = $data_string;
 				}
-				$sql .= "$data FROM $obj$join_string$where$order$limit;";
+				$query .= "$data FROM $obj$join_string$where$order$limit;";
 				break;
 			case "INSERT":
 				foreach($data as $value)
@@ -61,31 +59,35 @@ class moojon_query extends moojon_query_utilities
 				}
 				$values = ' VALUES('.substr($values, 2).')';
 				$columns = implode(', ', array_keys($data));
-				$sql .= "INTO $obj ($columns)$values;";
+				$query .= "INTO $obj ($columns)$values;";
 				break;
 			case "UPDATE":
 				foreach($data as $key => $value)
 				{
 					$values .= ", $key = '".sprintf('%s', $value)."'";
 				}
-				$sql .= "$obj SET ".substr($values, 2)."$where;";
+				$query .= "$obj SET ".substr($values, 2)."$where;";
 				break;
 			case "DELETE":
-				$sql .= " FROM $obj$where$limit;";
+				$query .= " FROM $obj$where$limit;";
 				break;
 		}
-		//die($sql);
-		if ($test === true)
-		{
-			die($sql);
-		}		
-		return self::run_raw($sql);
+		return $query;
 	}
 	
-	final static public function run_raw($sql)
-	{
-		echo "Running: $sql<br />";
-		$query = mysql_query($sql, moojon_connection::init()->get_resource());
+	final static public function run($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array(), $test = false) {
+		$query = self::build($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array());
+		$args = func_get_args();
+		return self::run_raw($query, self::resolve($test, self::find_builder($args), 'test'));
+	}
+	
+	final static public function run_raw($query, $test = false) {
+		if ($test === true)
+		{
+			die($query);
+		}
+		//echo "Running: $query<br />";
+		$query = mysql_query($query, moojon_connection::init()->get_resource());
 		//echo "Errors: ".mysql_error();
 		$result = array();
 		if (gettype($query) == 'resource')

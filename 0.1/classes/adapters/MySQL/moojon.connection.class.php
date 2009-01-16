@@ -1,5 +1,5 @@
 <?php
-class moojon_connection
+final class moojon_connection
 {
 	private static $instance;
 	private $host;
@@ -10,8 +10,7 @@ class moojon_connection
 	
 	final private function __construct() {}
 	
-	final static public function init($host = null, $username = null, $password = null, $database = null)
-	{
+	final static public function init($host = null, $username = null, $password = null, $database = null) {
 		if (empty(self::$instance))
 		{
 			self::$instance = new moojon_connection();
@@ -39,15 +38,13 @@ class moojon_connection
 		return self::$instance;
 	}
 	
-	final public function connect()
-	{
+	final public function connect() {
 		$this->set_resource($this->get_host(), $this->get_username(), $this->get_password());
 		$this->select_database($this->get_database());
 		return $this;
 	}
 	
-	final public function set_resource($host, $username, $password)
-	{
+	final public function set_resource($host, $username, $password) {
 		$this->set_host($host);
 		$this->set_username($username);
 		$this->set_password($password);
@@ -55,64 +52,50 @@ class moojon_connection
 		return $this;
 	}
 	
-	final public function select_database($database)
-	{
+	final public function select_database($database) {
 		mysql_select_db($database, $this->resource);
 		return $this;
 	}
 	
-	final public function set_host($host)
-	{
+	final public function set_host($host) {
 		$this->host = $host;
 	}
 	
-	final public function set_username($username)
-	{
+	final public function set_username($username) {
 		$this->username = $username;
 	}
 	
-	final public function set_password($password)
-	{
+	final public function set_password($password) {
 		$this->password = $password;
 	}
 	
-	final public function set_database($database)
-	{
+	final public function set_database($database) {
 		$this->database = $database;
 	}
 	
-	final public function get_host()
-	{
+	final public function get_host() {
 		return $this->host;
 	}
 	
-	final public function get_username()
-	{
+	final public function get_username() {
 		return $this->username;
 	}
 	
-	final public function get_password()
-	{
+	final public function get_password() {
 		return $this->password;
 	}
 	
-	final public function get_database()
-	{
+	final public function get_database() {
 		return $this->database;
 	}
 	
-	final public function get_resource()
-	{
+	final public function get_resource() {
 		return $this->resource;
 	}
 	
-	final public function close()
-	{
+	final public function close() {
 		mysql_close($this->resource);
 		return $this;
 	}
 }
-
-class connection extends moojon_connection {}
-class con extends moojon_connection {}
 ?>
