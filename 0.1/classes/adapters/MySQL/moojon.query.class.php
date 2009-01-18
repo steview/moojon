@@ -7,14 +7,13 @@ class moojon_query extends moojon_query_utilities
 		$builder = self::find_builder(func_get_args());
 		$joins = self::resolve($joins, $builder, 'joins');
 		$join_string = ' ';
-		if (empty($data))
-		{
-			$data[] = '*';
+		if (empty($data)) {
+			if (strtoupper($command) != 'DESC' && strtoupper($command) != 'DESC') {
+				$data[] = '*';
+			}			
 		}
-		if (get_class($builder) == 'moojon_query_builder')
-		{
-			$data = $builder->map_data();
-			
+		if (get_class($builder) == 'moojon_query_builder') {
+			$data = $builder->map_data();			
 		}
 		if (!empty($joins) && is_array($joins))
 		{
@@ -52,7 +51,7 @@ class moojon_query extends moojon_query_utilities
 				}
 				$query .= "$data FROM $obj$join_string$where$order$limit;";
 				break;
-			case "INSERT":
+			case 'INSERT':
 				foreach($data as $value)
 				{
 					$values .= ", '".sprintf('%s', $value)."'";
@@ -61,15 +60,39 @@ class moojon_query extends moojon_query_utilities
 				$columns = implode(', ', array_keys($data));
 				$query .= "INTO $obj ($columns)$values;";
 				break;
-			case "UPDATE":
+			case 'UPDATE':
 				foreach($data as $key => $value)
 				{
 					$values .= ", $key = '".sprintf('%s', $value)."'";
 				}
 				$query .= "$obj SET ".substr($values, 2)."$where;";
 				break;
-			case "DELETE":
+			case 'DELETE':
 				$query .= " FROM $obj$where$limit;";
+				break;
+			case 'DESCRIBE':
+			case 'DESC':
+				if (is_array($data)) {
+					$data_string = '';
+					foreach(array_keys($data) as $key) {
+						$data_string .= ', '.$data[$key];
+					}
+					$data_string = substr($data_string, 2);
+					$data = $data_string;
+				}
+				$query .= $obj;
+				if (strlen($data) > 0) {
+					$query .= " $data";
+				}
+				$query .= ';';
+				break;
+			case 'SHOW COLUMNS':
+			case 'SHOW FULL COLUMNS':
+				$query .= "FROM $obj";
+				if (strlen($where) > 0) {
+					$query .= " $where";
+				} 
+				$query .= ';';
 				break;
 		}
 		return $query;

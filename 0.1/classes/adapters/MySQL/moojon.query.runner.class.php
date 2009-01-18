@@ -44,6 +44,26 @@ class moojon_query_runner extends moojon_query_utilities
 		return self::run('DELETE', $obj, $data, $where, null, null, $test);
 	}
 	
+	final static public function describe($obj, $data = null, $test = null)
+	{
+		return self::run('DESCRIBE', $obj, $data, null, null, null, $test);
+	}
+	
+	final static public function desc($obj, $data = null, $test = null)
+	{
+		return self::run('DESC', $obj, $data, null, null, null, $test);
+	}
+	
+	final static public function show_columns($obj, $where = null, $test = null)
+	{
+		return self::run('SHOW COLUMNS', $obj, null, $where, null, null, $test);
+	}
+	
+	final static public function show_full_columns($obj, $where = null, $test = null)
+	{
+		return self::run('SHOW FULL COLUMNS', $obj, null, $where, null, null, $test);
+	}
+	
 	final static public function left($foreign_table, $local_table = null, $foreign_key = null, $local_key = null, $data = '*', $where = null, $order = null, $limit = null, $test = null)
 	{
 		return self::run_join('LEFT', $foreign_table, $local_table, $foreign_key, $local_key, $data, $where, $order, $limit, $test);

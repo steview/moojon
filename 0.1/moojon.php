@@ -64,30 +64,27 @@ include('classes/adapters/MySQL/columns/moojon.enum.column.class.php');
 include('classes/adapters/MySQL/columns/moojon.set.column.class.php');
 
 include('models/base/base.coach.model.class.php');
-include('models/base/base.team.model.class.php');
+include('models/base/base.injury.model.class.php');
+include('models/base/base.injury_type.model.class.php');
 include('models/base/base.player.model.class.php');
-include('models/base/base.skill.model.class.php');
 include('models/base/base.player_skill.model.class.php');
+include('models/base/base.player_type.model.class.php');
+include('models/base/base.skill.model.class.php');
+include('models/base/base.skill_type.model.class.php');
+include('models/base/base.team.model.class.php');
 include('models/coach.model.class.php');
-include('models/team.model.class.php');
+include('models/injury.model.class.php');
+include('models/injury_type.model.class.php');
 include('models/player.model.class.php');
-include('models/skill.model.class.php');
 include('models/player_skill.model.class.php');
+include('models/player_type.model.class.php');
+include('models/skill.model.class.php');
+include('models/skill_type.model.class.php');
+include('models/team.model.class.php');
 
 $con = moojon_connection::init('localhost', 'bloodbowl', 'bloodbowl99', 'bloodbowl');
 
-foreach (player::read() as $player) {
-	echo "=====================================================<br />";
-	echo '[Player]: '.$player->first_name.' [Skills count]: '.$player->skills->length;
-	if ($player->skills->count > 0) {
-		echo ' [Skills]: ';
-		foreach ($player->skills as $skill) {
-			echo $skill->name.', ';	
-		}
-	}
-	echo '<br />';
-}
-echo "=====================================================<br />";
+mqr::desc('players', 'id', true);
 
 $con->close();
 ?>

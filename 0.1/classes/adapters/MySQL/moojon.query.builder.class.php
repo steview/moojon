@@ -43,6 +43,26 @@ class moojon_query_builder extends moojon_query_utilities
 		return $this->command_obj('DELETE', $obj, null, $where, null, null);
 	}
 	
+	final public function describe($obj = null, $data = null)
+	{
+		return $this->command_obj('DESCRIBE', $obj, $data, null, null, null);
+	}
+	
+	final public function desc($obj = null, $data = null)
+	{
+		return $this->command_obj('DESC', $obj, $data, null, null, null);
+	}
+	
+	final public function show_columns($obj = null, $where = null)
+	{
+		return $this->command_obj('SHOW COLUMNS', $obj, null, $where, null, null);
+	}
+	
+	final public function show_full_columns($obj = null, $where = null)
+	{
+		return $this->command_obj('SHOW FULL COLUMNS', $obj, null, $where, null, null);
+	}
+	
 	final private function command_obj($command, $obj, $data, $where, $order, $limit)
 	{
 		$this->command = $command;
