@@ -8,7 +8,7 @@ abstract class moojon_base_relationship extends moojon_base
 	
 	final public function __construct($name, $foreign_obj, $foreign_key, $key) {
 		$this->name = $name;
-		$this->foreign_obj = $foreign_obj;
+		$this->foreign_obj = moojon_inflect::pluralize($foreign_obj);
 		$this->foreign_key = $foreign_key;
 		$this->key = $key;		
 	}

@@ -30,6 +30,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	final public function __set($key, $value) {
 		if ($this->has_column($key)) {
+			//set methods?
 			$result = $this->columns[$key]->set_value($value);
 			if ($result !== true) {
 				$this->errors[] = $result;
@@ -53,7 +54,12 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			if ($this->has_column($key)) {
 				return $this->columns[$key]->get_value();		
 			} else {
-				self::handle_error("unknown property ($key)");
+				$get_method = "get_$key";
+				if (method_exists($this, $get_method)) {
+					return $this->$get_method();
+				} else {
+					self::handle_error("unknown property ($key)");
+				}				
 			}
 		}	
 	}

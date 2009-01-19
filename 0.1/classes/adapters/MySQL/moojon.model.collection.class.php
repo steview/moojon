@@ -56,7 +56,7 @@ final class moojon_model_collection extends ArrayObject
 			$records = $foreign_class->read($this->relationship->get_where($this->accessor), null, null, $this->accessor);
 			switch (get_class($this->relationship)) {
 				case 'moojon_has_one_relationship':
-					return $this->first;
+					return $records->first;
 					break;
 				case 'moojon_has_many_relationship':
 				case 'moojon_has_many_to_many_relationship':
