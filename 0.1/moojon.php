@@ -2,6 +2,7 @@
 //require_once('classes/moojon.request.class.php');
 //$request = new moojon_request(require_once('config/moojon.config.php'));
 include('classes/moojon.base.class.php');
+include('classes/moojon.files.class.php');
 include('classes/moojon.inflect.class.php');
 
 include('classes/adapters/MySQL/moojon.connection.class.php');
@@ -63,7 +64,7 @@ include('classes/adapters/MySQL/columns/moojon.base.enum.column.class.php');
 include('classes/adapters/MySQL/columns/moojon.enum.column.class.php');
 include('classes/adapters/MySQL/columns/moojon.set.column.class.php');
 
-include('models/base/base.coach.model.class.php');
+/*include('models/base/base.coach.model.class.php');
 include('models/base/base.injury.model.class.php');
 include('models/base/base.injury_type.model.class.php');
 include('models/base/base.player.model.class.php');
@@ -84,7 +85,8 @@ include('models/player_type_skill.model.class.php');
 include('models/player_type_skill_type.model.class.php');
 include('models/skill.model.class.php');
 include('models/skill_type.model.class.php');
-include('models/team.model.class.php');
-
+include('models/team.model.class.php');*/
+moojon_files::require_directory_files(PROJECT_PATH.'/models/base/');
+moojon_files::require_directory_files(PROJECT_PATH.'/models/');
 
 ?>

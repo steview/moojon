@@ -3,6 +3,7 @@ final class moojon_model_collection extends ArrayObject
 {
 	private $accessor;
 	private $relationship;
+	private $key;
 	private $iterator;
 	private $errors = array();
 	
@@ -72,6 +73,19 @@ final class moojon_model_collection extends ArrayObject
 				return false;
 			}
 		}
+	}
+	
+	final public function filter($value, $property = null) {
+		$collection = new moojon_model_collection($this->accessor, $this->key);
+		if ($property == null) {
+			$property = moojon_model_properties::DEFAULT_PRIMARY_KEY;
+		}
+		foreach ($this as $record) {
+			if ($record->$property == $value) {
+				$collection[] = $record;
+			}
+		}
+		return $collection;
 	}
 	
 	final public function get_errors() {
