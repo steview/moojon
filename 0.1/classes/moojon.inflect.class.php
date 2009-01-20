@@ -27,8 +27,7 @@
 //   Added rule for *us -> *uses
 //   Changed coding to Moojon style and changed class names
 
-class moojon_inflect
-{
+final class moojon_inflect extends moojon_base {
     static private $plural = array(
         '/(quiz)$/i' => "$1zes",
         '/^(ox)$/i' => "$1en",
@@ -105,66 +104,48 @@ class moojon_inflect
         'equipment'
    );
 
-    final public static function pluralize($string)
-    {
-        if (in_array(strtolower($string), self::$uncountable))
-        {
+    final public static function pluralize($string) {
+        if (in_array(strtolower($string), self::$uncountable)) {
         	return $string;
         }
-        foreach (self::$irregular as $pattern => $result)
-        {
+        foreach (self::$irregular as $pattern => $result) {
             $pattern = '/'.$pattern.'$/i';
-            if (preg_match($pattern, $string))
-            {
+            if (preg_match($pattern, $string)) {
             	return preg_replace($pattern, $result, $string);
             }
         }
-        foreach (self::$plural as $pattern => $result)
-        {
-            if (preg_match($pattern, $string))
-            {
+        foreach (self::$plural as $pattern => $result) {
+            if (preg_match($pattern, $string)) {
             	return preg_replace($pattern, $result, $string);
             }
         }
         return $string;
     }
 
-    final public static function singularize($string)
-    {
-        if (in_array(strtolower($string), self::$uncountable))
-        {
+    final public static function singularize($string) {
+        if (in_array(strtolower($string), self::$uncountable)) {
         	return $string;
         }
-        foreach (self::$irregular as $result => $pattern)
-        {
-            $pattern = '/' . $pattern . '$/i';
-            if (preg_match($pattern, $string))
-            {
-				die('here1');
+        foreach (self::$irregular as $result => $pattern) {
+            $pattern = '/'.$pattern.'$/i';
+            if (preg_match($pattern, $string)) {
             	return preg_replace($pattern, $result, $string);
             }
         }
-        foreach (self::$singular as $pattern => $result)
-        {
-            if (preg_match($pattern, $string))
-            {
+        foreach (self::$singular as $pattern => $result) {
+            if (preg_match($pattern, $string)) {
             	return preg_replace($pattern, $result, $string);
             }
         }
         return $string;
     }
 
-    final public static function pluralize_if($count, $string)
-    {
-        if ($count == 1)
-        {
+    final public static function pluralize_if($count, $string) {
+        if ($count == 1) {
         	return "1 $string";
-        }
-        else
-        {
-        	return $count . " " . self::pluralize($string);
+        } else {
+        	return $count.' '.self::pluralize($string);
         }
     }
 }
-class inflect extends moojon_inflect {}
 ?>

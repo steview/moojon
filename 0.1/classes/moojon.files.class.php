@@ -1,19 +1,12 @@
 <?php
-final class moojon_files {
-	private $app_path;
-	private $app_class_path;
-	private $controllers_path;
-	private $controller_class_path;
-	private $views_path;
-	private $view_path;
-	
-	final static public function require_directory_files($path, $recursive = false) {
+final class moojon_files extends moojon_base {
+	static public function require_directory_files($path, $recursive = false) {
 		foreach(self::directory_files($path, $recursive) as $file) {
 			require_once($file);
 		}
 	}
 	
-	final static public function directory_files($path, $recursive = false) {
+	static public function directory_files($path, $recursive = false) {
 		$directories = array();
 		if (is_dir($path)) {
 			if ($directory_handler = opendir($path)) {
@@ -30,7 +23,7 @@ final class moojon_files {
 		return $directories;
 	}
 	
-	final static private function parent_or_current($file) {
+	static private function parent_or_current($file) {
 		if ($file == '.' || $file == '..') {
 			return true;
 		} else {
@@ -38,7 +31,7 @@ final class moojon_files {
 		}
 	}
 	
-	final static private function mac_poo($file) {
+	static private function mac_poo($file) {
 		if (substr($file, 0, 2) == '._') {
 			return true;
 		} else {
@@ -46,7 +39,7 @@ final class moojon_files {
 		}
 	}
 	
-	final static private function has_ext($file, $ext = 'php') {
+	static private function has_ext($file, $ext = 'php') {
 		if (self::get_ext($file) == $ext) {
 			return true;
 		} else {
@@ -54,7 +47,7 @@ final class moojon_files {
 		}
 	}
 	
-	final static private function strip_ext($file, $ext = 'php') {
+	static private function strip_ext($file, $ext = 'php') {
 		if (self::has_ext($file, $ext)) {
 			return substr($file, 0, (strlen($file) - strlen(".$ext")));
 		} else {
@@ -62,7 +55,7 @@ final class moojon_files {
 		}
 	}
 	
-	final static private function get_ext($file) {
+	static private function get_ext($file) {
 		if (strpos($file, '.') > 0) {
 			return substr($file, (strrpos($file, '.') + 1));
 		} else {
@@ -70,7 +63,7 @@ final class moojon_files {
 		}
 	}
 	
-	final static private function require_ext($file, $ext) {
+	static private function require_ext($file, $ext) {
 		if (!self::has_ext($file, $ext)) {
 			return "$file.$ext";
 		} else {
@@ -78,7 +71,7 @@ final class moojon_files {
 		}
 	}
 	
-	final static private function has_suffix($file, $suffix) {
+	static private function has_suffix($file, $suffix) {
 		if (substr($file, (0 + (strlen($file) - strlen($suffix)))) == $suffix) {
 			return true;
 		} else {
@@ -86,7 +79,7 @@ final class moojon_files {
 		}
 	}
 	
-	final static private function require_suffix($file, $suffix) {
+	static private function require_suffix($file, $suffix) {
 		if (!$ext = self::get_ext($file)) {
 			$file = self::strip_ext($file, $ext);
 		} else {
