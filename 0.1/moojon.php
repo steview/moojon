@@ -70,6 +70,8 @@ require_once('classes/adapters/MySQL/columns/moojon.set.column.class.php');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/base/');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/');
 
+$con = moojon_connection::init('localhost', 'bloodbowl', 'bloodbowl99', 'bloodbowl');
+
 $app_name = moojon_uri::get_app();
 $controller_name = moojon_uri::get_controller();
 
@@ -78,18 +80,5 @@ require_once(PROJECT_PATH."/apps/$app_name/controllers/$controller_name.controll
 $app_class_name = moojon_uri::get_app().'_app';
 $app = new $app_class_name;
 
-$properties = array(
-	'name' => 'test team',
-	'coach_id' => '1',
-	'treasury' => '0',
-	'coaches' => '0',
-	'cheerleaders' => '0',
-	'apothecary' => '0',
-	'rerolls' => '1',
-	'fan_factor' => '9',
-	'moto' => 'blah',
-	'colors' => 'red',
-	'wage_pot' => '0'
-);
-team::create($properties)->save();
+$con->close();
 ?>

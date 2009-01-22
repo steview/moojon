@@ -10,7 +10,7 @@ final class moojon_uri extends moojon_base {
 		return 'teams';
 	}
 	
-	static public function get_method() {
+	static public function get_action() {
 		return 'roster';
 	}
 }
