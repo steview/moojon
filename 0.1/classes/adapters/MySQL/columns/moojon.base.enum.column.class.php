@@ -13,7 +13,5 @@ abstract class moojon_base_enum_column extends moojon_base_column
 	{
 		return $this->enum_value;
 	}
-	
-	protected function validate($value) {return true;}
 }
 ?>

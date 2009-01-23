@@ -24,22 +24,7 @@ abstract class moojon_base_column extends moojon_base
 		
 	final public function set_value($value)
 	{
-		if ($this->validate($value))
-		{
-			$this->value = $value;
-			return true;
-		}
-		else
-		{
-			if ($this->comment != null)
-			{
-				return $this->comment;
-			}
-			else
-			{
-				return false;
-			}
-		}
+		$this->value = $value;
 	}
 	
 	final public function get_name()
@@ -66,7 +51,5 @@ abstract class moojon_base_column extends moojon_base
 	{
 		return $this->value;
 	}
-	
-	abstract protected function validate($value);
 }
 ?>

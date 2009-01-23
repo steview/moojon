@@ -150,12 +150,29 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		return $this->errors;
 	}
 	
+	final protected function get_column($column_name) {
+		foreach ($this->get_columns() as $column) {
+			if ($column->get_name() == $column_name) {
+				return $column;
+			}
+		}
+		return false;
+	}
+	
 	final protected function get_editable_columns() {
 		$columns = array();
 		foreach ($this->columns as $column) {
 			if (!$column->get_primary_key()) {
-				$columns[] = $column->get_name();
+				$columns[] = $column;
 			}		
+		}
+		return $columns;
+	}
+	
+	final protected function get_editable_column_names() {
+		$columns = array();
+		foreach ($this->get_editable_columns() as $column) {
+			$columns[] = $column->get_name();
 		}
 		return $columns;
 	}
@@ -173,22 +190,11 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	final public function validate($cascade = false) {
 		$valid = true;
 		$errors = array();
-		foreach ($this->columns as $column) {
+		foreach ($this->get_editable_columns() as $column) {
 			$column_name = $column->get_name();
 			$validation_method = 'validate_'.$column_name;
 			if (method_exists($this, $validation_method)) {
 				$validation = $this->$validation_method($column);
-				if ($validation !== true) {
-					$errors[] = $validation;
-					$valid = false;
-				} else {
-					$validation = $column->validate();
-					if ($validation !== true) {
-						$errors[] = $validation;
-						$valid = false;
-					}
-				}
-			} else {
 				if ($validation !== true) {
 					$errors[] = $validation;
 					$valid = false;
@@ -212,18 +218,17 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		
 	final public function save($cascade = false) {
 		$saved = true;
-		if ($this->validate($cascade) === true) {			
+		if ($this->validate($cascade) === true) {
+			foreach ($this->get_editable_column_names() as $column_name) {
+				if (method_exists($this, "set_$column_name")) {
+					$this->$column_name = call_user_func_array(array(get_class($this), "set_$column_name"), array($this, $this->get_column($column_name)));
+				}
+			}
 			$data = array();
-			foreach ($this->get_editable_columns() as $column_name) {
+			foreach ($this->get_editable_column_names() as $column_name) {
 				$data[$column_name] = $this->$column_name;
 			}
 			$builder = moojon_query_builder::init()->data($data);
-			foreach ($this->get_editable_columns() as $column) {
-				$column_name = $column->get_name();
-				if (method_exists($this, "set_$column_name")) {
-					$this->$column_name = call_user_func_array(array(get_class($this), "set_$column_name"), array($this, $column));
-				}
-			}
 			if ($this->new_record == true) {
 				$builder->insert($this->obj);
 			} else {
@@ -231,18 +236,21 @@ abstract class moojon_base_model extends moojon_query_utilities {
 					$id_property = moojon_model_properties::DEFAULT_PRIMARY_KEY;
 					$builder->update($this->obj)->where("$id_property = ".$this->$id_property);
 				} else {
-					return false;
+					$saved = false;
 				}
-			}
+			}			
+		} else {
+			$saved = false;
+		}
+		if ($saved == true) {
 			$builder->run();
 			if ($cascade) {
 				foreach($this->relationships as $relationship) {
 					$relationship->save(true);
 				}
 			}
-		} else {
-			return false;
-		}		
+		}
+		return $saved;		
 	}
 	
 	final static protected function base_read($class, $where, $order, $limit, $accessor) {
@@ -276,9 +284,10 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		array_shift($args);
 		$builder = self::find_builder($args);
 		$data = self::resolve($data, $builder, 'data');
+		print_r($data);
 		$instance = self::init($class);
 		$instance->new_record = true;
-		foreach ($instance->get_editable_columns() as $column_name) {
+		foreach ($instance->get_editable_column_names() as $column_name) {
 			if (array_key_exists($column_name, $data)) {
 				$instance->$column_name = $data[$column_name];
 			}
@@ -294,14 +303,14 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		$where = self::resolve($where, $builder, 'where');
 		$instance = self::init($class);
 		$id_property = moojon_model_properties::DEFAULT_PRIMARY_KEY;
-		$sql_data = array();
-		foreach ($instance->get_editable_columns() as $column) {
-			$sql_data[$column->get_name()] = $data[$column->get_name()];
+		$query_data = array();
+		foreach ($instance->get_editable_column_names() as $column_name) {
+			$query_data[$column_name] = $data[$column_name];
 		}
 		if (!$where) {
 			$where = $data[$id_property];
 		}
-		$builder = moojon_query_builder::init()->update($instance->obj, $sql_data);
+		$builder = moojon_query_builder::init()->update($instance->obj, $query_data);
 		if ($where) {
 			$builder->where($where);
 		}
@@ -337,8 +346,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		if (!is_array($data)) {
 			$data = array($data => $value);
 		}
-		foreach ($this->get_editable_columns() as $column) {
-			$column_name = $column->get_name();
+		foreach ($this->get_editable_column_names() as $column_name) {
 			$this->$column_name = $data[$column_name];
 		}
 	}

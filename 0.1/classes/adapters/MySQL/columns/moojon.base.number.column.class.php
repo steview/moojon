@@ -20,7 +20,5 @@ abstract class moojon_base_number_column extends moojon_base_column
 	{
 		return $this->zerofill;
 	}
-	
-	protected function validate($value) {return true;}
 }
 ?>

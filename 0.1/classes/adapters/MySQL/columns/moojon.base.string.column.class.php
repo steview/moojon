@@ -13,7 +13,5 @@ abstract class moojon_base_string_column extends moojon_base_column
 	{
 		return $this->key_length;
 	}
-	
-	protected function validate($value) {return true;}
 }
 ?>

@@ -13,8 +13,6 @@ class moojon_timestamp_column extends moojon_base_column
 	{
 		return $this->on_update_current_timestamp;
 	}
-	
-	protected function validate($value) {return true;}
 }
 
 class timestamp_column extends moojon_timestamp_column {}

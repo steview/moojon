@@ -109,7 +109,7 @@ class moojon_query extends moojon_query_utilities
 		{
 			die($query);
 		}
-		//echo "Running: $query<br />";
+		echo "Running: $query<br />";
 		$query = mysql_query($query, moojon_connection::init()->get_resource());
 		//echo "Errors: ".mysql_error();
 		$result = array();
