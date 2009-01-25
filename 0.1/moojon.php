@@ -67,6 +67,8 @@ require_once('classes/adapters/MySQL/columns/moojon.base.enum.column.class.php')
 require_once('classes/adapters/MySQL/columns/moojon.enum.column.class.php');
 require_once('classes/adapters/MySQL/columns/moojon.set.column.class.php');
 
+require_once('classes/adapters/MySQL/moojon.base.migration.class.php');
+
 moojon_files::require_directory_files(PROJECT_PATH.'/models/base/');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/');
 
@@ -77,6 +79,7 @@ $controller_name = moojon_uri::get_controller();
 
 require_once(PROJECT_PATH."/apps/$app_name/$app_name.app.class.php");
 require_once(PROJECT_PATH."/apps/$app_name/controllers/$controller_name.controller.class.php");
+
 $app_class_name = moojon_uri::get_app().'_app';
 $app = new $app_class_name;
 
