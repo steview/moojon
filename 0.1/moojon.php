@@ -68,11 +68,19 @@ require_once('classes/adapters/MySQL/columns/moojon.enum.column.class.php');
 require_once('classes/adapters/MySQL/columns/moojon.set.column.class.php');
 
 require_once('classes/adapters/MySQL/moojon.base.migration.class.php');
+require_once('classes/adapters/MySQL/moojon.migration.commands.class.php');
 
 moojon_files::require_directory_files(PROJECT_PATH.'/models/base/');
+moojon_files::require_directory_files(PROJECT_PATH.'/models/migrations/');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/');
 
-$con = moojon_connection::init('localhost', 'bloodbowl', 'bloodbowl99', 'bloodbowl');
+$con = moojon_connection::init(moojon_config::get_db_host(), moojon_config::get_db_username(), moojon_config::get_db_password(), moojon_config::get_db());
+
+moojon_migration_commands::find_or_create_schema_migrations_table();
+
+$con->close();
+
+die();
 
 $app_name = moojon_uri::get_app();
 $controller_name = moojon_uri::get_controller();
