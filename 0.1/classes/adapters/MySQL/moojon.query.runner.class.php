@@ -64,6 +64,16 @@ class moojon_query_runner extends moojon_query_utilities
 		return self::run('SHOW FULL COLUMNS', $obj, null, $where, null, null, $test);
 	}
 	
+	final static public function show_tables($obj = null, $where = null, $test = null)
+	{
+		return self::run('SHOW TABLES', $obj, null, $where, null, null, $test);
+	}
+	
+	final static public function show_full_tables($obj = null, $where = null, $test = null)
+	{
+		return self::run('SHOW FULL TABLES', $obj, null, $where, null, null, $test);
+	}
+	
 	final static public function left($foreign_table, $local_table = null, $foreign_key = null, $local_key = null, $data = '*', $where = null, $order = null, $limit = null, $test = null)
 	{
 		return self::run_join('LEFT', $foreign_table, $local_table, $foreign_key, $local_key, $data, $where, $order, $limit, $test);

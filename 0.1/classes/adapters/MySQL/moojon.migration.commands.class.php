@@ -2,17 +2,15 @@
 final class moojon_migration_commands extends moojon_base {
 	private function __construct() {}
 	
-	static public function find_or_create_schema_migrations_table() {
+	static public function run() {
 		$table_exists = false;
-		foreach (moojon_query::run_raw('SHOW TABLES;') as $table) {
+		foreach (moojon_query_runner::show_tables() as $table) {
 			if (in_array('schema_migrations', $table)) {
 				$table_exists = true;
-			}
+			}			
 		}
 		if ($table_exists) {
-			die('has');
-		} else {
-			die('has not');
+			echo 'has';
 		}
 	}
 }

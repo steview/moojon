@@ -76,7 +76,7 @@ moojon_files::require_directory_files(PROJECT_PATH.'/models/');
 
 $con = moojon_connection::init(moojon_config::get_db_host(), moojon_config::get_db_username(), moojon_config::get_db_password(), moojon_config::get_db());
 
-moojon_migration_commands::find_or_create_schema_migrations_table();
+moojon_migration_commands::run();
 
 $con->close();
 

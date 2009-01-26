@@ -94,6 +94,16 @@ class moojon_query extends moojon_query_utilities
 				} 
 				$query .= ';';
 				break;
+			case 'SHOW TABLES':
+			case 'SHOW FULL TABLES':
+				if (strlen($obj) > 0) {
+					$query .= "FROM $obj";
+				}
+				if (strlen($where) > 0) {
+					$query .= " $where";
+				} 
+				$query .= ';';
+				break;
 		}
 		return $query;
 	}
