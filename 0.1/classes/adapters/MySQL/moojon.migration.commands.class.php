@@ -18,17 +18,34 @@ final class moojon_migration_commands extends moojon_base {
 		}
 		foreach (moojon_files::directory_files(PROJECT_PATH.'/models/migrations/') as $migration_file) {
 			$migration_class_file = moojon_files::get_filename($migration_file);
-			$migration_class_name = substr(substr($migration_class_file, (strpos($migration_class_file, '.') + 1)), 0, (strpos(substr($migration_class_file, (strpos($migration_class_file, '.') + 1)), '.') + 0));
+			$migration_class_name = self::get_migration_class_name($migration_class_file);
 			if (!in_array($migration_class_file, $migrations)) {
 				require_once(PROJECT_PATH.'/models/migrations/'.$migration_class_file);
 				$migration = new $migration_class_name;
 				$migration->up();
 				moojon_query_runner::insert('schema_migrations', array('version' => $migration_class_file));
-			} else {
-				echo 'already have that migration thanks!<br />';
 			}
+		}	
+	}
+	
+	static public function roll_back($version) {
+		if (!count(moojon_query_runner::select('schema_migrations', 'version', "version = '$version'"))) {
+			moojon_base::handle_error("no such migration ($version)");
 		}
-		
+		foreach (moojon_query::run_raw('SELECT version FROM schema_migrations ORDER BY version DESC;') as $migration_class_file) {
+			if ($migration_class_file['version'] == $version) {
+				break;
+			}
+			require_once(PROJECT_PATH.'/models/migrations/'.$migration_class_file['version']);
+			$migration_class_name = self::get_migration_class_name($migration_class_file['version']);
+			$migration = new $migration_class_name;
+			$migration->down();
+			moojon_query_runner::delete('schema_migrations', "version = '".$migration_class_file['version']."'");
+		}
+	}
+	
+	private function get_migration_class_name($migration_class_file) {
+		return substr(substr($migration_class_file, (strpos($migration_class_file, '.') + 1)), 0, (strpos(substr($migration_class_file, (strpos($migration_class_file, '.') + 1)), '.') + 0));
 	}
 }
 ?>

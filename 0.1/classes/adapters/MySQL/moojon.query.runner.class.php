@@ -33,8 +33,8 @@ class moojon_query_runner extends moojon_query_utilities
 		return self::run('UPDATE', $obj, $data, $where, null, null, $test);
 	}
 	
-	final static public function delete($obj, $data = null, $where = null, $test = null) {
-		return self::run('DELETE', $obj, $data, $where, null, null, $test);
+	final static public function delete($obj, $where = null, $test = null) {
+		return self::run('DELETE', $obj, null, $where, null, null, $test);
 	}
 	
 	final static public function describe($obj, $data = null, $test = null) {
