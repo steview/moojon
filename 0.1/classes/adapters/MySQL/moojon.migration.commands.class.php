@@ -28,8 +28,8 @@ final class moojon_migration_commands extends moojon_base {
 		}	
 	}
 	
-	static public function roll_back($version) {
-		if (!count(moojon_query_runner::select('schema_migrations', 'version', "version = '$version'"))) {
+	static public function roll_back($version, $all = false) {
+		if (!count(moojon_query_runner::select('schema_migrations', 'version', "version = '$version'")) && $all == false) {
 			moojon_base::handle_error("no such migration ($version)");
 		}
 		foreach (moojon_query::run_raw('SELECT version FROM schema_migrations ORDER BY version DESC;') as $migration_class_file) {
@@ -42,6 +42,10 @@ final class moojon_migration_commands extends moojon_base {
 			$migration->down();
 			moojon_query_runner::delete('schema_migrations', "version = '".$migration_class_file['version']."'");
 		}
+	}
+	
+	static public function reset() {
+		self::roll_back('', true);
 	}
 	
 	private function get_migration_class_name($migration_class_file) {
