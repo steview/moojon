@@ -71,7 +71,7 @@ require_once('classes/adapters/MySQL/moojon.base.migration.class.php');
 require_once('classes/adapters/MySQL/moojon.migration.commands.class.php');
 
 moojon_files::require_directory_files(PROJECT_PATH.'/models/base/');
-moojon_files::require_directory_files(PROJECT_PATH.'/models/migrations/');
+//moojon_files::require_directory_files(PROJECT_PATH.'/models/migrations/');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/');
 
 $con = moojon_connection::init(moojon_config::get_db_host(), moojon_config::get_db_username(), moojon_config::get_db_password(), moojon_config::get_db());

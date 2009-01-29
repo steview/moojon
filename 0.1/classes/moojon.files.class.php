@@ -33,6 +33,15 @@ final class moojon_files extends moojon_base {
 		return $directories;
 	}
 	
+	static public function get_filename($path) {
+		if (is_file($path)) {
+			$parts = explode('/', $path);
+			return $parts[(count($parts) - 1)];
+		} else {
+			return false;
+		}		
+	}
+	
 	static private function parent_or_current($file) {
 		if ($file == '.' || $file == '..') {
 			return true;
