@@ -104,6 +104,38 @@ class moojon_query extends moojon_query_utilities
 				} 
 				$query .= ';';
 				break;
+			case 'CREATE TABLE':
+				$query .= " $obj($data)";
+				if ($where) {
+					$query .= " $where";
+				}
+				$query .= ';';
+				break;
+			case 'DROP TABLE':
+				$query .= " $obj;";
+				break;
+			case 'ALTER TABLE RENAME':
+			case 'ALTER TABLE RENAME TO':
+				$query = "ALTER TABLE $obj RENAME TO $data";
+				break;
+			case 'ALTER TABLE ADD COLUMN':
+				$query = "ALTER TABLE $obj ADD COLUMN $data";
+				break;
+			case 'ALTER TABLE DROP COLUMN':
+				$query = "ALTER TABLE $obj DROP COLUMN $data";
+				break;
+			case 'ALTER TABLE CHANGE COLUMN':
+				$query = "ALTER TABLE $obj CHANGE COLUMN $data";
+				break;
+			case 'ALTER TABLE MODIFY COLUMN':
+				$query = "ALTER TABLE $obj MODIFY COLUMN $data";
+				break;
+			case 'ALTER TABLE ADD INDEX':
+				$query = "ALTER TABLE $obj ADD INDEX $data";
+				break;
+			case 'ALTER TABLE REMOVE INDEX':
+				$query = "ALTER TABLE $obj REMOVE INDEX $data";
+				break;
 		}
 		return $query;
 	}
@@ -119,7 +151,7 @@ class moojon_query extends moojon_query_utilities
 		{
 			die($query);
 		}
-		//echo "Running: $query<br />";
+		echo "Running: $query<br />";
 		$query = mysql_query($query, moojon_connection::init()->get_resource());
 		//echo "Errors: ".mysql_error();
 		$result = array();

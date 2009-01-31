@@ -41,6 +41,11 @@ abstract class moojon_base_column extends moojon_base {
 		}
 	}
 	
+	final public function get_add_column() {
+		$string = (string)$this;
+		return "ADD COLUMN $tring";
+	}
+	
 	abstract public function __toString();
 }
 ?>

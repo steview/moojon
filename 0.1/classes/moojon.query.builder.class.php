@@ -61,6 +61,46 @@ class moojon_query_builder extends moojon_query_utilities
 		return $this->command_obj('SHOW FULL TABLES', $obj, null, $where, null, null);
 	}
 	
+	final public function create_table($obj = null, $data = null, $option = null) {
+		return $this->command_obj('CREATE TABLE', $obj, $data, $options, null, null);
+	}
+	
+	final public function drop_table($obj = null) {
+		return $this->command_obj('DROP TABLE', $obj, null, null, null, null);
+	}
+	
+	final public function alter_table_rename($obj = null, $data = null) {
+		return $this->command_obj('ALTER TABLE RENAME TO', $obj, $data, null, null, null);
+	}
+	
+	final public function alter_table_rename_to($obj = null, $data = null) {
+		return $this->command_obj('ALTER TABLE RENAME TO', $obj, $data, null, null, null);
+	}
+	
+	final public function alter_table_add_column($obj = null, $data = null) {
+		return $this->command_obj('ALTER TABLE ADD COLUMN', $obj, $data, null, null, null);
+	}
+	
+	final public function alter_table_drop_column($obj = null, $data = null) {
+		return $this->command_obj('ALTER TABLE DROP COLUMN', $obj, $data, null, null, null);
+	}
+	
+	final public function alter_table_change_column($obj = null, $data = null) {
+		return $this->command_obj('ALTER TABLE CHANGE COLUMN', $obj, $data, null, null, null);
+	}
+	
+	final public function alter_table_modify_column($obj = null, $data = null) {
+		return $this->command_obj('ALTER TABLE MODIFY COLUMN', $obj, $data, null, null, null);
+	}
+	
+	final public function alter_table_add_index($obj = null, $data = null, $options = null) {
+		return $this->command_obj('ALTER TABLE ADD INDEX', $obj, $data, $options, null, null);
+	}
+	
+	final public function alter_table_remove_index($obj = null, $data = null) {
+		return $this->command_obj('ALTER TABLE DROP INDEX', $obj, $data, null, null, null);
+	}
+	
 	final private function command_obj($command, $obj, $data, $where, $order, $limit) {
 		$this->command = $command;
 		if ($obj) {

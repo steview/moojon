@@ -48,13 +48,13 @@ moojon_files::require_directory_files(PROJECT_PATH.'/models/base/');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/migrations/');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/');
 
-$con = moojon_connection::init(moojon_config::get_db_host(), moojon_config::get_db_username(), moojon_config::get_db_password(), moojon_config::get_db());
+$con = moojon_connection::init(moojon_config::get_db_host(), moojon_config::get_db_username(), moojon_config::get_db_password(), 'bloodbowl2');
 
-//moojon_migration_commands::reset();
+moojon_migration_commands::run();
 
-//$con->close();
+$con->close();
 
-//die();
+die();
 
 $app_name = moojon_uri::get_app();
 $controller_name = moojon_uri::get_controller();

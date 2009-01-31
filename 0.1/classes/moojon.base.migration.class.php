@@ -1,55 +1,110 @@
 <?php
 abstract class moojon_base_migration extends moojon_base {
+	protected $include_primary_key = true;
+	
 	final public function __construct() {}
 		
 	abstract public function up();
 	
 	abstract public function down();
 	
-	final protected function create_table($name, $columns, $options = null) {
-		array_unshift($columns, 'id INT NOT NULL AUTO_INCREMENT');
-		$columns[] = 'PRIMARY KEY(id)';
-		moojon_query::run_raw("CREATE TABLE $name (".implode(', ', $columns).") $options;");
+	final protected function add_primary_key() {
+		return new moojon_primary_key();
 	}
 	
-	final protected function column_definition($column_name, $type, $options = null) {
-		return "$column_name $type $options";
+	final protected function add_binary($name, $limit = null, $null = null, $default = null) {
+		return new moojon_binary_column($name, $limit, $null, $default);
+	}
+	
+	final protected function add_boolean($name, $null = null, $default = null) {
+		return new moojon_boolean_column($name, $null, $default);
+	}
+	
+	final protected function add_date($name, $null = null, $default = null) {
+		return new moojon_date_column($name, $null, $default);
+	}
+	
+	final protected function add_datetime($name, $null = null, $default = null) {
+		return new moojon_datetime_column($name, $null, $default);
+	}
+	
+	final protected function add_decimal($name, $limit = null, $decimals = null, $null = null, $default = null) {
+		return new moojon_decimal_column($name, $limit, $decimals, $null, $default);
+	}
+	
+	final protected function add_float($name, $limit = null, $decimals = null, $null = null, $default = null) {
+		return new moojon_float_column($name, $limit, $decimals, $null, $default);
+	}
+	
+	final protected function add_integer($name, $limit = null, $null = null, $default = null) {
+		return new moojon_integer_column($name, $limit, $null, $default);
+	}
+	
+	final protected function add_string($name, $limit = null, $null = null, $default = null) {
+		return new moojon_string_column($name, $limit, $null, $default);
+	}
+	
+	final protected function add_text($name, $null = null, $binary = null) {
+		return new moojon_text_column($name, $binary);
+	}
+	
+	final protected function add_time($name, $null = null, $default = null) {
+		return new moojon_time_column($name, $null, $default);
+	}
+	
+	final protected function add_timestamp($name, $null = null, $default = null) {
+		return new moojon_timestamp_column($name, $null, $default);
+	}
+	
+	final protected function create_table($name, $columns, $options = null) {
+		if (!is_array($columns)) {
+			$data = array($columns);
+		} else {
+			$data = $columns;
+		}
+		if ($this->include_primary_key) {
+			$primary_key = new moojon_primary_key;
+			$primary_key->create_table($name, $data, $options);
+		} else {
+			$data = implode(', ', $data);
+			moojon_query_runner::create_table($name, $data, $options);
+		}
 	}
 	
 	final protected function remove_table($name) {
-		moojon_query::run_raw("DROP TABLE $name;");
+		moojon_query_runner::drop_table($name);
 	}
 	
 	final protected function rename_table($old_table_name, $new_table_name) {
-		$this->run($table_name, "RENAME TO $new_table_name");
+		moojon_query_runner::alter_table_rename($old_table_name, $new_table_name);
 	}
 	
-	final protected function add_column($table_name, $column_name, $type, $options = null) {
-		$this->run($table_name, "ADD COLUMN $column_name $type $options");
+	final protected function add_column($table_name, $column) {
+		moojon_query_runner::alter_table_add_column($table_name, $column->get_add_column());
 	}
 	
 	final protected function remove_column($table_name, $column_name) {
-		$this->run($table_name, "DROP COLUMN $column_name");
+		moojon_query_runner::alter_table_drop_column($table_name, $column_name);
 	}
 	
 	final protected function rename_column($table_name, $old_column_name, $new_column_name) {
-		$this->run($table_name, "CHANGE COLUMN $old_column_name $new_column_name");
+		moojon_query_runner::alter_table_change_column($table_name, "$old_column_name $new_column_name");
 	}
 	
-	final protected function change_column($table_name, $column_name, $type, $options = null) {
-		$this->run($table_name, "MODIFY COLUMN $column_name $type $options");
+	final protected function change_column($table_name, $column) {
+		moojon_query_runner::alter_table_modify_column($table_name, $column->get_add_column());
 	}
 	
 	final protected function add_index($table_name, $column_name, $options = null) {
-		$this->run($table_name, "ADD INDEX $column_name $options");
+		$data = $column_name;
+		if ($options) {
+			$data = "$data $options";
+		}
+		moojon_query_runner::alter_table_add_index($table_name, $data);
 	}
 	
 	final protected function remove_index($table_name, $column_name) {
-		$this->run($table_name, "DROP INDEX $column_name");
-	}
-	
-	final private function run($table_name, $query) {
-		moojon_query::run_raw("ALTER TABLE $table_name $query;");
+		moojon_query_runner::alter_table_drop_index($table_name, $column_name);
 	}
 }
 ?>
