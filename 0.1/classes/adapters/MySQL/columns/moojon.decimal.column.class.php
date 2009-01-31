@@ -2,7 +2,7 @@
 final class moojon_decimal_column extends moojon_base_column {
 	private $decimals;
 	
-	final public function __construct($name, $limit = 10, $decimals = 0, $null = true, $default = 0) {
+	final public function __construct($name, $limit = 10, $decimals = 0, $null = false, $default = 0) {
 		$this->name = $name;
 		$this->limit = $limit;
 		$this->decimals = $decimals;

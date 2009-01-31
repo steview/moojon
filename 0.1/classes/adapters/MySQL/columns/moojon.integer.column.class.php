@@ -1,6 +1,6 @@
 <?php
 final class moojon_integer_column extends moojon_base_column {
-	final public function __construct($name, $limit = 11, $null = true, $default = 0) {
+	final public function __construct($name, $limit = 11, $null = false, $default = 0) {
 		$this->name = $name;
 		$this->limit = $limit;
 		$this->null = $null;

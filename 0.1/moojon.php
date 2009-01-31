@@ -41,6 +41,8 @@ require_once('classes/adapters/MySQL/columns/moojon.text.column.class.php');
 require_once('classes/adapters/MySQL/columns/moojon.time.column.class.php');
 require_once('classes/adapters/MySQL/columns/moojon.timestamp.column.class.php');
 
+require_once('classes/base.schema_migration.model.class.php');
+require_once('classes/schema_migration.model.class.php');
 require_once('classes/moojon.base.migration.class.php');
 require_once('classes/moojon.migration.commands.class.php');
 

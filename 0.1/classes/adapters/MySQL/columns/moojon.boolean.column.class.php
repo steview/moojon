@@ -1,6 +1,6 @@
 <?php
 final class moojon_boolean_column extends moojon_base_column {
-	final public function __construct($name, $null = true, $default = 0) {
+	final public function __construct($name, $null = false, $default = 0) {
 		$this->name = $name;
 		$this->limit = 1;
 		$this->null = $null;

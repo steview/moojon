@@ -13,7 +13,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	abstract protected function add_columns();
 	
-	protected function add_relations() {}
+	protected function add_relationships() {}
 	
 	final static public function strip_base($class) {
 		if (substr($class, 0, 5) == 'base_') {
@@ -96,6 +96,10 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		} else {
 			self::handle_error("no such relationship ($key)");
 		}
+	}
+	
+	final public function get_relationships() {
+		return $this->relationships;
 	}
 	
 	final protected function add_column(moojon_base_column $column) {
@@ -214,7 +218,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	final protected function get_editable_columns() {
 		$columns = array();
 		foreach ($this->columns as $column) {
-			if (!$column->get_primary_key()) {
+			if (get_class($column) != 'moojon_primary_key') {
 				$columns[] = $column;
 			}		
 		}
@@ -336,7 +340,6 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		array_shift($args);
 		$builder = self::find_builder($args);
 		$data = self::resolve($data, $builder, 'data');
-		print_r($data);
 		$instance = self::init($class);
 		$instance->new_record = true;
 		foreach ($instance->get_editable_column_names() as $column_name) {
