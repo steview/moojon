@@ -1,19 +1,13 @@
 <?php
-class moojon_timestamp_column extends moojon_base_column
-{
-	private $on_update_current_timestamp;
-	
-	protected function __construct($primary_key, $name, $length, $decimals, $null, $default_value, $comment, $on_update_current_timestamp)
-	{
-		parent::__construct($primary_key, $name, $length, $decimals, $null, $default_value, $comment);
-		$this->on_update_current_timestamp = $on_update_current_timestamp;
+final class moojon_timestamp_column extends moojon_base_column {
+	final public function __construct($name, $null = true, $default = '0000-00-00 00:00:00') {
+		$this->name = $name;
+		$this->null = $null;
+		$this->default = $default;
 	}
 	
-	final public function get_on_update_current_timestamp()
-	{
-		return $this->on_update_current_timestamp;
+	final public function __toString() {
+		return $this->name.' TIMESTAMP '.$this->get_null_string().' '.$this->get_default_string();
 	}
 }
-
-class timestamp_column extends moojon_timestamp_column {}
 ?>

@@ -1,4 +1,17 @@
 <?php
-class moojon_decimal_column extends moojon_base_number_column {}
-class decimal_column extends moojon_decimal_column {}
+final class moojon_decimal_column extends moojon_base_column {
+	private $decimals;
+	
+	final public function __construct($name, $limit = 10, $decimals = 0, $null = true, $default = 0) {
+		$this->name = $name;
+		$this->limit = $limit;
+		$this->decimals = $decimals;
+		$this->null = $null;
+		$this->default = $default;
+	}
+	
+	final public function __toString() {
+		return $this->name.' DECIMAL('.$this->limit.', '.$this->decimals.') '.$this->get_null_string().' '.$this->get_default_string();
+	}
+}
 ?>
