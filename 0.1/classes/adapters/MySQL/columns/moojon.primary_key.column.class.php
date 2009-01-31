@@ -29,7 +29,7 @@ final class moojon_primary_key extends moojon_base_column {
 		}
 		array_unshift($data, self::NAME." $type ".self::NULL.' '.self::OPTIONS);
 		$data[] = 'PRIMARY KEY('.self::NAME.')';
-		moojon_query_runner::create_table($name, $data, $options);
+		moojon_query_runner::create_table($name, implode(', ', $data), $options);
 	}
 	
 	public function __toString() {

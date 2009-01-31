@@ -12,47 +12,47 @@ abstract class moojon_base_migration extends moojon_base {
 		return new moojon_primary_key();
 	}
 	
-	final protected function add_binary($name, $limit = null, $null = null, $default = null) {
+	final protected function add_binary($name, $limit = 255, $null = false, $default = null) {
 		return new moojon_binary_column($name, $limit, $null, $default);
 	}
 	
-	final protected function add_boolean($name, $null = null, $default = null) {
+	final protected function add_boolean($name, $null = false, $default = null) {
 		return new moojon_boolean_column($name, $null, $default);
 	}
 	
-	final protected function add_date($name, $null = null, $default = null) {
+	final protected function add_date($name, $null = false, $default = null) {
 		return new moojon_date_column($name, $null, $default);
 	}
 	
-	final protected function add_datetime($name, $null = null, $default = null) {
+	final protected function add_datetime($name, $null = false, $default = null) {
 		return new moojon_datetime_column($name, $null, $default);
 	}
 	
-	final protected function add_decimal($name, $limit = null, $decimals = null, $null = null, $default = null) {
+	final protected function add_decimal($name, $limit = 10, $decimals = 0, $null = false, $default = null) {
 		return new moojon_decimal_column($name, $limit, $decimals, $null, $default);
 	}
 	
-	final protected function add_float($name, $limit = null, $decimals = null, $null = null, $default = null) {
+	final protected function add_float($name, $limit = 10, $decimals = 0, $null = false, $default = null) {
 		return new moojon_float_column($name, $limit, $decimals, $null, $default);
 	}
 	
-	final protected function add_integer($name, $limit = null, $null = null, $default = null) {
+	final protected function add_integer($name, $limit = 11, $null = false, $default = null) {
 		return new moojon_integer_column($name, $limit, $null, $default);
 	}
 	
-	final protected function add_string($name, $limit = null, $null = null, $default = null) {
+	final protected function add_string($name, $limit = 255, $null = false, $default = null) {
 		return new moojon_string_column($name, $limit, $null, $default);
 	}
 	
-	final protected function add_text($name, $null = null, $binary = null) {
+	final protected function add_text($name, $null = false, $binary = null) {
 		return new moojon_text_column($name, $binary);
 	}
 	
-	final protected function add_time($name, $null = null, $default = null) {
+	final protected function add_time($name, $null = false, $default = null) {
 		return new moojon_time_column($name, $null, $default);
 	}
 	
-	final protected function add_timestamp($name, $null = null, $default = null) {
+	final protected function add_timestamp($name, $null = false, $default = null) {
 		return new moojon_timestamp_column($name, $null, $default);
 	}
 	
