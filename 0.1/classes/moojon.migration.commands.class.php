@@ -1,8 +1,9 @@
 <?php
 final class moojon_migration_commands extends moojon_base {
-	private function __construct() {}
+	public function __construct() {}
 	
-	static public function run() {
+	public function run() {
+		echo 'running'."\n";
 		$table_exists = false;
 		foreach (moojon_query_runner::show_tables() as $table) {
 			if (in_array('schema_migrations', $table)) {
@@ -16,6 +17,7 @@ final class moojon_migration_commands extends moojon_base {
 		foreach (schema_migration::read(null, 'version') as $migration) {
 			$migrations[] = $migration->version;
 		}
+		print_r(moojon_files::directory_files(PROJECT_PATH.'/models/migrations/'));
 		foreach (moojon_files::directory_files(PROJECT_PATH.'/models/migrations/') as $migration_file) {
 			$migration_class_file = moojon_files::get_filename($migration_file);
 			$migration_class_name = self::get_migration_class_name($migration_class_file);
@@ -28,7 +30,7 @@ final class moojon_migration_commands extends moojon_base {
 		}	
 	}
 	
-	static public function roll_back($version, $all = false) {
+	public function roll_back($version, $all = false) {
 		if (schema_migration::read("version = '$version'")->count && $all == false) {
 			moojon_base::handle_error("no such migration ($version)");
 		}
@@ -44,7 +46,7 @@ final class moojon_migration_commands extends moojon_base {
 		}
 	}
 	
-	static public function reset() {
+	public function reset() {
 		self::roll_back('', true);
 	}
 	

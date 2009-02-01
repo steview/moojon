@@ -1,22 +1,20 @@
 <?php
-class moojon_base
-{
+abstract class moojon_base {
 	private function __construct() {}
 		
-	final public static function handle_error($error_text)
-	{
-		echo '<br />==================================================<br />';
+	final static public function handle_error($error_text) {
+		echo self::new_line().'=================================================='.self::new_line();
 		echo $error_text;
-		echo '<br />==================================================<br />';
+		echo self::new_line().'=================================================='.self::new_line();
 		foreach(debug_backtrace() as $call) {
-			echo 'function: '.$call['function'].'<br />';
-			echo 'line: '.$call['line'].'<br />';
-			echo 'file: '.$call['file'].'<br />';
-			echo 'class: '.$call['class'].'<br />';
+			echo 'function: '.$call['function'].self::new_line();
+			echo 'line: '.$call['line'].self::new_line();
+			echo 'file: '.$call['file'].self::new_line();
+			echo 'class: '.$call['class'].self::new_line();
 			echo 'object:';
-			echo '<br />------------------------------------------------------------<br />';
+			echo self::new_line().'------------------------------------------------------------'.self::new_line();
 			var_dump($call['object']);
-			echo '<br />------------------------------------------------------------<br />';
+			echo self::new_line().'------------------------------------------------------------'.self::new_line();
 			echo 'type: ';
 			switch ($call['type']) {
 				case '->':
@@ -29,14 +27,32 @@ class moojon_base
 					echo 'function call';
 					break;
 			}
-			echo '<br />';
+			echo self::new_line();
 			echo 'args:';
-			echo '<br />------------------------------------------------------------<br />';
+			echo self::new_line().'------------------------------------------------------------'.self::new_line();
 			print_r($call['args']);
-			echo '<br />------------------------------------------------------------<br />';
-			echo '<hr />';
+			echo self::new_line().'------------------------------------------------------------'.self::new_line();
+			switch (UI) {
+				case 'CGI':
+					echo '<hr />';
+					break;
+				case 'CLI':
+					echo "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+					break;
+			}
 		}
 		die();
+	}
+	
+	final static public function new_line() {
+		switch (UI) {
+			case 'CGI':
+				return '<br />';
+				break;
+			case 'CLI':
+				return "\n";
+				break;
+		}
 	}
 }
 ?>
