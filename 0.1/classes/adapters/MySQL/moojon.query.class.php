@@ -151,7 +151,7 @@ class moojon_query extends moojon_query_utilities
 		{
 			die($query);
 		}
-		echo "Running: $query".moojon_base::new_line();
+		//echo "Running: $query".moojon_base::new_line();
 		$query = mysql_query($query, moojon_connection::init()->get_resource());
 		//echo "Errors: ".mysql_error();
 		$result = array();

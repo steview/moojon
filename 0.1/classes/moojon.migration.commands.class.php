@@ -3,7 +3,6 @@ final class moojon_migration_commands extends moojon_base {
 	public function __construct() {}
 	
 	public function run() {
-		echo 'running'."\n";
 		$table_exists = false;
 		foreach (moojon_query_runner::show_tables() as $table) {
 			if (in_array('schema_migrations', $table)) {
@@ -17,15 +16,11 @@ final class moojon_migration_commands extends moojon_base {
 		foreach (schema_migration::read(null, 'version') as $migration) {
 			$migrations[] = $migration->version;
 		}
-		print_r(moojon_files::directory_files(PROJECT_PATH.'/models/migrations/'));
 		foreach (moojon_files::directory_files(PROJECT_PATH.'/models/migrations/') as $migration_file) {
 			$migration_class_file = moojon_files::get_filename($migration_file);
 			$migration_class_name = self::get_migration_class_name($migration_class_file);
 			if (!in_array($migration_class_file, $migrations)) {
-				require_once(PROJECT_PATH.'/models/migrations/'.$migration_class_file);
-				$migration = new $migration_class_name;
-				$migration->up();
-				schema_migration::create(array('version' => $migration_class_file))->save();
+				$this->run_migration($migration_class_file, 'up');
 			}
 		}	
 	}
@@ -38,16 +33,28 @@ final class moojon_migration_commands extends moojon_base {
 			if ($migration_class_file->version == $version) {
 				break;
 			}
-			require_once(PROJECT_PATH.'/models/migrations/'.$migration_class_file->version);
-			$migration_class_name = self::get_migration_class_name($migration_class_file->version);
-			$migration = new $migration_class_name;
-			$migration->down();
-			schema_migration::destroy("version = '".$migration_class_file->version."'");
+			$this->run_migration($migration_class_file->version, 'down');
 		}
 	}
 	
 	public function reset() {
 		self::roll_back('', true);
+	}
+	
+	private function run_migration($version, $direction = 'up') {
+		require_once(PROJECT_PATH.'/models/migrations/'.$version);
+		$migration_class_name = self::get_migration_class_name($version);
+		$migration = new $migration_class_name;
+		echo "Running migration ($direction): ".$migration_class_name.moojon_base::new_line();
+		$migration->$direction();
+		switch ($direction) {
+			case 'up':
+				schema_migration::create(array('version' => $version))->save();
+				break;
+			case 'down':
+				schema_migration::destroy("version = '".$version."'");
+				break;
+		}		
 	}
 	
 	private function get_migration_class_name($migration_class_file) {
