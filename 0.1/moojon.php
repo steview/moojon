@@ -20,6 +20,7 @@ require_once('classes/moojon.request.class.php');
 require_once('classes/moojon.base.app.class.php');
 require_once('classes/moojon.base.controller.class.php');
 require_once('classes/moojon.inflect.class.php');
+require_once('classes/moojon.generator.class.php');
 
 require_once('classes/moojon.connection.class.php');
 require_once('classes/moojon.query.utilities.class.php');

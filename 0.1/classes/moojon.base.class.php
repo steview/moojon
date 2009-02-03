@@ -65,11 +65,14 @@ abstract class moojon_base {
 		}
 		$log_file = $log_dir.strtolower(ENVIRONMENT).'.log';
 		if (!$handle = fopen($log_file, 'a')) {
+			fclose($handle);
 			self::handle_error("Unable to open / create log file ($log_file)");
 		}
-		if (fwrite($handle, $text) === FALSE) {
+		if (fwrite($handle, $text) === false) {
+			fclose($handle);
 			self::handle_error("Unable to write to log file ($log_file)");
 		}
+		fclose($handle);
 	}
 }
 ?>

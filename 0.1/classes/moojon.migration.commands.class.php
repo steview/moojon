@@ -37,6 +37,12 @@ final class moojon_migration_commands extends moojon_base {
 		}
 	}
 	
+	public function create_models() {
+		foreach (moojon_query_runner::show_full_columns('teams') as $columns) {
+			print_r($columns);
+		}
+	}
+	
 	public function reset() {
 		self::roll_back('', true);
 	}
