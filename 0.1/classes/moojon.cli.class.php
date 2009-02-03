@@ -11,10 +11,6 @@ final class moojon_cli extends moojon_base {
 			$class_name;			
 			switch ($command) {
 				case 'migration':
-					require_once('base.schema_migration.model.class.php');
-					require_once('schema_migration.model.class.php');
-					require_once('moojon.base.migration.class.php');
-					require_once('moojon.migration.commands.class.php');
 					$class_name = 'moojon_migration_commands';
 					$required_arguments = array('method' => 'Enter please enter a method (run, roll_back or reset)');
 					break;

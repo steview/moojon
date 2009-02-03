@@ -1,5 +1,18 @@
-<?php 
+<?php
 require_once('classes/moojon.base.class.php');
+
+if (!is_dir(PROJECT_PATH)) {
+	moojon_base::handle_error('Invalid PROJECT_PATH ('.PROJECT_PATH.')');
+}
+
+if (strtoupper(UI) != 'CGI' && strtoupper(UI) != 'CLI') {
+	moojon_base::handle_error('Invalid UI ('.UI.')');
+}
+
+/*if (!is_dir('classes/adapters/'.ADAPTER.'/')) {
+	moojon_base::handle_error('Invalid ADAPTER ('.ADAPTER.')');
+}*/
+
 require_once('classes/moojon.config.class.php');
 require_once('classes/moojon.files.class.php');
 require_once('classes/moojon.uri.class.php');
@@ -50,22 +63,29 @@ moojon_files::require_directory_files(PROJECT_PATH.'/models/base/');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/migrations/');
 moojon_files::require_directory_files(PROJECT_PATH.'/models/');
 
-$con = moojon_connection::init(moojon_config::get_db_host(), moojon_config::get_db_username(), moojon_config::get_db_password(), 'bloodbowl');
+$con = moojon_connection::init(moojon_config::get_db_host(), moojon_config::get_db_username(), moojon_config::get_db_password(), moojon_config::get_db());
 
-/*moojon_migration_commands::run();
-
-$con->close();
-
-die();*/
-
-$app_name = moojon_uri::get_app();
-$controller_name = moojon_uri::get_controller();
-
-require_once(PROJECT_PATH."/apps/$app_name/$app_name.app.class.php");
-require_once(PROJECT_PATH."/apps/$app_name/controllers/$controller_name.controller.class.php");
-
-$app_class_name = moojon_uri::get_app().'_app';
-$app = new $app_class_name;
+switch (strtoupper(UI)) {
+	case 'CGI':
+		$app_name = moojon_uri::get_app();
+		$controller_name = moojon_uri::get_controller();
+		require_once(PROJECT_PATH."/apps/$app_name/$app_name.app.class.php");
+		require_once(PROJECT_PATH."/apps/$app_name/controllers/$controller_name.controller.class.php");
+		$app_class_name = moojon_uri::get_app().'_app';
+		$app = new $app_class_name;
+		break;
+	case 'CLI':
+		if (!defined("STDIN")) {
+			define("STDIN", fopen('php://stdin','r'));
+		}
+		require_once('classes/moojon.cli.class.php');
+		require_once('classes/base.schema_migration.model.class.php');
+		require_once('classes/schema_migration.model.class.php');
+		require_once('classes/moojon.base.migration.class.php');
+		require_once('classes/moojon.migration.commands.class.php');
+		new moojon_cli();
+		break;
+}
 
 $con->close();
 ?>

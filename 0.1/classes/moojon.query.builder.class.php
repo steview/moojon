@@ -8,7 +8,6 @@ class moojon_query_builder extends moojon_query_utilities
 	public $where;
 	public $order;
 	public $limit;
-	public $test = false;
 	public $joins;
 	public $foreign_table;
 	public $foreign_key;
@@ -261,20 +260,12 @@ class moojon_query_builder extends moojon_query_utilities
 		return $this->join('cross', $foreign_table);
 	}
 	
-	final public function run($test = null) {
-		if (!empty($test)) {
-			$this->test($test);
-		}
+	final public function run() {
 		return moojon_query::run($this);
 	}
 	
 	final public function render() {
 		return moojon_query::builder($this);
-	}
-	
-	final public function test($test = true) {
-		$this->test = $test;
-		return $this;
 	}
 }
 

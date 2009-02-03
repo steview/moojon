@@ -1,9 +1,8 @@
 <?php
-class moojon_query extends moojon_query_utilities
-{
-	final private function __construct() {}
+final class moojon_query extends moojon_query_utilities {
+	private function __construct() {}
 	
-	final static public function build($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array()) {
+	static public function build($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array()) {
 		$builder = self::find_builder(func_get_args());
 		$joins = self::resolve($joins, $builder, 'joins');
 		$join_string = ' ';
@@ -30,19 +29,13 @@ class moojon_query extends moojon_query_utilities
 		$order = self::resolve($order, $builder, 'order', ' ORDER BY %s ');
 		$limit = self::resolve($limit, $builder, 'limit', ' LIMIT %s');
 		$query = "$command ";
-		switch ($command)
-		{
+		switch ($command) {
 			case 'SELECT':
-				if (is_array($data))
-				{
-					foreach(array_keys($data) as $key)
-					{
-						if (!is_string($key))
-						{
+				if (is_array($data)) {
+					foreach(array_keys($data) as $key) {
+						if (!is_string($key)) {
 							$data_string .= ', '.$data[$key];
-						}
-						else
-						{
+						} else {
 							$data_string .= ", $key AS ".$data[$key];
 						}
 					}
@@ -52,8 +45,7 @@ class moojon_query extends moojon_query_utilities
 				$query .= "$data FROM $obj$join_string$where$order$limit;";
 				break;
 			case 'INSERT':
-				foreach($data as $value)
-				{
+				foreach($data as $value) {
 					$values .= ", '".sprintf('%s', $value)."'";
 				}
 				$values = ' VALUES('.substr($values, 2).')';
@@ -61,8 +53,7 @@ class moojon_query extends moojon_query_utilities
 				$query .= "INTO $obj ($columns)$values;";
 				break;
 			case 'UPDATE':
-				foreach($data as $key => $value)
-				{
+				foreach($data as $key => $value) {
 					$values .= ", $key = '".sprintf('%s', $value)."'";
 				}
 				$query .= "$obj SET ".substr($values, 2)."$where;";
@@ -140,36 +131,26 @@ class moojon_query extends moojon_query_utilities
 		return $query;
 	}
 	
-	final static public function run($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array(), $test = false) {
+	static public function run($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array()) {
 		$query = self::build($obj, $command = '', $data = array(), $where = '', $order = '', $limit = '', $joins = array());
-		$args = func_get_args();
-		return self::run_raw($query, self::resolve($test, self::find_builder($args), 'test'));
+		return self::run_raw($query);
 	}
 	
-	final static public function run_raw($query, $test = false) {
-		if ($test === true)
-		{
-			die($query);
-		}
-		//echo "Running: $query".moojon_base::new_line();
+	static public function run_raw($query) {
+		self::log("Running: $query");
 		$query = mysql_query($query, moojon_connection::init()->get_resource());
-		//echo "Errors: ".mysql_error();
+		if ($mysql_error = mysql_error()) {
+			self::log("MySQL error: $mysql_error");
+		}
 		$result = array();
-		if (gettype($query) == 'resource')
-		{
-			while ($row = mysql_fetch_assoc($query))
-			{
+		if (gettype($query) == 'resource') {
+			while ($row = mysql_fetch_assoc($query)) {
 			    $result[] = $row;
 			}
-		}	
-		else
-		{
+		} else {
 			$result[] = $query;
 		}
 		return $result;
 	}
 }
-
-class query extends moojon_query {}
-class q extends moojon_query {}
 ?>

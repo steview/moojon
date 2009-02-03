@@ -54,5 +54,22 @@ abstract class moojon_base {
 				break;
 		}
 	}
+	
+	final static public function log($text) {
+		$text = date('Y-m-d H:i:s e: ').$text."\n\n";
+		$log_dir = PROJECT_PATH.'/log/';
+		if (!is_dir($log_dir)) {
+			if (!mkdir($log_dir)) {
+				self::handle_error("Unable to open / create log directory ($log_dir)");
+			}
+		}
+		$log_file = $log_dir.strtolower(ENVIRONMENT).'.log';
+		if (!$handle = fopen($log_file, 'a')) {
+			self::handle_error("Unable to open / create log file ($log_file)");
+		}
+		if (fwrite($handle, $text) === FALSE) {
+			self::handle_error("Unable to write to log file ($log_file)");
+		}
+	}
 }
 ?>
