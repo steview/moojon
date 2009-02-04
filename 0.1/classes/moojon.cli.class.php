@@ -10,19 +10,32 @@ final class moojon_cli extends moojon_base {
 			$required_arguments = array();
 			$class_name;			
 			switch ($command) {
-				case 'migration':
+				case 'migrate':
 					$class_name = 'moojon_migration_commands';
-					$required_arguments = array('method' => 'Enter please enter a method (run, roll_back or reset)');
+					$required_arguments = array('method' => 'Enter please enter a method (up, down or reset)');
+					$arguments = $this->process_arguments($required_arguments, $arguments);
+					$method = $arguments['method'];
+					$class = new $class_name;
+					$class->$method();
+					break;
+				case 'generate':
+					$class_name = 'moojon_generator';
+					$required_arguments = array('method' => 'What would you like to generate? (models, migration)', 'name' => 'Please enter a name for the generated file');
+					$arguments = $this->process_arguments($required_arguments, $arguments);
+					$method = $arguments['method'];
+					$class = new $class_name;
+					if ($arguments['name']) {
+						$class->$method($arguments['name']);
+					} else {
+						$class->$method();
+					}
 					break;
 				default:
 					self::handle_error('Unknown class ('.$command.')');
 					break;
 			}
-			$arguments = $this->process_arguments($required_arguments, $arguments);
-			$method = $arguments['method'];
-			$class = new $class_name;
-			$class->$method();
-		}		
+		}
+		die();
 	}
 	
 	private function process_arguments(Array $required_arguments, Array $arguments) {

@@ -15,7 +15,7 @@ final class moojon_config extends moojon_base {
 	}
 	
 	static 	public function get_db() {
-		return 'bloodbowl';
+		return 'bloodbowl2';
 	}
 }
 ?>

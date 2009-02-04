@@ -1,6 +1,6 @@
 <?php
 final class moojon_generator extends moojon_base {	
-	private function __construct() {}
+	public function __construct() {}
 	
 	static public function run($template, $destination, $swaps) {
 		if (!$handle = fopen($template, 'r')) {
@@ -28,6 +28,25 @@ final class moojon_generator extends moojon_base {
 			$text = str_replace("$begin$key$end", $value, $text);
 		}
 		return $text;
+	}
+	
+	public function models() {
+		foreach (moojon_database_to_model_converter::list_tables() as $table) {
+			$model = moojon_inflect::singularize($table);
+			$swaps = array('model' => $model);
+			$model_path = PROJECT_PATH."/models/$model.model.class.php";
+			if (!file_exists($model_path)) {
+				self::run('../moojon/'.MOOJON_VERSION.'/templates/model.template', $model_path, $swaps);
+			}
+			$swaps['columns'] = moojon_database_to_model_converter::get_add_columns($table);
+			self::run('../moojon/'.MOOJON_VERSION.'/templates/base.model.template', PROJECT_PATH."/models/base/base.$model.model.class.php", $swaps);
+		}
+	}
+	
+	public function migration($name) {
+		$name = str_replace(' ', '_', $name);
+		$filename = date('YmdHis').".$name.migration.class.php";
+		self::run('../moojon/'.MOOJON_VERSION.'/templates/migration.template', PROJECT_PATH."/models/migrations/$filename", array('name' => $name));
 	}
 }
 ?>

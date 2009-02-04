@@ -2,7 +2,7 @@
 final class moojon_migration_commands extends moojon_base {
 	public function __construct() {}
 	
-	public function run() {
+	public function up() {
 		$table_exists = false;
 		foreach (moojon_query_runner::show_tables() as $table) {
 			if (in_array('schema_migrations', $table)) {
@@ -25,7 +25,7 @@ final class moojon_migration_commands extends moojon_base {
 		}	
 	}
 	
-	public function roll_back($version, $all = false) {
+	public function down($version, $all = false) {
 		if (schema_migration::read("version = '$version'")->count && $all == false) {
 			moojon_base::handle_error("no such migration ($version)");
 		}
@@ -37,26 +37,13 @@ final class moojon_migration_commands extends moojon_base {
 		}
 	}
 	
-	public function create_models() {
-		foreach (moojon_database_to_model_converter::list_tables() as $table) {
-			$model = moojon_inflect::singularize($table);
-			$swaps = array('model' => $model);
-			$model_path = PROJECT_PATH."/models/$model.model.class.php";
-			if (!file_exists($model_path)) {
-				moojon_generator::run('../moojon/'.MOOJON_VERSION.'/templates/model.template', $model_path, $swaps);
-			}
-			$swaps['columns'] = moojon_database_to_model_converter::get_add_columns($table);
-			moojon_generator::run('../moojon/'.MOOJON_VERSION.'/templates/base.model.template', PROJECT_PATH."/models/base/base.$model.model.class.php", $swaps);
-		}
-	}
-	
 	public function reset() {
-		self::roll_back('', true);
+		self::down('', true);
 	}
 	
 	private function run_migration($version, $direction = 'up') {
 		require_once(PROJECT_PATH.'/models/migrations/'.$version);
-		$migration_class_name = self::get_migration_class_name($version);
+		$migration_class_name = self::get_migration_class_name($version).'_migration';
 		$migration = new $migration_class_name;
 		echo "Running migration ($direction): ".$migration_class_name.moojon_base::new_line();
 		$migration->$direction();
