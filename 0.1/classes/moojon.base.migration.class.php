@@ -44,7 +44,7 @@ abstract class moojon_base_migration extends moojon_base {
 		return new moojon_string_column($name, $limit, $null, $default);
 	}
 	
-	final protected function add_text($name, $null = false, $binary = null) {
+	final protected function add_text($name, $binary = null) {
 		return new moojon_text_column($name, $binary);
 	}
 	

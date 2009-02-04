@@ -1,7 +1,6 @@
 <?php
 final class moojon_cli extends moojon_base {
 	public function __construct() {
-		$model = 'coach';
 		if ($_SERVER['argc'] < 2) {
 			echo 'Moojon version: '.$_SERVER['argc']."\n";
 		} else {

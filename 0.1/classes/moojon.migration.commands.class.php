@@ -38,8 +38,15 @@ final class moojon_migration_commands extends moojon_base {
 	}
 	
 	public function create_models() {
-		foreach (moojon_query_runner::show_full_columns('teams') as $columns) {
-			print_r($columns);
+		foreach (moojon_database_to_model_converter::list_tables() as $table) {
+			$model = moojon_inflect::singularize($table);
+			$swaps = array('model' => $model);
+			$model_path = PROJECT_PATH."/models/$model.model.class.php";
+			if (!file_exists($model_path)) {
+				moojon_generator::run('../moojon/'.MOOJON_VERSION.'/templates/model.template', $model_path, $swaps);
+			}
+			$swaps['columns'] = moojon_database_to_model_converter::get_add_columns($table);
+			moojon_generator::run('../moojon/'.MOOJON_VERSION.'/templates/base.model.template', PROJECT_PATH."/models/base/base.$model.model.class.php", $swaps);
 		}
 	}
 	
