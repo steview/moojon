@@ -6,7 +6,9 @@ abstract class moojon_base {
 		echo self::new_line().'=================================================='.self::new_line();
 		echo $error_text;
 		echo self::new_line().'=================================================='.self::new_line();
-		foreach(debug_backtrace() as $call) {
+		$backtrace = debug_backtrace();
+		array_shift($backtrace);
+		foreach($backtrace as $call) {
 			echo 'function: '.$call['function'].self::new_line();
 			echo 'line: '.$call['line'].self::new_line();
 			echo 'file: '.$call['file'].self::new_line();

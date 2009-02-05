@@ -6,6 +6,20 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
+	static public function require_files_then_require_directory_files($files, $path, $recursive = false) {
+		if (!is_array($files)) {
+			$files = array($files);
+		}
+		foreach($files as $file) {
+			require_once("$path/$file");
+		}
+		foreach(self::directory_files($path, $recursive) as $file) {
+			if (!in_array($file, $files)) {
+				require_once($file);
+			}
+		}
+	}
+	
 	static public function find_view_path($action) {
 		if (file_exists(PROJECT_PATH.'/apps/'.moojon_uri::get_app()."/views/$action.view.php")) {
 			return PROJECT_PATH.'/apps/'.moojon_uri::get_app()."/views/$action.view.php";

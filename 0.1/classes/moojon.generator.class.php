@@ -31,14 +31,14 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	public function models() {
-		foreach (moojon_database_to_model_converter::list_tables() as $table) {
+		foreach (moojon_adapter::list_tables() as $table) {
 			$model = moojon_inflect::singularize($table);
 			$swaps = array('model' => $model);
 			$model_path = PROJECT_PATH."/models/$model.model.class.php";
 			if (!file_exists($model_path)) {
 				self::run('../moojon/'.MOOJON_VERSION.'/templates/model.template', $model_path, $swaps);
 			}
-			$swaps['columns'] = moojon_database_to_model_converter::get_add_columns($table);
+			$swaps['columns'] = moojon_adapter::get_add_columns($table);
 			self::run('../moojon/'.MOOJON_VERSION.'/templates/base.model.template', PROJECT_PATH."/models/base/base.$model.model.class.php", $swaps);
 		}
 	}

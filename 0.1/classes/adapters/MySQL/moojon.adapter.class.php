@@ -1,5 +1,5 @@
 <?php
-final class moojon_database_to_model_converter extends moojon_base {
+final class moojon_adapter extends moojon_base {
 	protected function __construct() {}
 	
 	static public function list_tables() {

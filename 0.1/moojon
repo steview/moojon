@@ -1,8 +1,9 @@
 #!/usr/bin/php -q
 <?php
 define('MOOJON_VERSION', '0.1');
-define('ENVIRONMENT', 'testing');
+define('MOOJON_PATH', '/Library/Moojon/'.MOOJON_VERSION.'/');
 define('ADAPTER', 'MySQL');
+define('ENVIRONMENT', 'testing');
 define('UI', 'CLI');
 require_once('moojon.php');
 ?>

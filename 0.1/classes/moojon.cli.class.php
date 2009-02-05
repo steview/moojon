@@ -1,66 +1,42 @@
 <?php
-final class moojon_cli extends moojon_base {
+final class moojon_cli extends moojon_base_cli {
 	public function __construct() {
-		print_r($_SERVER);
-		die();
 		if ($_SERVER['argc'] < 2) {
-			echo 'Moojon version: '.$_SERVER['argc']."\n";
+			echo 'Moojon version: '.MOOJON_VERSION."\n";
 		} else {
 			$arguments = $_SERVER['argv'];
 			array_shift($arguments);
-			$command = array_shift($arguments);
-			$required_arguments = array();
-			$class_name;			
-			switch ($command) {
-				case 'migrate':
-					$class_name = 'moojon_migration_commands';
-					$required_arguments = array('method' => 'Enter please enter a method (up, down or reset)');
-					$arguments = $this->process_arguments($required_arguments, $arguments);
-					$method = $arguments['method'];
-					$class = new $class_name;
-					$class->$method();
-					break;
-				case 'generate':
-					$class_name = 'moojon_generator';
-					$required_arguments = array('method' => 'What would you like to generate? (models, migration)', 'name' => 'Please enter a name for the generated file');
-					$arguments = $this->process_arguments($required_arguments, $arguments);
-					$method = $arguments['method'];
-					$class = new $class_name;
-					if ($arguments['name']) {
-						$class->$method($arguments['name']);
-					} else {
-						$class->$method();
-					}
-					break;
-				default:
-					self::handle_error('Unknown class ('.$command.')');
-					break;
-			}
+			$this->generate_project($arguments);
 		}
-		die();
 	}
 	
-	private function process_arguments(Array $required_arguments, Array $arguments) {
-		$argument_difference = (count($required_arguments) - count($arguments));
-		if ($argument_difference < 0) {
-			self::handle_error('Too many arguments for '.$this->class.'. Expected '.count($required_arguments).', got '.count($arguments));
-		}
-		$arguments_processed = array();
-		$arguments_to_process = array();
-		$counter = 0;
-		foreach($required_arguments as $key => $value) {
-			$counter ++;
-			if ($couter >= count($arguments)) {
-				$arguments_to_process[$key] = $value;
-			} else {
-				$arguments_processed[$key] = $arguments[($counter - 1)];
+	private function generate_project(Array $arguments) {
+		self::check_arguments('generate_project', 3, $arguments);
+		$project_name = array_shift($arguments);
+		if (is_dir($_SERVER['PWD']."/$project_name")) {
+			self::handle_error("Directory already exists ($project_name)");
+		} else {
+			if (count($arguments) < 1) {
+				$arguments[] = $this->prompt('Please enter an app name', 'client');
+				$arguments[] = $this->prompt('Please enter a controller name', 'index');
 			}
+			if (count($arguments) < 2) {
+				$arguments[] = $this->prompt('Please enter an controller name', 'client');
+			}
+			define('PROJECT_PATH', $_SERVER['PWD']."/$project_name/");
+			define('APP', $arguments[0]);
+			define('CONTROLLER', $arguments[1]);
+			$this->attempt_mkdir(PROJECT_PATH);
+			$this->attempt_mkdir(moojon_config::get_apps_directory());
+			$this->attempt_mkdir(moojon_config::get_app_directory());
+			$this->attempt_mkdir(moojon_config::get_controllers_directory());
+			$this->attempt_mkdir(moojon_config::get_views_directory());
+			$this->attempt_mkdir(moojon_config::get_models_directory());
+			$this->attempt_mkdir(moojon_config::get_base_models_directory());
+			$this->attempt_mkdir(moojon_config::get_images_directory());
+			$this->attempt_mkdir(moojon_config::get_css_directory());
+			$this->attempt_mkdir(moojon_config::get_js_directory());
 		}
-		foreach ($arguments_to_process as $key => $value) {
-			echo "$value:\n";
-			$arguments_processed[$key] = fread(STDIN, 80);
-		}
-		return $arguments_processed;
 	}
 }
 ?>
