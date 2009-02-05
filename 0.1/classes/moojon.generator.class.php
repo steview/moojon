@@ -48,5 +48,17 @@ final class moojon_generator extends moojon_base {
 		$filename = date('YmdHis').".$name.migration.class.php";
 		self::run('../moojon/'.MOOJON_VERSION.'/templates/migration.template', PROJECT_PATH."/models/migrations/$filename", array('name' => $name));
 	}
+	
+	public function project($name, $app = null) {}
+	
+	public function app($name, $layout = null) {}
+	
+	public function controller($name, $view = null) {}
+	
+	public function view($name) {}
+	
+	public function layout($name) {}
+	
+	public function test($name) {}
 }
 ?>
