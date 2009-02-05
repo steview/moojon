@@ -1,10 +1,6 @@
 <?php
 require_once('classes/moojon.base.class.php');
 
-if (!is_dir(PROJECT_PATH)) {
-	moojon_base::handle_error('Invalid PROJECT_PATH ('.PROJECT_PATH.')');
-}
-
 if (strtoupper(UI) != 'CGI' && strtoupper(UI) != 'CLI') {
 	moojon_base::handle_error('Invalid UI ('.UI.')');
 }
@@ -66,6 +62,9 @@ $con = moojon_connection::init(moojon_config::get_db_host(), moojon_config::get_
 
 switch (strtoupper(UI)) {
 	case 'CGI':
+		if (!is_dir(PROJECT_PATH)) {
+			moojon_base::handle_error('Invalid PROJECT_PATH ('.PROJECT_PATH.')');
+		}
 		$app_name = moojon_uri::get_app();
 		$controller_name = moojon_uri::get_controller();
 		require_once(PROJECT_PATH."/apps/$app_name/$app_name.app.class.php");
