@@ -34,12 +34,20 @@ final class moojon_config extends moojon_base {
 		return self::get_app_directory().'views/';
 	}
 	
+	static 	public function get_layouts_directory() {
+		return self::get_app_directory().'layouts/';
+	}
+	
 	static 	public function get_models_directory() {
 		return PROJECT_PATH.'models/';
 	}
 	
 	static 	public function get_base_models_directory() {
 		return self::get_models_directory().'base/';
+	}
+	
+	static 	public function get_migrations_directory() {
+		return self::get_models_directory().'migrations/';
 	}
 	
 	static 	public function get_public_directory() {
@@ -56,6 +64,18 @@ final class moojon_config extends moojon_base {
 	
 	static 	public function get_js_directory() {
 		return self::get_public_directory().'js/';
+	}
+	
+	static public function get_default_app() {
+		return 'client';
+	}
+	
+	static public function get_default_controller() {
+		return 'index';
+	}
+	
+	static public function get_default_action() {
+		return 'index';
 	}
 }
 ?>

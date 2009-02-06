@@ -1,33 +1,23 @@
 <?php
 abstract class moojon_base_cli extends moojon_base {
-	final protected function prompt($message, $default = null, $characters = null) {
+	static final protected function prompt($message, $default = null, $characters = null) {
 		if ($default != null) {
-			$message .= " (default: $default)";
+			$message = "$message (default: $default)";
 		}
+		echo "$message > ";
 		if ($characters == null) {
 			$characters = 80;
 		}
-		echo "$message > ";
-		$return = fread(STDIN, $characters);
-		if ($return == '' && $default != null) {
-			$return = $default;
-		}
-		while ($return == '') {
-			echo "$message > ";
-			$return = fread(STDIN, $characters);
-		}
-		return $return;
-	}
-	
-	final protected function attempt_mkdir($path, $mode = null) {
-		if ($mode == null) {
-			$mode = 0755;
-		}
-		if (!mkdir($path, $mode, true)) {
-			self::handle_error("Unable to create directory path ($path)");
+		$read = str_replace(chr(10), '', fread(STDIN, $characters));
+		if (strlen($read) == 0) {
+			$read = $default;
 		} else {
-			echo "Creating directory ($path)".moojon_base::new_line();
+			while (strlen($read) == 0) {
+				$read = str_replace(chr(10), '', fread(STDIN, $characters));
+				echo "$message > ";
+			}
 		}
+		return $read;
 	}
 	
 	final protected function check_arguments($method, $expected, Array $arguments) {
