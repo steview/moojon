@@ -76,5 +76,11 @@ abstract class moojon_base {
 		}
 		fclose($handle);
 	}
+	
+	static final public function try_define($name, $value) {
+		if (!defined($name)) {
+			define($name, $value);
+		}
+	}
 }
 ?>

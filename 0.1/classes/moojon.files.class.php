@@ -43,6 +43,25 @@ final class moojon_files extends moojon_base {
 				}
 			}
 			closedir($directory_handler);
+		} else {
+			self::handle_error("Not a directory ($path)");
+		}
+		return $directories;
+	}
+	
+	static public function directory_directories($path) {
+		$directories = array();
+		if (is_dir($path)) {
+			if ($directory_handler = opendir($path)) {
+				while (!(($directory = readdir($directory_handler)) === false)) {
+					if (is_dir("$path$directory") && !self::parent_or_current($directory) && !self::mac_poo($directory)) {
+						$directories[] = "$directory";
+					}
+				}
+			}
+			closedir($directory_handler);
+		} else {
+			self::handle_error("Not a directory ($path)");
 		}
 		return $directories;
 	}

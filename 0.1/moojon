@@ -5,5 +5,6 @@ define('MOOJON_PATH', '/Library/Moojon/'.MOOJON_VERSION.'/');
 define('ADAPTER', 'MySQL');
 define('ENVIRONMENT', 'testing');
 define('UI', 'CLI');
+$cli = 'moojon_cli';
 require_once(MOOJON_PATH.'moojon.php');
 ?>
