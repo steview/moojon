@@ -43,10 +43,10 @@ switch (strtoupper(UI)) {
 		require_once(MOOJON_PATH.'/classes/moojon.generate.cli.class.php');
 		require_once(MOOJON_PATH.'/classes/moojon.migrate.cli.class.php');
 		require_once(MOOJON_PATH.'/classes/moojon.generator.class.php');
+		require_once(MOOJON_PATH.'/classes/moojon.migrator.class.php');
 		require_once(MOOJON_PATH.'/classes/base.schema_migration.model.class.php');
 		require_once(MOOJON_PATH.'/classes/schema_migration.model.class.php');
 		require_once(MOOJON_PATH.'/classes/moojon.base.migration.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.migration.commands.class.php');
 		if (defined('PROJECT_PATH')) {
 			moojon_files::require_directory_files(PROJECT_PATH.'/models/migrations/');
 		}

@@ -81,7 +81,9 @@ final class moojon_generator extends moojon_base {
 		self::attempt_mkdir(moojon_config::get_script_directory());
 		self::run(MOOJON_PATH.'templates/index.template', moojon_config::get_public_directory().'index.php', array('MOOJON_VERSION' => MOOJON_VERSION, 'MOOJON_PATH' => MOOJON_PATH, 'PROJECT_PATH' => PROJECT_PATH), true, false);
 		self::run(MOOJON_PATH.'templates/generate.template', moojon_config::get_script_directory().'generate', array('MOOJON_VERSION' => MOOJON_VERSION, 'MOOJON_PATH' => MOOJON_PATH, 'PROJECT_PATH' => PROJECT_PATH), true, false);
+		chmod(moojon_config::get_script_directory().'generate', 0755);
 		self::run(MOOJON_PATH.'templates/migrate.template', moojon_config::get_script_directory().'migrate', array('MOOJON_VERSION' => MOOJON_VERSION, 'MOOJON_PATH' => MOOJON_PATH, 'PROJECT_PATH' => PROJECT_PATH), true, false);
+		chmod(moojon_config::get_script_directory().'migrate', 0755);
 		self::app($app, $controller, $action);
 	}
 	
@@ -108,7 +110,7 @@ final class moojon_generator extends moojon_base {
 		$filename = date('YmdHis').".$migration.migration.class.php";
 		self::attempt_mkdir(moojon_config::get_models_directory());
 		self::attempt_mkdir(moojon_config::get_migrations_directory());
-		self::run(MOOJON_PATH.'templates/migration.template', moojon_config::get_migrations_directory()."$filename", array('name' => $name), false, true);
+		self::run(MOOJON_PATH.'templates/migration.template', moojon_config::get_migrations_directory()."$filename", array('migration' => $migration), false, true);
 	}
 	
 	static public function app($app, $controller = null, $action = null) {
