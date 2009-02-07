@@ -78,7 +78,10 @@ final class moojon_generator extends moojon_base {
 		self::attempt_mkdir(moojon_config::get_images_directory());
 		self::attempt_mkdir(moojon_config::get_css_directory());
 		self::attempt_mkdir(moojon_config::get_js_directory());
+		self::attempt_mkdir(moojon_config::get_script_directory());
 		self::run(MOOJON_PATH.'templates/index.template', moojon_config::get_public_directory().'index.php', array('MOOJON_VERSION' => MOOJON_VERSION, 'MOOJON_PATH' => MOOJON_PATH, 'PROJECT_PATH' => PROJECT_PATH), true, false);
+		self::run(MOOJON_PATH.'templates/generate.template', moojon_config::get_script_directory().'generate', array('MOOJON_VERSION' => MOOJON_VERSION, 'MOOJON_PATH' => MOOJON_PATH, 'PROJECT_PATH' => PROJECT_PATH), true, false);
+		self::run(MOOJON_PATH.'templates/migrate.template', moojon_config::get_script_directory().'migrate', array('MOOJON_VERSION' => MOOJON_VERSION, 'MOOJON_PATH' => MOOJON_PATH, 'PROJECT_PATH' => PROJECT_PATH), true, false);
 		self::app($app, $controller, $action);
 	}
 	
@@ -88,7 +91,7 @@ final class moojon_generator extends moojon_base {
 		$model = moojon_inflect::singularize($table);
 		$swaps = array('model' => $model);
 		$model_path = moojon_config::get_models_directory()."$model.model.class.php";
-		self::run(MOOJON_PATH.'/templates/model.template', $model_path, $swaps, false, false);
+		self::run(MOOJON_PATH.'templates/model.template', $model_path, $swaps, false, false);
 		$swaps['columns'] = moojon_adapter::get_add_columns($table);
 		self::run(MOOJON_PATH.'templates/base.model.template', moojon_config::get_base_models_directory()."base.$model.model.class.php", $swaps, true, false);
 	}
@@ -104,7 +107,6 @@ final class moojon_generator extends moojon_base {
 	static public function migration($migration) {
 		$filename = date('YmdHis').".$migration.migration.class.php";
 		self::attempt_mkdir(moojon_config::get_models_directory());
-		self::attempt_mkdir(moojon_config::get_base_models_directory());
 		self::attempt_mkdir(moojon_config::get_migrations_directory());
 		self::run(MOOJON_PATH.'templates/migration.template', moojon_config::get_migrations_directory()."$filename", array('name' => $name), false, true);
 	}

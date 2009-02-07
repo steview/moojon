@@ -1,38 +1,18 @@
 <?php
 final class moojon_cli extends moojon_base_cli {
 	public function __construct($arguments) {
-		if (count($arguments) < 2) {
+		if (count($arguments) < 1) {
 			echo 'Moojon version: '.MOOJON_VERSION.self::new_line();
 		} else {
-			$project = ($arguments[0]) ? $arguments[0] : $this->prompt('Please enter a project name');
-			while (strlen($project) == 0) {
-				echo '(invalid command) ';
-				$project = $this->prompt('Please enter a project name');
-			}
-			$this->try_define('PROJECT_PATH', $project);
-			
-			$app = ($arguments[1]) ? $arguments[1] : $this->prompt('Please enter an app name', moojon_config::get_default_app());
-			while (strlen($app) == 0) {
-				echo '(invalid command) ';
-				$app = $this->prompt('Please enter an app name');
-			}
-			$this->try_define('APP', $app);
-			
-			$controller = ($arguments[2]) ? $arguments[2] : $this->prompt('Please enter a controller name', moojon_config::get_default_controller());
-			while (strlen($controller) == 0) {
-				echo '(invalid command) ';
-				$controller = $this->prompt('Please enter a controller name');
-			}
-			
-			$action = ($arguments[3]) ? $arguments[3] : $this->prompt('Please enter an action name', moojon_config::get_default_action());
-			while (strlen($action) == 0) {
-				echo '(invalid command) ';
-				$action = $this->prompt('Please enter an action name');
-			}
-			
+			$project = $this->prompt_until($arguments[0], 'Please enter a project name');
+			$app = $this->prompt_until($arguments[1], 'Please enter an app name', moojon_config::get_default_app());
+			$controller = $this->prompt_until($arguments[2], 'Please enter a controller name', moojon_config::get_default_controller());
+			$action = $this->prompt_until($arguments[3], 'Please enter an action name', moojon_config::get_default_action());			
+			$this->try_define('PROJECT_PATH', $_SERVER['PWD'].'/'.$project.'/');
+			$this->try_define('APP', $app);			
 			moojon_generator::project($project, $app, $controller, $action);
 			$create_migration = strtolower($this->prompt('Would you like to create a migration? y / n', 'n', 1));
-			while ($create_migration != 'yes' && $create_migration != 'no' && $create_migration != 'y' && $create_migration != 'n') {
+			while ($create_migration != 'y' && $create_migration != 'n') {
 				$create_migration = strtolower($this->prompt('Would you like to create a migration? y / n', 'n', 1));
 			}
 			if ($create_migration == 'y') {

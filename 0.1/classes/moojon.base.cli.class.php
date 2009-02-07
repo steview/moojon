@@ -29,5 +29,24 @@ abstract class moojon_base_cli extends moojon_base {
 	final protected function handle_argument_mismatch_error($method, $expected, Array $arguments) {
 		self::handle_error("Argument mismatch error for ($method). Expected $expected, got ".count($arguments).' ('.implode(', ', $arguments).')');
 	}
+	
+	final protected function prompt_until($initial, $message, $default = null) {
+		$return = ($initial) ? $initial : $this->prompt($message, $default);
+		while (strlen($return) == 0) {
+			echo '(invalid command) ';
+			$return = $this->prompt($message, $default);
+		}
+		return $return;
+	}
+	
+	final protected function prompt_until_in($initial, $collection, $message) {
+		$message .= ' ('.implode(', ', $collection).')';
+		$return = ($initial) ? $initial : $this->prompt($message);
+		while (!in_array($return, $collection)) {
+			echo '(invalid command) ';
+			$return = $this->prompt($message);
+		}
+		return $return;
+	}
 }
 ?>

@@ -66,6 +66,10 @@ final class moojon_config extends moojon_base {
 		return self::get_public_directory().'js/';
 	}
 	
+	static 	public function get_script_directory() {
+		return PROJECT_PATH.'script/';
+	}
+	
 	static public function get_default_app() {
 		return 'client';
 	}
