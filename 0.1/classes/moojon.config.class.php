@@ -4,20 +4,7 @@ final class moojon_config extends moojon_base {
 	static private $data = array();
 	
 	private function __construct() {
-		$this->data = array(
-			'apps_directory' => 'apps',
-			'controllers_directory' => 'controllers',
-			'views_directory' => 'views',
-			'layouts_directory' => 'layouts',
-			'models_directory' => 'models',
-			'base_models_directory' => 'base',
-			'migrations_directory' => 'migrations',
-			'public_directory' => 'public',
-			'images_directory' => 'layouts',
-			'css_directory' => 'css',
-			'js_directory' => 'js',
-			'script_directory' => 'script'
-		);
+		$this->data = require_once(MOOJON_PATH.'config/moojon.config.php');		
 	}
 
 	static public function get($key = null) {
@@ -52,37 +39,13 @@ final class moojon_config extends moojon_base {
 		}
 	}
 	
+	static public function has($key) {
+		return array_key_exists($key, self::get_data());
+	}
+	
 	static private function get_data() {
 		$instance = self::get();
 		return $instance->data;
-	}
-	
-	static public function get_db_host() {
-		return 'localhost';
-	}
-	
-	static public function get_db_username() {
-		return 'bloodbowl';
-	}
-	
-	static public function get_db_password() {
-		return 'bloodbowl99';
-	}
-	
-	static 	public function get_db() {
-		return 'bloodbowl2';
-	}
-	
-	static public function get_default_app() {
-		return 'client';
-	}
-	
-	static public function get_default_controller() {
-		return 'index';
-	}
-	
-	static public function get_default_action() {
-		return 'index';
 	}
 }
 ?>

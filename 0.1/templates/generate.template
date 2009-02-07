@@ -3,7 +3,6 @@
 define('MOOJON_VERSION', '<[MOOJON_VERSION]>');
 define('MOOJON_PATH', '<[MOOJON_PATH]>');
 define('PROJECT_DIRECTORY', '<[PROJECT_DIRECTORY]>');
-define('ADAPTER', 'MySQL');
 define('ENVIRONMENT', 'development');
 define('UI', 'CLI');
 $cli = 'moojon_generate_cli';

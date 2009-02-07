@@ -14,7 +14,7 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function get_controller() {
-		return 'teams';
+		return 'index';
 	}
 	
 	static public function get_action() {

@@ -1,19 +1,20 @@
 <?php
 return array(
+	'default_app' => 'client',
+	'default_controller' => 'index',
+	'default_action' => 'index',
 	'apps_directory' => 'apps',
 	'controllers_directory' => 'controllers',
-	'config_directory' => 'config',
-	'generated_models_directory' => 'generated',	
 	'views_directory' => 'views',
+	'layouts_directory' => 'layouts',
 	'models_directory' => 'models',
+	'base_models_directory' => 'base',
+	'migrations_directory' => 'migrations',
 	'public_directory' => 'public',
-	'css_directory' => 'css',
 	'images_directory' => 'images',
-	'js_directory' => 'js',	
-	'homepage' => 'default/index',
-	'default_app' => 'default',
-	'default_action' => 'index',
-	'app_prefix' => 'app_',
-	'controller_prefix' => 'controller_',
+	'css_directory' => 'css',
+	'js_directory' => 'js',
+	'script_directory' => 'script',
+	'config_directory' => 'config'
 );
 ?>

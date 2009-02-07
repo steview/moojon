@@ -20,16 +20,6 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
-	static public function find_view_path($action) {
-		if (file_exists(PROJECT_DIRECTORY.'/apps/'.moojon_uri::get_app()."/views/$action.view.php")) {
-			return PROJECT_DIRECTORY.'/apps/'.moojon_uri::get_app()."/views/$action.view.php";
-		} else if (file_exists(PROJECT_DIRECTORY."/shared/views/$action.view.php")) {
-			return PROJECT_DIRECTORY."/shared/views/$action.view.php";
-		} else {
-			return false;
-		}
-	}
-	
 	static public function directory_files($path, $recursive = false) {
 		$directories = array();
 		if (is_dir($path)) {
@@ -64,15 +54,6 @@ final class moojon_files extends moojon_base {
 			self::handle_error("Not a directory ($path)");
 		}
 		return $directories;
-	}
-	
-	static public function get_filename($path) {
-		if (is_file($path)) {
-			$parts = explode('/', $path);
-			return $parts[(count($parts) - 1)];
-		} else {
-			return false;
-		}		
 	}
 	
 	static private function parent_or_current($file) {

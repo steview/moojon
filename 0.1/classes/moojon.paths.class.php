@@ -33,55 +33,63 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_apps_directory() {
-		return self::get_project_directory().'/'.moojon_config::get('apps_directory').'/';
+		return self::get_project_directory().moojon_config::get('apps_directory').'/';
+	}
+	
+	static public function get_project_config_directory() {
+		return self::get_project_directory().moojon_config::get('config_directory').'/';
 	}
 	
 	static public function get_app_directory() {
-		return self::get_apps_directory().'/'.moojon_uri::get_app().'/';
+		return self::get_apps_directory().moojon_uri::get_app().'/';
+	}
+	
+	static public function get_app_config_directory() {
+		return self::get_app_directory().moojon_config::get('config_directory').'/';
 	}
 	
 	static public function get_controllers_directory() {
-		return self::get_app_directory().'/'.moojon_config::get('controllers_directory').'/';
+		return self::get_app_directory().moojon_config::get('controllers_directory').'/';
 	}
 	
 	static public function get_views_directory() {
-		return self::get_app_directory().'/'.moojon_config::get('views_directory').'/';
+		return self::get_app_directory().moojon_config::get('views_directory').'/';
 	}
 	
 	static public function get_layouts_directory() {
-		return self::get_app_directory().'/'.moojon_config::get('layouts_directory').'/';
+		return self::get_app_directory().moojon_config::get('layouts_directory').'/';
 	}
 	
 	static public function get_models_directory() {
-		return self::get_project_directory().'/'.moojon_config::get('models_directory').'/';
+		return self::get_project_directory().moojon_config::get('models_directory').'/';
 	}
 	
 	static public function get_base_models_directory() {
-		return self::get_models_directory().'/'.moojon_config::get('base_models_directory').'/';
+		return self::get_models_directory().moojon_config::get('base_models_directory').'/';
 	}
 	
 	static public function get_migrations_directory() {
-		return self::get_models_directory().'/'.moojon_config::get('migrations_directory').'/';
+		return self::get_models_directory().moojon_config::get('migrations_directory').'/';
 	}
 	
 	static public function get_public_directory() {
-		return self::get_project_directory().'/'.moojon_config::get('public_directory').'/';
+		return self::get_project_directory().moojon_config::get('public_directory').'/';
 	}
 	
 	static public function get_images_directory() {
-		return self::get_public_directory().'/'.moojon_config::get('images_directory').'/';
+		return self::get_public_directory().moojon_config::get('images_directory').'/';
 	}
 	
 	static public function get_css_directory() {
-		return self::get_public_directory().'/'.moojon_config::get('css_directory').'/';
+		return self::get_public_directory().moojon_config::get('css_directory').'/';
 	}
 	
 	static public function get_js_directory() {
-		return self::get_public_directory().'/'.moojon_config::get('js_directory').'/';
+		return self::get_public_directory().moojon_config::get('js_directory').'/';
 	}
 	
 	static public function get_script_directory() {
-		return self::get_project_directory().'/'.moojon_config::get('script_directory').'/';
+		return self::get_project_directory().moojon_config::get('script_directory').'/';
 	}
 }
 ?>

@@ -1,0 +1,10 @@
+<?php
+return array(
+	'default_app' => '<[default_app]>',
+	//'adapter' => '',
+	//'db_host' => '',
+	//'db_username' => '',
+	//'db_password' => '',
+	//'db' => '',
+);
+?>
