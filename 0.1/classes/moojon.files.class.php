@@ -21,10 +21,10 @@ final class moojon_files extends moojon_base {
 	}
 	
 	static public function find_view_path($action) {
-		if (file_exists(PROJECT_PATH.'/apps/'.moojon_uri::get_app()."/views/$action.view.php")) {
-			return PROJECT_PATH.'/apps/'.moojon_uri::get_app()."/views/$action.view.php";
-		} else if (file_exists(PROJECT_PATH."/shared/views/$action.view.php")) {
-			return PROJECT_PATH."/shared/views/$action.view.php";
+		if (file_exists(PROJECT_DIRECTORY.'/apps/'.moojon_uri::get_app()."/views/$action.view.php")) {
+			return PROJECT_DIRECTORY.'/apps/'.moojon_uri::get_app()."/views/$action.view.php";
+		} else if (file_exists(PROJECT_DIRECTORY."/shared/views/$action.view.php")) {
+			return PROJECT_DIRECTORY."/shared/views/$action.view.php";
 		} else {
 			return false;
 		}

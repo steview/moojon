@@ -9,7 +9,7 @@ class moojon_request {
 		$this->moojon_includes();
 		$this->config = new moojon_config($config);
 		$this->paths = new moojon_paths($this->config);
-		$this->config->update(require_once(PROJECT_PATH.$this->config->config_directory.'/'.PROJECT.'.config.php'));
+		$this->config->update(require_once(PROJECT_DIRECTORY.$this->config->config_directory.'/'.PROJECT.'.config.php'));
 		$this->uri = new moojon_uri($this->config);
 		$this->show_uri();
 

@@ -3,7 +3,14 @@ final class moojon_uri extends moojon_base {
 	private function __construct() {}
 	
 	static public function get_app() {
-		return 'client';
+		switch (strtoupper(UI)) {
+			case 'CGI':
+				return 'client';
+				break;
+			case 'CLI':
+				return APP;
+				break;
+		}
 	}
 	
 	static public function get_controller() {
@@ -11,7 +18,7 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function get_action() {
-		return 'roster';
+		return 'index';
 	}
 }
 ?>

@@ -59,7 +59,7 @@ abstract class moojon_base {
 	
 	final static public function log($text) {
 		$text = date('Y-m-d H:i:s e: ').$text."\n\n";
-		$log_dir = PROJECT_PATH.'/log/';
+		$log_dir = PROJECT_DIRECTORY.'log/';
 		if (!is_dir($log_dir)) {
 			if (!mkdir($log_dir)) {
 				self::handle_error("Unable to open / create log directory ($log_dir)");

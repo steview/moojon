@@ -60,7 +60,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 	}
 	
 	private function get_apps() {
-		return moojon_files::directory_directories(moojon_config::get_apps_directory());
+		return moojon_files::directory_directories(moojon_paths::get_apps_directory());
 	}
 }
 ?>
