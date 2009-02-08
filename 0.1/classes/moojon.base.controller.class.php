@@ -6,23 +6,29 @@ abstract class moojon_base_controller extends moojon_base {
 	public function __construct() {}
 	
 	final public function render() {
-		$action = moojon_uri::get_action();
+		$action = moojon_uri::get_action();	
 		if (method_exists($this, $action)) {
 			$this->$action();
 		}
-		$layout_path = moojon_paths::get_layouts_directory().$this->get_layout();
-		if (!file_exists($layout_path)) {
-			self::handle_error("Layout not found ($layout_path)");
+		$layout = $this->get_layout();
+		if ($layout !== false) {
+			$layout = moojon_paths::get_layouts_directory().$this->get_layout();
+			if (!file_exists($layout)) {
+				self::handle_error("Layout not found ($layout)");
+			}
 		}
-		$view_path = moojon_paths::get_views_directory().$this->get_view();
-		if (file_exists($view_path)) {
-			ob_start();
-			require_once($view_path);
-			define('YIELD', ob_get_clean());
-			ob_end_clean();
-			require_once($layout_path);
+		$view = moojon_paths::get_views_directory().$this->get_view();
+		if (file_exists($view) == false) {
+			self::handle_error("404 view not found ($view)");
+		}		
+		ob_start();
+		require_once($view);
+		define('YIELD', ob_get_clean());
+		ob_end_clean();
+		if ($layout !== false) {
+			require_once($layout);
 		} else {
-			moojon_base::handle_error('404 ('.$this->get_view().')');
+			echo YIELD;
 		}
 	}
 	

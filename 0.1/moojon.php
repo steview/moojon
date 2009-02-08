@@ -5,6 +5,9 @@ require_once(MOOJON_PATH.'/classes/moojon.uri.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.paths.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.files.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.inflect.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.request.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.app.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.controller.class.php');
 if (defined('PROJECT_DIRECTORY')) {
 	foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
 		moojon_config::set(require_once($file));
@@ -40,15 +43,14 @@ switch (strtoupper(UI)) {
 		if (!is_dir(PROJECT_DIRECTORY)) {
 			moojon_base::handle_error('Invalid PROJECT_DIRECTORY ('.PROJECT_DIRECTORY.')');
 		}
-		require_once(MOOJON_PATH.'/classes/moojon.request.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.base.app.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.base.controller.class.php');		
-		define('APP', moojon_uri::get_app());
-		$controller_name = moojon_uri::get_controller();
-		require_once(moojon_paths::get_app_directory().moojon_uri::get_app().'.app.class.php');
-		require_once(moojon_paths::get_controllers_directory()."$controller_name.controller.class.php");
-		$app_class_name = moojon_uri::get_app().'_app';
-		new $app_class_name;
+		$app = moojon_uri::get_app();
+		if (in_array($app, moojon_files::directory_directories(moojon_paths::get_apps_directory())) == true) {
+			require_once(moojon_paths::get_apps_directory()."/$app/$app.app.class.php");
+			$app = $app.'_app';
+			new $app;
+		} else {
+			moojon_base::handle_error("404 app not found ($app)");
+		}
 		break;
 	case 'CLI':
 		if (!defined("STDIN")) {
