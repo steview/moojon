@@ -47,23 +47,25 @@ final class moojon_generate_cli extends moojon_base_cli {
 				$helper = $this->prompt_until($arguments[0], 'Please enter a name for this helper');
 				moojon_generator::helper($helper);
 				break;
-			case 'view':
-				self::check_arguments('moojon_generate_cli::view()', 2, $arguments);
-				$app = $this->prompt_for_app($arguments[0]);
-				$view = $this->prompt_until($arguments[1], 'Please enter a view name');
-				moojon_generator::view($app, $view);
-				break;
 			case 'layout':
 				self::check_arguments('moojon_generate_cli::layout()', 2, $arguments);
 				$app = $this->prompt_for_app($arguments[0]);
 				$layout = $this->prompt_until($arguments[1], 'Please enter a layout name');
 				moojon_generator::layout($app, $layout);
 				break;
-			case 'partial':
-				self::check_arguments('moojon_generate_cli::partial()', 2, $arguments);
+			case 'view':
+				self::check_arguments('moojon_generate_cli::view()', 3, $arguments);
 				$app = $this->prompt_for_app($arguments[0]);
+				$controller = $this->prompt_for_controller($app, $arguments[1]);
+				$view = $this->prompt_until($arguments[2], 'Please enter a view name');
+				moojon_generator::view($app, $controller, $view);
+				break;
+			case 'partial':
+				self::check_arguments('moojon_generate_cli::partial()', 3, $arguments);
+				$app = $this->prompt_for_app($arguments[0]);
+				$controller = $this->prompt_for_controller($app, $arguments[1]);
 				$partial = $this->prompt_until($arguments[1], 'Please enter a name for this partial');
-				moojon_generator::partial($app, $partial);
+				moojon_generator::partial($app, $controller, $partial);
 				break;
 			case 'shared_view':
 				self::check_arguments('moojon_generate_cli::shared_view()', 1, $arguments);
@@ -84,15 +86,17 @@ final class moojon_generate_cli extends moojon_base_cli {
 	}
 	
 	private function prompt_for_app($initial) {
-		return $this->prompt_until_in($initial, $this->get_apps(), 'Which app');
+		$app = $this->prompt_until_in($initial, moojon_uri::get_apps(), 'Which app');
+		define('APP', $app);
+		return $app;
+	}
+	
+	private function prompt_for_controller($app, $initial) {
+		return $this->prompt_until_in($initial, moojon_uri::get_controllers($app), 'Which controller');
 	}
 	
 	private function get_commands() {
 		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'shared_view', 'shared_layout', 'shared_partial');
-	}
-	
-	private function get_apps() {
-		return moojon_files::directory_directories(moojon_paths::get_apps_directory());
 	}
 }
 ?>

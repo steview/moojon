@@ -112,19 +112,42 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
-	static private function require_suffix($file, $suffix) {
-		if (!$ext = self::get_ext($file)) {
+	static public function require_suffix($path, $suffix, $ext = 'php') {
+		$file = basename($path);
+		$path = dirname($path).'/';
+		if (self::has_ext($file, $ext) == true) {
 			$file = self::strip_ext($file, $ext);
-		} else {
-			$ext = '';
 		}
-		$suffix = self::strip_ext($suffix, $ext);
-		if (self::has_suffix($file, $suffix)) {
-			return "$file.$ext";
-		} else {
-			return "$file.$suffix.$ext";
+		if (self::has_suffix($file, $suffix) == false) {
+			$file .= ".$suffix";
 		}
-		
+		if (strlen($ext) > 0) {
+			$file .= ".$ext";
+		}
+		return $path.$file;
+	}
+	
+	static private function has_prefix($file, $prefix) {
+		if (substr($file, 0, strlen($prefix)) == $prefix) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	static public function require_prefix($path, $prefix, $ext = 'php') {
+		$file = basename($path);
+		$path = dirname($path).'/';
+		if (self::has_ext($file, $ext) == true) {
+			$file = self::strip_ext($file, $ext);
+		}
+		if (self::has_prefix($file, $prefix) == false) {
+			$file .= ".$prefix";
+		}
+		if (strlen($ext) > 0) {
+			$file .= ".$ext";
+		}
+		return $path.$file;
 	}
 }
 ?>

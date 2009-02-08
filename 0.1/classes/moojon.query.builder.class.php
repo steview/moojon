@@ -12,6 +12,21 @@ class moojon_query_builder extends moojon_query_utilities
 	public $foreign_table;
 	public $foreign_key;
 	
+	final public function to_log() {
+		$log = "\n\n";
+		$log .= '$primary_obj: '.$this->primary_obj."\n";
+		$log .= '$obj: '.$this->obj."\n";
+		$log .= '$command: '.$this->command."\n";
+		$log .= '$data: '.$this->data."\n";
+		$log .= '$where: '.$this->where."\n";
+		$log .= '$order: '.$this->order."\n";
+		$log .= '$limit: '.$this->limit."\n";
+		$log .= '$joins: '.$this->joins."\n";
+		$log .= '$foreign_table: '.$this->foreign_table."\n";
+		$log .= '$foreign_key: '.$this->foreign_key."\n";
+		self::log($log);
+	}
+	
 	final private function __construct($command, $obj, $data, $where, $order, $limit) {
 		return $this->command_obj($command, $obj, $data, $where, $order, $limit);
 	}
@@ -29,6 +44,7 @@ class moojon_query_builder extends moojon_query_utilities
 	}
 	
 	final public function update($obj = null, $data = null, $where = null) {
+		self::log('update: '.$obj);
 		return $this->command_obj('UPDATE', $obj, $data, $where, null, null);
 	}
 	
@@ -265,7 +281,7 @@ class moojon_query_builder extends moojon_query_utilities
 	}
 	
 	final public function render() {
-		return moojon_query::builder($this);
+		return moojon_query::build($this);
 	}
 }
 

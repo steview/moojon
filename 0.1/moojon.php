@@ -8,6 +8,17 @@ require_once(MOOJON_PATH.'/classes/moojon.inflect.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.request.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.app.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.controller.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.query.utilities.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.query.builder.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.query.runner.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.model.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.column.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.model.collection.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.relationship.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.has.one.relationship.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.has.many.relationship.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.has.many.to.many.relationship.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.connection.class.php');
 if (defined('PROJECT_DIRECTORY') == true) {
 	foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
 		moojon_config::set(require_once($file));
@@ -18,42 +29,35 @@ if (defined('PROJECT_DIRECTORY') == true) {
 		}
 	}
 	if (moojon_config::has('adapter') && moojon_config::has('db_host') && moojon_config::has('db_username') && moojon_config::has('db_password') && moojon_config::has('db')) {
-		require_once(MOOJON_PATH.'/classes/moojon.query.utilities.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.query.builder.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.query.runner.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.base.model.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.base.column.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.model.collection.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.base.relationship.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.has.one.relationship.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.has.many.relationship.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.has.many.to.many.relationship.class.php');
-		require_once(MOOJON_PATH.'/classes/moojon.connection.class.php');
 		$con = moojon_connection::init(moojon_config::get('db_host'), moojon_config::get('db_username'), moojon_config::get('db_password'), moojon_config::get('db'));
 		moojon_files::require_files_then_require_directory_files('moojon.join.class.php', MOOJON_PATH.'/classes/adapters/'.moojon_config::get('adapter').'/', true);
-		moojon_files::require_directory_files(moojon_paths::get_base_models_directory());
-		moojon_files::require_directory_files(moojon_paths::get_models_directory());
-		if (strtoupper(UI) == 'CLI') {
-			require_once(MOOJON_PATH.'/classes/base.schema_migration.model.class.php');
-			require_once(MOOJON_PATH.'/classes/schema_migration.model.class.php');
-			require_once(MOOJON_PATH.'/classes/moojon.base.migration.class.php');
+		if (is_dir(moojon_paths::get_base_models_directory()) && is_dir(moojon_paths::get_models_directory())) {
+			moojon_files::require_directory_files(moojon_paths::get_base_models_directory());
+			moojon_files::require_directory_files(moojon_paths::get_models_directory());
 		}
 	}	
 }
 function helper($helper) {
-	if (file_exists(moojon_paths::get_helpers_directory()."$helper.helper.php") == true) {
-		require_once(moojon_paths::get_helpers_directory()."$helper.helper.php");
-	} elseif (file_exists(moojon_paths::get_moojon_helpers_directory()."$helper.helper.php") == true) {
-		require_once(moojon_paths::get_moojon_helpers_directory()."$helper.helper.php");
+	$helper = moojon_files::require_suffix($helper, 'helper');
+	if (file_exists(moojon_paths::get_helpers_directory().$helper) == true) {
+		require_once(moojon_paths::get_helpers_directory().$helper);
+	} elseif (file_exists(moojon_paths::get_moojon_helpers_directory().$helper) == true) {
+		require_once(moojon_paths::get_moojon_helpers_directory().$helper);
 	} else {
 		moojon_base::handle_error("Unknown helper ($helper)");
 	}
 }
 function partial($partial) {
-	if (file_exists(moojon_paths::get_views_directory()."_$partial.php") == true) {
-		require_once(moojon_paths::get_views_directory()."_$partial.php");
-	} elseif (file_exists(moojon_paths::get_shared_views_directory()."_$partial.php") == true) {
-		require_once(moojon_paths::get_shared_views_directory()."_$partial.php");
+	$partial = moojon_files::require_prefix($partial, '_');
+	$path = dirname($partial).'/';
+	if (strlen($path) < 1) {
+		$path = moojon_uri::get_controller();
+	}
+	$path = "../$path";
+	if (file_exists(moojon_paths::get_views_directory().$path.$partial) == true) {
+		require_once(moojon_paths::get_views_directory().$path.$partial);
+	} elseif (file_exists(moojon_paths::get_shared_views_directory().$partial) == true) {
+		require_once(moojon_paths::get_shared_views_directory().$partial);
 	} else {
 		moojon_base::handle_error("Unknown partial ($partial)");
 	}
@@ -82,7 +86,7 @@ switch (strtoupper(UI)) {
 					if (file_exists($shared_layout) == true) {
 						$layout = $shared_layout;
 					} else {
-						self::handle_error("Layout not found ($layout or $shared_layout)");
+						moojon_base::handle_error("Layout not found ($layout or $shared_layout)");
 					}					
 				}
 			}
@@ -92,7 +96,7 @@ switch (strtoupper(UI)) {
 				if (file_exists($shared_view) == true) {
 					$view = $shared_view;
 				} else {
-					self::handle_error("404 view not found ($view or $shared_view)");
+					moojon_base::handle_error("404 view not found ($view or $shared_view)");
 				}
 			}
 			foreach ($app->get_controller_properties() as $key => $value) {
@@ -102,6 +106,7 @@ switch (strtoupper(UI)) {
 					$$key = $value;
 				}
 			}
+			helper('moojon');
 			ob_start();
 			require_once($view);
 			define('YIELD', ob_get_clean());
@@ -126,6 +131,9 @@ switch (strtoupper(UI)) {
 		require_once(MOOJON_PATH.'/classes/moojon.generator.class.php');
 		require_once(MOOJON_PATH.'/classes/moojon.migrator.class.php');
 		if (is_dir(moojon_paths::get_migrations_directory()) == true) {
+			require_once(MOOJON_PATH.'/classes/base.schema_migration.model.class.php');
+			require_once(MOOJON_PATH.'/classes/schema_migration.model.class.php');
+			require_once(MOOJON_PATH.'/classes/moojon.base.migration.class.php');
 			moojon_files::require_directory_files(moojon_paths::get_migrations_directory());
 		}
 		$arguments = $_SERVER['argv'];

@@ -5,8 +5,8 @@ final class moojon_adapter extends moojon_base {
 	static public function list_tables() {
 		$tables = array();
 		foreach (moojon_query_runner::show_tables() as $table) {
-			if ($table['Tables_in_'.moojon_config::get_db()] != 'schema_migrations') {
-				$tables[] = $table['Tables_in_'.moojon_config::get_db()];
+			if ($table['Tables_in_'.moojon_config::get('db')] != 'schema_migrations') {
+				$tables[] = $table['Tables_in_'.moojon_config::get('db')];
 			}			
 		}
 		return $tables;

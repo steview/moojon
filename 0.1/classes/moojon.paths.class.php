@@ -26,21 +26,21 @@ final class moojon_paths extends moojon_base {
 			self::handle_error('Unknown path property ($key)');
 		}
 	}
+	
+	static public function get_shared_directory() {
+		return self::get_project_directory().moojon_config::get('shared_directory').'/';
+	}
 
 	static public function get_project_directory() {
 		return PROJECT_DIRECTORY;
 	}
 	
-	static public function get_shared_directory() {
-		return self::get_project_directory().moojon_config::get('shared_directory').'/';
+	static public function get_project_config_directory() {
+		return self::get_project_directory().moojon_config::get('config_directory').'/';
 	}
 	
 	static public function get_apps_directory() {
 		return self::get_project_directory().moojon_config::get('apps_directory').'/';
-	}
-	
-	static public function get_project_config_directory() {
-		return self::get_project_directory().moojon_config::get('config_directory').'/';
 	}
 	
 	static public function get_app_directory() {
@@ -56,7 +56,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_views_directory() {
-		return self::get_app_directory().moojon_config::get('views_directory').'/';
+		return self::get_app_directory().moojon_config::get('views_directory').'/'.moojon_uri::get_controller().'/';
 	}
 	
 	static public function get_layouts_directory() {

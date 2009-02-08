@@ -34,14 +34,8 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	final public function __set($key, $value) {
 		if ($this->has_column($key)) {
-			//set methods?
-			$result = $this->columns[$key]->set_value($value);
-			if ($result !== true) {
-				$this->errors[] = $result;
-				return false;
-			} else {
-				$this->unsaved = true;
-			}
+			$this->columns[$key]->set_value($value);
+			$this->unsaved = true;
 		} else {
 			self::handle_error("$key doesn't exist");
 		}
@@ -286,11 +280,11 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			}
 			$builder = moojon_query_builder::init()->data($data);
 			if ($this->new_record == true) {
-				$builder->insert($this->obj);
+				$builder->insert($this->obj)->run();
 			} else {
 				if ($this->unsaved === true) {
 					$id_property = moojon_primary_key::NAME;
-					$builder->update($this->obj)->where("$id_property = ".$this->$id_property);
+					$builder->update($this->obj)->where("$id_property = ".$this->$id_property)->run();
 				} else {
 					$saved = false;
 				}
@@ -404,6 +398,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		foreach ($this->get_editable_column_names() as $column_name) {
 			$this->$column_name = $data[$column_name];
 		}
+		return $this;
 	}
 	
 	final public function get($key) {
