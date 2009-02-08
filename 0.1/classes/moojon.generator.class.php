@@ -137,6 +137,7 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	static public function controller($app, $controller = null, $action = null) {
+		self::try_define('APP', $app);
 		if ($controller == null) {
 			$controller = moojon_config::get('default_controller');
 		}
@@ -148,6 +149,7 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	static public function view($app, $view = null) {
+		self::try_define('APP', $app);
 		if ($view == null) {
 			$view = moojon_config::get('default_action');
 		}
@@ -156,6 +158,7 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	static public function layout($app, $layout = null) {
+		self::try_define('APP', $app);
 		if ($layout == null) {
 			$layout = $app;
 		}

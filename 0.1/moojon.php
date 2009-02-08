@@ -8,12 +8,14 @@ require_once(MOOJON_PATH.'/classes/moojon.inflect.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.request.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.app.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.controller.class.php');
-if (defined('PROJECT_DIRECTORY')) {
+if (defined('PROJECT_DIRECTORY') == true) {
 	foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
 		moojon_config::set(require_once($file));
 	}
-	foreach (moojon_files::directory_files(moojon_paths::get_app_config_directory(), true) as $file) {
-		moojon_config::set(require_once($file));
+	if (defined('APP') == true) {
+		foreach (moojon_files::directory_files(moojon_paths::get_app_config_directory(), true) as $file) {
+			moojon_config::set(require_once($file));
+		}
 	}
 	if (moojon_config::has('adapter') && moojon_config::has('db_host') && moojon_config::has('db_username') && moojon_config::has('db_password') && moojon_config::has('db')) {
 		require_once(MOOJON_PATH.'/classes/moojon.query.utilities.class.php');
@@ -62,8 +64,8 @@ switch (strtoupper(UI)) {
 		require_once(MOOJON_PATH.'/classes/moojon.migrate.cli.class.php');
 		require_once(MOOJON_PATH.'/classes/moojon.generator.class.php');
 		require_once(MOOJON_PATH.'/classes/moojon.migrator.class.php');
-		if (defined('PROJECT_DIRECTORY')) {
-			moojon_files::require_directory_files(PROJECT_DIRECTORY.'/models/migrations/');
+		if (is_dir(moojon_paths::get_migrations_directory()) == true) {
+			moojon_files::require_directory_files(moojon_paths::get_migrations_directory());
 		}
 		$arguments = $_SERVER['argv'];
 		array_shift($arguments);

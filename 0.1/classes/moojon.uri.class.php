@@ -21,6 +21,14 @@ final class moojon_uri extends moojon_base {
 		return moojon_files::directory_directories(moojon_paths::get_apps_directory());
 	}
 	
+	static private function get_controllers($app) {
+		$controllers = array();
+		foreach (moojon_files::directory_files(moojon_paths::get_apps_directory()."$app/".moojon_config::get('controllers_directory').'/') as $controller) {
+			$controllers[] = basename($controller);
+		}
+		return $controllers;
+	}
+	
 	static private function process() {
 		$path_info = self::get_path_info_array();
 		$return = array();
@@ -37,8 +45,13 @@ final class moojon_uri extends moojon_base {
 					$return['action'] = moojon_config::get('default_action');
 				} else {
 					$return['app'] = moojon_config::get('default_app');
-					$return['controller'] = $path_info[0];;
-					$return['action'] = moojon_config::get('default_action');
+					if (in_array($path_info[0].'controller.class.php', self::get_controllers($return['app'])) == true) {
+						$return['controller'] = $path_info[0];
+						$return['action'] = moojon_config::get('default_action');
+					} else {
+						$return['controller'] = moojon_config::get('default_controller');
+						$return['action'] = $path_info[0];
+					}					
 				}
 				break;
 			case 2:
