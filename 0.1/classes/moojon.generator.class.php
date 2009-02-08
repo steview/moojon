@@ -71,8 +71,11 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	static public function project($project, $app, $controller, $action) {
-		self::check_directory($_SERVER['PWD']."/$project/", true);	
+		self::check_directory($_SERVER['PWD']."/$project/", true);
 		self::try_define('PROJECT_DIRECTORY', $_SERVER['PWD']."/$project/");
+		
+		echo PROJECT_DIRECTORY."\n";
+		
 		self::try_define('APP', $app);
 		self::attempt_mkdir(PROJECT_DIRECTORY);
 		self::attempt_mkdir(moojon_paths::get_apps_directory());
@@ -109,6 +112,11 @@ final class moojon_generator extends moojon_base {
 		self::run(MOOJON_PATH.'templates/model.template', $model_path, $swaps, false, false);
 		$swaps['columns'] = moojon_adapter::get_add_columns($table);
 		self::run(MOOJON_PATH.'templates/base.model.template', moojon_paths::get_base_models_directory()."base.$model.model.class.php", $swaps, true, false);
+	}
+	
+	static public function helper($helper) {
+		self::attempt_mkdir(moojon_paths::get_helpers_directory());
+		self::run(MOOJON_PATH.'templates/helper.template', moojon_paths::get_helpers_directory()."$helper.helper.php", array(), false, true);
 	}
 	
 	static public function models() {
@@ -157,6 +165,12 @@ final class moojon_generator extends moojon_base {
 		self::run(MOOJON_PATH.'templates/view.template', moojon_paths::get_views_directory()."$view.view.php", array(), false, true);
 	}
 	
+	static public function partial($app, $partial) {
+		self::try_define('APP', $app);
+		self::attempt_mkdir(moojon_paths::get_views_directory());
+		self::run(MOOJON_PATH.'templates/partial.template', moojon_paths::get_views_directory().'_'.$partial.'.php', array(), false, true);
+	}
+	
 	static public function layout($app, $layout = null) {
 		self::try_define('APP', $app);
 		if ($layout == null) {
@@ -165,6 +179,31 @@ final class moojon_generator extends moojon_base {
 		self::attempt_mkdir(moojon_paths::get_layouts_directory());
 		self::run(MOOJON_PATH.'templates/layout.template', moojon_paths::get_layouts_directory()."$layout.layout.php", array(), false, true);
 	}
+	
+	
+	
+	static public function shared_view($view = null) {
+		if ($view == null) {
+			$view = moojon_config::get('default_action');
+		}
+		self::attempt_mkdir(moojon_paths::get_shared_views_directory());
+		self::run(MOOJON_PATH.'templates/view.template', moojon_paths::get_shared_views_directory()."$view.view.php", array(), false, true);
+	}
+	
+	static public function shared_partial($partial) {
+		self::attempt_mkdir(moojon_paths::get_shared_views_directory());
+		self::run(MOOJON_PATH.'templates/partial.template', moojon_paths::get_shared_views_directory().'_'.$partial.'.php', array(), false, true);
+	}
+	
+	static public function shared_layout($layout = null) {
+		if ($layout == null) {
+			$layout = $app;
+		}
+		self::attempt_mkdir(moojon_paths::get_shared_layouts_directory());
+		self::run(MOOJON_PATH.'templates/layout.template', moojon_paths::get_shared_layouts_directory()."$layout.layout.php", array(), false, true);
+	}
+	
+	
 	
 	static public function config($config, $path) {
 		self::attempt_mkdir($path);

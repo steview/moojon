@@ -28,8 +28,11 @@ final class moojon_paths extends moojon_base {
 	}
 
 	static public function get_project_directory() {
-		$instance = self::get();
-		return $instance->project_directory;
+		return PROJECT_DIRECTORY;
+	}
+	
+	static public function get_shared_directory() {
+		return self::get_project_directory().moojon_config::get('shared_directory').'/';
 	}
 	
 	static public function get_apps_directory() {
@@ -60,12 +63,28 @@ final class moojon_paths extends moojon_base {
 		return self::get_app_directory().moojon_config::get('layouts_directory').'/';
 	}
 	
+	static public function get_shared_views_directory() {
+		return self::get_shared_directory().moojon_config::get('views_directory').'/';
+	}
+	
+	static public function get_shared_layouts_directory() {
+		return self::get_shared_directory().moojon_config::get('layouts_directory').'/';
+	}
+	
 	static public function get_models_directory() {
 		return self::get_project_directory().moojon_config::get('models_directory').'/';
 	}
 	
 	static public function get_base_models_directory() {
 		return self::get_models_directory().moojon_config::get('base_models_directory').'/';
+	}
+	
+	static public function get_helpers_directory() {
+		return self::get_project_directory().moojon_config::get('helpers_directory').'/';
+	}
+	
+	static public function get_moojon_helpers_directory() {
+		return MOOJON_PATH.moojon_config::get('helpers_directory').'/';
 	}
 	
 	static public function get_migrations_directory() {
