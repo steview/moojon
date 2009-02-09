@@ -280,11 +280,11 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			}
 			$builder = moojon_query_builder::init()->data($data);
 			if ($this->new_record == true) {
-				$builder->insert($this->obj)->run();
+				$builder->insert($this->obj);
 			} else {
 				if ($this->unsaved === true) {
 					$id_property = moojon_primary_key::NAME;
-					$builder->update($this->obj)->where("$id_property = ".$this->$id_property)->run();
+					$builder->update($this->obj)->where("$id_property = ".$this->$id_property);
 				} else {
 					$saved = false;
 				}
