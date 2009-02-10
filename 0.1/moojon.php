@@ -64,6 +64,9 @@ function partial($partial) {
 }
 switch (strtoupper(UI)) {
 	case 'CGI':
+		require_once('classes/moojon.base.tag.attribute.class.php');
+		require_once('classes/href.attribute.class.php');
+		echo href_attribute::initr('http://google.com');
 		if (!is_dir(PROJECT_DIRECTORY)) {
 			moojon_base::handle_error('Invalid PROJECT_DIRECTORY ('.PROJECT_DIRECTORY.')');
 		}
