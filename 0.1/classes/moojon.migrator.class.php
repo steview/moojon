@@ -48,10 +48,13 @@ final class moojon_migrator extends moojon_base {
 	}
 	
 	static private function find_or_create_schema_migrations_table() {
-		foreach (moojon_query_runner::show_tables() as $table) {
-			if (in_array('schema_migrations', $table)) {
-				$table_exists = true;
-			}			
+		$table_exists = false;
+		if (moojon_query_runner::show_tables() != false) {
+			foreach (moojon_query_runner::show_tables() as $table) {
+				if (in_array('schema_migrations', $table)) {
+					$table_exists = true;
+				}			
+			}
 		}
 		if ($table_exists == false) {
 			moojon_query_runner::create_table('schema_migrations', new moojon_string_column('version'));
