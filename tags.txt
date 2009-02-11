@@ -1,21 +1,3 @@
-	class
-	id
-	style
-	title
-	dir
-	lang
-	xml:lang
-	tabindex
-	accesskey
-base
-head
-html
-meta
-param
-script
-style
-title
-
 a
 	charset
 	coords
@@ -238,6 +220,22 @@ div
 	dir
 	lang
 	xml:lang
+dl
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+dl
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
 em
 	<em>
 	<strong>
@@ -254,6 +252,113 @@ em
 	dir
 	lang
 	xml:lang
+fieldset
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	accesskey
+form
+	action*
+	accept
+	accept-charset
+	enctype
+	method
+	name
+	target
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+frame
+	frameborder
+	longdesc
+	marginheight
+	marginwidth
+	name
+	noresize
+	scrolling
+	src
+	id
+	class
+	title
+	style
+frameset
+	cols
+	rows
+	id
+	class
+	title
+	style
+head
+	profile
+	dir
+	lang
+	xml:lang
+h1
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+h2
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+h3
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+h4
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+h5
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+h6
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+hr
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+html
+	xmlns*
 i
 	class
 	id
@@ -261,6 +366,56 @@ i
 	title
 	dir
 	lang
+iframe
+	frameborder
+	height
+	longdesc
+	marginheight
+	marginwidth
+	name
+	scrolling
+	src
+	width
+img
+	alt*
+	src*
+	height
+	ismap
+	logdesc
+	usemap
+	width
+input
+	accept
+	align
+	alt
+	checked
+	disabled
+	maxlength
+	name
+	readonly
+	size
+	src
+	type
+	value
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	tabindex
+	accesskey
+ins
+	cite
+	datetime
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
 kbh
 	<em>
 	<strong>
@@ -277,13 +432,172 @@ kbh
 	dir
 	lang
 	xml:lang
-small
+label
+	for
 	class
 	id
 	style
 	title
 	dir
 	lang
+	xml:lang
+	accesskey
+legend
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	accesskey
+li
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+link
+	charset
+	href
+	hreflang
+	media
+	rel
+	rev
+	target
+	type
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+map
+	name
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	tabindex
+	accesskey
+meta
+	content
+	http-equiv
+	name
+	scheme
+	dir
+	lang
+	xml:lang
+noframes
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+noscript
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+object
+	align
+	archive
+	border
+	classid
+	codebase
+	codetype
+	data
+	declare
+	height
+	hspace
+	name
+	standby
+	type
+	usemap
+	vspace
+	widthclass
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	accesskey
+	tabindex
+ol
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+optgroup
+	label
+	disabled
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	tabindex
+option
+	disabled
+	label
+	selected
+	value
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+p
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+param
+	name*
+	type
+	value
+	valuetype
+	id
+pre
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	xml:space
+q
+	cite
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
 samp
 	<em>
 	<strong>
@@ -293,6 +607,41 @@ samp
 	<kbh>
 	<var>
 	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+script
+	type*
+	charset
+	defer
+	src
+	xml:space
+select
+	disabled
+	multiple
+	name
+	size
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	accesskey
+	tabindex
+small
+	class
+	id
+	style
+	title
+	dir
+	lang
+span
 	class
 	id
 	style
@@ -316,6 +665,148 @@ strong
 	dir
 	lang
 	xml:lang
+style
+	type*
+	media
+	title
+	dir
+	lang
+	xml:space
+sub
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+sup
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+table
+	border
+	cellpadding
+	cellspacing
+	frame
+	rules
+	summary
+	width
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+tbody
+	align
+	char
+	charoff
+	valign
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+td
+	abbr
+	align
+	axis
+	char
+	charoff
+	colspan
+	headers
+	rowspan
+	scope
+	valign
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+textarea
+	cols
+	rows
+	diabled
+	name
+	readonly
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	tabindex
+	accesskey
+tfoot
+	align
+	char
+	charoff
+	valign
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+th
+	abbr
+	align
+	axis
+	char
+	charoff
+	colspan
+	headers
+	rowspan
+	scope
+	valign
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+thead
+	align
+	char
+	charoff
+	valign
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+title
+tr
+	align
+	char
+	charoff
+	valign
+	align
+	char
+	charoff
+	valign
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
 tt
 	class
 	id
@@ -323,6 +814,14 @@ tt
 	title
 	dir
 	lang
+ul
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
 var
 	<em>
 	<strong>
