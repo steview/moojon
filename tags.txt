@@ -1,0 +1,341 @@
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	tabindex
+	accesskey
+base
+head
+html
+meta
+param
+script
+style
+title
+
+a
+	charset
+	coords
+	href
+	hreflang
+	name
+	rel
+	rev
+	shape
+	target
+	type
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	tabindex
+	accesskey
+abbr
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+acronym
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+address
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+area
+	alt*
+	coords
+	href
+	nohref
+	shape
+	target
+b
+	class
+	id
+	style
+	title
+	dir
+	lang
+base
+	href
+	target
+bdo
+	dir*
+	class
+	id
+	style
+	title
+	lang
+	xml:lang
+big
+	class
+	id
+	style
+	title
+	dir
+	lang
+blockquote
+	cite
+	class
+	dir
+	id
+	style
+	title
+	lang
+	xml:lang
+body
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+br
+	class
+	id
+	style
+	title
+button
+	disabled
+	name
+	type
+	value
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+	tabindex
+	accesskey
+caption
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+cite
+	<em>
+	<strong>
+	<dfn>
+	<code>
+	<samp>
+	<kbh>
+	<var>
+	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+code
+	<em>
+	<strong>
+	<dfn>
+	<code>
+	<samp>
+	<kbh>
+	<var>
+	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+col
+	align
+	char
+	charoff
+	span
+	valign
+	width
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+colgroup
+	align
+	char
+	charoff
+	span
+	valign
+	width
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+dd
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+del
+	cite
+	datetime
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+dfn
+	<em>
+	<strong>
+	<dfn>
+	<code>
+	<samp>
+	<kbh>
+	<var>
+	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+div
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+em
+	<em>
+	<strong>
+	<dfn>
+	<code>
+	<samp>
+	<kbh>
+	<var>
+	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+i
+	class
+	id
+	style
+	title
+	dir
+	lang
+kbh
+	<em>
+	<strong>
+	<dfn>
+	<code>
+	<samp>
+	<kbh>
+	<var>
+	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+small
+	class
+	id
+	style
+	title
+	dir
+	lang
+samp
+	<em>
+	<strong>
+	<dfn>
+	<code>
+	<samp>
+	<kbh>
+	<var>
+	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+strong
+	<em>
+	<strong>
+	<dfn>
+	<code>
+	<samp>
+	<kbh>
+	<var>
+	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
+tt
+	class
+	id
+	style
+	title
+	dir
+	lang
+var
+	<em>
+	<strong>
+	<dfn>
+	<code>
+	<samp>
+	<kbh>
+	<var>
+	<cite>
+	class
+	id
+	style
+	title
+	dir
+	lang
+	xml:lang
