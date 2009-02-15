@@ -5,7 +5,7 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 	protected $value;
 	protected $legal_values;
 	
-	final public function __construct($name, $value = null) {
+	final public function __construct($value = null) {
 		$this->init();
 		if ($legal_values != null) {
 			if (is_array($legal_values) == true) {

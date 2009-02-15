@@ -1,10 +1,10 @@
 <?php
-final class moojon_param_tag extends moojon_base_empty_tag {
+class moojon_param_tag extends moojon_base_empty_tag {
 	
-	const NAME = 'param';
+	const NODE_NAME = 'param';
 	
 	protected function init() {
-		$this->name = self::NAME;
+		$this->node_name = self::NODE_NAME;
 		$this->legal_attributes = array('name', 'type', 'value', 'valuetype', 'id');
 	}
 }

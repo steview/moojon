@@ -1,10 +1,10 @@
 <?php
-final class moojon_em_tag extends moojon_base_open_tag {
+class moojon_em_tag extends moojon_base_open_tag {
 	
-	const NAME = 'em';
+	const NODE_NAME = 'em';
 	
 	protected function init() {
-		$this->name = self::NAME;
+		$this->node_name = self::NODE_NAME;
 		$this->legal_attributes = array('class', 'id', 'style', 'title', 'dir', 'lang', 'xml_lang');
 	}
 }

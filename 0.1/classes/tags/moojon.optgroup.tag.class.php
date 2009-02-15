@@ -1,10 +1,10 @@
 <?php
-final class moojon_optgroup_tag extends moojon_base_open_tag {
+class moojon_optgroup_tag extends moojon_base_open_tag {
 	
-	const NAME = 'optgroup';
+	const NODE_NAME = 'optgroup';
 	
 	protected function init() {
-		$this->name = self::NAME;
+		$this->node_name = self::NODE_NAME;
 		$this->legal_attributes = array('label', 'disabled', 'class', 'id', 'style', 'title', 'dir', 'lang', 'xml_lang', 'tabindex');
 	}
 }

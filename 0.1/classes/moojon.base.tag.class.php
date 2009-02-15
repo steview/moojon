@@ -1,7 +1,7 @@
 <?php
 abstract class moojon_base_tag extends moojon_base {
 	
-	protected $name;
+	protected $node_name;
 	protected $legal_attributes = array();
 	protected $attributes = array();
 	protected $children = array();
@@ -43,7 +43,7 @@ abstract class moojon_base_tag extends moojon_base {
 	final protected function set_attribute($key, $value) {
 		if ($this->has_attribute($key) == true) {
 			$attribute = $this->get_attribute($key);
-			$attribute->set_value($value);
+			//$attribute->set_value($value);
 		} else {
 			$this->add_attribute($key, $value);
 		}
@@ -52,7 +52,7 @@ abstract class moojon_base_tag extends moojon_base {
 	final public function add_attribute($key, $value) {
 		if (get_class($key) != 'moojon_base_tag_attribute') {
 			$key = 'moojon_'.$key.'_tag_attribute';
-			$attribute = new $key($value, $value);
+			$attribute = new $key($value);
 		}
 		$name = $attribute->get_name();
 		if ($this->has_attribute($name)) {
@@ -79,7 +79,7 @@ abstract class moojon_base_tag extends moojon_base {
 	
 	final public function get_attribute($key) {
 		if ($this->has_attribute($key)) {
-			return $this->attribute[$key]->get_value();
+			return $this->attribute[$key];
 		} else {
 			self::handle_error("No such attribute ($key)");
 		}

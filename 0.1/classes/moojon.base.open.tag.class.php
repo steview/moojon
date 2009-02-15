@@ -1,7 +1,7 @@
 <?php
 abstract class moojon_base_open_tag extends moojon_base_tag {
 	
-	final public function __construct($children = null, $attributes = null) {
+	public function __construct($children = null, $attributes = null) {
 		$this->init();
 		parent::__construct($children, $attributes);
 	}
@@ -9,19 +9,19 @@ abstract class moojon_base_open_tag extends moojon_base_tag {
 	abstract protected function init();
 	
 	final public function render() {
-		$render = '<'.$this->name;
+		$render = '<'.$this->node_name;
 		foreach ($this->attributes as $attribute) {
 			$render .= ' '.$attribute->render();
 		}
 		$render .= '>';
 		foreach ($this->children as $child) {
 			if (method_exists($child, 'render') == true) {
-				$render .= $child->render();
+				$render .= $child->render()."\n";
 			} else {
 				$render .= $child;
 			}
 		}
-		return $render.'</'.$this->name.'>';
+		return $render.'</'.$this->node_name.'>';
 	}
 	
 	final protected function get_property($key) {

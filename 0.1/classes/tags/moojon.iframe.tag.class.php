@@ -1,10 +1,10 @@
 <?php
-final class moojon_iframe_tag extends moojon_base_open_tag {
+class moojon_iframe_tag extends moojon_base_open_tag {
 	
-	const NAME = 'iframe';
+	const NODE_NAME = 'iframe';
 	
 	protected function init() {
-		$this->name = self::NAME;
+		$this->node_name = self::NODE_NAME;
 		$this->legal_attributes = array('frameborder', 'height', 'longdesc', 'marginheight', 'marginwidth', 'name', 'scrolling', 'src', 'width');
 	}
 }

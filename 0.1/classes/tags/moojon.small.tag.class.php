@@ -1,10 +1,10 @@
 <?php
-final class moojon_small_tag extends moojon_base_open_tag {
+class moojon_small_tag extends moojon_base_open_tag {
 	
-	const NAME = 'small';
+	const NODE_NAME = 'small';
 	
 	protected function init() {
-		$this->name = self::NAME;
+		$this->node_name = self::NODE_NAME;
 		$this->legal_attributes = array('class', 'id', 'style', 'title', 'dir', 'lang');
 	}
 }

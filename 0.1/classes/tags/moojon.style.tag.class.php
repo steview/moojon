@@ -1,10 +1,10 @@
 <?php
-final class moojon_style_tag extends moojon_base_open_tag {
+class moojon_style_tag extends moojon_base_open_tag {
 	
-	const NAME = 'style';
+	const NODE_NAME = 'style';
 	
 	protected function init() {
-		$this->name = self::NAME;
+		$this->node_name = self::NODE_NAME;
 		$this->legal_attributes = array('type', 'media', 'title', 'dir', 'lang', 'xml_space');
 	}
 }
