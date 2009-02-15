@@ -80,7 +80,7 @@ switch (strtoupper(UI)) {
 			$app = $app.'_app';
 			$controller = moojon_uri::get_controller();
 			if (in_array(moojon_paths::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_controllers_directory()))) {
-				require_once(moojon_paths::get_controllers_directory()."$controller.controller.class.php");						
+				require_once(moojon_paths::get_controllers_directory()."$controller.controller.class.php");
 			} else {
 				moojon_base::handle_error("404 controller not found ($controller)");
 			}
@@ -94,7 +94,7 @@ switch (strtoupper(UI)) {
 						$layout = $shared_layout;
 					} else {
 						moojon_base::handle_error("Layout not found ($layout or $shared_layout)");
-					}					
+					}
 				}
 			}
 			$view = moojon_paths::get_views_directory().$app->get_view();
@@ -113,7 +113,14 @@ switch (strtoupper(UI)) {
 					$$key = $value;
 				}
 			}
-			helper('moojon');
+			foreach (explode(', ', moojon_config::get('default_helpers')) as $helper) {
+				helper(trim($helper));
+			}
+			if (moojon_config::has('helpers') == true) {
+				foreach (explode(', ', moojon_config::get('helpers')) as $helper) {
+					helper(trim($helper));
+				}
+			}
 			ob_start();
 			require_once($view);
 			define('YIELD', ob_get_clean());

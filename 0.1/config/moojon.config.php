@@ -18,6 +18,7 @@ return array(
 	'css_directory' => 'css',
 	'js_directory' => 'js',
 	'script_directory' => 'script',
-	'config_directory' => 'config'
+	'config_directory' => 'config',
+	'default_helpers' => 'ui, url, form'
 );
 ?>
