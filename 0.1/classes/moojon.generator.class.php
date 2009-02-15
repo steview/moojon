@@ -213,6 +213,10 @@ final class moojon_generator extends moojon_base {
 		self::run(MOOJON_PATH.'templates/config.template', "$path$config.config.php", array(), false, true);
 	}
 	
+	static public function tags() {
+		
+	}
+		
 	static public function test($test) {}
 }
 ?>

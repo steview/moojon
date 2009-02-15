@@ -5,8 +5,8 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 	protected $value;
 	protected $legal_values;
 	
-	final protected function __construct($name, $value = null, $legal_values = null) {
-		$this->name = $name;
+	final public function __construct($name, $value = null) {
+		$this->init();
 		if ($legal_values != null) {
 			if (is_array($legal_values) == true) {
 				$this->legal_values = $legal_values;
@@ -19,18 +19,10 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 		$this->set_value($value);
 	}
 	
-	final protected function render() {
+	abstract protected function init();
+	
+	final public function render() {
 		return $this->name.'="'.$this->value.'"'; 
-	}
-	
-	final static protected function base_initr($name, $value = null, $legal_values = null) {
-		$tag = self::base_init($name, $value, $legal_values);
-		return $tag->render();
-	}
-	
-	final static protected function base_init($name, $value = null, $legal_values = null) {
-		$class = $name.'_attribute';
-		return new $class($name, $value, $legal_values);
 	}
 	
 	final public function set_value($value) {
@@ -38,6 +30,10 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 			self::handle_error("Illegal value for tag ($value). Please use any of the following values (".implode(',', $this->legal_values).')');
 		}
 		$this->value = $value;
+	}
+	
+	final public function get_name() {
+		return $this->name;
 	}
 }
 ?>

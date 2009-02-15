@@ -72,10 +72,6 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		return false;
 	}
 	
-	final private function has_column($key) {
-		return array_key_exists($key, $this->columns);
-	}
-	
 	final private function has_relationship($key) {
 		return array_key_exists($key, $this->relationships);
 	}
@@ -94,6 +90,30 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	final public function get_relationships() {
 		return $this->relationships;
+	}
+	
+	final private function add_relationship($relationship_type, $name , $foreign_obj, $foreign_key, $key) {
+		if ($this->has_property($name)) {
+			self::handle_error("duplicate property when adding relationship ($name)");
+		}
+		if ($foreign_obj == null) {
+			$foreign_obj = $name;
+		}
+		$foreign_obj = self::strip_base($foreign_obj);
+		if ($foreign_key == null) {
+			$foreign_key = moojon_primary_key::get_foreign_key(get_class($this));
+		}
+		if ($key == null) {
+			$key = moojon_primary_key::NAME;
+		}
+		if (!$this->has_column($key)) {
+			self::handle_error("no such column to use as key for relationship ($key)");
+		}
+		$this->relationships[$name] = new $relationship_type($name, $foreign_obj, $foreign_key, $key);
+	}
+	
+	final private function has_column($key) {
+		return array_key_exists($key, $this->columns);
 	}
 	
 	final protected function add_column(moojon_base_column $column) {
@@ -150,26 +170,6 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	final protected function add_timestamp($name, $null = null, $default = null) {
 		$this->add_column(new moojon_timestamp_column($name, $null, $default));
-	}
-	
-	final private function add_relationship($relationship_type, $name , $foreign_obj, $foreign_key, $key) {
-		if ($this->has_property($name)) {
-			self::handle_error("duplicate property when adding relationship ($name)");
-		}
-		if ($foreign_obj == null) {
-			$foreign_obj = $name;
-		}
-		$foreign_obj = self::strip_base($foreign_obj);
-		if ($foreign_key == null) {
-			$foreign_key = moojon_primary_key::get_foreign_key(get_class($this));
-		}
-		if ($key == null) {
-			$key = moojon_primary_key::NAME;
-		}
-		if (!$this->has_column($key)) {
-			self::handle_error("no such column to use as key for relationship ($key)");
-		}
-		$this->relationships[$name] = new $relationship_type($name, $foreign_obj, $foreign_key, $key);
 	}
 	
 	final protected function has_many($name, $foreign_obj = null, $foreign_key = null, $key = null) {

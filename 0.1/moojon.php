@@ -19,6 +19,12 @@ require_once(MOOJON_PATH.'/classes/moojon.has.one.relationship.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.has.many.relationship.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.has.many.to.many.relationship.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.connection.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.tag.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.tag.attribute.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.empty.tag.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.open.tag.class.php');
+moojon_files::require_directory_files(MOOJON_PATH.'/classes/tags/');
+moojon_files::require_directory_files(MOOJON_PATH.'/classes/tags/attributes/');
 if (defined('PROJECT_DIRECTORY') == true) {
 	foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
 		moojon_config::set(require_once($file));
