@@ -237,6 +237,10 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		return $columns;
 	}
 	
+	final public function get_new_record() {
+		return $this->new_record;
+	}
+	
 	final public function validate($cascade = false) {
 		$valid = true;
 		$errors = array();

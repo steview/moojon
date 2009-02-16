@@ -15,8 +15,10 @@ final class moojon_model_form extends moojon_form_tag {
 		}
 		$this->model = $model;
 		$this->action = $action;
+		$this->method = 'post';
+		$fieldset = new moojon_fieldset_tag();
 		foreach ($this->model->get_columns() as $column) {
-			if ($this->find_relationship($column->get_name()) == false) {
+			if ($relationship = $this->find_relationship($column->get_name()) == false) {
 				$label = true;
 				$tag = null;
 				switch (get_class($column)) {
@@ -39,13 +41,13 @@ final class moojon_model_form extends moojon_form_tag {
 
 						break;
 					case 'moojon_integer_column':
-						
+						$tag = new moojon_integer_tag($column);
 						break;
-					case 'moojon_primary_key_column':
-
+					case 'moojon_primary_key':
+						$tag = new moojon_primary_key_tag($column);
+						$label = false;
 						break;
 					case 'moojon_string_column':
-						echo 'moojon_string_tag<br />';
 						$tag = new moojon_string_tag($column);
 						break;
 					case 'moojon_text_column':
@@ -59,15 +61,23 @@ final class moojon_model_form extends moojon_form_tag {
 						break;
 				}
 				if ($label == true) {
-					$this->add_child(new moojon_column_label($column));
+					$fieldset->add_child(new moojon_column_label($column));
 				}
 				if ($tag != null) {
-					$this->add_child($tag);
+					$fieldset->add_child($tag);
 				}
 			} else {
 				
 			}
 		}
+		$this->add_child($fieldset);
+		if ($model->get_new_record() == true) {
+			$submit_value = 'Create';
+		} else {
+			$submit_value = 'Update';
+		}
+		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'value' => $submit_value, 'type' => 'submit')));
+		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'value' => 'Cancel', 'type' => 'submit')));
 	}
 	
 	private function find_relationship($column_name) {
@@ -84,7 +94,7 @@ final class moojon_column_label extends moojon_label_tag {
 	public function __construct(moojon_base_column $column) {
 		$this->init();
 		$name = $column->get_name();
-		$this->add_child(ucfirst("$name:"));
+		$this->add_child(ucfirst(str_replace('_', ' ', $name).':'));
 		$this->id = $name."_label";
 		$this->for = $name;
 	}
@@ -115,11 +125,27 @@ final class moojon_float_tag extends moojon_input_tag {
 }
 
 final class moojon_integer_tag extends moojon_input_tag {
-	public function __construct(moojon_integer_column $column) {$this->init();}
+	public function __construct(moojon_integer_column $column) {
+		$this->init();
+		$name = $column->get_name();
+		$this->name = $name;
+		$this->id = $name;
+		$this->maxlength = $column->get_limit();
+		$this->value = $column->get_value();
+		$this->type = 'text';
+		$this->class = 'integer';
+	}
 }
 
 final class moojon_primary_key_tag extends moojon_input_tag {
-	public function __construct(moojon_primary_key_column $column) {$this->init();}
+	public function __construct(moojon_primary_key $column) {
+		$this->init();
+		$name = $column->get_name();
+		$this->name = $name;
+		$this->id = $name;
+		$this->value = $column->get_value();
+		$this->type = 'hidden';
+	}
 }
 
 final class moojon_string_tag extends moojon_input_tag {
@@ -130,6 +156,7 @@ final class moojon_string_tag extends moojon_input_tag {
 		$this->id = $name;
 		$this->maxlength = $column->get_limit();
 		$this->value = $column->get_value();
+		$this->type = 'text';
 		$this->class = 'text';
 	}
 }

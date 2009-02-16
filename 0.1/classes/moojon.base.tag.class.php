@@ -43,7 +43,7 @@ abstract class moojon_base_tag extends moojon_base {
 	final protected function set_attribute($key, $value) {
 		if ($this->has_attribute($key) == true) {
 			$attribute = $this->get_attribute($key);
-			//$attribute->set_value($value);
+			$attribute->set_value($value);
 		} else {
 			$this->add_attribute($key, $value);
 		}
@@ -79,7 +79,7 @@ abstract class moojon_base_tag extends moojon_base {
 	
 	final public function get_attribute($key) {
 		if ($this->has_attribute($key)) {
-			return $this->attribute[$key];
+			return $this->attributes[$key];
 		} else {
 			self::handle_error("No such attribute ($key)");
 		}

@@ -14,11 +14,13 @@ abstract class moojon_base_open_tag extends moojon_base_tag {
 			$render .= ' '.$attribute->render();
 		}
 		$render .= '>';
-		foreach ($this->children as $child) {
-			if (method_exists($child, 'render') == true) {
-				$render .= $child->render()."\n";
-			} else {
-				$render .= $child;
+		if (count($this->children) > 0) {
+			foreach ($this->children as $child) {
+				if (method_exists($child, 'render') == true) {
+					$render .= $child->render();
+				} else {
+					$render .= $child;
+				}
 			}
 		}
 		return $render.'</'.$this->node_name.'>';
