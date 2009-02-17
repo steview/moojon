@@ -36,10 +36,10 @@ final class moojon_model_form extends moojon_form_tag {
 
 						break;
 					case 'moojon_decimal_column':
-
+						$tag = new moojon_decimal_tag($column);
 						break;
 					case 'moojon_float_column':
-
+						$tag = new moojon_float_tag($column);
 						break;
 					case 'moojon_integer_column':
 						$tag = new moojon_integer_tag($column);
@@ -52,7 +52,7 @@ final class moojon_model_form extends moojon_form_tag {
 						$tag = new moojon_string_tag($column);
 						break;
 					case 'moojon_text_column':
-
+						$tag = new moojon_text_tag($column);
 						break;
 					case 'moojon_time_column':
 
@@ -131,11 +131,29 @@ final class moojon_datetime_tag extends moojon_div_tag {
 }
 
 final class moojon_decimal_tag extends moojon_input_tag {
-	public function __construct(moojon_decimal_column $column) {$this->init();}
+	public function __construct(moojon_decimal_column $column) {
+		$this->init();
+		$name = $column->get_name();
+		$this->name = $name;
+		$this->id = $name;
+		$this->maxlength = $column->get_limit();
+		$this->value = $column->get_value();
+		$this->type = 'text';
+		$this->class = 'decimal';
+	}
 }
 
 final class moojon_float_tag extends moojon_input_tag {
-	public function __construct(moojon_float_column $column) {$this->init();}
+	public function __construct(moojon_float_column $column) {
+		$this->init();
+		$name = $column->get_name();
+		$this->name = $name;
+		$this->id = $name;
+		$this->maxlength = $column->get_limit();
+		$this->value = $column->get_value();
+		$this->type = 'text';
+		$this->class = 'float';
+	}
 }
 
 final class moojon_integer_tag extends moojon_input_tag {
@@ -176,7 +194,15 @@ final class moojon_string_tag extends moojon_input_tag {
 }
 
 final class moojon_text_tag extends moojon_textarea_tag {
-	public function __construct(moojon_text_column $column) {$this->init();}
+	public function __construct(moojon_text_column $column) {
+		$this->init();
+		$column_name = $column->get_name();
+		$this->id = $column_name;
+		$this->name = $column_name;
+		$this->cols = 40;
+		$this->rows = 6;
+		$this->add_child($column->get_value());
+	}
 }
 
 final class moojon_time_tag extends moojon_div_tag {
@@ -200,6 +226,20 @@ final class moojon_relationship_tag extends moojon_select_tag {
 				$option->selected = 'selected';
 			}
 			$this->add_child($option);
+		}
+	}
+}
+
+final class moojon_select_with_options_tag extends moojon_select_tag {
+	public function __construct($collection, $current, $name, $id) {
+		$this->init();
+		$this->name = $name;
+		$this->id = $id;
+		foreach ($collection as $key => $value) {
+			if ($value == $current) {
+				$attributes['selected'] = 'selected';
+			}
+			$this->add_child(new moojon_option_tag($key, $attributes));
 		}
 	}
 }
