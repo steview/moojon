@@ -50,7 +50,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			return $this->relationships[$key];
 		} else {
 			if ($this->has_column($key)) {
-				return $this->columns[$key]->get_value();		
+				return $this->columns[$key]->get_value();
 			} else {
 				$get_method = "get_$key";
 				if (method_exists($this, $get_method)) {
@@ -121,7 +121,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			$this->columns[$column->get_name()] = $column;
 		} else {
 			self::handle_error('duplicate property ('.$column->get_name().')');
-		}		
+		}
 	}
 	
 	final protected function add_primary_key() {

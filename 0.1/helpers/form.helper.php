@@ -82,6 +82,7 @@ final class moojon_model_form extends moojon_form_tag {
 	
 	private function find_relationship($column_name) {
 		foreach ($this->model->get_relationships() as $relationship) {
+			echo $relationship->get_key().'<br />';
 			if ($relationship->get_foreign_key() == $column_name) {
 				return $relationship;
 			}
@@ -171,5 +172,11 @@ final class moojon_time_tag extends moojon_div_tag {
 
 final class moojon_timestamp_tag extends moojon_div_tag {
 	public function __construct(moojon_timestamp_column $column) {$this->init();}
+}
+
+final class moojon_relationship_tag extends moojon_select_tag {
+	public function __construct(moojon_base_column $column, moojon_base_relationship $relationship) {
+		
+	}
 }
 ?>
