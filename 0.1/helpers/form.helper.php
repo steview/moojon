@@ -18,15 +18,16 @@ final class moojon_model_form extends moojon_form_tag {
 		$this->method = 'post';
 		$fieldset = new moojon_fieldset_tag();
 		foreach ($this->model->get_columns() as $column) {
-			if ($relationship = $this->find_relationship($column->get_name()) == false) {
+			$column_name = $column->get_name();
+			if ($relationship = $this->find_relationship($column_name) == false) {
 				$label = true;
 				$tag = null;
 				switch (get_class($column)) {
 					case 'moojon_binary_column':
-
+						$tag = new moojon_string_tag($column);
 						break;
 					case 'moojon_boolean_column':
-
+						$tag = new moojon_boolean_tag($column);
 						break;
 					case 'moojon_date_column':
 
@@ -60,14 +61,17 @@ final class moojon_model_form extends moojon_form_tag {
 
 						break;
 				}
-				if ($label == true) {
-					$fieldset->add_child(new moojon_column_label($column));
-				}
-				if ($tag != null) {
-					$fieldset->add_child($tag);
-				}
 			} else {
-				
+				$relationship_name = $this->find_relationship($column->get_name())->get_name();
+				$relationship = new $relationship_name();
+				$key = $this->find_relationship($column->get_name())->get_key();
+				$tag = new moojon_relationship_tag($column, $relationship->read(), $key);
+			}
+			if ($label !== false) {
+				$fieldset->add_child(new moojon_column_label($column, $label_text));
+			}
+			if ($tag != null) {
+				$fieldset->add_child($tag);
 			}
 		}
 		$this->add_child($fieldset);
@@ -82,7 +86,6 @@ final class moojon_model_form extends moojon_form_tag {
 	
 	private function find_relationship($column_name) {
 		foreach ($this->model->get_relationships() as $relationship) {
-			echo $relationship->get_key().'<br />';
 			if ($relationship->get_foreign_key() == $column_name) {
 				return $relationship;
 			}
@@ -95,7 +98,7 @@ final class moojon_column_label extends moojon_label_tag {
 	public function __construct(moojon_base_column $column) {
 		$this->init();
 		$name = $column->get_name();
-		$this->add_child(ucfirst(str_replace('_', ' ', $name).':'));
+		$this->add_child(ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($name)).':'));
 		$this->id = $name."_label";
 		$this->for = $name;
 	}
@@ -106,7 +109,17 @@ final class moojon_binary_tag extends moojon_input_tag {
 }
 
 final class moojon_boolean_tag extends moojon_input_tag {
-	public function __construct(moojon_boolean_column $column) {$this->init();}
+	public function __construct(moojon_boolean_column $column) {
+		$this->init();
+		$name = $column->get_name();
+		$this->name = $name;
+		$this->id = $name;
+		$this->type = 'checkbox';
+		$this->value = '1';
+		if ($column->get_value() > 0) {
+			$this->checked = 'checked';
+		}
+	}
 }
 
 final class moojon_date_tag extends moojon_div_tag {
@@ -175,8 +188,19 @@ final class moojon_timestamp_tag extends moojon_div_tag {
 }
 
 final class moojon_relationship_tag extends moojon_select_tag {
-	public function __construct(moojon_base_column $column, moojon_base_relationship $relationship) {
-		
+	public function __construct(moojon_base_column $column, moojon_model_collection $model_collection, $key) {
+		$this->init();
+		$column_name = $column->get_name();
+		$this->id = $column_name;
+		$this->name = $column_name;
+		foreach ($model_collection as $model) {
+			$option = new moojon_option_tag($model);
+			$option->value = $model->$key;
+			if ($model->$key == $column->get_value()) {
+				$option->selected = 'selected';
+			}
+			$this->add_child($option);
+		}
 	}
 }
 ?>

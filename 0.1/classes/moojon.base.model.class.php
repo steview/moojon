@@ -97,11 +97,11 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			self::handle_error("duplicate property when adding relationship ($name)");
 		}
 		if ($foreign_obj == null) {
-			$foreign_obj = $name;
+			$foreign_obj = moojon_inflect::pluralize($name);
 		}
 		$foreign_obj = self::strip_base($foreign_obj);
 		if ($foreign_key == null) {
-			$foreign_key = moojon_primary_key::get_foreign_key(get_class($this));
+			$foreign_key = moojon_primary_key::get_foreign_key($foreign_obj);
 		}
 		if ($key == null) {
 			$key = moojon_primary_key::NAME;

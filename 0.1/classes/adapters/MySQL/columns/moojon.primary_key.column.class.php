@@ -17,6 +17,10 @@ final class moojon_primary_key extends moojon_base_column {
 		return moojon_inflect::singularize($obj).'_'.self::NAME;
 	}
 	
+	public function get_obj($foreign_key) {
+		return str_replace('_'.self::NAME, '', $foreign_key);
+	}
+	
 	public function create_table($name, $columns, $options = null) {
 		if (!is_array($columns)) {
 			$data = array($columns);

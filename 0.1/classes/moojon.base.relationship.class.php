@@ -10,7 +10,7 @@ abstract class moojon_base_relationship extends moojon_base
 		$this->name = $name;
 		$this->foreign_obj = moojon_inflect::pluralize($foreign_obj);
 		$this->foreign_key = $foreign_key;
-		$this->key = $key;		
+		$this->key = $key;
 	}
 	
 	final public function get_name() {

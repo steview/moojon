@@ -1,13 +1,12 @@
 <?php
-final class moojon_model_collection extends ArrayObject
-{
+final class moojon_model_collection extends ArrayObject {
 	private $accessor;
 	private $relationship;
 	private $key;
 	private $iterator;
 	private $errors = array();
 	
-	final public function __construct(moojon_base_model $accessor = null, $key = null) {
+	public function __construct(moojon_base_model $accessor = null, $key = null) {
 		$this->accessor = $accessor;
 		if ($accessor != null && $key != null) {
 			$this->relationship = $this->accessor->get_relationship($key);
@@ -16,7 +15,7 @@ final class moojon_model_collection extends ArrayObject
 		$this->iterator = $this->getIterator();		
 	}
 	
-	final public function __get($key) {
+	public function __get($key) {
 		switch ($key) {
 			case 'first':
 				if (count($this)) {
@@ -50,7 +49,7 @@ final class moojon_model_collection extends ArrayObject
 		}
 	}
 	
-	final public function get() {
+	public function get() {
 		if ($this->relationship != null) {
 			$foreign_class_name = moojon_inflect::singularize($this->relationship->get_foreign_obj());
 			$foreign_class = new $foreign_class_name;
@@ -75,7 +74,11 @@ final class moojon_model_collection extends ArrayObject
 		}
 	}
 	
-	final public function filter($value, $property = null) {
+	public function get_relationship() {
+		return $this->relationship;
+	}
+	
+	public function filter($value, $property = null) {
 		$collection = new moojon_model_collection($this->accessor, $this->key);
 		if ($property == null) {
 			$property = moojon_primary_key::NAME;
@@ -88,15 +91,15 @@ final class moojon_model_collection extends ArrayObject
 		return $collection;
 	}
 	
-	final public function get_errors() {
+	public function get_errors() {
 		return $this->errors;
 	}	
 	
-	final public function get_type() {
+	public function get_type() {
 		return get_class($this->relationship);
 	}
 	
-	final public function validate($cascade = false) {
+	public function validate($cascade = false) {
 		$valid = true;
 		$errors = array();
 		foreach ($this as $record) {
@@ -112,7 +115,7 @@ final class moojon_model_collection extends ArrayObject
 		return $valid;
 	}
 	
-	final public function add(moojon_base_model $model) {
+	public function add(moojon_base_model $model) {
 		$key = $this->relationship->get_key();
 		$foreign_key = $this->relationship->get_foreign_key();
 		$accessor = $this->relationship->get_accessor();
@@ -134,7 +137,7 @@ final class moojon_model_collection extends ArrayObject
 		$this[] = $model;
 	}
 	
-	final public function remove(moojon_base_model $model) {
+	public function remove(moojon_base_model $model) {
 		for ($x = 0; $x < (count($this) - 1);  $x++) {
 			$record = $this[$x];
 			$same = true;
@@ -153,13 +156,13 @@ final class moojon_model_collection extends ArrayObject
 		}
 	}
 	
-	final public function delete() {
+	public function delete() {
 		foreach ($this as $record) {
 			$record->delete();
 		}
 	}
 	
-	final public function set($data, $value = null) {
+	public function set($data, $value = null) {
 		if (!is_array($data)) {
 			$data = array($data => $value);
 		}
@@ -168,7 +171,7 @@ final class moojon_model_collection extends ArrayObject
 		}
 	}
 	
-	final public function save($cascade = false) {
+	public function save($cascade = false) {
 		$saved = true;
 		if ($this->validate($cascade) === true) {
 			foreach ($this as $record) {
