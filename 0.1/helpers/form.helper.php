@@ -30,10 +30,10 @@ final class moojon_model_form extends moojon_form_tag {
 						$tag = new moojon_boolean_tag($column);
 						break;
 					case 'moojon_date_column':
-
+						$tag = moojon_quick_tags::date_tag($column);
 						break;
 					case 'moojon_datetime_column':
-
+						$tag = moojon_quick_tags::datetime_tag($column);
 						break;
 					case 'moojon_decimal_column':
 						$tag = new moojon_decimal_tag($column);
@@ -55,10 +55,10 @@ final class moojon_model_form extends moojon_form_tag {
 						$tag = new moojon_text_tag($column);
 						break;
 					case 'moojon_time_column':
-
+						$tag = moojon_quick_tags::time_tag($column);
 						break;
 					case 'moojon_timestamp_column':
-
+						$tag = moojon_quick_tags::timestamp_tag($column);
 						break;
 				}
 			} else {
@@ -68,10 +68,10 @@ final class moojon_model_form extends moojon_form_tag {
 				$tag = new moojon_relationship_tag($column, $relationship->read(), $key);
 			}
 			if ($label) {
-				//$fieldset->add_child(moojon_quick_tags::label(null, $column));
+				$fieldset->add_child(moojon_quick_tags::label(null, $column));
 			}
 			if ($tag != null) {
-				//$fieldset->add_child($tag);
+				$fieldset->add_child($tag);
 			}
 		}
 		$this->add_child($fieldset);
@@ -80,7 +80,6 @@ final class moojon_model_form extends moojon_form_tag {
 		} else {
 			$submit_value = 'Update';
 		}
-		$this->add_child(moojon_quick_tags::datetime_selects(array('name' => 'publish_date')));
 		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'value' => $submit_value, 'type' => 'submit')));
 		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'value' => 'Cancel', 'type' => 'submit')));
 	}
@@ -122,12 +121,6 @@ final class moojon_quick_tags extends moojon_base {
 		return new moojon_label_tag($text, $label_attributes);
 	}
 	
-	static public function label_input($text, $attributes = null) {
-		$text = self::process_text($text, $attributes);
-		$attributes = self::process_attributes($attributes);
-		$label = self::label($text, $attributes);
-	}
-	
 	static public function string_tag(moojon_base_column $column) {
 		$attributes = self::process_attributes($column);
 		$attributes['maxlength'] = $column->get_limit();
@@ -135,6 +128,32 @@ final class moojon_quick_tags extends moojon_base {
 		$attributes['type'] = 'text';
 		$attributes['class'] = 'text';
 		return new moojon_input_tag($attributes);
+	}
+	
+	static public function date_tag(moojon_base_column $column) {
+		$attributes = self::process_attributes($column);
+		$attributes['class'] = 'datetime';
+		return datetime_select($attributes, 'Ymd');
+	}
+	
+	static public function datetime_tag(moojon_base_column $column) {
+		$attributes = self::process_attributes($column);
+		$attributes['class'] = 'datetime';
+		$return = array();
+		//$return[] = select_options(array(), self::ye)
+		return datetime_select($attributes, 'YmdGis');
+	}
+	
+	static public function time_tag(moojon_base_column $column) {
+		$attributes = self::process_attributes($column);
+		$attributes['class'] = 'datetime';
+		return datetime_select($attributes, 'Gis');
+	}
+	
+	static public function timestamp_tag(moojon_base_column $column) {
+		$attributes = self::process_attributes($column);
+		$attributes['class'] = 'datetime';
+		return datetime_select($attributes, 'YmdGis');
 	}
 	
 	static public function datetime_selects($attributes = null, $format = null, $selected = null, $start = null, $end = null) {
@@ -197,6 +216,10 @@ final class moojon_quick_tags extends moojon_base {
 			$selected = date('s');
 		}
 		return self::select_options($seconds, $selected, $attributes);
+	}
+	
+	static public function second_options() {
+		
 	}
 	
 	static public function minutes_select_options($attributes = null, $selected = null) {
