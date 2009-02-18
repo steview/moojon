@@ -19,8 +19,8 @@ final class moojon_model_form extends moojon_form_tag {
 		$fieldset = new moojon_fieldset_tag();
 		foreach ($this->model->get_columns() as $column) {
 			$column_name = $column->get_name();
+			$label = true;
 			if ($relationship = $this->find_relationship($column_name) == false) {
-				$label = true;
 				$tag = null;
 				switch (get_class($column)) {
 					case 'moojon_binary_column':
@@ -49,7 +49,7 @@ final class moojon_model_form extends moojon_form_tag {
 						$label = false;
 						break;
 					case 'moojon_string_column':
-						$tag = new moojon_string_tag($column);
+						$tag = moojon_quick_tags::string_tag($column);
 						break;
 					case 'moojon_text_column':
 						$tag = new moojon_text_tag($column);
@@ -67,8 +67,8 @@ final class moojon_model_form extends moojon_form_tag {
 				$key = $this->find_relationship($column->get_name())->get_key();
 				$tag = new moojon_relationship_tag($column, $relationship->read(), $key);
 			}
-			if ($label !== false) {
-				$fieldset->add_child(new moojon_column_label($column, $label_text));
+			if ($label) {
+				$fieldset->add_child(moojon_quick_tags::label(null, $column));
 			}
 			if ($tag != null) {
 				$fieldset->add_child($tag);
@@ -94,13 +94,46 @@ final class moojon_model_form extends moojon_form_tag {
 	}
 }
 
-final class moojon_column_label extends moojon_label_tag {
-	public function __construct(moojon_base_column $column) {
-		$this->init();
-		$name = $column->get_name();
-		$this->add_child(ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($name)).':'));
-		$this->id = $name."_label";
-		$this->for = $name;
+final class moojon_quick_tags extends moojon_base {
+	private function __construct() {}
+	
+	static private function process_attributes($attributes) {
+		if (is_subclass_of($attributes, 'moojon_base_column') == true) {
+			$name = $attributes->get_name();
+			$id = $name;
+			$attributes = array('id' => $id, 'name' => $name);
+		}
+		return $attributes;
+	}
+	
+	static private function process_text($text, $attributes) {
+		if (is_subclass_of($attributes, 'moojon_base_column') == true) {
+			$text = ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($attributes->get_name())).':');
+		}
+		return $text;
+	}
+	
+	static public function label($text, $attributes = null) {
+		$text = self::process_text($text, $attributes);
+		$attributes = self::process_attributes($attributes);
+		$label_attributes['id'] = $attributes['id'].'_label';
+		$label_attributes['for'] = $attributes['id'];
+		return new moojon_label_tag($text, $label_attributes);
+	}
+	
+	static public function label_input($text, $attributes = null) {
+		$text = self::process_text($text, $attributes);
+		$attributes = self::process_attributes($attributes);
+		$label = self::label($text, $attributes);
+	}
+	
+	static public function string_tag(moojon_base_column $column) {
+		$attributes = self::process_attributes($column);
+		$attributes['maxlength'] = $column->get_limit();
+		$attributes['value'] = $column->get_value();
+		$attributes['type'] = 'text';
+		$attributes['class'] = 'text';
+		return new moojon_input_tag($attributes);
 	}
 }
 
