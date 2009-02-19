@@ -35,5 +35,13 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 	final public function get_name() {
 		return $this->name;
 	}
+	
+	final public function get_value() {
+		return $this->value;
+	}
+	
+	final public function __toString() {
+		return $this->get_value();
+	}
 }
 ?>

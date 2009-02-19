@@ -338,6 +338,9 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		array_shift($args);
 		$builder = self::find_builder($args);
 		$data = self::resolve($data, $builder, 'data');
+		if ($data == null) {
+			$data = array();
+		}
 		$instance = self::init($class);
 		$instance->new_record = true;
 		foreach ($instance->get_editable_column_names() as $column_name) {

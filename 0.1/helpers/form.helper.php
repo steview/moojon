@@ -1,4 +1,4 @@
-<?php
+ <?php
 final class moojon_model_form extends moojon_form_tag {
 	private $model;
 	
@@ -7,7 +7,6 @@ final class moojon_model_form extends moojon_form_tag {
 		if ($action == null) {
 			$action = '#';
 		}
-		$this->action = $action;
 		if (is_array($attributes) == true) {
 			foreach ($attributes as $key => $value) {
 				$this->$key = $value;
@@ -17,17 +16,18 @@ final class moojon_model_form extends moojon_form_tag {
 		$this->action = $action;
 		$this->method = 'post';
 		$fieldset = new moojon_fieldset_tag();
+		$fieldset->id = 'controls';
 		foreach ($this->model->get_columns() as $column) {
 			$column_name = $column->get_name();
 			$label = true;
-			if ($relationship = $this->find_relationship($column_name) == false) {
+			if ($this->find_relationship($column_name) == false) {
 				$tag = null;
 				switch (get_class($column)) {
 					case 'moojon_binary_column':
-						$tag = new moojon_string_tag($column);
+						$tag = moojon_quick_tags::binary_tag($column);
 						break;
 					case 'moojon_boolean_column':
-						$tag = new moojon_boolean_tag($column);
+						$tag = moojon_quick_tags::boolean_tag($column);
 						break;
 					case 'moojon_date_column':
 						$tag = moojon_quick_tags::date_tag($column);
@@ -36,23 +36,23 @@ final class moojon_model_form extends moojon_form_tag {
 						$tag = moojon_quick_tags::datetime_tag($column);
 						break;
 					case 'moojon_decimal_column':
-						$tag = new moojon_decimal_tag($column);
+						$tag = moojon_quick_tags::decimal_tag($column);
 						break;
 					case 'moojon_float_column':
-						$tag = new moojon_float_tag($column);
+						$tag = moojon_quick_tags::float_tag($column);
 						break;
 					case 'moojon_integer_column':
-						$tag = new moojon_integer_tag($column);
+						$tag = moojon_quick_tags::integer_tag($column);
 						break;
 					case 'moojon_primary_key':
-						$tag = new moojon_primary_key_tag($column);
+						$tag = moojon_quick_tags::primary_key_tag($column);
 						$label = false;
 						break;
 					case 'moojon_string_column':
 						$tag = moojon_quick_tags::string_tag($column);
 						break;
 					case 'moojon_text_column':
-						$tag = new moojon_text_tag($column);
+						$tag = moojon_quick_tags::text_tag($column);
 						break;
 					case 'moojon_time_column':
 						$tag = moojon_quick_tags::time_tag($column);
@@ -62,13 +62,22 @@ final class moojon_model_form extends moojon_form_tag {
 						break;
 				}
 			} else {
-				$relationship_name = $this->find_relationship($column->get_name())->get_name();
+				$name = $column->get_name();
+				$relationship = $this->find_relationship($name);
+				$key = $relationship->get_key();
+				$relationship_name = $relationship->get_name();
 				$relationship = new $relationship_name();
-				$key = $this->find_relationship($column->get_name())->get_key();
-				$tag = new moojon_relationship_tag($column, $relationship->read(), $key);
+				$options = array();
+				if ($column->get_null() == false) {
+					$options['Please select...'] = 0;
+				}
+				foreach($relationship->read() as $option) {
+					$options[(String)$option] = $option->$key;
+				}
+				$tag = moojon_quick_tags::select_options($options, $model->$key, array('name' => $name, 'id' => $name));
 			}
 			if ($label) {
-				$fieldset->add_child(moojon_quick_tags::label(null, $column));
+				$fieldset->add_child(moojon_quick_tags::label(self::process_text($column).':', $column));
 			}
 			if ($tag != null) {
 				$fieldset->add_child($tag);
@@ -92,6 +101,31 @@ final class moojon_model_form extends moojon_form_tag {
 		}
 		return false;
 	}
+	
+	static private function process_text(moojon_base_column $column) {
+		return ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($column->get_name())));
+	}
+}
+
+final class moojon_model_table extends moojon_table_tag {
+	private $model;
+	
+	public function __construct(moojon_base_model $model, $attributes = null) {
+		$this->init();
+		$this->model = $model;
+		$ths = array();
+		foreach ($this->model->get_columns() as $column) {
+			$name = $column->get_name();
+			$ths[] = new moojon_th_tag(self::process_text($column), array('id' => $name.'_th'));
+		}
+		$tr = new moojon_tr_tag($ths);
+		$thead = new moojon_thead_tag($tr);
+		$this->add_child($thead);
+	}
+	
+	static private function process_text(moojon_base_column $column) {
+		return ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($column->get_name())));
+	}
 }
 
 final class moojon_quick_tags extends moojon_base {
@@ -106,27 +140,24 @@ final class moojon_quick_tags extends moojon_base {
 		return $attributes;
 	}
 	
-	static private function process_text($text, $attributes) {
-		if (is_subclass_of($attributes, 'moojon_base_column') == true) {
-			$text = ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($attributes->get_name())).':');
-		}
-		return $text;
-	}
-	
 	static public function label($text, $attributes = null) {
-		$text = self::process_text($text, $attributes);
 		$attributes = self::process_attributes($attributes);
 		$label_attributes['id'] = $attributes['id'].'_label';
 		$label_attributes['for'] = $attributes['id'];
 		return new moojon_label_tag($text, $label_attributes);
 	}
 	
-	static public function string_tag(moojon_base_column $column) {
+	static public function binary_tag(moojon_base_column $column) {
+		return self::string_tag($column);
+	}
+	
+	static public function boolean_tag(moojon_base_column $column) {
 		$attributes = self::process_attributes($column);
-		$attributes['maxlength'] = $column->get_limit();
-		$attributes['value'] = $column->get_value();
-		$attributes['type'] = 'text';
-		$attributes['class'] = 'text';
+		$attributes['type'] = 'checkbox';
+		$attributes['value'] = '1';
+		if ($column->get_value() > 0 || $column->get_default()) {
+			$attributes['checked'] = 'checked';
+		}
 		return new moojon_input_tag($attributes);
 	}
 	
@@ -178,6 +209,43 @@ final class moojon_quick_tags extends moojon_base {
 		$select_attributes['id'] = $select_attributes['id'].'[s]';
 		$children[] = self::second_select_options($select_attributes, $column->get_value(), 's');
 		return new moojon_div_tag($children, array('id' => $attributes['name'].'_div'));
+	}
+	
+	static public function decimal_tag(moojon_base_column $column) {
+		return self::string_tag($column);
+	}
+	
+	static public function float_tag(moojon_base_column $column) {
+		return self::string_tag($column);
+	}
+	
+	static public function integer_tag(moojon_base_column $column) {
+		return self::string_tag($column);
+	}
+	
+	static public function primary_key_tag(moojon_primary_key $column) {
+		$attributes = self::process_attributes($column);
+		$attributes['maxlength'] = $column->get_limit();
+		$attributes['value'] = $column->get_value();
+		$attributes['type'] = 'hidden';
+		return new moojon_input_tag($attributes);
+	}
+	
+	static public function string_tag(moojon_base_column $column) {
+		$attributes = self::process_attributes($column);
+		$attributes['maxlength'] = $column->get_limit();
+		$attributes['value'] = $column->get_value();
+		$attributes['type'] = 'text';
+		$attributes['class'] = 'text';
+		return new moojon_input_tag($attributes);
+	}
+	
+	static public function text_tag(moojon_base_column $column) {
+		$attributes = self::process_attributes($column);
+		$attributes['cols'] = $column->get_limit();
+		$attributes['rows'] = 'text';
+		$attributes['class'] = 'textarea';
+		return new moojon_textarea_tag($column->get_value(), $attributes);
 	}
 	
 	static public function time_tag(moojon_base_column $column) {
@@ -404,146 +472,6 @@ final class moojon_quick_tags extends moojon_base {
 			$options[] = new moojon_option_tag($key, $attributes);
 		}
 		return $options;
-	}
-}
-
-final class moojon_binary_tag extends moojon_input_tag {
-	public function __construct(moojon_binary_column $column) {$this->init();}
-}
-
-final class moojon_boolean_tag extends moojon_input_tag {
-	public function __construct(moojon_boolean_column $column) {
-		$this->init();
-		$name = $column->get_name();
-		$this->name = $name;
-		$this->id = $name;
-		$this->type = 'checkbox';
-		$this->value = '1';
-		if ($column->get_value() > 0) {
-			$this->checked = 'checked';
-		}
-	}
-}
-
-final class moojon_date_tag extends moojon_div_tag {
-	public function __construct(moojon_date_column $column) {$this->init();}
-}
-
-final class moojon_datetime_tag extends moojon_div_tag {
-	public function __construct(moojon_datetime_column $column) {$this->init();}
-}
-
-final class moojon_decimal_tag extends moojon_input_tag {
-	public function __construct(moojon_decimal_column $column) {
-		$this->init();
-		$name = $column->get_name();
-		$this->name = $name;
-		$this->id = $name;
-		$this->maxlength = $column->get_limit();
-		$this->value = $column->get_value();
-		$this->type = 'text';
-		$this->class = 'decimal';
-	}
-}
-
-final class moojon_float_tag extends moojon_input_tag {
-	public function __construct(moojon_float_column $column) {
-		$this->init();
-		$name = $column->get_name();
-		$this->name = $name;
-		$this->id = $name;
-		$this->maxlength = $column->get_limit();
-		$this->value = $column->get_value();
-		$this->type = 'text';
-		$this->class = 'float';
-	}
-}
-
-final class moojon_integer_tag extends moojon_input_tag {
-	public function __construct(moojon_integer_column $column) {
-		$this->init();
-		$name = $column->get_name();
-		$this->name = $name;
-		$this->id = $name;
-		$this->maxlength = $column->get_limit();
-		$this->value = $column->get_value();
-		$this->type = 'text';
-		$this->class = 'integer';
-	}
-}
-
-final class moojon_primary_key_tag extends moojon_input_tag {
-	public function __construct(moojon_primary_key $column) {
-		$this->init();
-		$name = $column->get_name();
-		$this->name = $name;
-		$this->id = $name;
-		$this->value = $column->get_value();
-		$this->type = 'hidden';
-	}
-}
-
-final class moojon_string_tag extends moojon_input_tag {
-	public function __construct(moojon_string_column $column) {
-		$this->init();
-		$name = $column->get_name();
-		$this->name = $name;
-		$this->id = $name;
-		$this->maxlength = $column->get_limit();
-		$this->value = $column->get_value();
-		$this->type = 'text';
-		$this->class = 'text';
-	}
-}
-
-final class moojon_text_tag extends moojon_textarea_tag {
-	public function __construct(moojon_text_column $column) {
-		$this->init();
-		$column_name = $column->get_name();
-		$this->id = $column_name;
-		$this->name = $column_name;
-		$this->cols = 40;
-		$this->rows = 6;
-		$this->add_child($column->get_value());
-	}
-}
-
-final class moojon_time_tag extends moojon_div_tag {
-	public function __construct(moojon_time_column $column) {$this->init();}
-}
-
-final class moojon_timestamp_tag extends moojon_div_tag {
-	public function __construct(moojon_timestamp_column $column) {$this->init();}
-}
-
-final class moojon_relationship_tag extends moojon_select_tag {
-	public function __construct(moojon_base_column $column, moojon_model_collection $model_collection, $key) {
-		$this->init();
-		$column_name = $column->get_name();
-		$this->id = $column_name;
-		$this->name = $column_name;
-		foreach ($model_collection as $model) {
-			$option = new moojon_option_tag($model);
-			$option->value = $model->$key;
-			if ($model->$key == $column->get_value()) {
-				$option->selected = 'selected';
-			}
-			$this->add_child($option);
-		}
-	}
-}
-
-final class moojon_select_with_options_tag extends moojon_select_tag {
-	public function __construct($collection, $current, $name, $id) {
-		$this->init();
-		$this->name = $name;
-		$this->id = $id;
-		foreach ($collection as $key => $value) {
-			if ($value == $current) {
-				$attributes['selected'] = 'selected';
-			}
-			$this->add_child(new moojon_option_tag($key, $attributes));
-		}
 	}
 }
 ?>

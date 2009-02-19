@@ -53,15 +53,13 @@ function helper($helper) {
 		moojon_base::handle_error("Unknown helper ($helper)");
 	}
 }
-function partial($partial) {
-	$partial = moojon_files::require_prefix($partial, '_');
-	$path = dirname($partial).'/';
-	if (strlen($path) < 1) {
-		$path = moojon_uri::get_controller();
+function partial($partial, $variables = array()) {
+	foreach ($variables as $key => $value) {
+		$$key = $value;
 	}
-	$path = "../$path";
-	if (file_exists(moojon_paths::get_views_directory().$path.$partial) == true) {
-		require_once(moojon_paths::get_views_directory().$path.$partial);
+	$partial = "_$partial.php";
+	if (file_exists(moojon_paths::get_views_directory().$partial) == true) {
+		require_once(moojon_paths::get_views_directory().$partial);
 	} elseif (file_exists(moojon_paths::get_shared_views_directory().$partial) == true) {
 		require_once(moojon_paths::get_shared_views_directory().$partial);
 	} else {

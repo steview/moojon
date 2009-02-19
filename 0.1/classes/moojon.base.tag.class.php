@@ -125,5 +125,62 @@ abstract class moojon_base_tag extends moojon_base {
 	final public function add_child($child) {
 		$this->children[] = $child;
 	}
+	
+	final public function add_class($class) {
+		if (in_array('class', $this->legal_attributes)) {
+			if ($this->has_attribute('class')) {
+				$this->class = $this->class.' '.$class;
+			} else {
+				$this->class = $class;
+			}
+		} else {
+			self::handle_error('Tag can not have class attribute ('.get_class($this).')');
+		}
+	}
+	
+	final public function get_by_attribute($attribute, $value = null, $recursive = false) {
+		$return = array();
+		foreach ($this->children as $child) {
+			if (is_subclass_of($child, 'moojon_base_tag') == true) {
+				if ($child->has_attribute($attribute) == true) {
+					if ($value != null) {
+						if ($child->$attribute->get_value() == $value) {
+							$return[] = $child;
+						}
+					} else {
+						$return[] = $child;
+					}
+				}
+				if (is_subclass_of($child, 'moojon_base_open_tag') == true && $recursive == true) {
+					$return = array_merge($return, $child->get_by_attribute($attribute, $value));
+				}
+			}
+		}
+		return $return;
+	}
+	
+	final public function remove_by_attribute($attribute, $value = null, $recursive = false) {
+		$remaining_children = array();
+		foreach ($this->children as $child) {
+			if (is_object($child) && is_subclass_of($child, 'moojon_base_tag') == true) {
+				if ($child->has_attribute($attribute) == true) {
+					if ($value != null) {
+						if ($child->$attribute->get_value() == $value) {
+							$child = null;
+						}
+					} else {
+						$child = null;
+					}
+				}
+				if ($child != null && is_subclass_of($child, 'moojon_base_open_tag') == true && $recursive == true) {
+					$child->remove_by_attribute($attribute, $value, $recursive);
+				}
+			}
+			if ($child != null) {
+				$remaining_children[] = $child;
+			}
+		}
+		$this->children = $remaining_children;
+	}
 }
 ?>

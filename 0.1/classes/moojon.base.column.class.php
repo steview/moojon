@@ -25,6 +25,14 @@ abstract class moojon_base_column extends moojon_base {
 		return $this->limit;
 	}
 	
+	final public function get_null() {
+		return $this->null;
+	}
+	
+	final public function get_default() {
+		return $this->default;
+	}
+	
 	protected function get_query_value() {
 		return $this->value;
 	}
