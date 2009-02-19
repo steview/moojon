@@ -133,27 +133,212 @@ final class moojon_quick_tags extends moojon_base {
 	static public function date_tag(moojon_base_column $column) {
 		$attributes = self::process_attributes($column);
 		$attributes['class'] = 'datetime';
-		return datetime_select($attributes, 'Ymd');
+		$children = array();
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[Y]';
+		$select_attributes['id'] = $select_attributes['id'].'[Y]';
+		$children[] = self::year_select_options($start, $end, $select_attributes, $column->get_value(), 'Y');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[m]';
+		$select_attributes['id'] = $select_attributes['id'].'[m]';
+		$children[] = self::month_select_options($select_attributes, $column->get_value(), 'm');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[d]';
+		$select_attributes['id'] = $select_attributes['id'].'[d]';
+		$children[] = self::day_select_options($select_attributes, $column->get_value(), 'd');
+		return new moojon_div_tag($children, array('id' => $attributes['name'].'_div'));
 	}
 	
-	static public function datetime_tag(moojon_base_column $column) {
+	static public function datetime_tag(moojon_base_column $column, $start = null, $end = null) {
 		$attributes = self::process_attributes($column);
 		$attributes['class'] = 'datetime';
-		$return = array();
-		//$return[] = select_options(array(), self::ye)
-		return datetime_select($attributes, 'YmdGis');
+		$children = array();
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[Y]';
+		$select_attributes['id'] = $select_attributes['id'].'[Y]';
+		$children[] = self::year_select_options($start, $end, $select_attributes, $column->get_value(), 'Y');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[m]';
+		$select_attributes['id'] = $select_attributes['id'].'[m]';
+		$children[] = self::month_select_options($select_attributes, $column->get_value(), 'm');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[d]';
+		$select_attributes['id'] = $select_attributes['id'].'[d]';
+		$children[] = self::day_select_options($select_attributes, $column->get_value(), 'd');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[G]';
+		$select_attributes['id'] = $select_attributes['id'].'[G]';
+		$children[] = self::hour_select_options($select_attributes, $column->get_value(), 'G');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[i]';
+		$select_attributes['id'] = $select_attributes['id'].'[i]';
+		$children[] = self::minute_select_options($select_attributes, $column->get_value(), 'i');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[s]';
+		$select_attributes['id'] = $select_attributes['id'].'[s]';
+		$children[] = self::second_select_options($select_attributes, $column->get_value(), 's');
+		return new moojon_div_tag($children, array('id' => $attributes['name'].'_div'));
 	}
 	
 	static public function time_tag(moojon_base_column $column) {
 		$attributes = self::process_attributes($column);
 		$attributes['class'] = 'datetime';
-		return datetime_select($attributes, 'Gis');
+		$children = array();
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[G]';
+		$select_attributes['id'] = $select_attributes['id'].'[G]';
+		$children[] = self::hour_select_options($select_attributes, $column->get_value(), 'G');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[i]';
+		$select_attributes['id'] = $select_attributes['id'].'[i]';
+		$children[] = self::minute_select_options($select_attributes, $column->get_value(), 'i');
+		$select_attributes = $attributes;
+		$select_attributes['name'] = $select_attributes['name'].'[s]';
+		$select_attributes['id'] = $select_attributes['id'].'[s]';
+		$children[] = self::second_select_options($select_attributes, $column->get_value(), 's');
+		return new moojon_div_tag($children, array('id' => $attributes['name'].'_div'));
 	}
 	
-	static public function timestamp_tag(moojon_base_column $column) {
-		$attributes = self::process_attributes($column);
-		$attributes['class'] = 'datetime';
-		return datetime_select($attributes, 'YmdGis');
+	static public function timestamp_tag(moojon_base_column $column, $start = null, $end = null) {
+		return self::datetime_tag($column, $start, $end);
+	}
+	
+	static public function year_select_options($start = null, $end = null, $attributes = null, $selected = null, $format = null) {
+		if ($selected == null) {
+			$selected = date('Y');
+		}
+		return self::select_options(self::year_options($start, $end, $format), $selected, $attributes);
+	}
+	
+	static public function year_options($start = null, $end = null, $format = null) {
+		if ($format != 'Y' && $format != 'y') {
+			$format = 'Y';
+		}
+		$years = array();
+		if ($start == null) {
+			$start = abs(date('Y') - 50);
+		}
+		if ($end == null) {
+			$end = abs(date('Y') + 50);
+		}
+		for($i = min($start, $end); $i < (max($start, $end) + 1); $i ++) {
+			$value = $i;
+			if ($format == 'y') {
+				$years[substr($value, -2)] = $value;
+			} else {
+				$years[$value] = $value;
+			}
+		}
+		return $years;
+	}
+	
+	static public function month_select_options($attributes = null, $selected = null, $format = null) {
+		if ($selected == null) {
+			$selected = date('n');
+		}
+		return self::select_options(self::month_options($format), $selected, $attributes);
+	}
+	
+	static public function month_options($format = null) {
+		if ($format != 'm' && $format != 'n') {
+			$format = 'm';
+		}
+		$months = array();
+		for($i = 1; $i < 13; $i ++) {
+			if ($i < 10 && $format == 'm') {
+				$key = "0$i";
+			} else {
+				$key = $i;
+			}
+			$months[$key] = $i;
+		}
+		return $months;
+	}
+	
+	static public function day_select_options($attributes = null, $selected = null, $format = null) {
+		if ($selected == null) {
+			$selected = date('j');
+		}
+		return self::select_options(self::day_options($format), $selected, $attributes);
+	}
+	
+	static public function day_options($format = null) {
+		if ($format != 'd' && $format != 'j') {
+			$format = 'd';
+		}
+		$days = array();
+		for($i = 1; $i < 31; $i ++) {
+			if ($i < 10 && $format == 'd') {
+				$key = "0$i";
+			} else {
+				$key = $i;
+			}
+			$days[$key] = $i;
+		}
+		return $days;
+	}
+	
+	static public function hour_select_options($attributes = null, $selected = null, $format = null) {
+		if ($selected == null) {
+			$selected = date('G');
+		}
+		return self::select_options(self::hour_options($format), $selected, $attributes);
+	}
+	
+	static public function hour_options($format = null) {
+		if ($format != 'G' && $format != 'H') {
+			$format = 'G';
+		}
+		$hours = array();
+		for($i = 0; $i < 24; $i ++) {
+			if ($i < 10 && $format == 'G') {
+				$key = "0$i";
+			} else {
+				$key = $i;
+			}
+			$hours[$key] = $i;
+		}
+		return $hours;
+	}
+	
+	static public function minute_select_options($attributes = null, $selected = null) {
+		if ($selected == null) {
+			$selected = date('i');
+		}
+		return self::select_options(self::minute_options(), $selected, $attributes);
+	}
+	
+	static public function minute_options() {
+		$minutes = array();
+		for($i = 0; $i < 60; $i ++) {
+			if ($i < 10) {
+				$key = "0$i";
+			} else {
+				$key = $i;
+			}
+			$minutes[$key] = $i;
+		}
+		return $minutes;
+	}
+	
+	static public function second_select_options($attributes = null, $selected = null) {
+		if ($selected == null) {
+			$selected = date('s');
+		}
+		return self::select_options(self::second_options(), $selected, $attributes);
+	}
+	
+	static public function second_options() {
+		$seconds = array();
+		for($i = 0; $i < 60; $i ++) {
+			if ($i < 10) {
+				$key = "0$i";
+			} else {
+				$key = $i;
+			}
+			$seconds[$key] = $i;
+		}
+		return $seconds;
 	}
 	
 	static public function datetime_selects($attributes = null, $format = null, $selected = null, $start = null, $end = null) {
@@ -169,25 +354,25 @@ final class moojon_quick_tags extends moojon_base {
 			switch ($f) {
 				case 'Y':
 				case 'y':
-					$select = self::years_select_options($start, $end, $select_attributes, $selected, $f);
+					$select = self::year_select_options($start, $end, $select_attributes, $selected, $f);
 					break;
 				case 'm':
 				case 'n':
-					$select = self::months_select_options($select_attributes, $selected, $f);
+					$select = self::month_select_options($select_attributes, $selected, $f);
 					break;
 				case 'd':
 				case 'j':
-					$select = self::days_select_options($select_attributes, $selected, $f);
+					$select = self::day_select_options($select_attributes, $selected, $f);
 					break;
 				case 'G':
 				case 'H':
-					$select = self::hours_select_options($select_attributes, $selected, $f);
+					$select = self::hour_select_options($select_attributes, $selected, $f);
 					break;
 				case 'i':
-					$select = self::minutes_select_options($select_attributes, $selected);
+					$select = self::minute_select_options($select_attributes, $selected);
 					break;
 				case 's':
-					$select = self::seconds_select_options($select_attributes, $selected);
+					$select = self::second_select_options($select_attributes, $selected);
 					break;
 				default:
 					$select = $f;
@@ -200,124 +385,6 @@ final class moojon_quick_tags extends moojon_base {
 			}
 		}
 		return $return;
-	}
-	
-	static public function seconds_select_options($attributes = null, $selected = null) {
-		$seconds = array();
-		for($i = 0; $i < 60; $i ++) {
-			if ($i < 10) {
-				$key = "0$i";
-			} else {
-				$key = $i;
-			}
-			$seconds[$key] = $i;
-		}
-		if ($selected == null) {
-			$selected = date('s');
-		}
-		return self::select_options($seconds, $selected, $attributes);
-	}
-	
-	static public function second_options() {
-		
-	}
-	
-	static public function minutes_select_options($attributes = null, $selected = null) {
-		$minutes = array();
-		for($i = 0; $i < 60; $i ++) {
-			if ($i < 10) {
-				$key = "0$i";
-			} else {
-				$key = $i;
-			}
-			$minutes[$key] = $i;
-		}
-		if ($selected == null) {
-			$selected = date('i');
-		}
-		return self::select_options($minutes, $selected, $attributes);
-	}
-	
-	static public function hours_select_options($attributes = null, $selected = null, $format = null) {
-		if ($format != 'G' && $format != 'H') {
-			$format = 'G';
-		}
-		$hours = array();
-		for($i = 0; $i < 24; $i ++) {
-			if ($i < 10 && $format == 'G') {
-				$key = "0$i";
-			} else {
-				$key = $i;
-			}
-			$hours[$key] = $i;
-		}
-		if ($selected == null) {
-			$selected = date('G');
-		}
-		return self::select_options($hours, $selected, $attributes);
-	}
-	
-	static public function days_select_options($attributes = null, $selected = null, $format = null) {
-		if ($format != 'd' && $format != 'j') {
-			$format = 'd';
-		}
-		$days = array();
-		for($i = 1; $i < 31; $i ++) {
-			if ($i < 10 && $format == 'd') {
-				$key = "0$i";
-			} else {
-				$key = $i;
-			}
-			$days[$key] = $i;
-		}
-		if ($selected == null) {
-			$selected = date('j');
-		}
-		return self::select_options($days, $selected, $attributes);
-	}
-	
-	static public function months_select_options($attributes = null, $selected = null, $format = null) {
-		if ($format != 'm' && $format != 'n') {
-			$format = 'm';
-		}
-		$months = array();
-		for($i = 1; $i < 13; $i ++) {
-			if ($i < 10 && $format == 'm') {
-				$key = "0$i";
-			} else {
-				$key = $i;
-			}
-			$months[$key] = $i;
-		}
-		if ($selected == null) {
-			$selected = date('n');
-		}
-		return self::select_options($months, $selected, $attributes);
-	}
-	
-	static public function years_select_options($start = null, $end = null, $attributes = null, $selected = null, $format = null) {
-		if ($format != 'Y' && $format != 'y') {
-			$format = 'Y';
-		}
-		$years = array();
-		if ($start == null) {
-			$start = abs(date('Y') - 50);
-		}
-		if ($end == null) {
-			$end = abs(date('Y') + 50);
-		}
-		if ($selected == null) {
-			$selected = date('Y');
-		}
-		for($i = min($start, $end); $i < (max($start, $end) + 1); $i ++) {
-			$value = $i;
-			if ($format == 'y') {
-				$years[substr($value, -2)] = $value;
-			} else {
-				$years[$value] = $value;
-			}
-		}
-		return self::select_options($years, $selected, $attributes);
 	}
 	
 	static public function select_options($options, $selected = null, $attributes = null) {
