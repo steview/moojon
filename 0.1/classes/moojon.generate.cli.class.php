@@ -82,6 +82,24 @@ final class moojon_generate_cli extends moojon_base_cli {
 				$partial = $this->prompt_until($arguments[1], 'Please enter a name for this partial');
 				moojon_generator::shared_partial($partial);
 				break;
+			case 'scaffold':
+				self::check_arguments('moojon_generate_cli::scaffold()', 3, $arguments);
+				$app = $this->prompt_for_app($arguments[0]);
+				$models = array();
+				foreach (moojon_files::directory_files(moojon_paths::get_models_directory()) as $path) {
+					$models[] = basename($path);
+				}
+				if (count($models) == 0) {
+					if ($this->prompt_until_in(null, array('y', 'n'), 'No models found. Would you like to generate models?') == 'y') {
+						moojon_generator::models();
+					} else {
+						self::handle_error('Unable to generate scaffold (no models)');
+					}
+				}
+				$model = $this->prompt_until_in($arguments[1], moojon_adapter::list_tables(), 'What model would you like to generate a scaffold for?');
+				$controller = $this->prompt('Please enter a controller name', $model);
+				moojon_generator::scaffold($app, $model, $controller);
+				break;
 		}
 	}
 	
@@ -96,7 +114,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 	}
 	
 	private function get_commands() {
-		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'shared_view', 'shared_layout', 'shared_partial');
+		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'shared_view', 'shared_layout', 'shared_partial', 'scaffold');
 	}
 }
 ?>

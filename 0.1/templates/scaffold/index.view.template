@@ -1,0 +1,15 @@
+<h1><[Plural]></h1>
+
+<div id="content_main">
+
+<?php
+partial('table', array('<[plural]>' => $<[plural]>));
+?>
+
+</div><!-- /content_main -->
+
+<div id="content_sub">
+
+
+
+</div><!-- /content_sub -->

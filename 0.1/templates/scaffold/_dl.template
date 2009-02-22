@@ -1,0 +1,4 @@
+<?php
+$dl = new moojon_model_dl($<[singular]>);
+echo $dl->render();
+?>

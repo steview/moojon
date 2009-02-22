@@ -2,19 +2,14 @@
 final class moojon_model_form extends moojon_form_tag {
 	private $model;
 	
-	public function __construct(moojon_base_model $model, $action = null, $attributes = null) {
+	public function __construct(moojon_base_model $model, $attributes = array()) {
 		$this->init();
-		if ($action == null) {
-			$action = '#';
-		}
-		if (is_array($attributes) == true) {
-			foreach ($attributes as $key => $value) {
-				$this->$key = $value;
-			}
+		$this->action = '#';
+		$this->method = 'post';
+		foreach ($attributes as $key => $value) {
+			$this->$key = $value;
 		}
 		$this->model = $model;
-		$this->action = $action;
-		$this->method = 'post';
 		$fieldset = new moojon_fieldset_tag();
 		$fieldset->id = 'controls';
 		foreach ($this->model->get_columns() as $column) {
@@ -89,8 +84,8 @@ final class moojon_model_form extends moojon_form_tag {
 		} else {
 			$submit_value = 'Update';
 		}
-		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'value' => $submit_value, 'type' => 'submit')));
-		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'value' => 'Cancel', 'type' => 'submit')));
+		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'id' => 'submit_'.strtolower($submit_value), 'value' => $submit_value, 'type' => 'submit')));
+		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'id' => 'submit_cancel', 'value' => 'Cancel', 'type' => 'submit')));
 	}
 	
 	private function find_relationship($column_name) {
@@ -104,6 +99,22 @@ final class moojon_model_form extends moojon_form_tag {
 	
 	static private function process_text(moojon_base_column $column) {
 		return ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($column->get_name())));
+	}
+}
+
+final class moojon_model_delete_form extends moojon_form_tag {
+	public function __construct(moojon_base_model $model, $attributes = array()) {
+		$this->init();
+		$this->action = '#';
+		$this->method = 'post';
+		foreach ($attributes as $key => $value) {
+			$this->$key = $value;
+		}
+		foreach ($model->get_primary_key_columns() as $column) {
+			$this->add_child(moojon_quick_tags::primary_key_tag($column));
+		}
+		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'id' => 'submit_destroy', 'value' => 'Destroy', 'type' => 'submit')));
+		$this->add_child(new moojon_input_tag(array('name' => 'submit', 'id' => 'submit_cancel', 'value' => 'Cancel', 'type' => 'submit')));
 	}
 }
 

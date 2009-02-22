@@ -5,7 +5,7 @@ final class moojon_generator extends moojon_base {
 	static private function run($template, $destination, $swaps, $overwrite, $exit) {
 		if ($overwrite == true || self::check_file($destination, $exit) == true) {
 			self::write($template, $destination, $swaps);
-		}		
+		}
 	}
 	
 	static private function write($template, $destination, $swaps) {
@@ -213,8 +213,26 @@ final class moojon_generator extends moojon_base {
 		self::run(MOOJON_PATH.'templates/config.template', "$path$config.config.php", array(), false, true);
 	}
 	
-	static public function tags() {
-		
+	static public function scaffold($app, $model, $controller) {
+		$swaps = array();
+		$swaps['Plural'] = ucfirst(moojon_inflect::pluralize($model));
+		$swaps['plural'] = moojon_inflect::pluralize($model);
+		$swaps['Singular'] = ucfirst(moojon_inflect::singularize($model));
+		$swaps['singular'] = moojon_inflect::singularize($model);
+		self::try_define('APP', $app);
+		self::try_define('CONTROLLER', $controller);
+		$views_path = moojon_paths::get_views_directory();
+		self::attempt_mkdir(moojon_paths::get_controllers_directory());
+		self::attempt_mkdir($views_path);
+		self::run(MOOJON_PATH.'templates/scaffold/controller.template', moojon_paths::get_controllers_directory()."$controller.controller.class.php", $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/_dl.template', $views_path.'_dl.php', $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/_form.template', $views_path.'_form.php', $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/_table.template', $views_path.'_table.php', $swaps, false, true);		
+		self::run(MOOJON_PATH.'templates/scaffold/create.view.template', $views_path.'create.view.php', $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/destroy.view.template', $views_path.'destroy.view.php', $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/index.view.template', $views_path.'index.view.php', $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/read.view.template', $views_path.'read.view.php', $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/update.view.template', $views_path.'update.view.php', $swaps, false, true);
 	}
 		
 	static public function test($test) {}

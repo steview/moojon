@@ -214,7 +214,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		foreach ($this->columns as $column) {
 			if (get_class($column) != 'moojon_primary_key') {
 				$columns[] = $column;
-			}		
+			}
 		}
 		return $columns;
 	}
@@ -227,12 +227,12 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		return $columns;
 	}
 	
-	final protected function get_primary_key_columns() {
+	final public function get_primary_key_columns() {
 		$columns = array();
 		foreach ($this->columns as $column) {
-			if ($column->get_primary_key()) {
-				$columns[] = $column->get_name();
-			}		
+			if (get_class($column) == 'moojon_primary_key') {
+				$columns[] = $column;
+			}
 		}
 		return $columns;
 	}
@@ -386,7 +386,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 				}
 			}
 		}
-		moojon_query_runner::delete($instance->obj, $where);				
+		moojon_query_runner::delete($instance->obj, $where);
 	}
 	
 	final protected function base_delete() {
@@ -420,7 +420,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	final public function __clone() {
 		$this->new_record == true;
 		foreach ($this->get_primary_key_columns() as $column) {
-			$column_name = $column_get_name();
+			$column_name = $column->get_name();
 			$this->$column_name = null;
 		}
 	}

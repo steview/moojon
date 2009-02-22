@@ -1,0 +1,15 @@
+<h1>Update <[singular]></h1>
+
+<div id="content_main">
+
+<?php
+partial('destroy_form', array('<[singular]>' => $<[singular]>));
+?>
+
+</div><!-- /content_main -->
+
+<div id="content_sub">
+
+
+
+</div><!-- /content_sub -->
