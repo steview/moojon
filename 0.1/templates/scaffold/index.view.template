@@ -2,6 +2,10 @@
 
 <div id="content_main">
 
+<ul>
+	<li><?php echo link_to('Create', 'create/id/'.moojon_uri::get('id'), <[controller]>, <[app]>); ?></li>
+</ul>
+
 <?php
 partial('table', array('<[plural]>' => $<[plural]>));
 ?>

@@ -1,4 +1,4 @@
 <?php
-$form = new moojon_model_form($<[singular]>);
+$form = new moojon_model_form($<[singular]>, $<[singular]>->get_editable_column_names());
 echo $form->render();
 ?>

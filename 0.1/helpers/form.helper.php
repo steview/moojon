@@ -2,17 +2,18 @@
 final class moojon_model_form extends moojon_form_tag {
 	private $model;
 	
-	public function __construct(moojon_base_model $model, $attributes = array()) {
+	public function __construct(moojon_base_model $model, $columns = array(), $attributes = array()) {
 		$this->init();
+		$this->model = $model;
 		$this->action = '#';
 		$this->method = 'post';
 		foreach ($attributes as $key => $value) {
 			$this->$key = $value;
 		}
-		$this->model = $model;
 		$fieldset = new moojon_fieldset_tag();
 		$fieldset->id = 'controls';
-		foreach ($this->model->get_columns() as $column) {
+		foreach ($columns as $column_name) {
+			$column = $this->model->get_column($column_name);
 			$column_name = $column->get_name();
 			$label = true;
 			if ($this->find_relationship($column_name) == false) {
@@ -63,7 +64,7 @@ final class moojon_model_form extends moojon_form_tag {
 				$relationship_name = $relationship->get_name();
 				$relationship = new $relationship_name();
 				$options = array();
-				if ($column->get_null() == false) {
+				if ($column->get_null() == true) {
 					$options['Please select...'] = 0;
 				}
 				foreach($relationship->read() as $option) {
@@ -102,7 +103,7 @@ final class moojon_model_form extends moojon_form_tag {
 	}
 }
 
-final class moojon_model_delete_form extends moojon_form_tag {
+final class moojon_model_destroy_form extends moojon_form_tag {
 	public function __construct(moojon_base_model $model, $attributes = array()) {
 		$this->init();
 		$this->action = '#';
@@ -121,13 +122,14 @@ final class moojon_model_delete_form extends moojon_form_tag {
 final class moojon_model_dl extends moojon_dl_tag {
 	private $model;
 	
-	public function __construct(moojon_base_model $model, $attributes = array()) {
+	public function __construct(moojon_base_model $model, $columns = array(), $attributes = array()) {
 		$this->init();
 		$this->model = $model;
 		foreach ($attributes as $key => $value) {
 			$this->$key = $value;
 		}
-		foreach ($this->model->get_columns() as $column) {
+		foreach ($columns as $column_name) {
+			$column = $this->model->get_column($column_name);
 			$name = $column->get_name();
 			$this->add_child(new moojon_dt_tag(self::process_text($column)));
 			$this->add_child(new moojon_dd_tag($column->get_value()));
@@ -139,20 +141,51 @@ final class moojon_model_dl extends moojon_dl_tag {
 	}
 }
 
-final class moojon_model_table extends moojon_table_tag {
+final class moojon_model_table extends moojon_div_tag {
 	private $model;
 	
-	public function __construct(moojon_base_model $model, $attributes = null) {
+	public function __construct(moojon_model_collection $models, $columns = array(), $attributes = array()) {
 		$this->init();
-		$this->model = $model;
-		$ths = array();
-		foreach ($this->model->get_columns() as $column) {
-			$name = $column->get_name();
-			$ths[] = new moojon_th_tag(self::process_text($column), array('id' => $name.'_th'));
+		foreach ($attributes as $key => $value) {
+			$this->$key = $value;
 		}
-		$tr = new moojon_tr_tag($ths);
-		$thead = new moojon_thead_tag($tr);
-		$this->add_child($thead);
+		if ($models->count > 0) {
+			$this->model = $models->first;
+			$ths = array(new moojon_th_tag('&nbsp;'));
+			foreach ($columns as $column_name) {
+				if ($this->model->to_string_column != $column_name) {
+					$column = $this->model->get_column($column_name);
+					$ths[] = new moojon_th_tag(self::process_text($column), array('id' => $column_name.'_th'));
+				}
+			}
+			$ths[] = new moojon_th_tag('Update');
+			$ths[] = new moojon_th_tag('Destroy');
+			$trs = array();
+			foreach ($models as $model) {
+				$tds = array(new moojon_td_tag(moojon_quick_tags::model_read_tag($model)));
+				foreach ($columns as $column_name) {
+					if ($model->to_string_column != $column_name) {
+						$column = $model->get_column($column_name);
+						$tds[] = new moojon_td_tag($column->get_value());
+					}
+				}
+				$tds[] = new moojon_td_tag(moojon_quick_tags::model_update_tag($model));
+				$tds[] = new moojon_td_tag(moojon_quick_tags::model_destroy_tag($model));
+				$trs[] = new moojon_tr_tag($tds);
+			}
+			$tds = array(new moojon_td_tag('&nbsp;'));
+			foreach ($columns as $column_name) {
+				if ($this->model->to_string_column != $column_name) {
+					$column = $this->model->get_column($column_name);
+					$tds[] = new moojon_td_tag(null, array('id' => $name.'_td'));
+				}
+			}
+			$tds[] = new moojon_td_tag('&nbsp;');
+			$tds[] = new moojon_td_tag('&nbsp;');
+			$this->add_child(new moojon_table_tag(array(new moojon_thead_tag(new moojon_tr_tag($ths)), new moojon_tbody_tag($trs), new moojon_tfoot_tag(new moojon_tr_tag($tds)))));
+		} else {
+			$this->add_child(new moojon_p_tag('No '.moojon_inflect::pluralize(get_class($this->model)).' available.'));
+		}
 	}
 	
 	static private function process_text(moojon_base_column $column) {
@@ -177,6 +210,41 @@ final class moojon_quick_tags extends moojon_base {
 		$label_attributes['id'] = $attributes['id'].'_label';
 		$label_attributes['for'] = $attributes['id'];
 		return new moojon_label_tag($text, $label_attributes);
+	}
+	
+	static public function link_to($text, $action, $controller = null, $app = null, $attributes = array()) {
+		if (array_key_exists('href', $attributes) == false) {
+			if ($controller == null) {
+				$controller = moojon_uri::get_controller();
+			}
+			if ($app == null) {
+				$app = moojon_uri::get_app();
+			}
+			$attributes['href'] = "/index.php/$app/$controller/$action";
+		}
+		return new moojon_a_tag($text, $attributes);
+	}
+	
+	static public function model_a_tag(moojon_base_model $model, $text, $action, $controller = null, $app = null, $attributes = array()) {
+		$primary_key_name = moojon_primary_key::NAME;
+		$primary_key_value = $model->$primary_key_name;
+		return self::link_to($text, "$action/$primary_key_name/$primary_key_value", $controller, $app, $attributes);
+	}
+	
+	static public function model_create_tag($attributes = array(), $controller = null, $app = null) {
+		return self::link_to('Create', 'create', $controller, $app, $attributes);
+	}
+	
+	static public function model_read_tag(moojon_base_model $model, $attributes = array(), $controller = null, $app = null) {
+		return self::model_a_tag($model, $model, 'read', $controller, $app, $attributes);
+	}
+	
+	static public function model_update_tag(moojon_base_model $model, $attributes = array(), $controller = null, $app = null) {
+		return self::model_a_tag($model, 'Update', 'update', $controller, $app, $attributes);
+	}
+	
+	static public function model_destroy_tag(moojon_base_model $model, $attributes = array(), $controller = null, $app = null) {
+		return self::model_a_tag($model, 'Destroy', 'destroy', $controller, $app, $attributes);
 	}
 	
 	static public function binary_tag(moojon_base_column $column) {
@@ -257,7 +325,6 @@ final class moojon_quick_tags extends moojon_base {
 	
 	static public function primary_key_tag(moojon_primary_key $column) {
 		$attributes = self::process_attributes($column);
-		$attributes['maxlength'] = $column->get_limit();
 		$attributes['value'] = $column->get_value();
 		$attributes['type'] = 'hidden';
 		return new moojon_input_tag($attributes);

@@ -158,7 +158,7 @@ a.replace span{
 .dotrule{
 	height:1px; 
 	font-size:1px;
-	background:url(images/dot.gif) repeat-x; 
+	background:url(/images/dot.gif) repeat-x; 
 	clear:both;
 	margin:5px 0;
 }

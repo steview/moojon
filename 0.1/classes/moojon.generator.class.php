@@ -219,12 +219,15 @@ final class moojon_generator extends moojon_base {
 		$swaps['plural'] = moojon_inflect::pluralize($model);
 		$swaps['Singular'] = ucfirst(moojon_inflect::singularize($model));
 		$swaps['singular'] = moojon_inflect::singularize($model);
+		$swaps['app'] = $app;
+		$swaps['controller'] = $controller;
 		self::try_define('APP', $app);
 		self::try_define('CONTROLLER', $controller);
 		$views_path = moojon_paths::get_views_directory();
 		self::attempt_mkdir(moojon_paths::get_controllers_directory());
 		self::attempt_mkdir($views_path);
 		self::run(MOOJON_PATH.'templates/scaffold/controller.template', moojon_paths::get_controllers_directory()."$controller.controller.class.php", $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/_destroy_form.template', $views_path.'_destroy_form.php', $swaps, false, true);
 		self::run(MOOJON_PATH.'templates/scaffold/_dl.template', $views_path.'_dl.php', $swaps, false, true);
 		self::run(MOOJON_PATH.'templates/scaffold/_form.template', $views_path.'_form.php', $swaps, false, true);
 		self::run(MOOJON_PATH.'templates/scaffold/_table.template', $views_path.'_table.php', $swaps, false, true);		

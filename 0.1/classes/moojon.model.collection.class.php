@@ -12,7 +12,7 @@ final class moojon_model_collection extends ArrayObject {
 			$this->relationship = $this->accessor->get_relationship($key);
 			$this->key = $key;
 		}
-		$this->iterator = $this->getIterator();		
+		$this->iterator = $this->getIterator();
 	}
 	
 	public function __get($key) {

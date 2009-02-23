@@ -8,6 +8,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	private $errors = array();
 	private $unsaved = false;
 	protected $new_record = false;
+	public $to_string_column;
 	
 	final public function __construct() {}
 	
@@ -200,7 +201,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		return $this->errors;
 	}
 	
-	final protected function get_column($column_name) {
+	final public function get_column($column_name) {
 		foreach ($this->get_columns() as $column) {
 			if ($column->get_name() == $column_name) {
 				return $column;
@@ -209,7 +210,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		return false;
 	}
 	
-	final protected function get_editable_columns() {
+	final public function get_editable_columns() {
 		$columns = array();
 		foreach ($this->columns as $column) {
 			if (get_class($column) != 'moojon_primary_key') {
@@ -219,7 +220,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		return $columns;
 	}
 	
-	final protected function get_editable_column_names() {
+	final public function get_editable_column_names() {
 		$columns = array();
 		foreach ($this->get_editable_columns() as $column) {
 			$columns[] = $column->get_name();
@@ -292,7 +293,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 				} else {
 					$saved = false;
 				}
-			}			
+			}
 		} else {
 			$saved = false;
 		}
@@ -304,7 +305,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 				}
 			}
 		}
-		return $saved;		
+		return $saved;
 	}
 	
 	final static protected function base_read($class, $where, $order, $limit, $accessor) {
@@ -413,8 +414,12 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	public function __toString() {
-		$id_property = moojon_primary_key::NAME;
-		return $this->$id_property;
+		if ($this->to_string_column == null) {
+			$to_string_column = moojon_primary_key::NAME;
+		} else {
+			$to_string_column = $this->to_string_column;
+		}
+		return $this->$to_string_column;
 	}
 	
 	final public function __clone() {
