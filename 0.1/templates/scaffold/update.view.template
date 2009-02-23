@@ -3,7 +3,7 @@
 <div id="content_main">
 
 <?php
-partial('destroy_form', array('<[singular]>' => $<[singular]>));
+partial('form', array('<[singular]>' => $<[singular]>));
 ?>
 
 </div><!-- /content_main -->

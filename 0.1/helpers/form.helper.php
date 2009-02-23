@@ -118,6 +118,27 @@ final class moojon_model_delete_form extends moojon_form_tag {
 	}
 }
 
+final class moojon_model_dl extends moojon_dl_tag {
+	private $model;
+	
+	public function __construct(moojon_base_model $model, $attributes = array()) {
+		$this->init();
+		$this->model = $model;
+		foreach ($attributes as $key => $value) {
+			$this->$key = $value;
+		}
+		foreach ($this->model->get_columns() as $column) {
+			$name = $column->get_name();
+			$this->add_child(new moojon_dt_tag(self::process_text($column)));
+			$this->add_child(new moojon_dd_tag($column->get_value()));
+		}
+	}
+	
+	static private function process_text(moojon_base_column $column) {
+		return ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($column->get_name())));
+	}
+}
+
 final class moojon_model_table extends moojon_table_tag {
 	private $model;
 	
