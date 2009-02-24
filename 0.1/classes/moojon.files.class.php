@@ -72,7 +72,7 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
-	static private function has_ext($file, $ext = 'php') {
+	static public function has_ext($file, $ext = 'php') {
 		if (self::get_ext($file) == $ext) {
 			return true;
 		} else {
@@ -80,7 +80,7 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
-	static private function strip_ext($file, $ext = 'php') {
+	static public function strip_ext($file, $ext = 'php') {
 		if (self::has_ext($file, $ext)) {
 			return substr($file, 0, (strlen($file) - strlen(".$ext")));
 		} else {
@@ -88,7 +88,7 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
-	static private function get_ext($file) {
+	static public function get_ext($file) {
 		if (strpos($file, '.') > 0) {
 			return substr($file, (strrpos($file, '.') + 1));
 		} else {

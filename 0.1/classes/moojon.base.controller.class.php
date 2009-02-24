@@ -9,9 +9,11 @@ abstract class moojon_base_controller extends moojon_base {
 	}
 	
 	final public function render($action) {
+		$this->init();
 		if (method_exists($this, $action)) {
 			$this->$action();
-		}		
+		}
+		$this->close();
 	}
 	
 	final protected function forward($action = null, $controller = null, $app = null) {
@@ -19,9 +21,13 @@ abstract class moojon_base_controller extends moojon_base {
 	}
 	
 	final protected function redirect($uri) {
-		header("Location: /index.php/$uri");
+		header('Location: '.moojon_config::get('index_file').$uri);
 		die();
 	}
+	
+	protected function init() {}
+	
+	protected function close() {}
 	
 	final public function get_layout() {
 		if ($this->layout === false) {

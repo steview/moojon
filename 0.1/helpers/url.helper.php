@@ -6,6 +6,6 @@ function link_to($content, $action, $controller = null, $app = null, $attributes
 	if ($controller == null) {
 		$controller = moojon_uri::get_controller();
 	}
-	return "<a href=\"/index.php/$app/$controller/$action\">$content</a>";
+	return '<a href="'.moojon_config::get('index_file')."$app/$controller/$action\">$content</a>";
 }
 ?>

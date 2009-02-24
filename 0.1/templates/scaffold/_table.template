@@ -1,4 +1,9 @@
 <?php
-$table = new moojon_model_table($<[plural]>, $<[plural]>->first->get_editable_column_names());
+if (count($<[plural]>) > 0) {
+	$columns = $<[plural]>->first->get_editable_column_names();
+} else {
+	$columns = array();
+}
+$table = new moojon_model_table($<[plural]>, 'No <[plural]> available.', $columns);
 echo $table->render();
 ?>

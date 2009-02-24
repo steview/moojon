@@ -382,8 +382,8 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		$instance = self::init($class);
 		foreach ($instance->read($where) as $record) {
 			foreach($record->get_relationships() as $relationship) {
-				if ($relationship->get_relationship() == 'moojon_has_many_relationship' || $relationship->get_relationship() == 'moojon_has_many_to_many_relationship') {
-					$relationship->delete();
+				if (get_class($relationship) == 'moojon_has_many_relationship' || get_class($relationship) == 'moojon_has_many_to_many_relationship') {
+					//$relationship->delete();
 				}
 			}
 		}

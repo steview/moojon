@@ -144,7 +144,7 @@ final class moojon_model_dl extends moojon_dl_tag {
 final class moojon_model_table extends moojon_div_tag {
 	private $model;
 	
-	public function __construct(moojon_model_collection $models, $columns = array(), $attributes = array()) {
+	public function __construct(moojon_model_collection $models = null, $empty_message = null, $columns = array(), $attributes = array()) {
 		$this->init();
 		foreach ($attributes as $key => $value) {
 			$this->$key = $value;
@@ -162,11 +162,19 @@ final class moojon_model_table extends moojon_div_tag {
 			$ths[] = new moojon_th_tag('Destroy');
 			$trs = array();
 			foreach ($models as $model) {
+				$this->model = $model;
 				$tds = array(new moojon_td_tag(moojon_quick_tags::model_read_tag($model)));
 				foreach ($columns as $column_name) {
 					if ($model->to_string_column != $column_name) {
-						$column = $model->get_column($column_name);
-						$tds[] = new moojon_td_tag($column->get_value());
+						if ($this->find_relationship($column_name) == false) {
+							$column = $model->get_column($column_name);
+							$content = $column->get_value();
+						} else {
+							$relationship = $this->find_relationship($column_name);
+							$name = $relationship->get_name();
+							$content = $model->$name;
+						}
+						$tds[] = new moojon_td_tag($content);
 					}
 				}
 				$tds[] = new moojon_td_tag(moojon_quick_tags::model_update_tag($model));
@@ -184,8 +192,17 @@ final class moojon_model_table extends moojon_div_tag {
 			$tds[] = new moojon_td_tag('&nbsp;');
 			$this->add_child(new moojon_table_tag(array(new moojon_thead_tag(new moojon_tr_tag($ths)), new moojon_tbody_tag($trs), new moojon_tfoot_tag(new moojon_tr_tag($tds)))));
 		} else {
-			$this->add_child(new moojon_p_tag('No '.moojon_inflect::pluralize(get_class($this->model)).' available.'));
+			$this->add_child(new moojon_p_tag($empty_message));
 		}
+	}
+	
+	private function find_relationship($column_name) {
+		foreach ($this->model->get_relationships() as $relationship) {
+			if (is_subclass_of($relationship, 'moojon_base_relationship') == true && $relationship->get_foreign_key() == $column_name) {
+				return $relationship;
+			}
+		}
+		return false;
 	}
 	
 	static private function process_text(moojon_base_column $column) {
@@ -220,7 +237,7 @@ final class moojon_quick_tags extends moojon_base {
 			if ($app == null) {
 				$app = moojon_uri::get_app();
 			}
-			$attributes['href'] = "/index.php/$app/$controller/$action";
+			$attributes['href'] = moojon_config::get('index_file')."$app/$controller/$action";
 		}
 		return new moojon_a_tag($text, $attributes);
 	}
@@ -571,6 +588,57 @@ final class moojon_quick_tags extends moojon_base {
 			$options[] = new moojon_option_tag($key, $attributes);
 		}
 		return $options;
+	}
+	
+	static public function css_tag($file, $media = null, $path = null) {
+		$file = moojon_files::strip_ext(basename($file), 'css');
+		if ($media == null) {
+			$media = 'screen, projection';
+		}
+		if ($path == null) {
+			$path = '/'.moojon_config::get('css_directory');
+		}
+		return new moojon_link_tag(array('rel' => 'stylesheet', 'type' => 'text/css', 'href' => "$path/$file.css", 'media' => $media));
+	}
+	
+	static public function js_tag($file, $path = null) {
+		$file = moojon_files::strip_ext(basename($file), 'js');
+		if ($path == null) {
+			$path = '/'.moojon_config::get('js_directory');
+		}
+		return new moojon_script_tag(null, array('type' => 'text/javascript', 'src' => "$path/$file.js"));
+	}
+	
+	static public function render_css_tags($files = null, $paths = null) {
+		$return = '';
+		if ($files == null) {
+			foreach (moojon_assets::get_css() as $css) {
+				$tag = self::css_tag($css);
+				$return .= $tag->render()."\n";
+			}
+		} else {
+			for ($i = 0; $i < (count($files) - 1); $i ++) {
+				$tag = self::js_tag($files[$i], $paths[$i]);
+				$return .= $tag->render()."\n";
+			}
+		}
+		return $return;
+	}
+	
+	static public function render_js_tags($files = null, $paths = null) {
+		$return = '';
+		if ($files == null) {
+			foreach (moojon_assets::get_js() as $js) {
+				$tag = self::js_tag($js);
+				$return .= $tag->render()."\n";
+			}
+		} else {
+			for ($i = 0; $i < (count($files) - 1); $i ++) {
+				$tag = self::js_tag($files[$i], $paths[$i]);
+				$return .= $tag->render()."\n";
+			}
+		}
+		return $return;
 	}
 }
 ?>

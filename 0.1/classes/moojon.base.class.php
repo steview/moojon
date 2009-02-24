@@ -66,6 +66,10 @@ abstract class moojon_base {
 			}
 		}
 		$log_file = $log_dir.strtolower(ENVIRONMENT).'.log';
+		if (file_exists($log_file) == false) {
+			touch($log_file);
+			chmod($log_file, 0666);
+		}
 		if (!$handle = fopen($log_file, 'a')) {
 			fclose($handle);
 			self::handle_error("Unable to open / create log file ($log_file)");

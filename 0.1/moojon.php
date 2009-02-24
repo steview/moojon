@@ -5,6 +5,7 @@ require_once(MOOJON_PATH.'/classes/moojon.uri.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.paths.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.files.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.inflect.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.assets.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.request.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.app.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.controller.class.php');
@@ -57,9 +58,19 @@ function partial($partial, $variables = array()) {
 	foreach ($variables as $key => $value) {
 		$$key = $value;
 	}
-	$partial = "_$partial.php";
+	$path = dirname($partial).'/';
+	if ($path == './') {
+		$path = '';
+	}
+	$basename = basename($partial);
+	if (substr($basename, 0, 1) == '_') {
+		$basename = substr($basename, 1);
+	}
+	$partial = $path.'_'.$basename.'.php';
 	if (file_exists(moojon_paths::get_views_directory().$partial) == true) {
 		require_once(moojon_paths::get_views_directory().$partial);
+	} elseif (file_exists(moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$partial) == true) {
+		require_once(moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$partial);
 	} elseif (file_exists(moojon_paths::get_shared_views_directory().$partial) == true) {
 		require_once(moojon_paths::get_shared_views_directory().$partial);
 	} else {
