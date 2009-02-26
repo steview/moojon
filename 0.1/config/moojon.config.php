@@ -22,6 +22,6 @@ return array(
 	'default_helpers' => 'ui, url, form',
 	'default_js' => 'jquery, jquery.flash, project',
 	'default_css' => 'core, form, layout',
-	'index_file' => '/'
+	'index_file' => '/index.php/'
 );
 ?>
