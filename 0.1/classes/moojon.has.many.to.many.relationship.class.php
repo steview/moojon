@@ -2,10 +2,11 @@
 final class moojon_has_many_to_many_relationship extends moojon_base_relationship
 {
 	final public function get_where(moojon_base_model $accessor) {
-		$obj = $this->get_obj($accessor);
+		$foreign_obj = $this->get_obj($accessor);
 		$key = $this->key;
-		$foreign_key = $this->foreign_key;
-		return "$key IN (SELECT ".moojon_primary_key::get_foreign_key($this->foreign_obj)." FROM $obj WHERE $foreign_key = ".$accessor->$key.')';
+		$foreign_key1 = moojon_primary_key::get_foreign_key($this->foreign_obj);
+		$foreign_key2 = moojon_primary_key::get_foreign_key(get_class($accessor));
+		return "$key IN (SELECT $foreign_key1 FROM $foreign_obj WHERE $foreign_key2 = ".$accessor->$key.')';
 	}
 	
 	final public function get_class(moojon_base_model $accessor) {
