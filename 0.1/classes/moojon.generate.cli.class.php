@@ -97,7 +97,8 @@ final class moojon_generate_cli extends moojon_base_cli {
 					}
 				}
 				$model = $this->prompt_until_in($arguments[1], moojon_adapter::list_tables(), 'What model would you like to generate a scaffold for?');
-				$controller = $this->prompt('Please enter a controller name', $model);
+				
+				$controller = $this->prompt_until($arguments[2], 'Please enter a controller name', $model);
 				moojon_generator::scaffold($app, $model, $controller);
 				break;
 		}

@@ -219,6 +219,10 @@ final class moojon_generator extends moojon_base {
 		$swaps['plural'] = moojon_inflect::pluralize($model);
 		$swaps['Singular'] = ucfirst(moojon_inflect::singularize($model));
 		$swaps['singular'] = moojon_inflect::singularize($model);
+		$swaps['Human'] = str_replace('_', ' ', ucfirst(moojon_inflect::singularize($model)));
+		$swaps['human'] = str_replace('_', ' ', moojon_inflect::singularize($model));
+		$swaps['Humans'] = str_replace('_', ' ', ucfirst(moojon_inflect::pluralize($model)));
+		$swaps['humans'] = str_replace('_', ' ', moojon_inflect::pluralize($model));
 		$swaps['app'] = $app;
 		$swaps['controller'] = $controller;
 		self::try_define('APP', $app);

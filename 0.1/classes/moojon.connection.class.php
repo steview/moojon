@@ -1,6 +1,5 @@
 <?php
-final class moojon_connection
-{
+final class moojon_connection {
 	private static $instance;
 	private $host;
 	private $username;
@@ -11,28 +10,22 @@ final class moojon_connection
 	final private function __construct() {}
 	
 	final static public function init($host = null, $username = null, $password = null, $database = null) {
-		if (empty(self::$instance))
-		{
+		if (empty(self::$instance)) {
 			self::$instance = new moojon_connection();
 		}
-		if ($host != null)
-		{
+		if ($host != null) {
 			self::$instance->set_host($host);
 		}
-		if ($username != null)
-		{
+		if ($username != null) {
 			self::$instance->set_username($username);
 		}
-		if ($password != null)
-		{
+		if ($password != null) {
 			self::$instance->set_password($password);
 		}
-		if ($database != null)
-		{
+		if ($database != null) {
 			self::$instance->set_database($database);
 		}
-		if ($host != null && $username != null && $password != null && $database != null)
-		{
+		if ($host != null && $username != null && $password != null && $database != null) {
 			self::$instance->connect($host, $username, $password, $database);
 		}
 		return self::$instance;

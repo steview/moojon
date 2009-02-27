@@ -6,7 +6,7 @@ final class <[plural]>_controller extends moojon_base_controller {
 	
 	public function create() {
 		if (moojon_request::post() == true) {
-			if ($_POST['submit'] == 'Create') {
+			if ($_POST['submit_button'] == 'Create') {
 				<[singular]>::create($_POST)->save();
 			}
 			$this->redirect('<[plural]>');
@@ -22,7 +22,7 @@ final class <[plural]>_controller extends moojon_base_controller {
 	public function update() {
 		$this->read_from_id();
 		if (moojon_request::post() == true) {
-			if ($_POST['submit'] == 'Update') {
+			if ($_POST['submit_button'] == 'Update') {
 				$this-><[singular]>->set($_POST)->save();
 			}
 			$this->redirect('<[plural]>/read/id/'.$this->get_id());
@@ -31,7 +31,7 @@ final class <[plural]>_controller extends moojon_base_controller {
 	
 	public function destroy() {
 		if (moojon_request::post() == true) {
-			if ($_POST['submit'] == 'Destroy') {
+			if ($_POST['submit_button'] == 'Destroy') {
 				<[singular]>::destroy('id = '.$this->get_id());
 			}
 			$this->redirect('<[plural]>');

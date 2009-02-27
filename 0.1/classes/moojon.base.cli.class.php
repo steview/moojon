@@ -41,10 +41,15 @@ abstract class moojon_base_cli extends moojon_base {
 	
 	final protected function prompt_until_in($initial, $collection, $message) {
 		$message .= ' ('.implode(', ', $collection).')';
-		$return = ($initial) ? $initial : $this->prompt($message);
-		while (!in_array($return, $collection)) {
+		if (count($collection) == 1) {
+			$default = $collection[0];
+		} else {
+			$default = null;
+		}
+		$return = ($initial) ? $initial : $this->prompt($message, $default);
+		while (in_array($return, $collection) == false) {
 			echo '(invalid command) ';
-			$return = $this->prompt($message);
+			$return = $this->prompt($message, $default);
 		}
 		return $return;
 	}
