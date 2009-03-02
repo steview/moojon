@@ -14,6 +14,7 @@ require_once(MOOJON_PATH.'/classes/moojon.query.builder.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.query.runner.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.model.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.column.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.validation.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.model.collection.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.relationship.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.has.one.relationship.class.php');
@@ -24,6 +25,7 @@ require_once(MOOJON_PATH.'/classes/moojon.base.tag.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.tag.attribute.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.empty.tag.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.open.tag.class.php');
+moojon_files::require_directory_files(MOOJON_PATH.'/classes/validations/');
 moojon_files::require_directory_files(MOOJON_PATH.'/classes/tags/');
 moojon_files::require_directory_files(MOOJON_PATH.'/classes/tags/attributes/');
 if (defined('PROJECT_DIRECTORY') == true) {

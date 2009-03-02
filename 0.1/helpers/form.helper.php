@@ -18,6 +18,11 @@ final class moojon_model_form extends moojon_form_tag {
 		foreach ($attributes as $key => $value) {
 			$this->$key = $value;
 		}
+		$errors = array();
+		foreach ($this->model->get_errors() as $key => $value) {
+			$errors[] = new moojon_label_tag($value, array('class' => 'error', 'for' => $key));
+		}
+		$this->add_child(new moojon_div_tag($errors, array('class' => 'errors')));
 		$fieldset = new moojon_fieldset_tag();
 		$fieldset->id = 'controls';
 		foreach ($columns as $column_name) {
