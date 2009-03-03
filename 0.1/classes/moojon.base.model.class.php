@@ -201,8 +201,8 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		$this->add_validation($name, new moojon_accept_validation($message, $exts));
 	}
 	
-	final protected function validate_equal_to($name, $message, moojon_base_column $column) {
-		$this->add_validation($name, new moojon_equal_to_validation($message, $column));
+	final protected function validate_equal_to($name, $message, &$value) {
+		$this->add_validation($name, new moojon_equal_to_validation($message, $value));
 	}
 	
 	/*

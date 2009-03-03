@@ -1,15 +1,15 @@
 <?php
 final class moojon_equal_to_validation extends moojon_base_validation {
 	
-	private $column;
+	private $value;
 	
-	public function __construct($message, moojon_base_column $column) {
+	public function __construct($message, &$value) {
 		$this->set_message($message);
-		$this->column = $column;
+		$this->value = $value;
 	}
 	
 	public function validate(moojon_base_column $column) {
-		return ($this->column->get_value() == $column->get_value());
+		return ($this->value == $column->get_value());
 	}
 }
 ?>
