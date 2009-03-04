@@ -8,7 +8,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 		$this->card_type = $card_type;
 	}
 	
-	public function validate(moojon_base_column $column) {
+	public function validate(moojon_base_model $model, moojon_base_column $column) {
 		$card_number = $column->get_value();
 		$cards = array(
 			array('type' => 'American Express', 'length' => '15', 'prefixes' => '34,37', 'checkdigit' => true),

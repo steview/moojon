@@ -126,6 +126,10 @@ abstract class moojon_base_tag extends moojon_base {
 		$this->children[] = $child;
 	}
 	
+	final public function prepend_child($child) {
+		array_unshift($this->children, $child);
+	}
+	
 	final public function add_class($class) {
 		if (in_array('class', $this->legal_attributes)) {
 			if ($this->has_attribute('class')) {

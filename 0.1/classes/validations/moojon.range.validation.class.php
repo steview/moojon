@@ -10,7 +10,7 @@ final class moojon_range_validation extends moojon_base_validation {
 		$this->max = $max;
 	}
 	
-	public function validate(moojon_base_column $column) {
+	public function validate(moojon_base_model $model, moojon_base_column $column) {
 		$value = (integer)$column->get_value();
 		if ($value < $this->min || $value > $this->max) {
 			return false;

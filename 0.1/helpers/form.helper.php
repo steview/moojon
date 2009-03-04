@@ -112,7 +112,7 @@ final class moojon_model_form extends moojon_form_tag {
 }
 
 final class moojon_model_destroy_form extends moojon_form_tag {
-	public function __construct(moojon_base_model $model, $attributes = array()) {
+	public function __construct($attributes = array()) {
 		$this->init();
 		$this->action = '#';
 		$this->method = 'post';
@@ -131,7 +131,7 @@ final class moojon_model_destroy_form extends moojon_form_tag {
 final class moojon_model_dl extends moojon_dl_tag {
 	private $model;
 	
-	public function __construct(moojon_base_model $model, $columns = array(), $attributes = array()) {
+	public function __construct($columns = array(), $attributes = array()) {
 		$this->init();
 		$this->model = $model;
 		$this->id = 'read_'.get_class($model).'_dl';

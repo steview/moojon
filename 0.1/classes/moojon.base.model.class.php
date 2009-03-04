@@ -138,7 +138,13 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	final protected function add_validation($name, moojon_base_validation $validation) {
-		$this->validations[$name] = $validation;
+		if (array_key_exists($name, $this->validations)) {
+			$validations = $this->validations[$name];
+		} else {
+			$validations = array();
+		}
+		$validations[] = $validation;
+		$this->validations[$name] = $validations;
 	}
 	
 	final protected function validate_required($name, $message) {
@@ -201,7 +207,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		$this->add_validation($name, new moojon_accept_validation($message, $exts));
 	}
 	
-	final protected function validate_equal_to($name, $message, &$value) {
+	final protected function validate_equal_to($name, $message, $value) {
 		$this->add_validation($name, new moojon_equal_to_validation($message, $value));
 	}
 	
@@ -345,14 +351,16 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		$errors = array();
 		foreach ($this->get_editable_columns() as $column) {
 			if ($this->has_validation($column->get_name()) == true) {
-				$validation = $this->validations[$column->get_name()];
-				if ($validation->validate($column) !== true) {
-					$errors[$column->get_name()] = $validation->get_message();
-					$valid = false;
+				foreach ($this->validations[$column->get_name()] as $validation) {
+					if ($validation->validate($this, $column) !== true) {
+						$errors[$column->get_name()] = $validation->get_message();
+						$valid = false;
+						break;
+					}
 				}
 			}
 		}
-		if ($cascade) {
+		if ($cascade == true) {
 			foreach ($this->relationships as $relationship) {
 				$validation = $relationship->validate(true);
 				if ($validation !== true) {

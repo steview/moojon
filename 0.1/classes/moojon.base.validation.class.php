@@ -4,7 +4,7 @@ abstract class moojon_base_validation extends moojon_base {
 	private $message;
 	private $model;
 	
-	final public function set_model($model) {
+	final public function set_model(moojon_base_model $model) {
 		$this->model = $model;
 	}
 	
@@ -20,6 +20,6 @@ abstract class moojon_base_validation extends moojon_base {
 		return $this->message;
 	}
 	
-	abstract public function validate(moojon_base_column $column);
+	abstract public function validate(moojon_base_model $model, moojon_base_column $column);
 }
 ?>
