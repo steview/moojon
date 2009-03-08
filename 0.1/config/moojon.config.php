@@ -19,7 +19,7 @@ return array(
 	'js_directory' => 'js',
 	'script_directory' => 'script',
 	'config_directory' => 'config',
-	'default_helpers' => 'ui, url, form',
+	'default_helpers' => 'ui, url',
 	'default_js' => 'jquery, jquery.flash, project',
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/'

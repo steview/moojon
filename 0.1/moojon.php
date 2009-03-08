@@ -25,6 +25,8 @@ require_once(MOOJON_PATH.'/classes/moojon.base.tag.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.tag.attribute.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.empty.tag.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.open.tag.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.model.ui.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.quick.tags.class.php');
 moojon_files::require_directory_files(MOOJON_PATH.'/classes/validations/');
 moojon_files::require_directory_files(MOOJON_PATH.'/classes/tags/');
 moojon_files::require_directory_files(MOOJON_PATH.'/classes/tags/attributes/');

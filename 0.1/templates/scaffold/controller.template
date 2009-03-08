@@ -5,13 +5,13 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	public function create() {
+		$this-><[singular]> = <[singular]>::create($_POST['<[singular]>']);
 		if (moojon_request::post() == true) {
 			if ($_POST['submit_button'] == 'Create') {
-				<[singular]>::create($_POST)->save();
+				if ($this-><[singular]>->save() === true) {
+					$this->redirect('<[plural]>');
+				}
 			}
-			$this->redirect('<[plural]>');
-		} else {
-			$this-><[singular]> = <[singular]>::create();
 		}
 	}
 	
@@ -23,9 +23,11 @@ final class <[plural]>_controller extends moojon_base_controller {
 		$this->read_from_id();
 		if (moojon_request::post() == true) {
 			if ($_POST['submit_button'] == 'Update') {
-				$this-><[singular]>->set($_POST)->save();
+				$this-><[singular]>->set($_POST['<[singular]>']);
+				if ($this-><[singular]>->save() === true) {
+					$this->redirect('<[plural]>/read/id/'.$this->get_id());
+				}
 			}
-			$this->redirect('<[plural]>/read/id/'.$this->get_id());
 		}
 	}
 	
@@ -44,10 +46,11 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	private function get_id() {
-		if (moojon_uri::get('id') != null) {
-			return moojon_uri::get('id');
+		$<[singular]> = $_POST['<[singular]>'];
+		if ($<[singular]>[moojon_primary_key::NAME] != null) {
+			return $<[singular]>[moojon_primary_key::NAME];
 		} else {
-			return $_POST['id'];
+			return moojon_uri::get(moojon_primary_key::NAME);
 		}
 	}
 }
