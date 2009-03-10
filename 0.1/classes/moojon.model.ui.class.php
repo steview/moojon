@@ -39,6 +39,24 @@ final class moojon_model_ui extends moojon_base {
 		return new moojon_form_tag(array(new moojon_fieldset_tag($controls, array('id' => 'controls')), self::submit_button($submit_value), self::cancel_button()), $attributes);
 	}
 	
+	static public function dl(moojon_base_model $model, $column_names = array(), $attributes = array()) {
+		$attributes['id'] = 'read_'.get_class($model).'_dl';
+		$dt_dd_tags = array();
+		foreach ($column_names as $column_name) {
+			$column = $model->get_column($column_name);
+			if (self::find_relationship($column, $model) == false) {
+				$content = $column->get_value();
+			} else {
+				$relationship = self::find_relationship($column, $model);
+				$name = $relationship->get_name();
+				$content = $model->$name;
+			}
+			$dt_dd_tags[] = self::dt_tag($column);
+			$dt_dd_tags[] = self::dd_tag($column, $content);
+		}
+		return new moojon_dl_tag($dt_dd_tags, $attributes);
+	}
+	
 	static public function destroy_form(moojon_base_model $model, $message, $attributes = array()) {
 		$attributes['action'] = '#';
 		$attributes['method'] = 'post';
@@ -50,6 +68,60 @@ final class moojon_model_ui extends moojon_base {
 		$controls[] = self::submit_button('Destroy');
 		$controls[] = self::cancel_button();
 		return new moojon_form_tag($controls, $attributes);
+	}
+	
+	static public function table(moojon_model_collection $models = null, $empty_message, $column_names = array(), $attributes = array()) {
+		if ($models->count > 0) {
+			$model = $models->first;
+			$ths = array(new moojon_th_tag('&nbsp;'));
+			foreach ($column_names as $column_name) {
+				if ($model->to_string_column != $column_name) {
+					$column = $model->get_column($column_name);
+					$ths[] = new moojon_th_tag(self::process_text($column), array('id' => $column_name.'_th'));
+				}
+			}
+			$ths[] = new moojon_th_tag('Update');
+			$ths[] = new moojon_th_tag('Destroy');
+			$trs = array();
+			$primary_key = moojon_primary_key::NAME;
+			$counter = 0;
+			foreach ($models as $model) {
+				$counter ++;
+				$tds = array(new moojon_td_tag(self::model_read_tag($model)));
+				foreach ($column_names as $column_name) {
+					if ($model->to_string_column != $column_name) {
+						if (self::find_relationship($column, $model) == false) {
+							$column = $model->get_column($column_name);
+							$content = $column->get_value();
+						} else {
+							$relationship = self::find_relationship($column, $model);
+							$name = $relationship->get_name();
+							$content = $model->$name;
+						}
+						$tds[] = new moojon_td_tag($content, array('id' => get_class($model).'_'.$column_name.'_'.$model->$primary_key.'_td'));
+					}
+				}
+				$tds[] = new moojon_td_tag(self::model_update_tag($model, array('class' => 'update', 'id' => get_class($model).'_update_'.$model->$primary_key.'_a')));
+				$tds[] = new moojon_td_tag(self::model_destroy_tag($model, array('class' => 'destroy', 'id' => get_class($model).'_update_'.$model->$primary_key.'_a')));
+				$trs[] = new moojon_tr_tag($tds, array('id' => get_class($model).'_'.$model->$primary_key.'_td', 'class' => 'row'.($counter % 2)));
+			}
+			$tds = array(new moojon_td_tag('&nbsp;'));
+			foreach ($column_names as $column_name) {
+				if ($model->to_string_column != $column_name) {
+					$column = $model->get_column($column_name);
+					$tds[] = new moojon_td_tag(null, array('id' => $name.'_td'));
+				}
+			}
+			$tds[] = new moojon_td_tag('&nbsp;');
+			$tds[] = new moojon_td_tag('&nbsp;');
+			$child = new moojon_table_tag(array(new moojon_thead_tag(new moojon_tr_tag($ths)), new moojon_tbody_tag($trs), new moojon_tfoot_tag(new moojon_tr_tag($tds))));
+			foreach ($attributes as $key => $value) {
+				$child->$key = $value;
+			}
+		} else {
+			$child = new moojon_p_tag($empty_message);
+		}
+		return new moojon_div_tag($child);
 	}
 	
 	static public function submit_button($value) {
@@ -208,60 +280,6 @@ final class moojon_model_ui extends moojon_base {
 		return self::datetime_tag($column, $model, $start, $end);
 	}
 	
-	static public function table(moojon_model_collection $models = null, $empty_message = null, $column_names = array(), $attributes = array()) {
-		if ($models->count > 0) {
-			$model = $models->first;
-			$ths = array(new moojon_th_tag('&nbsp;'));
-			foreach ($column_names as $column_name) {
-				if ($model->to_string_column != $column_name) {
-					$column = $model->get_column($column_name);
-					$ths[] = new moojon_th_tag(self::process_text($column), array('id' => $column_name.'_th'));
-				}
-			}
-			$ths[] = new moojon_th_tag('Update');
-			$ths[] = new moojon_th_tag('Destroy');
-			$trs = array();
-			$primary_key = moojon_primary_key::NAME;
-			$counter = 0;
-			foreach ($models as $model) {
-				$counter ++;
-				$tds = array(new moojon_td_tag(self::model_read_tag($model)));
-				foreach ($column_names as $column_name) {
-					if ($model->to_string_column != $column_name) {
-						if (self::find_relationship($column, $model) == false) {
-							$column = $model->get_column($column_name);
-							$content = $column->get_value();
-						} else {
-							$relationship = self::find_relationship($column, $model);
-							$name = $relationship->get_name();
-							$content = $model->$name;
-						}
-						$tds[] = new moojon_td_tag($content, array('id' => get_class($model).'_'.$column_name.'_'.$model->$primary_key.'_td'));
-					}
-				}
-				$tds[] = new moojon_td_tag(self::model_update_tag($model, array('class' => 'update', 'id' => get_class($model).'_update_'.$model->$primary_key.'_a')));
-				$tds[] = new moojon_td_tag(self::model_destroy_tag($model, array('class' => 'destroy', 'id' => get_class($model).'_update_'.$model->$primary_key.'_a')));
-				$trs[] = new moojon_tr_tag($tds, array('id' => get_class($model).'_'.$model->$primary_key.'_td', 'class' => 'row'.($counter % 2)));
-			}
-			$tds = array(new moojon_td_tag('&nbsp;'));
-			foreach ($column_names as $column_name) {
-				if ($model->to_string_column != $column_name) {
-					$column = $model->get_column($column_name);
-					$tds[] = new moojon_td_tag(null, array('id' => $name.'_td'));
-				}
-			}
-			$tds[] = new moojon_td_tag('&nbsp;');
-			$tds[] = new moojon_td_tag('&nbsp;');
-			$child = new moojon_table_tag(array(new moojon_thead_tag(new moojon_tr_tag($ths)), new moojon_tbody_tag($trs), new moojon_tfoot_tag(new moojon_tr_tag($tds))));
-			foreach ($attributes as $key => $value) {
-				$child->$key = $value;
-			}
-		} else {
-			$child = new moojon_p_tag($empty_message);
-		}
-		return new moojon_div_tag($child);
-	}
-	
 	static public function model_a_tag(moojon_base_model $model, $text, $action, $controller = null, $app = null, $attributes = array()) {
 		$primary_key_name = moojon_primary_key::NAME;
 		$primary_key_value = $model->$primary_key_name;
@@ -282,24 +300,6 @@ final class moojon_model_ui extends moojon_base {
 	
 	static public function model_destroy_tag(moojon_base_model $model, $attributes = array(), $controller = null, $app = null) {
 		return self::model_a_tag($model, 'Destroy', 'destroy', $controller, $app, $attributes);
-	}
-	
-	static public function dl(moojon_base_model $model, $column_names = array(), $attributes = array()) {
-		$attributes['id'] = 'read_'.get_class($model).'_dl';
-		$dt_dd_tags = array();
-		foreach ($column_names as $column_name) {
-			$column = $model->get_column($column_name);
-			if (self::find_relationship($column, $model) == false) {
-				$content = $column->get_value();
-			} else {
-				$relationship = self::find_relationship($column, $model);
-				$name = $relationship->get_name();
-				$content = $model->$name;
-			}
-			$dt_dd_tags[] = self::dt_tag($column);
-			$dt_dd_tags[] = self::dd_tag($column, $content);
-		}
-		return new moojon_dl_tag($dt_dd_tags, $attributes);
 	}
 	
 	static public function dt_tag(moojon_base_column $column, $attributes = array()) {

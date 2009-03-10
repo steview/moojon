@@ -1,4 +1,4 @@
- <?php
+<?php
 final class moojon_quick_tags extends moojon_base {
 	private function __construct() {}
 	

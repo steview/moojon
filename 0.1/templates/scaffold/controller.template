@@ -11,6 +11,8 @@ final class <[plural]>_controller extends moojon_base_controller {
 				if ($this-><[singular]>->save() === true) {
 					$this->redirect('<[plural]>');
 				}
+			} elseif ($_POST['submit_button'] == 'Cancel') {
+				$this->redirect('<[plural]>');
 			}
 		}
 	}
@@ -28,6 +30,9 @@ final class <[plural]>_controller extends moojon_base_controller {
 					$this->redirect('<[plural]>/read/id/'.$this->get_id());
 				}
 			}
+			if ($_POST['submit_button'] == 'Cancel') {
+				$this->redirect('<[plural]>/read/id/'.$this->get_id());
+			}
 		}
 	}
 	
@@ -35,8 +40,12 @@ final class <[plural]>_controller extends moojon_base_controller {
 		if (moojon_request::post() == true) {
 			if ($_POST['submit_button'] == 'Destroy') {
 				<[singular]>::destroy('id = '.$this->get_id());
+				$this->redirect('<[plural]>');
+			} elseif ($_POST['submit_button'] == 'Cancel') {
+				$this->redirect('<[plural]>/read/id/'.$this->get_id());
+			} else {
+				$this->redirect('<[plural]>');
 			}
-			$this->redirect('<[plural]>');
 		}
 		$this->read_from_id();
 	}

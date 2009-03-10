@@ -492,6 +492,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			}
 		}
 		moojon_query_runner::delete($instance->obj, $where);
+		
 	}
 	
 	final protected function base_delete() {
@@ -501,6 +502,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		}
 		$where = substr($where, 0, (strlen($where) - 5)).';';
 		moojon_query_runner::delete($this->obj, $where);
+		return true;
 	}
 	
 	final public function set($data, $value = null) {

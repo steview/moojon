@@ -1,4 +1,4 @@
 <?php
-$dl = new moojon_model_dl($<[singular]>, $<[singular]>->get_editable_column_names());
+$dl = moojon_model_ui::dl($<[singular]>, $<[singular]>->get_editable_column_names());
 echo $dl->render();
 ?>
