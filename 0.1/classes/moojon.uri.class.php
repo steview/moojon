@@ -35,6 +35,9 @@ final class moojon_uri extends moojon_base {
 		foreach (moojon_files::directory_files(moojon_paths::get_apps_directory()."$app/".moojon_config::get('controllers_directory').'/') as $controller) {
 			$controllers[] = substr(basename($controller), 0, strpos(basename($controller), '.'));
 		}
+		foreach (moojon_files::directory_files(moojon_paths::get_shared_directory().moojon_config::get('controllers_directory').'/') as $controller) {
+			$controllers[] = substr(basename($controller), 0, strpos(basename($controller), '.'));
+		}
 		return $controllers;
 	}
 	
@@ -42,7 +45,6 @@ final class moojon_uri extends moojon_base {
 		$request_uri = self::get_request_uri_array();
 		$return = array();
 		$counter;
-		//die(count($request_uri));
 		switch (count($request_uri)) {
 			case 0:
 				$return['app'] = moojon_config::get('default_app');

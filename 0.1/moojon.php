@@ -94,6 +94,8 @@ switch (strtoupper(UI)) {
 			$controller = moojon_uri::get_controller();
 			if (in_array(moojon_paths::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_controllers_directory()))) {
 				require_once(moojon_paths::get_controllers_directory()."$controller.controller.class.php");
+			} elseif (in_array(moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_shared_controllers_directory()))) {
+				require_once(moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php");
 			} else {
 				moojon_base::handle_error("404 controller not found ($controller)");
 			}
@@ -111,12 +113,16 @@ switch (strtoupper(UI)) {
 				}
 			}
 			$view = moojon_paths::get_views_directory().$app->get_view();
-			if (file_exists($view) == false) {
-				$shared_view = moojon_paths::get_shared_views_directory().$app->get_view();;
-				if (file_exists($shared_view) == true) {
-					$view = $shared_view;
-				} else {
-					moojon_base::handle_error("404 view not found ($view or $shared_view)");
+			if (file_exists($view) === false) {
+				$view = moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$app->get_view();
+				if (file_exists($view) === false) {
+					$view = moojon_paths::get_shared_views_directory().moojon_uri::get_controller().'/'.$app->get_view();
+					if (file_exists($view) === false) {
+						$view = moojon_paths::get_shared_directory().moojon_config::get('views_directory').'/'.$app->get_view();
+						if (file_exists($view) === false) {
+							moojon_base::handle_error("404 view not found ($view)");
+						}
+					}
 				}
 			}
 			foreach ($app->get_controller_properties() as $key => $value) {

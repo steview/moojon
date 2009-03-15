@@ -185,6 +185,14 @@ final class moojon_generator extends moojon_base {
 		self::run(MOOJON_PATH.'templates/layout.template', moojon_paths::get_layouts_directory()."$layout.layout.php", array(), false, true);
 	}
 	
+	static public function shared_controller($controller = null) {
+		if ($controller == null) {
+			$controller = moojon_config::get('default_controller');
+		}
+		self::attempt_mkdir(moojon_paths::get_shared_controllers_directory());
+		self::run(MOOJON_PATH.'templates/controller.template', moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php", array('controller' => $controller), false, true);
+	}
+	
 	static public function shared_view($view = null) {
 		if ($view == null) {
 			$view = moojon_config::get('default_action');

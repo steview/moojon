@@ -82,6 +82,11 @@ final class moojon_generate_cli extends moojon_base_cli {
 				$partial = $this->prompt_until($arguments[1], 'Please enter a name for this partial');
 				moojon_generator::shared_partial($partial);
 				break;
+			case 'shared_controller':
+				self::check_arguments('moojon_generate_cli::shared_controller()', 1, $arguments);
+				$controller = $this->prompt_until($arguments[1], 'Please enter a controller name');
+				moojon_generator::shared_controller($controller);
+				break;
 			case 'scaffold':
 				self::check_arguments('moojon_generate_cli::scaffold()', 3, $arguments);
 				$app = $this->prompt_for_app($arguments[0]);
@@ -115,7 +120,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 	}
 	
 	private function get_commands() {
-		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'shared_view', 'shared_layout', 'shared_partial', 'scaffold');
+		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'shared_view', 'shared_layout', 'shared_partial', 'shared_controller', 'scaffold');
 	}
 }
 ?>

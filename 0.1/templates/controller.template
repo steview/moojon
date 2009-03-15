@@ -1,5 +1,5 @@
 <?php
-final class <[controller]>_controller extends moojon_base_controller {	
+final class <[controller]>_controller extends moojon_base_controller {
 
 }
 ?>

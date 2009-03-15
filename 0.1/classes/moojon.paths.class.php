@@ -63,6 +63,10 @@ final class moojon_paths extends moojon_base {
 		return self::get_app_directory().moojon_config::get('layouts_directory').'/';
 	}
 	
+	static public function get_shared_controllers_directory() {
+		return self::get_shared_directory().moojon_config::get('controllers_directory').'/';
+	}
+	
 	static public function get_shared_views_directory() {
 		return self::get_shared_directory().moojon_config::get('views_directory').'/';
 	}
