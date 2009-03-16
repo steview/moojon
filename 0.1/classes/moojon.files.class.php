@@ -96,7 +96,7 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
-	static private function require_ext($file, $ext) {
+	static public function require_ext($file, $ext) {
 		if (!self::has_ext($file, $ext)) {
 			return "$file.$ext";
 		} else {

@@ -218,53 +218,31 @@ final class moojon_quick_tags extends moojon_base {
 		return $options;
 	}
 	
-	static public function css_tag($file, $media = null, $path = null) {
-		$file = moojon_files::strip_ext(basename($file), 'css');
+	static public function css_tag($path, $media = null) {
 		if ($media == null) {
 			$media = 'screen, projection';
 		}
-		if ($path == null) {
-			$path = '/'.moojon_config::get('css_directory');
-		}
-		return new moojon_link_tag(array('rel' => 'stylesheet', 'type' => 'text/css', 'href' => "$path/$file.css", 'media' => $media));
+		return new moojon_link_tag(array('rel' => 'stylesheet', 'type' => 'text/css', 'href' => "$path", 'media' => $media));
 	}
 	
-	static public function js_tag($file, $path = null) {
-		$file = moojon_files::strip_ext(basename($file), 'js');
-		if ($path == null) {
-			$path = '/'.moojon_config::get('js_directory');
-		}
-		return new moojon_script_tag(null, array('type' => 'text/javascript', 'src' => "$path/$file.js"));
+	static public function js_tag($path) {
+		return new moojon_script_tag(null, array('type' => 'text/javascript', 'src' => $path));
 	}
 	
-	static public function render_css_tags($files = null, $paths = null) {
+	static public function render_css_tags($media = null) {
 		$return = '';
-		if ($files == null) {
-			foreach (moojon_assets::get_css() as $css) {
-				$tag = self::css_tag($css);
-				$return .= $tag->render()."\n";
-			}
-		} else {
-			for ($i = 0; $i < (count($files) - 1); $i ++) {
-				$tag = self::js_tag($files[$i], $paths[$i]);
-				$return .= $tag->render()."\n";
-			}
+		foreach (moojon_assets::get_css() as $css) {
+			$tag = self::css_tag($css, $media);
+			$return .= $tag->render()."\n";
 		}
 		return $return;
 	}
 	
-	static public function render_js_tags($files = null, $paths = null) {
+	static public function render_js_tags() {
 		$return = '';
-		if ($files == null) {
-			foreach (moojon_assets::get_js() as $js) {
-				$tag = self::js_tag($js);
-				$return .= $tag->render()."\n";
-			}
-		} else {
-			for ($i = 0; $i < (count($files) - 1); $i ++) {
-				$tag = self::js_tag($files[$i], $paths[$i]);
-				$return .= $tag->render()."\n";
-			}
+		foreach (moojon_assets::get_js() as $js) {
+			$tag = self::js_tag($js);
+			$return .= $tag->render()."\n";
 		}
 		return $return;
 	}
