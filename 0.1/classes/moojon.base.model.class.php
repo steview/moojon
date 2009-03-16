@@ -133,7 +133,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		}
 	}
 	
-	final public function validations() {
+	final public function get_validations() {
 		return $this->validations;
 	}
 	

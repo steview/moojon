@@ -1,0 +1,5 @@
+<?php
+final class <[controller]>_controller extends moojon_base_javascript_controller {
+
+}
+?>

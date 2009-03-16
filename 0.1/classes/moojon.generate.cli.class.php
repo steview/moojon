@@ -87,6 +87,18 @@ final class moojon_generate_cli extends moojon_base_cli {
 				$controller = $this->prompt_until($arguments[1], 'Please enter a controller name');
 				moojon_generator::shared_controller($controller);
 				break;
+			case 'javascript_controller':
+				self::check_arguments('moojon_generate_cli::javascript_controller()', 3, $arguments);
+				$app = $this->prompt_for_app($arguments[0]);
+				$controller = $this->prompt_until($arguments[1], 'Please enter a controller name');
+				$action = $this->prompt_until($arguments[2], 'Please enter an action name');
+				moojon_generator::javascript_controller($app, $controller, $action);
+				break;
+			case 'shared_javascript_controller':
+				self::check_arguments('moojon_generate_cli::shared_javascript_controller()', 1, $arguments);
+				$controller = $this->prompt_until($arguments[1], 'Please enter a controller name');
+				moojon_generator::shared_javascript_controller($controller);
+				break;
 			case 'scaffold':
 				self::check_arguments('moojon_generate_cli::scaffold()', 3, $arguments);
 				$app = $this->prompt_for_app($arguments[0]);
@@ -120,7 +132,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 	}
 	
 	private function get_commands() {
-		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'shared_view', 'shared_layout', 'shared_partial', 'shared_controller', 'scaffold');
+		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'shared_view', 'shared_layout', 'shared_partial', 'shared_controller', 'shared_javascript_controller', 'javascript_controller', 'scaffold');
 	}
 }
 ?>

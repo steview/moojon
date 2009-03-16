@@ -4,9 +4,12 @@ abstract class moojon_base_controller extends moojon_base {
 	protected $layout;
 	protected $view;
 	
-	public function __construct(moojon_base_app $app) {
+	final public function __construct(moojon_base_app $app) {
 		$this->app = $app;
+		$this->headers();
 	}
+	
+	protected function headers() {}
 	
 	final public function render($action) {
 		$this->init();
@@ -29,7 +32,7 @@ abstract class moojon_base_controller extends moojon_base {
 	
 	protected function close() {}
 	
-	final public function get_layout() {
+	public function get_layout() {
 		if ($this->layout === false) {
 			return false;
 		} elseif ($this->layout != null) {

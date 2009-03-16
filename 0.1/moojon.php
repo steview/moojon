@@ -9,6 +9,7 @@ require_once(MOOJON_PATH.'/classes/moojon.assets.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.request.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.app.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.controller.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.javascript.controller.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.query.utilities.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.query.builder.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.query.runner.class.php');

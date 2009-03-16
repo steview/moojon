@@ -153,6 +153,18 @@ final class moojon_generator extends moojon_base {
 		}
 	}
 	
+	static public function javascript_controller($app, $controller = null, $action = null) {
+		self::try_define('APP', $app);
+		if ($controller == null) {
+			$controller = moojon_config::get('default_controller');
+		}
+		self::attempt_mkdir(moojon_paths::get_controllers_directory());
+		self::run(MOOJON_PATH.'templates/javascript.controller.template', moojon_paths::get_controllers_directory()."$controller.controller.class.php", array('controller' => $controller), false, true);
+		if ($action) {
+			self::view($app, $controller, $action);
+		}
+	}
+	
 	static public function view($app, $controller = null, $view = null) {
 		self::try_define('APP', $app);
 		if ($controller == null) {
@@ -191,6 +203,14 @@ final class moojon_generator extends moojon_base {
 		}
 		self::attempt_mkdir(moojon_paths::get_shared_controllers_directory());
 		self::run(MOOJON_PATH.'templates/controller.template', moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php", array('controller' => $controller), false, true);
+	}
+	
+	static public function shared_javascript_controller($controller = null) {
+		if ($controller == null) {
+			$controller = moojon_config::get('default_controller');
+		}
+		self::attempt_mkdir(moojon_paths::get_shared_controllers_directory());
+		self::run(MOOJON_PATH.'templates/javascript.controller.template', moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php", array('controller' => $controller), false, true);
 	}
 	
 	static public function shared_view($view = null) {
