@@ -114,7 +114,12 @@ final class moojon_model_ui extends moojon_base {
 			}
 			$tds[] = new moojon_td_tag('&nbsp;');
 			$tds[] = new moojon_td_tag('&nbsp;');
-			$child = new moojon_table_tag(array(new moojon_thead_tag(new moojon_tr_tag($ths)), new moojon_tbody_tag($trs), new moojon_tfoot_tag(new moojon_tr_tag($tds))));
+			$children = array(
+				new moojon_thead_tag(new moojon_tr_tag($ths)), 
+				new moojon_tbody_tag($trs), 
+				new moojon_tfoot_tag(new moojon_tr_tag($tds))
+			);
+			$child = new moojon_table_tag($children);
 			foreach ($attributes as $key => $value) {
 				$child->$key = $value;
 			}

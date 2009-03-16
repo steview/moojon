@@ -114,5 +114,13 @@ final class moojon_paths extends moojon_base {
 	static public function get_script_directory() {
 		return self::get_project_directory().moojon_config::get('script_directory').'/';
 	}
+	
+	static public function get_library_directory() {
+		return self::get_project_directory().moojon_config::get('library_directory').'/';
+	}
+	
+	static public function get_vendor_directory() {
+		return self::get_project_directory().moojon_config::get('vendor_directory').'/';
+	}
 }
 ?>

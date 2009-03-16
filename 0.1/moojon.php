@@ -1,4 +1,14 @@
 <?php
+function __autoload($class_name) {
+	$class_filename = str_replace('_', '.', $class_name).'.class.php';
+	if (file_exists(moojon_paths::get_library_directory().$class_filename) == true) {
+		require_once(moojon_paths::get_library_directory().$class_filename);
+	} elseif (file_exists(moojon_paths::get_vendor_directory().$class_filename) == true) {
+		require_once(moojon_paths::get_vendor_directory().$class_filename);
+	} else {
+		//moojon_base::handle_error("$class_name not found as a library or vendor item.");
+	}
+}
 require_once(MOOJON_PATH.'/classes/moojon.base.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.config.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.uri.class.php');
