@@ -151,71 +151,65 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		$this->add_validation($name, new moojon_required_validation($message));
 	}
 	
-	final protected function validate_unique($name, $message) {
-		$this->add_validation($name, new moojon_unique_validation($message, $this));
+	final protected function validate_unique($name, $message, $required = true) {
+		$this->add_validation($name, new moojon_unique_validation($message, $this, $required));
 	}
 	
-	final protected function validate_min($name, $message, $min) {
-		$this->add_validation($name, new moojon_min_validation($message, $min));
+	final protected function validate_min($name, $message, $min, $required = true) {
+		$this->add_validation($name, new moojon_min_validation($message, $min, $required));
 	}
 	
-	final protected function validate_max($name, $message, $max) {
-		$this->add_validation($name, new moojon_max_validation($message, $max));
+	final protected function validate_max($name, $message, $max, $required = true) {
+		$this->add_validation($name, new moojon_max_validation($message, $max, $required));
 	}
 	
-	final protected function validate_range($name, $message, $min, $max) {
-		$this->add_validation($name, new moojon_range_validation($message, $min, $max));
+	final protected function validate_range($name, $message, $min, $max, $required = true) {
+		$this->add_validation($name, new moojon_range_validation($message, $min, $max, $required));
 	}
 	
-	final protected function validate_minlength($name, $message, $minlength) {
-		$this->add_validation($name, new moojon_minlength_validation($message, $minlength));
+	final protected function validate_minlength($name, $message, $minlength, $required = true) {
+		$this->add_validation($name, new moojon_minlength_validation($message, $minlength, $required));
 	}
 	
-	final protected function validate_maxlength($name, $message, $maxlength) {
-		$this->add_validation($name, new moojon_maxlength_validation($message, $maxlength));
+	final protected function validate_maxlength($name, $message, $maxlength, $required = true) {
+		$this->add_validation($name, new moojon_maxlength_validation($message, $maxlength, $required));
 	}
 	
-	final protected function validate_rangelength($name, $message, $minlength, $maxlength) {
-		$this->add_validation($name, new moojon_rangelength_validation($message, $minlength, $maxlength));
+	final protected function validate_rangelength($name, $message, $minlength, $maxlength, $required = true) {
+		$this->add_validation($name, new moojon_rangelength_validation($message, $minlength, $maxlength, $required));
 	}
 	
-	final protected function validate_email($name, $message) {
-		$this->add_validation($name, new moojon_email_validation($message));
+	final protected function validate_email($name, $message, $required = true) {
+		$this->add_validation($name, new moojon_email_validation($message, $required));
 	}
 	
-	final protected function validate_url($name, $message) {
-		$this->add_validation($name, new moojon_url_validation($message));
+	final protected function validate_url($name, $message, $required = true) {
+		$this->add_validation($name, new moojon_url_validation($message, $required));
 	}
 	
-	final protected function validate_date($name, $message) {
-		$this->add_validation($name, new moojon_date_validation($message));
+	final protected function validate_date($name, $message, $required = true) {
+		$this->add_validation($name, new moojon_date_validation($message, $required));
 	}
 	
-	final protected function validate_number($name, $message) {
-		$this->add_validation($name, new moojon_number_validation($message));
+	final protected function validate_number($name, $message, $required = true) {
+		$this->add_validation($name, new moojon_number_validation($message, $required));
 	}
 	
-	final protected function validate_digits($name, $message) {
-		$this->add_validation($name, new moojon_digits_validation($message));
+	final protected function validate_digits($name, $message, $required = true) {
+		$this->add_validation($name, new moojon_digits_validation($message, $required));
 	}
 	
-	final protected function validate_creditcard($name, $message, $card_type) {
-		$this->add_validation($name, new moojon_creditcard_validation($message, $card_type));
+	final protected function validate_creditcard($name, $message, $card_type, $required = true) {
+		$this->add_validation($name, new moojon_creditcard_validation($message, $card_type, $required));
 	}
 	
-	final protected function validate_accept($name, $message, $exts) {
-		$this->add_validation($name, new moojon_accept_validation($message, $exts));
+	final protected function validate_accept($name, $message, $exts, $required = true) {
+		$this->add_validation($name, new moojon_accept_validation($message, $exts, $required));
 	}
 	
-	final protected function validate_equal_to($name, $message, $value) {
-		$this->add_validation($name, new moojon_equal_to_validation($message, $value));
+	final protected function validate_equal_to($name, $message, $value, $required = true) {
+		$this->add_validation($name, new moojon_equal_to_validation($message, $value, $required));
 	}
-	
-	/*
-	final protected validate_($name, $message = null, $required) {
-		
-	}
-	*/
 	
 	final private function has_column($key) {
 		return array_key_exists($key, $this->columns);
@@ -352,7 +346,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		foreach ($this->get_editable_columns() as $column) {
 			if ($this->has_validation($column->get_name()) == true) {
 				foreach ($this->validations[$column->get_name()] as $validation) {
-					if ($validation->validate($this, $column) !== true) {
+					if ($validation->validate($this, $column) === false) {
 						$errors[$column->get_name()] = $validation->get_message();
 						$valid = false;
 						break;

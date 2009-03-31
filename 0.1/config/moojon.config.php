@@ -22,7 +22,7 @@ return array(
 	'library_directory' => 'library',
 	'vendor_directory' => 'vendor',
 	'default_helpers' => 'ui, url',
-	'default_js' => 'jquery, jquery.flash, project',
+	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/'
 );

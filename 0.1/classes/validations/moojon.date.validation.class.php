@@ -1,11 +1,12 @@
 <?php
 final class moojon_date_validation extends moojon_base_validation {
 
-	public function __construct($message) {
+	public function __construct($message, $required = true) {
 		$this->set_message($message);
+		$this->required = $required;
 	}
 
-	public function validate(moojon_base_model $model, moojon_base_column $column) {
+	public function valid(moojon_base_model $model, moojon_base_column $column) {
 		$stamp = strtotime($column->get_value());
 		$month = date('m', $stamp);
 		$day   = date('d', $stamp);

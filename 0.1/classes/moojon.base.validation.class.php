@@ -3,6 +3,7 @@ abstract class moojon_base_validation extends moojon_base {
 	
 	private $message;
 	private $model;
+	protected $required;
 	
 	final public function set_model(moojon_base_model $model) {
 		$this->model = $model;
@@ -20,6 +21,26 @@ abstract class moojon_base_validation extends moojon_base {
 		return $this->message;
 	}
 	
-	abstract public function validate(moojon_base_model $model, moojon_base_column $column);
+	final public function get_required() {
+		return $this->required;
+	}
+	
+	final public function validate(moojon_base_model $model, moojon_base_column $column) {
+		if ($this->required === true) {
+			if (strlen($column->get_value()) > 0) {
+				return $this->valid($model, $column);
+			} else {
+				return false;
+			}
+		} else {
+			if (strlen($column->get_value()) < 1) {
+				return true;
+			} else {
+				return $this->valid($model, $column);
+			}
+		}
+	}
+	
+	abstract public function valid(moojon_base_model $model, moojon_base_column $column);
 }
 ?>
