@@ -38,7 +38,11 @@ abstract class moojon_base_controller extends moojon_base {
 		} elseif ($this->layout != null) {
 			return $this->layout.'.layout.php';
 		} else {
-			return moojon_uri::get_app().'.layout.php';
+			if ($_SERVER['X-Requested-With'] == 'XMLHttpRequest') {
+				return false;
+			} else {
+				return moojon_uri::get_app().'.layout.php';
+			}
 		}
 	}
 	
