@@ -4,7 +4,8 @@ final class moojon_config extends moojon_base {
 	static private $data = array();
 	
 	private function __construct() {
-		$this->data = require_once(MOOJON_PATH.'config/moojon.config.php');
+		$data = require_once(MOOJON_PATH.'config/moojon.config.php');
+		$this->data = $data;
 	}
 
 	static public function get($key = null) {
@@ -19,7 +20,7 @@ final class moojon_config extends moojon_base {
 	}
 	
 	static public function set($key, $value = null) {
-		if (!is_array($key)) {
+		if (is_array($key) == false) {
 			$data = array($key => $value);
 		} else {
 			$data = $key;

@@ -36,6 +36,7 @@ require_once(MOOJON_PATH.'/classes/moojon.base.tag.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.tag.attribute.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.empty.tag.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.open.tag.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.base.security.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.model.ui.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.quick.tags.class.php');
 moojon_files::require_directory_files(MOOJON_PATH.'/classes/validations/');
@@ -45,10 +46,8 @@ if (defined('PROJECT_DIRECTORY') == true) {
 	foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
 		moojon_config::set(require_once($file));
 	}
-	if (defined('APP') == true) {
-		foreach (moojon_files::directory_files(moojon_paths::get_app_config_directory(), true) as $file) {
-			moojon_config::set(require_once($file));
-		}
+	foreach (moojon_files::directory_files(moojon_paths::get_app_config_directory(), true) as $file) {
+		moojon_config::set(require_once($file));
 	}
 	if (moojon_config::has('adapter') && moojon_config::has('db_host') && moojon_config::has('db_username') && moojon_config::has('db_password') && moojon_config::has('db')) {
 		$con = moojon_connection::init(moojon_config::get('db_host'), moojon_config::get('db_username'), moojon_config::get('db_password'), moojon_config::get('db'));
@@ -109,6 +108,13 @@ switch (strtoupper(UI)) {
 				require_once(moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php");
 			} else {
 				moojon_base::handle_error("404 controller not found ($controller)");
+			}
+			if (moojon_config::has('security') == true) {
+				$security_class = moojon_config::get('security');
+				$security = new $security_class;
+				if ($security->authenticate() !== false) {
+					
+				}
 			}
 			$app = new $app;
 			$layout = $app->get_layout();
