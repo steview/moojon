@@ -103,6 +103,15 @@ switch (strtoupper(UI)) {
 		if (in_array($app, moojon_files::directory_directories(moojon_paths::get_apps_directory())) == true) {
 			require_once(moojon_paths::get_apps_directory()."/$app/$app.app.class.php");
 			$app = $app.'_app';
+			if (moojon_config::has('security') == true) {
+				$security_class = moojon_config::get('security_class');
+				$security = new $security_class;
+				if ($security->authenticate() == true) {
+					
+				} else {
+					die('not authenticated');
+				}
+			}
 			$controller = moojon_uri::get_controller();
 			if (in_array(moojon_paths::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_controllers_directory()))) {
 				require_once(moojon_paths::get_controllers_directory()."$controller.controller.class.php");
@@ -110,15 +119,6 @@ switch (strtoupper(UI)) {
 				require_once(moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php");
 			} else {
 				moojon_base::handle_error("404 controller not found ($controller)");
-			}
-			if (moojon_config::has('security') == true) {
-				$security_class = moojon_config::get('security_class');
-				$security = new $security_class;
-				if ($security->authenticate() == true) {
-					echo 'authenticated';
-				} else {
-					die('not authenticated');
-				}
 			}
 			$app = new $app;
 			$layout = $app->get_layout();
