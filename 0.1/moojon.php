@@ -93,6 +93,8 @@ function partial($partial, $variables = array()) {
 }
 switch (strtoupper(UI)) {
 	case 'CGI':
+		require_once('classes/moojon.base.security.class.php');
+		require_once('classes/moojon.security.class.php');
 		require_once('classes/moojon.base.tag.attribute.class.php');
 		if (!is_dir(PROJECT_DIRECTORY)) {
 			moojon_base::handle_error('Invalid PROJECT_DIRECTORY ('.PROJECT_DIRECTORY.')');
@@ -110,10 +112,12 @@ switch (strtoupper(UI)) {
 				moojon_base::handle_error("404 controller not found ($controller)");
 			}
 			if (moojon_config::has('security') == true) {
-				$security_class = moojon_config::get('security');
+				$security_class = moojon_config::get('security_class');
 				$security = new $security_class;
-				if ($security->authenticate() !== false) {
-					
+				if ($security->authenticate() == true) {
+					echo 'authenticated';
+				} else {
+					die('not authenticated');
 				}
 			}
 			$app = new $app;

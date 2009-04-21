@@ -24,6 +24,8 @@ return array(
 	'default_helpers' => 'ui, url',
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
-	'index_file' => '/index.php/'
+	'index_file' => '/index.php/',
+	'security_class' => 'moojon_security',
+	'security_model' => 'user',
 );
 ?>
