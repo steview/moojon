@@ -26,6 +26,6 @@ return array(
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/',
 	'security_class' => 'moojon_security',
-	'security_model' => 'user',
+	'security_model' => 'coach',
 );
 ?>

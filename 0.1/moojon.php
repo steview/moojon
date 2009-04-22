@@ -16,7 +16,6 @@ require_once(MOOJON_PATH.'/classes/moojon.paths.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.files.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.inflect.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.assets.class.php');
-require_once(MOOJON_PATH.'/classes/moojon.request.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.app.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.controller.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.javascript.controller.class.php');
@@ -93,6 +92,9 @@ function partial($partial, $variables = array()) {
 }
 switch (strtoupper(UI)) {
 	case 'CGI':
+		require_once('classes/moojon.request.class.php');
+		require_once('classes/moojon.session.class.php');
+		require_once('classes/moojon.cookies.class.php');
 		require_once('classes/moojon.base.security.class.php');
 		require_once('classes/moojon.security.class.php');
 		require_once('classes/moojon.base.tag.attribute.class.php');
