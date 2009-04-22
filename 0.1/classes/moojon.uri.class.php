@@ -127,7 +127,7 @@ final class moojon_uri extends moojon_base {
 				return $request_uri['app'];
 				break;
 			case 'CLI':
-				return APP;
+				return moojon_config::get('default_app');
 				break;
 		}
 	}

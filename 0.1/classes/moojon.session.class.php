@@ -3,8 +3,16 @@ final class moojon_session extends moojon_base {
 	
 	private function __construct() {}
 	
+	static private function get_data() {
+		if (is_array($_SESSION) == ture) {
+			return $_SESSION;
+		} else {
+			return array();
+		}
+	}
+	
 	static public function has($key) {
-		return array_key_exists($key, $_SESSION);
+		return array_key_exists($key, self::get_data());
 	}
 	
 	static public function set($key, $value) {
@@ -16,7 +24,7 @@ final class moojon_session extends moojon_base {
 	}
 	
 	static public function key($key) {
-		if (array_key_exists($key, $_SESSION) == true) {
+		if (array_key_exists($key, self::get_data()) == true) {
 			return $_SESSION[$key];
 		} else {
 			self::handle_error("Key does not exists in moojon_session ($key)");

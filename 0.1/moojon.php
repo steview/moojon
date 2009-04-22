@@ -1,14 +1,5 @@
 <?php
-function __autoload($class_name) {
-	$class_filename = str_replace('_', '.', $class_name).'.class.php';
-	if (file_exists(moojon_paths::get_library_directory().$class_filename) == true) {
-		require_once(moojon_paths::get_library_directory().$class_filename);
-	} elseif (file_exists(moojon_paths::get_vendor_directory().$class_filename) == true) {
-		require_once(moojon_paths::get_vendor_directory().$class_filename);
-	} else {
-		//moojon_base::handle_error("$class_name not found as a library or vendor item.");
-	}
-}
+require_once(MOOJON_PATH.'/functions/moojon.core.functions.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.config.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.uri.class.php');
@@ -57,39 +48,6 @@ if (defined('PROJECT_DIRECTORY') == true) {
 		}
 	}	
 }
-function helper($helper) {
-	$helper = moojon_files::require_suffix($helper, 'helper');
-	if (file_exists(moojon_paths::get_helpers_directory().$helper) == true) {
-		require_once(moojon_paths::get_helpers_directory().$helper);
-	} elseif (file_exists(moojon_paths::get_moojon_helpers_directory().$helper) == true) {
-		require_once(moojon_paths::get_moojon_helpers_directory().$helper);
-	} else {
-		moojon_base::handle_error("Unknown helper ($helper)");
-	}
-}
-function partial($partial, $variables = array()) {
-	foreach ($variables as $key => $value) {
-		$$key = $value;
-	}
-	$path = dirname($partial).'/';
-	if ($path == './') {
-		$path = '';
-	}
-	$basename = basename($partial);
-	if (substr($basename, 0, 1) == '_') {
-		$basename = substr($basename, 1);
-	}
-	$partial = $path.'_'.$basename.'.php';
-	if (file_exists(moojon_paths::get_views_directory().$partial) == true) {
-		require_once(moojon_paths::get_views_directory().$partial);
-	} elseif (file_exists(moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$partial) == true) {
-		require_once(moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$partial);
-	} elseif (file_exists(moojon_paths::get_shared_views_directory().$partial) == true) {
-		require_once(moojon_paths::get_shared_views_directory().$partial);
-	} else {
-		moojon_base::handle_error("Unknown partial ($partial)");
-	}
-}
 switch (strtoupper(UI)) {
 	case 'CGI':
 		require_once('classes/moojon.request.class.php');
@@ -98,6 +56,18 @@ switch (strtoupper(UI)) {
 		require_once('classes/moojon.base.security.class.php');
 		require_once('classes/moojon.security.class.php');
 		require_once('classes/moojon.base.tag.attribute.class.php');
+		if (moojon_config::has('security') == true) {
+			if (moojon_config::get('security') === true) {
+				session_start();
+				$security_class = moojon_config::get('security_class');
+				$security = new $security_class;
+				if ($security->authenticate() == true) {
+
+				} else {
+					die('not authenticated');
+				}
+			}
+		}
 		if (!is_dir(PROJECT_DIRECTORY)) {
 			moojon_base::handle_error('Invalid PROJECT_DIRECTORY ('.PROJECT_DIRECTORY.')');
 		}
@@ -105,15 +75,6 @@ switch (strtoupper(UI)) {
 		if (in_array($app, moojon_files::directory_directories(moojon_paths::get_apps_directory())) == true) {
 			require_once(moojon_paths::get_apps_directory()."/$app/$app.app.class.php");
 			$app = $app.'_app';
-			if (moojon_config::has('security') == true) {
-				$security_class = moojon_config::get('security_class');
-				$security = new $security_class;
-				if ($security->authenticate() == true) {
-					
-				} else {
-					die('not authenticated');
-				}
-			}
 			$controller = moojon_uri::get_controller();
 			if (in_array(moojon_paths::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_controllers_directory()))) {
 				require_once(moojon_paths::get_controllers_directory()."$controller.controller.class.php");
@@ -200,7 +161,5 @@ switch (strtoupper(UI)) {
 		moojon_base::handle_error('Invalid UI ('.UI.')');
 		break;
 }
-if (get_class($con) == 'moojon_connection') {
-	$con->close();
-}
+close_connection();
 ?>

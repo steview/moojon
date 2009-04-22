@@ -5,9 +5,9 @@ abstract class moojon_base_security extends moojon_base {
 	
 	final static protected function get_security_token($key = 'security_token') {
 		if (moojon_cookies::has($key) == true) {
-			return moojon_cookies::get($key);
+			return moojon_cookies::key($key);
 		} elseif (moojon_session::has($key) == true) {
-			return moojon_session::get($key);
+			return moojon_session::key($key);
 		} else {
 			return false;
 		}
@@ -23,6 +23,6 @@ abstract class moojon_base_security extends moojon_base {
 		}
 	}
 	
-	abstract static public function fetch_profile();
+	abstract static protected function fetch_profile();
 }
 ?>
