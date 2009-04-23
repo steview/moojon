@@ -6,8 +6,12 @@ final class moojon_security extends moojon_base_security {
 		$security_model = moojon_config::get('security_model');
 		$primary_key = moojon_primary_key::NAME;
 		if ($security_token === false) {
-			//$where = "email = '".moojon_request::get('email')."' AND password = PASSWORD('".moojon_request::get('password')."')";
-			$where = "email = '".moojon_request::key('email')."' AND password = '".moojon_request::key('password')."'";
+			if (moojon_request::post() == true && moojon_post::has('login') == true) {
+				$login = moojon_request::get('login');
+				$where = "email = '".$login['email']."' AND password = '".$login['password']."'";
+			} else {
+				return false;
+			}
 		} else {
 			$where = "$primary_key = '$security_token'";
 		}

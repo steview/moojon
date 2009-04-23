@@ -31,6 +31,10 @@ final class moojon_paths extends moojon_base {
 		return self::get_project_directory().moojon_config::get('shared_directory').'/';
 	}
 
+	static public function get_moojon_directory() {
+		return MOOJON_PATH.'/';
+	}
+	
 	static public function get_project_directory() {
 		return PROJECT_DIRECTORY;
 	}
@@ -73,6 +77,18 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_shared_layouts_directory() {
 		return self::get_shared_directory().moojon_config::get('layouts_directory').'/';
+	}
+	
+	static public function get_moojon_controllers_directory() {
+		return self::get_moojon_directory().moojon_config::get('controllers_directory').'/';
+	}
+	
+	static public function get_moojon_views_directory() {
+		return self::get_moojon_directory().moojon_config::get('views_directory').'/';
+	}
+	
+	static public function get_moojon_layouts_directory() {
+		return self::get_moojon_directory().moojon_config::get('layouts_directory').'/';
 	}
 	
 	static public function get_models_directory() {
