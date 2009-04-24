@@ -5,10 +5,10 @@ final class moojon_security extends moojon_base_security {
 		$security_class = moojon_config::get('security_class');
 		$security_model = moojon_config::get('security_model');
 		$primary_key = moojon_primary_key::NAME;
+		$security = $_REQUEST['security'];
 		if ($security_token === false) {
-			if (moojon_request::post() == true && moojon_post::has('login') == true) {
-				$login = moojon_request::get('login');
-				$where = "email = '".$login['email']."' AND password = '".$login['password']."'";
+			if (moojon_request::post() == true && moojon_request::has('security') == true) {
+				$where = "email = '".$security['email']."' AND password = '".$security['password']."'";
 			} else {
 				return false;
 			}
@@ -18,7 +18,11 @@ final class moojon_security extends moojon_base_security {
 		$security_model = new $security_model;
 		$records = $security_model->read($where);
 		if ($records->count > 0) {
-			moojon_session::set('security_token', $records->first->$primary_key);
+			$primary_key_value = $records->first->$primary_key;
+			moojon_session::set('security_token', $primary_key_value);
+			if (is_array($security) == true && array_key_exists('remember', $security) == true) {
+				moojon_cookies::set('security_token', $primary_key_value);
+			}
 			return true;
 		} else {
 			return false;

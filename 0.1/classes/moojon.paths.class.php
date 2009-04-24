@@ -32,7 +32,7 @@ final class moojon_paths extends moojon_base {
 	}
 
 	static public function get_moojon_directory() {
-		return MOOJON_PATH.'/';
+		return MOOJON_PATH;
 	}
 	
 	static public function get_project_directory() {
