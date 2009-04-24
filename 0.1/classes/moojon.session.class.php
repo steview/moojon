@@ -19,6 +19,13 @@ final class moojon_session extends moojon_base {
 		$_SESSION[$key] = $value;
 	}
 	
+	static public function clear() {
+		foreach($_SESSION as $key) {
+			$_SESSION[$key] = null;
+		}
+		session_unset();
+	}
+	
 	static public function get($key) {
 		return self::key($key);
 	}

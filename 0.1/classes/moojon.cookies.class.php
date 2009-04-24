@@ -4,8 +4,8 @@ final class moojon_cookies extends moojon_base {
 	private function __construct() {}
 	
 	static private function get_data() {
-		if (is_array($_COOKIES) == ture) {
-			return $_COOKIES;
+		if (is_array($_COOKIE) == ture) {
+			return $_COOKIE;
 		} else {
 			return array();
 		}
@@ -16,7 +16,13 @@ final class moojon_cookies extends moojon_base {
 	}
 	
 	static public function set($key, $value) {
-		$_COOKIES[$key] = $value;
+		setcookie($key, $value);
+	}
+	
+	static public function clear() {
+		foreach($_COOKIE as $key) {
+			setcookie($key, null);
+		}
 	}
 	
 	static public function get($key) {
@@ -25,7 +31,7 @@ final class moojon_cookies extends moojon_base {
 	
 	static public function key($key) {
 		if (array_key_exists($key, self::get_data()) == true) {
-			return $_COOKIES[$key];
+			return $_COOKIE[$key];
 		} else {
 			self::handle_error("Key does not exists in moojon_cookies ($key)");
 		}

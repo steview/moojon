@@ -19,9 +19,9 @@ final class moojon_security extends moojon_base_security {
 		$records = $security_model->read($where);
 		if ($records->count > 0) {
 			$primary_key_value = $records->first->$primary_key;
-			moojon_session::set('security_token', $primary_key_value);
+			moojon_session::set(moojon_config::get('security_token'), $primary_key_value);
 			if (is_array($security) == true && array_key_exists('remember', $security) == true) {
-				moojon_cookies::set('security_token', $primary_key_value);
+				moojon_cookies::set(moojon_config::get('security_token'), $primary_key_value);
 			}
 			return true;
 		} else {
