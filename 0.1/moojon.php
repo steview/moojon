@@ -63,7 +63,22 @@ switch (strtoupper(UI)) {
 		if (in_array($app, moojon_files::directory_directories(moojon_paths::get_apps_directory())) == true) {
 			require_once(moojon_paths::get_apps_directory()."/$app/$app.app.class.php");
 			$app = $app.'_app';
-			$controller = moojon_uri::get_controller();
+			if (moojon_config::has('security') == true) {
+				if (moojon_config::get('security') === true) {
+					$security_class = moojon_config::get('security_class');
+					$security = new $security_class;
+					if (moojon_security::get_authenticated() === false) {
+						if ($security->authenticate() === false) {
+							$controller = moojon_config::get('security_controller');
+							$view = moojon_config::get('security_action');
+						}
+					}
+				}
+			}
+			//die($controller);
+			if (isset($controller) == false) {
+				$controller = moojon_uri::get_controller();
+			}
 			if (in_array(moojon_paths::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_controllers_directory()))) {
 				require_once(moojon_paths::get_controllers_directory()."$controller.controller.class.php");
 			} elseif (in_array(moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_shared_controllers_directory()))) {
@@ -92,7 +107,9 @@ switch (strtoupper(UI)) {
 					}
 				}
 			}
-			$view = moojon_paths::get_views_directory().$app->get_view();
+			if (isset($view) == false) {
+				$view = moojon_paths::get_views_directory().$app->get_view();
+			}
 			if (file_exists($view) === false) {
 				$view = moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$app->get_view();
 				if (file_exists($view) === false) {
@@ -109,7 +126,7 @@ switch (strtoupper(UI)) {
 				}
 			}
 			foreach ($app->get_controller_properties() as $key => $value) {
-				if (isset($$key)) {
+				if (isset($$key) == true) {
 					moojon_base::handle_error("Invalid property assignment in $controller ($$key). This is a Moojon reserved variable name");
 				} else {
 					$$key = $value;

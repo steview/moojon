@@ -18,6 +18,8 @@ abstract class moojon_base_security extends moojon_base {
 	
 	abstract static public function authenticate();
 	
+	abstract static public function get_authenticated();
+	
 	final static public function get_profile() {
 		if (self::authenticate() !== true) {
 			self::handle_error('No profile available authentication failed.');

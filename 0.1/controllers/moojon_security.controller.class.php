@@ -1,7 +1,7 @@
 <?php
 final class moojon_security_controller extends moojon_base_controller {
 	public function login() {
-		$security = $_REQUEST['security'];
+		$security = $_REQUEST[moojon_config::get('security_key')];
 		if (is_array($security) == true && array_key_exists('remember', $security) == true) {
 			$this->remember = ' checked="'.$security['remember'].'"';
 		}
@@ -12,7 +12,7 @@ final class moojon_security_controller extends moojon_base_controller {
 	public function logout() {
 		moojon_session::clear();
 		moojon_cookies::clear();
-		$this->redirect(moojon_config::get('security_action'), moojon_config::get('security_controller'));
+		$this->forward(moojon_config::get('security_action'), moojon_config::get('security_controller'), moojon_uri::get_app());
 	}
 }
 ?>

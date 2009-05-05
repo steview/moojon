@@ -26,6 +26,7 @@ return array(
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/',
 	'security_token' => 'security_token',
+	'security_key' => 'security',
 	'security_class' => 'moojon_security',
 	'security_model' => 'coach',
 	'security_controller' => 'moojon_security',

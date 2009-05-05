@@ -1,4 +1,5 @@
 <?php
+session_start();
 function __autoload($class_name) {
 	$class_filename = str_replace('_', '.', $class_name).'.class.php';
 	if (file_exists(moojon_paths::get_library_directory().$class_filename) == true) {

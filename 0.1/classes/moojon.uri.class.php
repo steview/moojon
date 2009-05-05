@@ -116,17 +116,6 @@ final class moojon_uri extends moojon_base {
 		for ($i = 0; $i < $counter; $i ++) {
 			array_shift($request_uri);
 		}
-		if (moojon_config::has('security') == true) {
-			if (moojon_config::get('security') === true) {
-				session_start();
-				$security_class = moojon_config::get('security_class');
-				$security = new $security_class;
-				if ($security->authenticate() !== true) {
-					$return['controller'] = moojon_config::get('security_controller');
-					$return['action'] = moojon_config::get('security_action');
-				}
-			}
-		}
 		$return['querystring'] = $request_uri;
 		return $return;
 	}
