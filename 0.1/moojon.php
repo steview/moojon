@@ -26,6 +26,7 @@ require_once(MOOJON_PATH.'/classes/moojon.base.tag.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.tag.attribute.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.empty.tag.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.open.tag.class.php');
+require_once(MOOJON_PATH.'/classes/moojon.authentication.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.base.security.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.model.ui.class.php');
 require_once(MOOJON_PATH.'/classes/moojon.quick.tags.class.php');
@@ -63,19 +64,6 @@ switch (strtoupper(UI)) {
 		if (in_array($app, moojon_files::directory_directories(moojon_paths::get_apps_directory())) == true) {
 			require_once(moojon_paths::get_apps_directory()."/$app/$app.app.class.php");
 			$app = $app.'_app';
-			if (moojon_config::has('security') == true) {
-				if (moojon_config::get('security') === true) {
-					$security_class = moojon_config::get('security_class');
-					$security = new $security_class;
-					if (moojon_security::get_authenticated() === false) {
-						if ($security->authenticate() === false) {
-							$controller = moojon_config::get('security_controller');
-							$view = moojon_config::get('security_action');
-						}
-					}
-				}
-			}
-			//die($controller);
 			if (isset($controller) == false) {
 				$controller = moojon_uri::get_controller();
 			}
