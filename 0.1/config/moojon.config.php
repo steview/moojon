@@ -29,6 +29,7 @@ return array(
 	'security_key' => 'security',
 	'security_identity_key' => 'email',
 	'security_password_key' => 'password',
+	'security_remember_key' => 'remember',
 	'security_class' => 'moojon_security',
 	'security_model' => 'coach',
 	'security_controller' => 'moojon_security',

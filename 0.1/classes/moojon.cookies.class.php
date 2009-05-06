@@ -12,29 +12,45 @@ final class moojon_cookies extends moojon_base {
 	}
 	
 	static public function has($key) {
-		return array_key_exists($key, self::get_data());
+		$data = self::get_data();
+		if (array_key_exists($key, $data) === true) {
+			if ($data[$key] !== null) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
-	static public function set($key, $value) {
-		setcookie($key, $value);
+	static public function set($key, $value = null) {
+		$data = self::get_data();
+		if ($value !== null) {
+			$data[$key] = $value;
+			setcookie($key, $value);
+		} else {
+			$data[$key] = null;
+			unset($data[$key]);
+		}
 	}
 	
 	static public function clear() {
-		foreach($_COOKIE as $key) {
-			setcookie($key, null);
+		$data = self::get_data();
+		foreach($data as $key) {
+			$data[$key] = null;
+			unset($data[$key]);
 		}
-	}
-	
-	static public function get($key) {
-		return self::key($key);
 	}
 	
 	static public function key($key) {
-		if (array_key_exists($key, self::get_data()) == true) {
-			return $_COOKIE[$key];
+		$data = self::get_data();
+		if (array_key_exists($key, $data) == true) {
+			return $data[$key];
 		} else {
 			self::handle_error("Key does not exists in moojon_cookies ($key)");
 		}
+	}
+	
+	static public function get_list() {
+		return self::get_data();
 	}
 }
 ?>

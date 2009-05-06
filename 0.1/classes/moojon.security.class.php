@@ -19,11 +19,21 @@ final class moojon_security extends moojon_base_security {
 		if ($records->count < 1) {
 			return false;
 		} else {
-			if (is_array($security) == true && array_key_exists('remember', $security) == true) {
-				moojon_cookies::set(moojon_config::get('security_token'), $records->first->$primary_key);
-			} else {
-				moojon_session::set(moojon_config::get('security_token'), $records->first->$primary_key);
+			$security_remember_key = moojon_config::get('security_remember_key');
+			moojon_base::log('Log in attempt');
+			if (is_array($security) == true && moojon_request::post() == true) {
+				if (array_key_exists($security_remember_key, $security) == true) {
+					if (strlen($security[$security_remember_key]) > 0) {
+						moojon_cookies::set($security_token, $records->first->$primary_key);
+						moojon_base::log($security_token);
+						moojon_base::log('Log in attempt, creating cookie: ' + $records->first->$primary_key);
+						moojon_base::log('Log in attempt, cookie value: ' + moojon_cookies::key($security_token));
+					}
+				}
 			}
+			moojon_session::set($security_token, $records->first->$primary_key);
+			moojon_base::log('Log in attempt, creating session: ' + $records->first->$primary_key);
+			moojon_base::log('Log in attempt, session value: ' + moojon_session::key($security_token));
 			return $records->first;
 		}
 	}
