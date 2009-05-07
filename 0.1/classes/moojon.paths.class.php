@@ -10,7 +10,7 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get() {
 		if (!self::$instance) {
-			self::$instance = new moojon_paths();
+			self::$instance = new self();
 		}
 		return self::$instance;
 	}
@@ -20,7 +20,7 @@ final class moojon_paths extends moojon_base {
 			$key = "get_$key";
 		}
 		$instance = self::get();
-		if (in_array($key, get_class_methods('moojon_paths'))) {
+		if (in_array($key, get_class_methods('self'))) {
 			return $instance->$key();
 		} else {
 			self::handle_error('Unknown path property ($key)');
@@ -137,6 +137,26 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_vendor_directory() {
 		return self::get_project_directory().moojon_config::get('vendor_directory').'/';
+	}
+	
+	static public function get_app_path($app) {
+		if (in_array($app, moojon_files::directory_directories(self::get_apps_directory())) == true) {
+			return self::get_apps_directory()."/$app/$app.app.class.php";
+		} else {
+			self::handle_error("404 app not found ($app)");
+		}
+	}
+	
+	static public function get_controller_path($controller) {
+		if (in_array(self::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_controllers_directory()))) {
+			return self::get_controllers_directory()."$controller.controller.class.php";
+		} elseif (in_array(self::get_shared_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_shared_controllers_directory()))) {
+			return self::get_shared_controllers_directory()."$controller.controller.class.php";
+		} elseif (in_array(self::get_moojon_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_moojon_controllers_directory()))) {
+			return self::get_moojon_controllers_directory()."$controller.controller.class.php";
+		} else {
+			self::handle_error("404 controller not found ($controller)");
+		}
 	}
 }
 ?>

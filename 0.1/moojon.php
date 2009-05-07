@@ -57,88 +57,69 @@ switch (strtoupper(UI)) {
 		require_once('classes/moojon.base.security.class.php');
 		require_once('classes/moojon.security.class.php');
 		require_once('classes/moojon.base.tag.attribute.class.php');
-		if (!is_dir(PROJECT_DIRECTORY)) {
+		if (is_dir(PROJECT_DIRECTORY) == false) {
 			moojon_base::handle_error('Invalid PROJECT_DIRECTORY ('.PROJECT_DIRECTORY.')');
 		}
-		$app = moojon_uri::get_app();
-		if (in_array($app, moojon_files::directory_directories(moojon_paths::get_apps_directory())) == true) {
-			require_once(moojon_paths::get_apps_directory()."/$app/$app.app.class.php");
-			$app = $app.'_app';
-			if (isset($controller) == false) {
-				$controller = moojon_uri::get_controller();
-			}
-			if (in_array(moojon_paths::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_controllers_directory()))) {
-				require_once(moojon_paths::get_controllers_directory()."$controller.controller.class.php");
-			} elseif (in_array(moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_shared_controllers_directory()))) {
-				require_once(moojon_paths::get_shared_controllers_directory()."$controller.controller.class.php");
-			} elseif (in_array(moojon_paths::get_moojon_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(moojon_paths::get_moojon_controllers_directory()))) {
-				require_once(moojon_paths::get_moojon_controllers_directory()."$controller.controller.class.php");
-			} else {
-				moojon_base::handle_error("404 controller not found ($controller)");
-			}
-			$app = new $app;
-			$layout = $app->get_layout();
-			if ($layout !== false) {
+		require_once(moojon_paths::get_app_path(moojon_uri::get_app()));
+		$app = moojon_uri::get_app().'_app';
+		$app = new $app;
+		$layout = $app->get_layout();
+		if ($layout !== false) {
+			if (file_exists($layout) === false) {
+				$layout = moojon_paths::get_app_directory().moojon_config::get('layouts_directory').'/'.$app->get_layout();
 				if (file_exists($layout) === false) {
-					$layout = moojon_paths::get_app_directory().moojon_config::get('layouts_directory').'/'.$app->get_layout();
+					$layout = moojon_paths::get_shared_layouts_directory().moojon_uri::get_controller().'/'.$app->get_layout();
 					if (file_exists($layout) === false) {
-						$layout = moojon_paths::get_shared_layouts_directory().moojon_uri::get_controller().'/'.$app->get_layout();
+						$layout = moojon_paths::get_shared_directory().moojon_config::get('layouts_directory').'/'.$app->get_layout();
 						if (file_exists($layout) === false) {
-							$layout = moojon_paths::get_shared_directory().moojon_config::get('layouts_directory').'/'.$app->get_layout();
+							$layout = moojon_paths::get_moojon_directory().moojon_config::get('layouts_directory').'/'.$app->get_layout();;
 							if (file_exists($layout) === false) {
-								$layout = moojon_paths::get_moojon_directory().moojon_config::get('layouts_directory').'/'.$app->get_layout();;
-								if (file_exists($layout) === false) {
-									moojon_base::handle_error("404 layout not found ($layout)");
-								}
+								moojon_base::handle_error("404 layout not found ($layout)");
 							}
 						}
 					}
 				}
 			}
-			if (isset($view) == false) {
-				$view = moojon_paths::get_views_directory().$app->get_view();
-			}
+		}
+		$view = moojon_paths::get_views_directory().$app->get_view();
+		if (file_exists($view) === false) {
+			$view = moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$app->get_view();
 			if (file_exists($view) === false) {
-				$view = moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$app->get_view();
+				$view = moojon_paths::get_shared_views_directory().moojon_uri::get_controller().'/'.$app->get_view();
 				if (file_exists($view) === false) {
-					$view = moojon_paths::get_shared_views_directory().moojon_uri::get_controller().'/'.$app->get_view();
+					$view = moojon_paths::get_shared_directory().moojon_config::get('views_directory').'/'.$app->get_view();
 					if (file_exists($view) === false) {
-						$view = moojon_paths::get_shared_directory().moojon_config::get('views_directory').'/'.$app->get_view();
+						$view = moojon_paths::get_moojon_directory().moojon_config::get('views_directory').'/'.moojon_uri::get_controller().'/'.$app->get_view();;
 						if (file_exists($view) === false) {
-							$view = moojon_paths::get_moojon_directory().moojon_config::get('views_directory').'/'.moojon_uri::get_controller().'/'.$app->get_view();;
-							if (file_exists($view) === false) {
-								moojon_base::handle_error("404 view not found ($view)");
-							}
+							moojon_base::handle_error("404 view not found ($view)");
 						}
 					}
 				}
 			}
-			foreach ($app->get_controller_properties() as $key => $value) {
-				if (isset($$key) == true) {
-					moojon_base::handle_error("Invalid property assignment in $controller ($$key). This is a Moojon reserved variable name");
-				} else {
-					$$key = $value;
-				}
+		}
+		foreach ($app->get_controller_properties() as $key => $value) {
+			if (isset($$key) == true) {
+				moojon_base::handle_error("Invalid property assignment in $controller ($$key). This is a Moojon reserved variable name");
+			} else {
+				$$key = $value;
 			}
-			foreach (explode(', ', moojon_config::get('default_helpers')) as $helper) {
+		}
+		foreach (explode(', ', moojon_config::get('default_helpers')) as $helper) {
+			helper(trim($helper));
+		}
+		if (moojon_config::has('helpers') == true) {
+			foreach (explode(', ', moojon_config::get('helpers')) as $helper) {
 				helper(trim($helper));
 			}
-			if (moojon_config::has('helpers') == true) {
-				foreach (explode(', ', moojon_config::get('helpers')) as $helper) {
-					helper(trim($helper));
-				}
-			}
-			ob_start();
-			require_once($view);
-			define('YIELD', ob_get_clean());
-			ob_end_clean();
-			if ($layout !== false) {
-				require_once($layout);
-			} else {
-				echo YIELD;
-			}
+		}
+		ob_start();
+		require_once($view);
+		define('YIELD', ob_get_clean());
+		ob_end_clean();
+		if ($layout !== false) {
+			require_once($layout);
 		} else {
-			moojon_base::handle_error("404 app not found ($app)");
+			echo YIELD;
 		}
 		break;
 	case 'CLI':
@@ -152,8 +133,8 @@ switch (strtoupper(UI)) {
 		require_once(MOOJON_PATH.'/classes/moojon.generator.class.php');
 		require_once(MOOJON_PATH.'/classes/moojon.migrator.class.php');
 		if (is_dir(moojon_paths::get_migrations_directory()) == true) {
-			require_once(MOOJON_PATH.'/classes/base.schema_migration.model.class.php');
-			require_once(MOOJON_PATH.'/classes/schema_migration.model.class.php');
+			require_once(MOOJON_PATH.'/models/base/base.schema_migration.model.class.php');
+			require_once(MOOJON_PATH.'/models/schema_migration.model.class.php');
 			require_once(MOOJON_PATH.'/classes/moojon.base.migration.class.php');
 			moojon_files::require_directory_files(moojon_paths::get_migrations_directory());
 		}

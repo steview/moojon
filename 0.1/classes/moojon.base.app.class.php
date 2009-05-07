@@ -25,6 +25,7 @@ abstract class moojon_base_app extends moojon_base {
 		if ($controller == null) {
 			$controller = moojon_uri::get_controller();
 		}
+		require_once(moojon_paths::get_controller_path(moojon_uri::get_controller()));
 		$controller = $controller.'_controller';
 		$this->controller = new $controller($this);
 		$this->controller->render($action);
