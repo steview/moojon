@@ -1,18 +1,24 @@
 <?php
 final class moojon_security_controller extends moojon_base_controller {
 	public function login() {
-		$security = $_REQUEST[moojon_config::get('security_key')];
+		$this->security_identity_label = moojon_config::get('security_identity_label');
+		$this->security_password_label = moojon_config::get('security_password_label');
+		$this->security_remember_label = moojon_config::get('security_remember_label');
+		$this->security_identity_key = moojon_config::get('security_identity_key');
+		$this->security_password_key = moojon_config::get('security_password_key');
+		$this->security_remember_key = moojon_config::get('security_remember_key');
+		$this->security_key = moojon_config::get('security_key');
+		$security = $_REQUEST[$this->security_key];
 		if (is_array($security) == true && moojon_request::post() == true) {
-			$security_remember_key = moojon_config::get('security_remember_key');
-			if (array_key_exists($security_remember_key, $security) == true) {
-				if (strlen($security[$security_remember_key]) > 0) {
-					$this->$security_remember_key = ' checked="'.$security[$security_remember_key].'"';
-				}
+			$this->security_identity_value = $security[$this->security_identity_key];
+			$this->security_password_value = $security[$this->security_password_key];
+			$this->security_remember_value = $security[$this->security_remember_key];
+			if (strlen($this->security_remember_value) > 0) {
+				$this->security_remember_value = ' checked="'.$this->security_remember_value.'"';
 			}
-			$security_identity_key = moojon_config::get('security_identity_key');
-			$security_password_key = moojon_config::get('security_password_key');
-			$this->$security_identity_key = $security[$security_identity_key];
-			$this->$security_password_key = $security[$security_password_key];
+			if (moojon_authentication::authenticate() === false) {
+				$this->security_failure_message = sprintf(moojon_config::get('security_failure_message'), strtolower($this->security_identity_label), strtolower($this->security_password_label));
+			}
 		}
 	}
 	

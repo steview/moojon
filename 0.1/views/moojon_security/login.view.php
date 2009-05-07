@@ -2,16 +2,19 @@
 
 <div id="content_main">
 
-<?php if (moojon_security::authenticate() !== true) { ?>
+<?php if (moojon_authentication::authenticate() === false) { ?>
+	<?php if (strlen($security_failure_message) > 0) {?>
+		<p><?php echo $security_failure_message; ?></p>
+	<?php } ?>
 	<form action="#" method="post">
 		<fieldset>
-			<label for="security[email]">Email:</label>
-			<input type="text" name="security[email]" id="security[email]" class="text" value="<?php echo $email; ?>" />
-			<label for="security[password]">Password:</label>
-			<input type="password" name="security[password]" id="security[password]" class="text" value="<?php echo $password; ?>" />
+			<label for="<?php echo $security_key.'['.$security_identity_key.']'; ?>"><?php echo $security_identity_label; ?></label>
+			<input type="text" name="<?php echo $security_key.'['.$security_identity_key.']'; ?>" id="<?php echo $security_key.'['.$security_identity_key.']'; ?>" class="text" value="<?php echo $security_identity_value; ?>" />
+			<label for="<?php echo $security_key.'['.$security_password_key.']'; ?>"><?php echo $security_password_label; ?></label>
+			<input type="password" name="<?php echo $security_key.'['.$security_password_key.']'; ?>" id="<?php echo $security_key.'['.$security_password_key.']'; ?>" class="text" value="<?php echo $security_password_value; ?>" />
 			<div class="checkbox">
-				<input type="checkbox" name="security[remember]" id="security[remember]" value="checked"<?php echo $remember; ?> />
-				<label for="security[remember]">Remember me on this computer</label>
+				<input type="checkbox" name="<?php echo $security_key.'['.$security_remember_key.']'; ?>" id="<?php echo $security_key.'['.$security_remember_key.']'; ?>" value="checked"<?php echo $security_remember_value; ?> />
+				<label for="<?php echo $security_key.'['.$security_remember_key.']'; ?>"><?php echo $security_remember_label; ?></label>
 			</div>
 		</fieldset>
 		<input type="submit" name="submit" value="Login" />
