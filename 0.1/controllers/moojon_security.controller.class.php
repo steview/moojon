@@ -17,9 +17,7 @@ final class moojon_security_controller extends moojon_base_controller {
 	}
 	
 	public function logout() {
-		$security_token = moojon_config::get('security_token');
-		moojon_session::set($security_token, null);
-		moojon_cookies::set($security_token, null);
+		moojon_authentication::destroy();
 		$this->forward(moojon_config::get('security_action'), moojon_config::get('security_controller'), moojon_uri::get_app());
 	}
 }

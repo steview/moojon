@@ -25,6 +25,7 @@ return array(
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/',
+	'cookie_expiry' => 1209600,
 	'security_token' => 'security_token',
 	'security_key' => 'security',
 	'security_identity_key' => 'email',

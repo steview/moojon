@@ -17,5 +17,7 @@ abstract class moojon_base_security extends moojon_base {
 	}
 	
 	abstract static public function authenticate();
+	
+	abstract static public function destroy();
 }
 ?>

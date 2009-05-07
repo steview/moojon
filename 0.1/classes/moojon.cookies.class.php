@@ -3,18 +3,12 @@ final class moojon_cookies extends moojon_base {
 	
 	private function __construct() {}
 	
-	static private function get_data() {
-		if (is_array($_COOKIE) == ture) {
-			return $_COOKIE;
-		} else {
-			return array();
-		}
-	}
-	
 	static public function has($key) {
-		$data = self::get_data();
-		if (array_key_exists($key, $data) === true) {
-			if ($data[$key] !== null) {
+		if (is_array($_COOKIE) == false) {
+			return false;
+		}
+		if (array_key_exists($key, $_COOKIE) === true) {
+			if ($_COOKIE[$key] !== null) {
 				return true;
 			}
 		}
@@ -22,35 +16,51 @@ final class moojon_cookies extends moojon_base {
 	}
 	
 	static public function set($key, $value = null) {
-		$data = self::get_data();
+		if (moojon_config::has('cookie_expiry') == true) {
+			if (is_int(moojon_config::get('cookie_expiry')) == true) {
+				$cookie_expiry = (time() + moojon_config::get('cookie_expiry'));
+			} else {
+				self::handle_error('cookie_expiry must be an integer ('.moojon_config::get('cookie_expiry').')');
+			}
+		}
 		if ($value !== null) {
-			$data[$key] = $value;
-			setcookie($key, $value);
+			$_COOKIE[$key] = $value;
+			setcookie($key, $value, $cookie_expiry, '/');
 		} else {
-			$data[$key] = null;
-			unset($data[$key]);
+			$_COOKIE[$key] = null;
+			setcookie($key, null, -1, '/');
+			unset($_COOKIE[$key]);
 		}
 	}
 	
 	static public function clear() {
-		$data = self::get_data();
-		foreach($data as $key) {
-			$data[$key] = null;
-			unset($data[$key]);
+		if (is_array($_COOKIE) == true) {
+			foreach($_COOKIE as $key) {
+				$_COOKIE[$key] = null;
+				setcookie($key, null, time());
+				unset($_COOKIE[$key]);
+			}
 		}
 	}
 	
 	static public function key($key) {
-		$data = self::get_data();
-		if (array_key_exists($key, $data) == true) {
-			return $data[$key];
+		if (is_array($_COOKIE) == true) {
+			if (array_key_exists($key, $_COOKIE) == true) {
+				return $_COOKIE[$key];
+			} else {
+				self::handle_error("Key does not exists in moojon_cookies ($key)");
+			}
 		} else {
 			self::handle_error("Key does not exists in moojon_cookies ($key)");
 		}
 	}
 	
 	static public function get_list() {
-		return self::get_data();
+		if (is_array($_COOKIE) == true) {
+			return $_COOKIE;
+		} else {
+			return array();
+		}
 	}
 }
 ?>

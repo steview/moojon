@@ -30,5 +30,12 @@ final class moojon_authentication extends moojon_base {
 		$instance = self::get();
 		return $instance->get_profile();
 	}
+	
+	static public function destroy() {
+		$security_class = moojon_config::get('security_class');
+		$security = new $security_class;
+		$security->destroy();
+		self::$instance = null;
+	}
 }
 ?>
