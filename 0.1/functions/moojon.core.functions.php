@@ -35,12 +35,23 @@ function partial($partial, $variables = array()) {
 	$partial = $path.'_'.$basename.'.php';
 	if (file_exists(moojon_paths::get_views_directory().$partial) == true) {
 		require_once(moojon_paths::get_views_directory().$partial);
-	} elseif (file_exists(moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$partial) == true) {
-		require_once(moojon_paths::get_app_directory().moojon_config::get('views_directory').'/'.$partial);
 	} elseif (file_exists(moojon_paths::get_shared_views_directory().$partial) == true) {
 		require_once(moojon_paths::get_shared_views_directory().$partial);
 	} else {
 		moojon_base::handle_error("Unknown partial ($partial)");
+	}
+}
+function render() {
+	$layout = moojon_paths::get_layout_path($app->get_layout());
+	$view = moojon_paths::get_view_path($app->get_view());
+	ob_start();
+	require_once($view);
+	define('YIELD', ob_get_clean());
+	ob_end_clean();
+	if ($layout !== false) {
+		require_once($layout);
+	} else {
+		echo YIELD;
 	}
 }
 function close_connection() {
