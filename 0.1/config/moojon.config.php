@@ -35,7 +35,7 @@ return array(
 	'security_remember_key' => 'remember',
 	'security_identity_label' => 'Email:',
 	'security_password_label' => 'Password:',
-	'security_remember_label' => 'Remember me on this computer for two weeks',
+	'security_remember_label' => 'I love you Alenka',
 	'security_failure_message' => 'Invalid %s / %s combination. Login failure.',
 	'security_class' => 'moojon_security',
 	'security_model' => 'coach',

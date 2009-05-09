@@ -51,7 +51,7 @@ if (is_dir(moojon_paths::get_migrations_directory()) == true) {
 	require_once(MOOJON_PATH.'/models/migrations/schema_migration.model.class.php');
 	moojon_files::require_directory_files(moojon_paths::get_migrations_directory());
 }
-if (defined('PROJECT_DIRECTORY') == true) {
+if (is_dir(PROJECT_DIRECTORY) == true) {
 	foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
 		moojon_config::set(require_once($file));
 	}
@@ -65,54 +65,25 @@ if (defined('PROJECT_DIRECTORY') == true) {
 			moojon_files::require_directory_files(moojon_paths::get_base_models_directory());
 			moojon_files::require_directory_files(moojon_paths::get_models_directory());
 		}
-	}	
-}
-switch (strtoupper(UI)) {
-	case 'CGI':
-		if (is_dir(PROJECT_DIRECTORY) == false) {
-			moojon_base::handle_error('Invalid PROJECT_DIRECTORY ('.PROJECT_DIRECTORY.')');
-		}
-		require_once(moojon_paths::get_app_path(moojon_uri::get_app()));
-		$app = moojon_uri::get_app().'_app';
-		$app = new $app;
-		foreach ($app->get_controller_properties() as $key => $value) {
-			if (isset($$key) == true) {
-				moojon_base::handle_error("Invalid property assignment in $controller ($$key). This is a Moojon reserved variable name");
-			} else {
-				$$key = $value;
+	}
+	switch (strtoupper(UI)) {
+		case 'CGI':
+			render_cgi();
+			break;
+		case 'CLI':
+			if (!defined("STDIN")) {
+				define("STDIN", fopen('php://stdin','r'));
 			}
-		}
-		foreach (explode(', ', moojon_config::get('default_helpers')) as $helper) {
-			helper(trim($helper));
-		}
-		if (moojon_config::has('helpers') == true) {
-			foreach (explode(', ', moojon_config::get('helpers')) as $helper) {
-				helper(trim($helper));
-			}
-		}
-		$layout = moojon_paths::get_layout_path($app->get_layout());
-		$view = moojon_paths::get_view_path($app->get_view());
-		ob_start();
-		require_once($view);
-		define('YIELD', ob_get_clean());
-		ob_end_clean();
-		if ($layout !== false) {
-			require_once($layout);
-		} else {
-			echo YIELD;
-		}
-		break;
-	case 'CLI':
-		if (!defined("STDIN")) {
-			define("STDIN", fopen('php://stdin','r'));
-		}
-		$arguments = $_SERVER['argv'];
-		array_shift($arguments);
-		new $cli($arguments);
-		break;
-	default:
-		moojon_base::handle_error('Invalid UI ('.UI.')');
-		break;
+			$arguments = $_SERVER['argv'];
+			array_shift($arguments);
+			new $cli($arguments);
+			break;
+		default:
+			moojon_base::handle_error('Invalid UI ('.UI.')');
+			break;
+	}
+} else {
+	moojon_base::handle_error('Invalid PROJECT_DIRECTORY ('.PROJECT_DIRECTORY.')');
 }
 close_connection();
 ?>

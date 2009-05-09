@@ -11,6 +11,7 @@ function __autoload($class_name) {
 	}
 }
 function helper($helper) {
+	$helper = trim($helper);
 	$helper = moojon_files::require_suffix($helper, 'helper');
 	if (file_exists(moojon_paths::get_helpers_directory().$helper) == true) {
 		require_once(moojon_paths::get_helpers_directory().$helper);
@@ -19,6 +20,18 @@ function helper($helper) {
 	} else {
 		moojon_base::handle_error("Unknown helper ($helper)");
 	}
+}
+function helpers() {
+	$helpers = array();
+	if (moojon_config::has('helpers') == true) {
+		$helpers = explode(', ', moojon_config::get('helpers'));
+	}
+	foreach (explode(', ', moojon_config::get('default_helpers')) as $helper) {
+		if (in_array($helper, $helpers) === false) {
+			$helpers[] = $helper;
+		}
+	}
+	return $helpers;
 }
 function partial($partial, $variables = array()) {
 	foreach ($variables as $key => $value) {
@@ -41,15 +54,24 @@ function partial($partial, $variables = array()) {
 		moojon_base::handle_error("Unknown partial ($partial)");
 	}
 }
-function render() {
-	$layout = moojon_paths::get_layout_path($app->get_layout());
-	$view = moojon_paths::get_view_path($app->get_view());
+function render_cgi() {
+	require_once(moojon_paths::get_app_path(moojon_uri::get_app()));
+	$app_class = moojon_uri::get_app().'_app';
+	$app = new $app_class;	
+	foreach ($app->get_controller_properties() as $key => $value) {
+		if ($key != 'app') {
+			$$key = $value;
+		}
+	}
+	foreach (helpers() as $helper) {
+		helper($helper);
+	}
 	ob_start();
-	require_once($view);
+	require_once(moojon_paths::get_view_path($app->get_view()));
 	define('YIELD', ob_get_clean());
 	ob_end_clean();
-	if ($layout !== false) {
-		require_once($layout);
+	if (moojon_paths::get_layout_path($app->get_layout()) !== false) {
+		require_once(moojon_paths::get_layout_path($app->get_layout()));
 	} else {
 		echo YIELD;
 	}
