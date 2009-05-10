@@ -10,7 +10,7 @@ switch (strtoupper(UI)) {
 		$app = new $app_class;
 		break;
 	case 'CLI':
-		new $cli();
+		new $cli;
 		break;
 	default:
 		moojon_base::handle_error('Invalid UI ('.UI.')');

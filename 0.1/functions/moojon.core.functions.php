@@ -8,6 +8,8 @@ function __autoload($class_name) {
 		require_once(moojon_paths::get_adapter_directory().$class_filename);
 	} elseif (file_exists(moojon_paths::get_columns_directory().str_replace('_', '.', $class_name).'.column.class.php') == true) {
 		require_once(moojon_paths::get_columns_directory().str_replace('_', '.', $class_name).'.column.class.php');
+	} elseif (file_exists(moojon_paths::get_columns_directory().$class_filename) == true) {
+		require_once(moojon_paths::get_columns_directory().$class_filename);
 	} elseif (file_exists(moojon_paths::get_moojon_validations_directory().$class_filename) == true) {
 		require_once(moojon_paths::get_moojon_validations_directory().$class_filename);
 	} elseif (file_exists(moojon_paths::get_moojon_tags_directory().$class_filename) == true) {
