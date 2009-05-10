@@ -42,6 +42,7 @@ final class moojon_config extends moojon_base {
 			foreach (moojon_files::directory_files(moojon_paths::get_app_config_directory(), true) as $file) {
 				self::set(require_once($file));
 			}
+			$data = self::get_data();
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
