@@ -7,12 +7,17 @@ final class moojon_connection {
 	private $database;
 	private $resource;
 	
-	final private function __construct() {}
+	private function __construct() {}
 	
-	final static public function init($host = null, $username = null, $password = null, $database = null) {
-		if (empty(self::$instance)) {
+	static public function get() {
+		if (!self::$instance) {
 			self::$instance = new moojon_connection();
 		}
+		return self::$instance;
+	}
+	
+	static public function init($host = null, $username = null, $password = null, $database = null) {
+		$instance = self::get();
 		if ($host != null) {
 			self::$instance->set_host($host);
 		}
@@ -31,13 +36,13 @@ final class moojon_connection {
 		return self::$instance;
 	}
 	
-	final public function connect() {
+	public function connect() {
 		$this->set_resource($this->get_host(), $this->get_username(), $this->get_password());
 		$this->select_database($this->get_database());
 		return $this;
 	}
 	
-	final public function set_resource($host, $username, $password) {
+	public function set_resource($host, $username, $password) {
 		$this->set_host($host);
 		$this->set_username($username);
 		$this->set_password($password);
@@ -45,50 +50,51 @@ final class moojon_connection {
 		return $this;
 	}
 	
-	final public function select_database($database) {
+	public function select_database($database) {
 		mysql_select_db($database, $this->resource);
 		return $this;
 	}
 	
-	final public function set_host($host) {
+	public function set_host($host) {
 		$this->host = $host;
 	}
 	
-	final public function set_username($username) {
+	public function set_username($username) {
 		$this->username = $username;
 	}
 	
-	final public function set_password($password) {
+	public function set_password($password) {
 		$this->password = $password;
 	}
 	
-	final public function set_database($database) {
+	public function set_database($database) {
 		$this->database = $database;
 	}
 	
-	final public function get_host() {
+	public function get_host() {
 		return $this->host;
 	}
 	
-	final public function get_username() {
+	public function get_username() {
 		return $this->username;
 	}
 	
-	final public function get_password() {
+	public function get_password() {
 		return $this->password;
 	}
 	
-	final public function get_database() {
+	public function get_database() {
 		return $this->database;
 	}
 	
-	final public function get_resource() {
+	public function get_resource() {
 		return $this->resource;
 	}
 	
-	final public function close() {
-		mysql_close($this->resource);
-		return $this;
+	public function close() {
+		$instance = self::get();
+		mysql_close($instance->resource);
+		return self::$instance;
 	}
 }
 ?>

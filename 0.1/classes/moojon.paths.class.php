@@ -47,6 +47,26 @@ final class moojon_paths extends moojon_base {
 		return MOOJON_PATH;
 	}
 	
+	static public function get_moojon_classes_directory() {
+		return self::get_moojon_directory().moojon_config::get('classes_directory').'/';
+	}
+	
+	static public function get_moojon_validations_directory() {
+		return self::get_moojon_classes_directory().moojon_config::get('validations_directory').'/';
+	}
+	
+	static public function get_moojon_tags_directory() {
+		return self::get_moojon_classes_directory().moojon_config::get('tags_directory').'/';
+	}
+	
+	static public function get_moojon_tag_attributes_directory() {
+		return self::get_moojon_tags_directory().moojon_config::get('tag_attributes_directory').'/';
+	}
+	
+	static public function get_moojon_migrations_directory() {
+		return self::get_moojon_models_directory().moojon_config::get('migrations_directory').'/';
+	}
+	
 	static public function get_project_config_directory() {
 		return self::get_project_directory().moojon_config::get('config_directory').'/';
 	}
@@ -197,10 +217,6 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_migrations_directory() {
 		return self::get_models_directory().moojon_config::get('migrations_directory').'/';
-	}
-	
-	static public function get_moojon_migrations_directory() {
-		return self::get_moojon_models_directory().moojon_config::get('migrations_directory').'/';
 	}
 	
 	static public function get_public_directory() {

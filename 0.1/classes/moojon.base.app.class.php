@@ -29,6 +29,8 @@ abstract class moojon_base_app extends moojon_base {
 		$controller = $controller.'_controller';
 		$this->controller = new $controller($this);
 		$this->controller->render($action);
+		$this->render();
+		moojon_connection::close();
 	}
 	
 	final public function get_layout() {
@@ -41,6 +43,25 @@ abstract class moojon_base_app extends moojon_base {
 	
 	final public function get_controller_properties() {
 		return get_object_vars($this->controller);
+	}
+	
+	final public function render() {
+		require_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
+		foreach ($this->get_controller_properties() as $key => $value) {
+			$$key = $value;
+		}
+		foreach (helpers() as $helper) {
+			helper($helper);
+		}
+		ob_start();
+		require_once(moojon_paths::get_view_path($this->get_view()));
+		define('YIELD', ob_get_clean());
+		ob_end_clean();
+		if (moojon_paths::get_layout_path($this->get_layout()) !== false) {
+			require_once(moojon_paths::get_layout_path($this->get_layout()));
+		} else {
+			echo YIELD;
+		}
 	}
 }
 ?>
