@@ -1,6 +1,6 @@
 <?php
 final class moojon_cli extends moojon_base_cli {
-	public function __construct($arguments) {
+	public function run($arguments) {
 		if (count($arguments) < 1) {
 			echo 'Moojon version: '.MOOJON_VERSION.self::new_line();
 		} else {

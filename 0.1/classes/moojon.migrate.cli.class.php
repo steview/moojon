@@ -1,6 +1,6 @@
 <?php
 final class moojon_migrate_cli extends moojon_base_cli {
-	public function __construct($arguments) {
+	public function run($arguments) {
 		$command = $this->prompt_until_in(array_shift($arguments), $this->get_commands(), 'Please enter a command?');
 		$this->get_migrations();
 		switch ($command) {

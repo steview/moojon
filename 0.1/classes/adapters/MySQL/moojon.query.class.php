@@ -138,7 +138,7 @@ final class moojon_query extends moojon_query_utilities {
 	
 	static public function run_raw($query) {
 		self::log("Running: $query");
-		$query = mysql_query($query, moojon_connection::init()->get_resource());
+		$query = mysql_query($query, moojon_connection::get_resource());
 		if ($mysql_error = mysql_error()) {
 			self::log("MySQL error: $mysql_error");
 			self::handle_error("MySQL error: $mysql_error");

@@ -1,6 +1,6 @@
 <?php
 final class moojon_generate_cli extends moojon_base_cli {
-	public function __construct($arguments) {
+	public function run($arguments) {
 		$command = $this->prompt_until_in(array_shift($arguments), $this->get_commands(), 'What would you like to generate?');
 		switch ($command) {
 			case 'model':
@@ -39,7 +39,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 			case 'config':
 				self::check_arguments('moojon_generate_cli::config()', 1, $arguments);
 				$config = $this->prompt_until($arguments[0], 'Please enter a name for this config');
-				$path = $this->prompt('Path?', $_SERVER['PWD'].'/'.moojon_config::get('config_directory').'/');
+				$path = $this->prompt('Path?', $_SERVER['PWD'].'/'.'config/');
 				moojon_generator::config($config, $path);
 				break;
 			case 'helper':

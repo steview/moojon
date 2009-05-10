@@ -33,10 +33,20 @@ final class moojon_config extends moojon_base {
 	
 	static public function __get($key) {
 		$data = self::get_data();
-		if (array_key_exists($key, $data)) {
+		if (array_key_exists($key, $data) == true && $data[$key] != null) {
 			return $data[$key];
 		} else {
-			self::handle_error("Unknown config property ($key)");
+			foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
+				self::set(require_once($file));
+			}
+			foreach (moojon_files::directory_files(moojon_paths::get_app_config_directory(), true) as $file) {
+				self::set(require_once($file));
+			}
+			if (array_key_exists($key, $data)) {
+				return $data[$key];
+			} else {
+				self::handle_error("Unknown config property ($key)");
+			}
 		}
 	}
 	

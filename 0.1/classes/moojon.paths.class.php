@@ -51,6 +51,19 @@ final class moojon_paths extends moojon_base {
 		return self::get_moojon_directory().moojon_config::get('classes_directory').'/';
 	}
 	
+	static public function get_adapters_directory() {
+		return self::get_moojon_classes_directory().moojon_config::get('adapters_directory').'/';
+	}
+	
+	static public function get_adapter_directory() {
+		return self::get_adapters_directory().moojon_config::get('adapter').'/';
+	}
+	
+	static public function get_columns_directory() {
+		return self::get_adapter_directory().moojon_config::get('columns_directory').'/';
+	}
+	
+	
 	static public function get_moojon_validations_directory() {
 		return self::get_moojon_classes_directory().moojon_config::get('validations_directory').'/';
 	}
@@ -68,27 +81,27 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_project_config_directory() {
-		return self::get_project_directory().moojon_config::get('config_directory').'/';
+		return self::get_project_directory().'config/';
 	}
 	
 	static public function get_app_config_directory() {
-		return self::get_app_directory().moojon_config::get('config_directory').'/';
+		return self::get_app_directory().'config/';
 	}
 	
 	static public function get_shared_config_directory() {
-		return self::get_shared_directory().moojon_config::get('config_directory').'/';
+		return self::get_shared_directory().'config/';
 	}
 	
 	static public function get_library_config_directory() {
-		return self::get_library_directory().moojon_config::get('config_directory').'/';
+		return self::get_library_directory().'config/';
 	}
 	
 	static public function get_vendor_config_directory() {
-		return self::get_vendor_directory().moojon_config::get('config_directory').'/';
+		return self::get_vendor_directory().'config/';
 	}
 	
 	static public function get_moojon_config_directory() {
-		return self::get_moojon_directory().moojon_config::get('config_directory').'/';
+		return self::get_moojon_directory().'config/';
 	}
 	
 	static public function get_apps_directory() {

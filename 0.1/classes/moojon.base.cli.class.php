@@ -1,5 +1,15 @@
 <?php
 abstract class moojon_base_cli extends moojon_base {
+	
+	final public function __construct() {
+		if (!defined("STDIN")) {
+			define("STDIN", fopen('php://stdin','r'));
+		}
+		$arguments = $_SERVER['argv'];
+		array_shift($arguments);
+		$this->run($arguments);
+	}
+	
 	static final protected function prompt($message, $default = null, $characters = null) {
 		if ($default != null) {
 			$message = "$message (default: $default)";
@@ -19,6 +29,8 @@ abstract class moojon_base_cli extends moojon_base {
 		}
 		return $read;
 	}
+	
+	abstract protected function run($arguments);
 	
 	final protected function check_arguments($method, $expected, Array $arguments) {
 		if (count($arguments) > $expected) {
