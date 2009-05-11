@@ -252,7 +252,8 @@ final class moojon_paths extends moojon_base {
 		return self::get_project_directory().moojon_config::get('script_directory').'/';
 	}
 	
-	static public function get_app_path($app) {
+	static public function get_app_path() {
+		$app = moojon_uri::get_app();
 		if (in_array($app, moojon_files::directory_directories(self::get_apps_directory())) == true) {
 			return self::get_apps_directory()."/$app/$app.app.class.php";
 		} else {
@@ -260,7 +261,8 @@ final class moojon_paths extends moojon_base {
 		}
 	}
 	
-	static public function get_controller_path($controller) {
+	static public function get_controller_path() {
+		$controller = moojon_uri::get_controller();
 		if (in_array(self::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_controllers_directory()))) {
 			return self::get_controllers_directory()."$controller.controller.class.php";
 		} elseif (in_array(self::get_shared_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_shared_controllers_directory()))) {

@@ -15,6 +15,8 @@ abstract class moojon_base_controller extends moojon_base {
 		$this->init();
 		if (method_exists($this, $action)) {
 			$this->$action();
+		} else {
+			die('method does not exist: '.$action);
 		}
 		$this->close();
 	}

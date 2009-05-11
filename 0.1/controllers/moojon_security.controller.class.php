@@ -1,6 +1,7 @@
 <?php
 final class moojon_security_controller extends moojon_base_controller {
 	public function login() {
+		echo 'found me<br />';
 		$this->security_identity_label = moojon_config::get('security_identity_label');
 		$this->security_password_label = moojon_config::get('security_password_label');
 		$this->security_remember_label = moojon_config::get('security_remember_label');
@@ -27,4 +28,5 @@ final class moojon_security_controller extends moojon_base_controller {
 		$this->forward(moojon_config::get('security_action'), moojon_config::get('security_controller'), moojon_uri::get_app());
 	}
 }
+echo 'found me*<br />';
 ?>

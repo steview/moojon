@@ -7,7 +7,15 @@ final class moojon_config extends moojon_base {
 		$data = require_once(MOOJON_PATH.'config/moojon.config.php');
 		$this->data = $data;
 	}
-
+	
+	static public function update($directory) {
+		foreach (moojon_files::directory_files($directory, true) as $file) {
+			foreach (require_once($file) as $key => $value) {
+				self::set($key, $value);
+			}
+		}
+	}
+	
 	static public function get($key = null) {
 		if (!self::$instance) {
 			self::$instance = new moojon_config();
@@ -37,11 +45,27 @@ final class moojon_config extends moojon_base {
 			return $data[$key];
 		} else {
 			foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
+				echo "$file<br />";
+				foreach (require_once($file) as $key => $value) {
+					echo "$key = $value<br />";
+					self::set($key, $value);
+				}
+			}
+			foreach (moojon_files::directory_files(moojon_paths::get_app_config_directory(), true) as $file) {
+				echo "$file<br />";
+				foreach (require_once($file) as $key => $value) {
+					echo "$key = $value<br />";
+					self::set($key, $value);
+				}
+			}
+			/*
+			foreach (moojon_files::directory_files(moojon_paths::get_project_config_directory(), true) as $file) {
 				self::set(require_once($file));
 			}
 			foreach (moojon_files::directory_files(moojon_paths::get_app_config_directory(), true) as $file) {
 				self::set(require_once($file));
 			}
+			*/
 			$data = self::get_data();
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
@@ -58,6 +82,10 @@ final class moojon_config extends moojon_base {
 	static private function get_data() {
 		$instance = self::get();
 		return $instance->data;
+	}
+	
+	static public function dump() {
+		print_r($data = self::get_data());
 	}
 }
 ?>

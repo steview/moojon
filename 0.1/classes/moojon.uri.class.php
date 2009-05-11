@@ -116,6 +116,7 @@ final class moojon_uri extends moojon_base {
 		for ($i = 0; $i < $counter; $i ++) {
 			array_shift($request_uri);
 		}
+		echo $return['app'].' '.$return['controller'].' '.$return['action'].'<br />';
 		$return['querystring'] = $request_uri;
 		if (moojon_config::has('security') === true) {
 			if (moojon_config::get('security') === true) {
