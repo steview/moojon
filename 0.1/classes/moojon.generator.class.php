@@ -11,17 +11,17 @@ final class moojon_generator extends moojon_base {
 	static private function write($template, $destination, $swaps) {
 		if (!$handle = fopen($template, 'r')) {
 			fclose($handle);
-			self::handle_error("Unable to open template file for reading ($template)");
+			throw new Exception("Unable to open template file for reading ($template)");
 		}
 		$template = fread($handle, filesize($template));
 		fclose($handle);
 		if (!$handle = fopen($destination, 'w')) {
 			fclose($handle);
-			self::handle_error("Unable to open destination file for writing ($destination)");
+			throw new Exception("Unable to open destination file for writing ($destination)");
 		}
 		if (fwrite($handle, self::swap_out($template, $swaps, '<[', ']>')) === false) {
 			fclose($handle);
-			self::handle_error("Unable to write destination file ($destination)");
+			throw new Exception("Unable to write destination file ($destination)");
 		}
 		chmod($destination, 0755);
 		echo "Creating file ($destination)".moojon_base::new_line();
@@ -51,7 +51,7 @@ final class moojon_generator extends moojon_base {
 	static final private function check_directory($path, $exit = null) {
 		if (is_dir($path)) {
 			if ($exit === true) {
-				self::handle_error("Directory already exists ($path)");
+				throw new Exception("Directory already exists ($path)");
 			}
 			return false;
 		} else {
@@ -62,7 +62,7 @@ final class moojon_generator extends moojon_base {
 	static final private function check_file($path, $exit = null) {
 		if (file_exists($path)) {
 			if ($exit === true) {
-				self::handle_error("File already exists ($path)");
+				throw new Exception("File already exists ($path)");
 			}
 			return false;
 		} else {

@@ -42,7 +42,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			$this->columns[$key]->set_value($value);
 			$this->unsaved = true;
 		} else {
-			self::handle_error("$key doesn't exist");
+			throw new Exception("$key doesn't exist");
 		}
 	}
 	
@@ -61,7 +61,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 				if (method_exists($this, $get_method)) {
 					return $this->$get_method();
 				} else {
-					self::handle_error("unknown property ($key)");
+					throw new Exception("unknown property ($key)");
 				}
 			}
 		}	
@@ -89,7 +89,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		if ($this->has_relationship($key)) {
 			return $this->relationships[$key];
 		} else {
-			self::handle_error("no such relationship ($key)");
+			throw new Exception("no such relationship ($key)");
 		}
 	}
 	
@@ -99,7 +99,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	final protected function add_relationship($relationship_type, $name, $foreign_obj, $foreign_key, $key) {
 		if ($this->has_property($name)) {
-			self::handle_error("duplicate property when adding relationship ($name)");
+			throw new Exception("duplicate property when adding relationship ($name)");
 		}
 		if ($foreign_obj == null) {
 			$foreign_obj = moojon_inflect::pluralize($name);
@@ -112,7 +112,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			$key = moojon_primary_key::NAME;
 		}
 		if (!$this->has_column($key)) {
-			self::handle_error("no such column to use as key for relationship ($key)");
+			throw new Exception("no such column to use as key for relationship ($key)");
 		}
 		$this->relationships[$name] = new $relationship_type($name, $foreign_obj, $foreign_key, $key);
 	}
@@ -129,7 +129,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		if  ($this->has_validation($key)) {
 			return $this->validations[$key];
 		} else {
-			self::handle_error("no such validation ($key)");
+			throw new Exception("no such validation ($key)");
 		}
 	}
 	
@@ -219,7 +219,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		if (!$this->has_property($column->get_name())) {
 			$this->columns[$column->get_name()] = $column;
 		} else {
-			self::handle_error('duplicate property ('.$column->get_name().')');
+			throw new Exception('duplicate property ('.$column->get_name().')');
 		}
 	}
 	

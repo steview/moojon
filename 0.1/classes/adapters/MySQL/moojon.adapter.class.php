@@ -91,7 +91,7 @@ final class moojon_adapter extends moojon_base {
 					case 'ENUM':
 					case 'SET':
 					case 'YEAR':
-						moojon_base::handle_error("Data type not mappable ($type)");
+						throw new Exception("Data type not mappable ($type)");
 						break;
 				}
 			}

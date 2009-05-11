@@ -23,7 +23,7 @@ final class moojon_paths extends moojon_base {
 		if (in_array($key, get_class_methods('self'))) {
 			return $instance->$key();
 		} else {
-			self::handle_error('Unknown path property ($key)');
+			throw new Exception('Unknown path property ($key)');
 		}
 	}
 	
@@ -257,12 +257,11 @@ final class moojon_paths extends moojon_base {
 		if (in_array($app, moojon_files::directory_directories(self::get_apps_directory())) == true) {
 			return self::get_apps_directory()."/$app/$app.app.class.php";
 		} else {
-			self::handle_error("404 app not found ($app)");
+			throw new Exception("404 app not found ($app)");
 		}
 	}
 	
-	static public function get_controller_path() {
-		$controller = moojon_uri::get_controller();
+	static public function get_controller_path($controller) {
 		if (in_array(self::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_controllers_directory()))) {
 			return self::get_controllers_directory()."$controller.controller.class.php";
 		} elseif (in_array(self::get_shared_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_shared_controllers_directory()))) {
@@ -270,7 +269,7 @@ final class moojon_paths extends moojon_base {
 		} elseif (in_array(self::get_moojon_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_moojon_controllers_directory()))) {
 			return self::get_moojon_controllers_directory()."$controller.controller.class.php";
 		} else {
-			self::handle_error("404 controller not found ($controller)");
+			throw new Exception("404 controller not found ($controller)");
 		}
 	}
 	
@@ -282,7 +281,7 @@ final class moojon_paths extends moojon_base {
 		} elseif (file_exists(self::get_moojon_layouts_directory().$layout) === true) {
 			return self::get_moojon_layouts_directory().$layout;
 		} else {
-			self::handle_error("404 layout not found ($layout)");
+			throw new Exception("404 layout not found ($layout)");
 		}
 	}
 	
@@ -294,7 +293,7 @@ final class moojon_paths extends moojon_base {
 		} elseif (file_exists(self::get_moojon_views_directory().$view) === true) {
 			return self::get_moojon_views_directory().$view;
 		} else {
-			self::handle_error("404 view not found ($view)");
+			throw new Exception("404 view not found ($view)");
 		}
 	}
 }

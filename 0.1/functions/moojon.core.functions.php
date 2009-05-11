@@ -29,9 +29,7 @@ function __autoload($class_name) {
 	} elseif (file_exists(moojon_paths::get_base_models_directory().str_replace('base_', 'base.', $class_name).'.model.class.php') == true) {
 		require_once(moojon_paths::get_base_models_directory().str_replace('base_', 'base.', $class_name).'.model.class.php');
 	} else {
-		echo "not found $class_name $class_filename ".moojon_paths::get_columns_directory().str_replace('_', '.', $class_name).'.column.class.php'."<br />";
-		//die(moojon_paths::get_columns_directory().str_replace('_', '.', $class_name).'.column.class.php');
-		//moojon_base::handle_error("$class_name not found as a library or vendor item.");
+		//throw new Exception("Not found ($class_filename)");
 	}
 }
 ?>

@@ -51,5 +51,9 @@ return array(
 	'security_model' => 'coach',
 	'security_controller' => 'moojon_security',
 	'security_action' => 'login',
+	'exception_app' => 'moojon_app',
+	'exception_controller' => 'moojon_exception',
+	'500' => 'fivehundred',
+	'404' => 'fourofour',
 );
 ?>

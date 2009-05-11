@@ -25,7 +25,7 @@ abstract class moojon_base_app extends moojon_base {
 		if ($controller == null) {
 			$controller = moojon_uri::get_controller();
 		}
-		require_once(moojon_paths::get_controller_path());
+		require_once(moojon_paths::get_controller_path($controller));
 		$controller = $controller.'_controller';
 		$this->controller = new $controller($this);
 		$this->controller->render($action);
@@ -57,7 +57,7 @@ abstract class moojon_base_app extends moojon_base {
 		require_once(moojon_paths::get_view_path($this->get_view()));
 		define('YIELD', ob_get_clean());
 		ob_end_clean();
-		if (moojon_paths::get_layout_path($this->get_layout()) !== false) {
+		if ($this->get_layout() !== false) {
 			require_once(moojon_paths::get_layout_path($this->get_layout()));
 		} else {
 			echo YIELD;

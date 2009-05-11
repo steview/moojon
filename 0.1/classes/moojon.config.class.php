@@ -10,10 +10,10 @@ final class moojon_config extends moojon_base {
 	
 	static public function update($directory) {
 		foreach (moojon_files::directory_files($directory, true) as $file) {
-			//echo "$directory<br />";
-			foreach (require_once($file) as $key => $value) {
-				//echo "$key = $value<br />";
-				self::set($key, $value);
+			if (is_array(require_once($file)) === true) {
+				foreach (require_once($file) as $key => $value) {
+					self::set($key, $value);
+				}
 			}
 		}
 	}
@@ -52,7 +52,7 @@ final class moojon_config extends moojon_base {
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
-				self::handle_error("Unknown config property ($key)");
+				throw new Exception("Unknown config property ($key)");
 			}
 		}
 	}
@@ -64,6 +64,11 @@ final class moojon_config extends moojon_base {
 	static private function get_data() {
 		$instance = self::get();
 		return $instance->data;
+	}
+	
+	static public function clear() {
+		$instance = self::get();
+		$instance->data = array();
 	}
 	
 	static public function dump() {
