@@ -3,8 +3,8 @@ abstract class moojon_base_app extends moojon_base {
 	
 	private $controller;
 	
-	final public function __construct() {
-		$this->set_location();
+	final public function __construct($action = null, $controller = null, $app = null) {
+		$this->set_location($action, $controller, $app);
 	}
 	
 	final public function set_location($action = null, $controller = null, $app = null) {
@@ -25,7 +25,6 @@ abstract class moojon_base_app extends moojon_base {
 		if ($controller == null) {
 			$controller = moojon_uri::get_controller();
 		}
-		//moojon_config::update();
 		require_once(moojon_paths::get_controller_path());
 		$controller = $controller.'_controller';
 		$this->controller = new $controller($this);

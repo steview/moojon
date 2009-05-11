@@ -4,6 +4,6 @@ define('MOOJON_VERSION', '0.1');
 define('MOOJON_PATH', '/Library/Moojon/'.MOOJON_VERSION.'/');
 define('ENVIRONMENT', 'development');
 define('UI', 'CLI');
-$cli = 'moojon_cli';
+define('CLI', 'moojon_cli');
 require_once(MOOJON_PATH.'/moojon.php');
 ?>

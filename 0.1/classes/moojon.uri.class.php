@@ -45,25 +45,28 @@ final class moojon_uri extends moojon_base {
 		$request_uri = self::get_request_uri_array();
 		$return = array();
 		$counter;
+		$default_app = moojon_config::get('default_app');
+		$default_controller = moojon_config::get('default_controller');
+		$default_action = moojon_config::get('default_action');
 		switch (count($request_uri)) {
 			case 0:
-				$return['app'] = moojon_config::get('default_app');
-				$return['controller'] = moojon_config::get('default_controller');
-				$return['action'] = moojon_config::get('default_action');
+				$return['app'] = $default_app;
+				$return['controller'] = $default_controller;
+				$return['action'] = $default_action;
 				$counter = 0;
 				break;
 			case 1:
 				if (in_array($request_uri[0], self::get_apps())) {
 					$return['app'] = $request_uri[0];
-					$return['controller'] = moojon_config::get('default_controller');
-					$return['action'] = moojon_config::get('default_action');
+					$return['controller'] = $default_controller;
+					$return['action'] = $default_action;
 				} else {
-					$return['app'] = moojon_config::get('default_app');
-					if (in_array($request_uri[0], self::get_controllers($return['app'])) == true) {
+					$return['app'] = $default_app;
+					if (in_array($request_uri[0], self::get_controllers($default_app)) == true) {
 						$return['controller'] = $request_uri[0];
-						$return['action'] = moojon_config::get('default_action');
+						$return['action'] = $default_action;
 					} else {
-						$return['controller'] = moojon_config::get('default_controller');
+						$return['controller'] = $default_controller;
 						$return['action'] = $request_uri[0];
 					}
 				}
@@ -73,9 +76,9 @@ final class moojon_uri extends moojon_base {
 				if (in_array($request_uri[0], self::get_apps())) {
 					$return['app'] = $request_uri[0];
 					$return['controller'] = $request_uri[1];
-					$return['action'] = moojon_config::get('default_action');
+					$return['action'] = $default_action;
 				} else {
-					$return['app'] = moojon_config::get('default_app');
+					$return['app'] = $default_app;
 					$return['controller'] = $request_uri[0];
 					$return['action'] = $request_uri[1];
 				}
@@ -88,7 +91,7 @@ final class moojon_uri extends moojon_base {
 					$return['action'] = $request_uri[2];
 					$counter = 3;
 				} else {
-					$return['app'] = moojon_config::get('default_app');
+					$return['app'] = $default_app;
 					$return['controller'] = $request_uri[0];
 					$return['action'] = $request_uri[1];
 					$counter = 2;
@@ -100,14 +103,14 @@ final class moojon_uri extends moojon_base {
 					$return['controller'] = $request_uri[1];
 					$return['action'] = $request_uri[2];
 					$counter = 3;
-				} elseif (in_array($request_uri[0], self::get_controllers(moojon_config::get('default_app')))) {
-					$return['app'] = moojon_config::get('default_app');
+				} elseif (in_array($request_uri[0], self::get_controllers($default_app))) {
+					$return['app'] = $default_app;
 					$return['controller'] = $request_uri[0];
 					$return['action'] = $request_uri[1];
 					$counter = 2;
 				} else {
-					$return['app'] = moojon_config::get('default_app');
-					$return['controller'] = moojon_config::get('default_controller');
+					$return['app'] = $default_app;
+					$return['controller'] = $default_controller;
 					$return['action'] = $request_uri[0];
 					$counter = 1;
 				}
@@ -116,7 +119,6 @@ final class moojon_uri extends moojon_base {
 		for ($i = 0; $i < $counter; $i ++) {
 			array_shift($request_uri);
 		}
-		echo $return['app'].' '.$return['controller'].' '.$return['action'].'<br />';
 		$return['querystring'] = $request_uri;
 		if (moojon_config::has('security') === true) {
 			if (moojon_config::get('security') === true) {
@@ -126,6 +128,7 @@ final class moojon_uri extends moojon_base {
 				}
 			}
 		}
+		moojon_config::get('security');
 		return $return;
 	}
 	
