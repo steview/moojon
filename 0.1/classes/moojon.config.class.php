@@ -50,7 +50,7 @@ final class moojon_config extends moojon_base {
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
-				throw new Exception("Unknown config property ($key)");
+				throw new moojon_exception("Unknown config property ($key)");
 			}
 		}
 	}

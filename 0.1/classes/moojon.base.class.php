@@ -7,7 +7,7 @@ abstract class moojon_base {
 		$log_dir = PROJECT_DIRECTORY.'log/';
 		if (!is_dir($log_dir)) {
 			if (!mkdir($log_dir)) {
-				throw new Exception("Unable to open / create log directory ($log_dir)");
+				throw new moojon_exception("Unable to open / create log directory ($log_dir)");
 			}
 		}
 		$log_file = $log_dir.strtolower(ENVIRONMENT).'.log';
@@ -17,11 +17,11 @@ abstract class moojon_base {
 		}
 		if (!$handle = fopen($log_file, 'a')) {
 			fclose($handle);
-			throw new Exception("Unable to open / create log file ($log_file)");
+			throw new moojon_exception("Unable to open / create log file ($log_file)");
 		}
 		if (fwrite($handle, $text) === false) {
 			fclose($handle);
-			throw new Exception("Unable to write to log file ($log_file)");
+			throw new moojon_exception("Unable to write to log file ($log_file)");
 		}
 		fclose($handle);
 	}

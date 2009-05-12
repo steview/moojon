@@ -4,8 +4,7 @@ final class moojon_authentication extends moojon_base {
 	static private $profile = false;
 	
 	private function __construct() {
-		$security_class = moojon_config::get('security_class');
-		$security = new $security_class;
+		$security = $this->get_security();
 		$this->profile = $security->authenticate();
 	}
 	
@@ -32,10 +31,18 @@ final class moojon_authentication extends moojon_base {
 	}
 	
 	static public function destroy() {
+		$instance = self::get();
+		$instance->destroy();
+		self::$instance = null;
+	}
+	
+	static private function get_security() {
 		$security_class = moojon_config::get('security_class');
 		$security = new $security_class;
-		$security->destroy();
-		self::$instance = null;
+		if (is_subclass_of($security, 'moojon_base_security') === false) {
+			throw new moojon_exception('Invalid security class ('.get_class($security).')');
+		}
+		return $security;
 	}
 }
 ?>

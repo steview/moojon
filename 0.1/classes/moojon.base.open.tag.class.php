@@ -31,7 +31,7 @@ abstract class moojon_base_open_tag extends moojon_base_tag {
 		if ($child != null) {
 			return $child;
 		} else {
-			throw new Exception("No such attribute or child ($key)");
+			throw new moojon_exception("No such attribute or child ($key)");
 		}
 	}
 }

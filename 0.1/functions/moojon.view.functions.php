@@ -7,7 +7,7 @@ function helper($helper) {
 	} elseif (file_exists(moojon_paths::get_moojon_helpers_directory().$helper) == true) {
 		require_once(moojon_paths::get_moojon_helpers_directory().$helper);
 	} else {
-		throw new Exception("Unknown helper ($helper)");
+		throw new moojon_exception("Unknown helper ($helper)");
 	}
 }
 function helpers() {
@@ -40,7 +40,7 @@ function partial($partial, $variables = array()) {
 	} elseif (file_exists(moojon_paths::get_shared_views_directory().$partial) == true) {
 		require_once(moojon_paths::get_shared_views_directory().$partial);
 	} else {
-		throw new Exception("Unknown partial ($partial)");
+		throw new moojon_exception("Unknown partial ($partial)");
 	}
 }
 ?>

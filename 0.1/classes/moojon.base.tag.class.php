@@ -56,12 +56,12 @@ abstract class moojon_base_tag extends moojon_base {
 		}
 		$name = $attribute->get_name();
 		if ($this->has_attribute($name)) {
-			throw new Exception("Duplicate attribute ($name)");
+			throw new moojon_exception("Duplicate attribute ($name)");
 		}
 		if (in_array($name, $this->legal_attributes) == true) {
 			$this->attributes[$name] = $attribute;
 		} else {
-			throw new Exception("Illegal attribute ($name)");
+			throw new moojon_exception("Illegal attribute ($name)");
 		}
 	}
 	
@@ -81,7 +81,7 @@ abstract class moojon_base_tag extends moojon_base {
 		if ($this->has_attribute($key)) {
 			return $this->attributes[$key];
 		} else {
-			throw new Exception("No such attribute ($key)");
+			throw new moojon_exception("No such attribute ($key)");
 		}
 	}
 	
@@ -106,7 +106,7 @@ abstract class moojon_base_tag extends moojon_base {
 				}
 			}
 		} else {
-			throw new Exception("No such attribute or child ($key)");
+			throw new moojon_exception("No such attribute or child ($key)");
 		}
 	}
 	
@@ -138,7 +138,7 @@ abstract class moojon_base_tag extends moojon_base {
 				$this->class = $class;
 			}
 		} else {
-			throw new Exception('Tag can not have class attribute ('.get_class($this).')');
+			throw new moojon_exception('Tag can not have class attribute ('.get_class($this).')');
 		}
 	}
 	

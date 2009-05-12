@@ -120,7 +120,7 @@ final class moojon_uri extends moojon_base {
 			array_shift($request_uri);
 		}
 		$return['querystring'] = $request_uri;
-		if (defined('EXCEPTION') === true) {
+		if (defined('EXCEPTION') === true && EXCEPTION === true) {
 			$return['app'] = moojon_config::get('exception_app');
 			$return['controller'] = moojon_config::get('exception_controller');
 			$return['action'] = moojon_config::get('exception_action');

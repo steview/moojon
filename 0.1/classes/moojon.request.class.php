@@ -15,7 +15,7 @@ final class moojon_request extends moojon_base {
 		if (array_key_exists($key, $_REQUEST) == true) {
 			return $_REQUEST[$key];
 		} else {
-			throw new Exception("Key does not exists in moojon_request ($key)");
+			throw new moojon_exception("Key does not exists in moojon_request ($key)");
 		}
 	}
 	

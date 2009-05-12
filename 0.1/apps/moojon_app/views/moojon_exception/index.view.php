@@ -1,1 +1,1 @@
-Error page
+<?php echo $exception; ?>

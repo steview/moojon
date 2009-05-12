@@ -11,7 +11,7 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 			if (is_array($legal_values) == true) {
 				$this->legal_values = $legal_values;
 			} else {
-				throw new Exception("Legal values must be an array");
+				throw new moojon_exception("Legal values must be an array");
 			}
 		} else {
 			$this->legal_values = array();
@@ -27,7 +27,7 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 	
 	final public function set_value($value) {
 		if (count($this->legal_values) > 0 && in_array($value, $this->legal_values) == false) {
-			throw new Exception("Illegal value for tag ($value). Please use any of the following values (".implode(',', $this->legal_values).')');
+			throw new moojon_exception("Illegal value for tag ($value). Please use any of the following values (".implode(',', $this->legal_values).')');
 		}
 		$this->value = $value;
 	}

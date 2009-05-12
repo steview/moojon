@@ -23,7 +23,7 @@ final class moojon_paths extends moojon_base {
 		if (in_array($key, get_class_methods('self'))) {
 			return $instance->$key();
 		} else {
-			throw new Exception('Unknown path property ($key)');
+			throw new moojon_exception('Unknown path property ($key)');
 		}
 	}
 	
@@ -259,19 +259,19 @@ final class moojon_paths extends moojon_base {
 		} elseif (in_array($app, moojon_files::directory_directories(self::get_moojon_apps_directory())) == true) {
 			return self::get_moojon_apps_directory()."$app/$app.app.class.php";
 		} else {
-			throw new Exception("404 app not found ($app)");
+			throw new moojon_exception("404 app not found ($app)");
 		}
 	}
 	
 	static public function get_controller_path($controller) {
-		if (is_array(self::get_controllers_directory()) == true && in_array(self::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_controllers_directory()))) {
+		if (is_dir(self::get_controllers_directory()) == true && in_array(self::get_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_controllers_directory()))) {
 			return self::get_controllers_directory()."$controller.controller.class.php";
 		} elseif (in_array(self::get_shared_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_shared_controllers_directory()))) {
 			return self::get_shared_controllers_directory()."$controller.controller.class.php";
-		} elseif (in_array(self::get_moojon_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_moojon_controllers_directory()))) {
+		} elseif (is_dir(self::get_moojon_controllers_directory()) == true && in_array(self::get_moojon_controllers_directory()."$controller.controller.class.php", moojon_files::directory_files(self::get_moojon_controllers_directory()))) {
 			return self::get_moojon_controllers_directory()."$controller.controller.class.php";
 		} else {
-			throw new Exception("404 controller not found ($controller)");
+			throw new moojon_exception("404 controller not found ($controller)");
 		}
 	}
 	
@@ -283,7 +283,7 @@ final class moojon_paths extends moojon_base {
 		} elseif (file_exists(self::get_moojon_layouts_directory().$layout) === true) {
 			return self::get_moojon_layouts_directory().$layout;
 		} else {
-			throw new Exception("404 layout not found ($layout)");
+			throw new moojon_exception("404 layout not found ($layout)");
 		}
 	}
 	
@@ -295,7 +295,7 @@ final class moojon_paths extends moojon_base {
 		} elseif (file_exists(self::get_moojon_views_directory().$view) === true) {
 			return self::get_moojon_views_directory().$view;
 		} else {
-			throw new Exception("404 view not found ($view)");
+			throw new moojon_exception("404 view not found ($view)");
 		}
 	}
 }

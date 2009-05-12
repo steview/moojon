@@ -29,8 +29,8 @@ function __autoload($class_name) {
 	} elseif (file_exists(moojon_paths::get_base_models_directory().str_replace('base_', 'base.', $class_name).'.model.class.php') == true) {
 		require_once(moojon_paths::get_base_models_directory().str_replace('base_', 'base.', $class_name).'.model.class.php');
 	} else {
-		echo $class_name.' '.$class_filename.' '.moojon_paths::get_columns_directory().str_replace('_', '.', $class_name).'.column.class.php';
-		//throw new Exception("Not found ($class_filename)");
+		//echo $class_name.' '.$class_filename.' '.moojon_paths::get_columns_directory().str_replace('_', '.', $class_name).'.column.class.php';
+		//throw new moojon_exception("Not found ($class_filename)");
 	}
 }
 ?>

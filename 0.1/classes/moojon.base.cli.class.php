@@ -39,7 +39,7 @@ abstract class moojon_base_cli extends moojon_base {
 	}
 	
 	final protected function handle_argument_mismatch_error($method, $expected, Array $arguments) {
-		throw new Exception("Argument mismatch error for ($method). Expected $expected, got ".count($arguments).' ('.implode(', ', $arguments).')');
+		throw new moojon_exception("Argument mismatch error for ($method). Expected $expected, got ".count($arguments).' ('.implode(', ', $arguments).')');
 	}
 	
 	final protected function prompt_until($initial, $message, $default = null) {

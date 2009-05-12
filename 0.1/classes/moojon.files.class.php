@@ -34,7 +34,7 @@ final class moojon_files extends moojon_base {
 			}
 			closedir($directory_handler);
 		} else {
-			throw new Exception("Not a directory ($path)");
+			throw new moojon_exception("Not a directory ($path)");
 		}
 		return $directories;
 	}
@@ -51,7 +51,7 @@ final class moojon_files extends moojon_base {
 			}
 			closedir($directory_handler);
 		} else {
-			throw new Exception("Not a directory ($path)");
+			throw new moojon_exception("Not a directory ($path)");
 		}
 		return $directories;
 	}

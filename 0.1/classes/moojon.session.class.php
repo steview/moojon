@@ -38,10 +38,10 @@ final class moojon_session extends moojon_base {
 			if (array_key_exists($key, $_SESSION) == true) {
 				return $_SESSION[$key];
 			} else {
-				throw new Exception("Key does not exists in moojon_session ($key)");
+				throw new moojon_exception("Key does not exists in moojon_session ($key)");
 			}
 		} else {
-			throw new Exception("Key does not exists in moojon_session ($key)");
+			throw new moojon_exception("Key does not exists in moojon_session ($key)");
 		}
 	}
 	
