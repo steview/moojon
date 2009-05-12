@@ -121,12 +121,14 @@ final class moojon_uri extends moojon_base {
 		}
 		$return['querystring'] = $request_uri;
 		if (defined('EXCEPTION') === true) {
+			$return['app'] = moojon_config::get('exception_app');
 			$return['controller'] = moojon_config::get('exception_controller');
-			$return['action'] = moojon_config::get('default_action');
+			$return['action'] = moojon_config::get('exception_action');
 		} else {
 			if (moojon_config::has('security') === true) {
 				if (moojon_config::get('security') === true) {
 					if (moojon_authentication::authenticate() === false) {
+						$return['app'] = moojon_config::get('security_app');
 						$return['controller'] = moojon_config::get('security_controller');
 						$return['action'] = moojon_config::get('security_action');
 					}
