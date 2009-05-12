@@ -255,7 +255,7 @@ final class moojon_paths extends moojon_base {
 	static public function get_app_path() {
 		$app = moojon_uri::get_app();
 		if (in_array($app, moojon_files::directory_directories(self::get_apps_directory())) == true) {
-			return self::get_apps_directory()."/$app/$app.app.class.php";
+			return self::get_apps_directory()."$app/$app.app.class.php";
 		} else {
 			throw new Exception("404 app not found ($app)");
 		}

@@ -120,15 +120,19 @@ final class moojon_uri extends moojon_base {
 			array_shift($request_uri);
 		}
 		$return['querystring'] = $request_uri;
-		if (moojon_config::has('security') === true) {
-			if (moojon_config::get('security') === true) {
-				if (moojon_authentication::authenticate() === false) {
-					$return['controller'] = moojon_config::get('security_controller');
-					$return['action'] = moojon_config::get('security_action');
+		if (defined('EXCEPTION') === true) {
+			$return['controller'] = moojon_config::get('exception_controller');
+			$return['action'] = moojon_config::get('default_action');
+		} else {
+			if (moojon_config::has('security') === true) {
+				if (moojon_config::get('security') === true) {
+					if (moojon_authentication::authenticate() === false) {
+						$return['controller'] = moojon_config::get('security_controller');
+						$return['action'] = moojon_config::get('security_action');
+					}
 				}
 			}
 		}
-		moojon_config::get('security');
 		return $return;
 	}
 	

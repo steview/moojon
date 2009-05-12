@@ -3,13 +3,15 @@ final class moojon_runner extends moojon_base {
 	private function __construct() {}
 	
 	static public function run() {
-		require_once(moojon_paths::get_app_path());
 		switch (strtoupper(UI)) {
 			case 'CGI':
+				moojon_config::update(moojon_paths::get_app_config_directory());
+				moojon_config::update(moojon_paths::get_project_config_directory());
+				require_once(moojon_paths::get_app_path());
 				$moojon = moojon_uri::get_app().'_app';
 				break;
 			case 'CLI':
-				$moojon = $cli;
+				$moojon = CLI;
 				break;
 			default:
 				throw new Exception('Invalid UI ('.UI.')');
@@ -18,10 +20,10 @@ final class moojon_runner extends moojon_base {
 		try {
 			//throw new Exception('Division by zero.');
 			new $moojon;
-		} catch(exception $e) {
+		} catch(Exception $e) {
+			self::try_define('EXCEPTION', true);
 			$moojon = moojon_uri::get_app().'_app';
-			echo 'here '.$moojon.'<br />';
-			new $moojon(moojon_config::get('500'), moojon_config::get('exception_controller'));
+			new $moojon(moojon_uri::get_action(), moojon_uri::get_controller());
 			//self::handle_exception($e->getMessage());
 		}
 	}
