@@ -125,7 +125,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_library_app_directory() {
-		return self::get_library_apps_direstory().moojon_uri::get_app().'/';
+		return self::get_library_apps_directory().moojon_uri::get_app().'/';
 	}
 	
 	static public function get_vendor_app_directory() {
@@ -145,7 +145,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_library_controllers_directory() {
-		return self::get_library_app_direstory().moojon_config::get('controllers_directory').'/';
+		return self::get_library_app_directory().moojon_config::get('controllers_directory').'/';
 	}
 	
 	static public function get_vendor_controllers_directory() {

@@ -32,7 +32,7 @@ final class moojon_authentication extends moojon_base {
 	
 	static public function destroy() {
 		$instance = self::get();
-		$instance->destroy();
+		$instance->get_security()->destroy();
 		self::$instance = null;
 	}
 	

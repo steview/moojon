@@ -63,6 +63,8 @@
 			<li>layout_path: <?php echo moojon_paths::get_layout_path($this->get_layout()); ?></li>
 			<li>view_path: <?php echo moojon_paths::get_view_path($this->get_view()); ?></li>
 		</ul>
+		<p><?php //print_r(moojon_uri::get_apps()); ?></p>
+		<p><?php //print_r(moojon_uri::get_controllers(get_class($this))); ?></p>
 	</div>
 
 </div><!-- /container -->

@@ -27,16 +27,47 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function get_apps() {
-		return moojon_files::directory_directories(moojon_paths::get_apps_directory());
+		$apps = array();
+		foreach (moojon_files::directory_directories(moojon_paths::get_moojon_apps_directory()) as $app) {
+			$apps[] = $app;
+		}
+		if (is_dir(moojon_paths::get_vendor_apps_directory()) == true) {
+			foreach (moojon_files::directory_directories(moojon_paths::get_vendor_apps_directory()) as $app) {
+				$apps[] = $app;
+			}
+		}
+		if (is_dir(moojon_paths::get_library_apps_directory()) == true) {
+			foreach (moojon_files::directory_directories(moojon_paths::get_library_apps_directory()) as $app) {
+				$apps[] = $app;
+			}
+		}
+		foreach (moojon_files::directory_directories(moojon_paths::get_apps_directory()) as $app) {
+			$apps[] = $app;
+		}
+		return $apps;
 	}
 	
 	static public function get_controllers($app) {
 		$controllers = array();
-		foreach (moojon_files::directory_files(moojon_paths::get_apps_directory()."$app/".moojon_config::get('controllers_directory').'/') as $controller) {
-			$controllers[] = substr(basename($controller), 0, strpos(basename($controller), '.'));
+		if (is_dir(moojon_paths::get_moojon_controllers_directory($app)) == true) {
+			foreach (moojon_files::directory_files(moojon_paths::get_moojon_controllers_directory($app)) as $controller) {
+				$controllers[] = $controller;
+			}
 		}
-		foreach (moojon_files::directory_files(moojon_paths::get_shared_directory().moojon_config::get('controllers_directory').'/') as $controller) {
-			$controllers[] = substr(basename($controller), 0, strpos(basename($controller), '.'));
+		if (is_dir(moojon_paths::get_vendor_controllers_directory($app)) == true) {
+			foreach (moojon_files::directory_files(moojon_paths::get_vendor_controllers_directory($app)) as $controller) {
+				$controllers[] = $controller;
+			}
+		}
+		if (is_dir(moojon_paths::get_library_controllers_directory($app)) == true) {
+			foreach (moojon_files::directory_files(moojon_paths::get_library_controllers_directory($app)) as $controller) {
+				$controllers[] = $controller;
+			}
+		}
+		if (is_dir(moojon_paths::get_controllers_directory($app)) == true) {
+			foreach (moojon_files::directory_files(moojon_paths::get_controllers_directory($app)) as $controller) {
+				$controllers[] = $controller;
+			}
 		}
 		return $controllers;
 	}
