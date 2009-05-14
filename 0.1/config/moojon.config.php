@@ -35,6 +35,7 @@ return array(
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/',
+	'flash_key' => 'flash',
 	'cookie_expiry' => 1209600,
 	'security_login_condition_string' => "%s = '%s' AND %s = '%s'",
 	'security_check_condition_string' => "%s = '%d'",
