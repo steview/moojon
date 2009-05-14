@@ -45,7 +45,13 @@
 		<h2>Session</h2>
 		<ul>
 			<?php foreach ($_SESSION as $key => $value) {
-				echo "<li>$key: $value</li>";
+				echo "<li>$key: ";
+				if (is_array($value) == true) {
+					print_r($value);
+				} else {
+					echo $value;
+				}
+				echo "</li>";
 			} ?>
 		</ul>
 		<h2>Cookies</h2>

@@ -41,7 +41,6 @@ final class moojon_security extends moojon_base_security {
 			}
 			moojon_session::set($security_token_key, $security_token);
 			self::log("$log_message, creating session: ".$security_token);
-			moojon_flash::set('message', 'You have been logged in');
 			return $records->first;
 		}
 	}

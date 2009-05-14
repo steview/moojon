@@ -3,13 +3,13 @@ final class moojon_runner extends moojon_base {
 	private function __construct() {}
 	
 	static public function run() {
+		moojon_flash::clear();
 		switch (strtoupper(UI)) {
 			case 'CGI':
 				moojon_config::update(moojon_paths::get_app_config_directory());
 				moojon_config::update(moojon_paths::get_project_config_directory());
 				require_once(moojon_paths::get_app_path());
 				$moojon = moojon_uri::get_app().'_app';
-				moojon_flash::clear();
 				break;
 			case 'CLI':
 				$moojon = CLI;
