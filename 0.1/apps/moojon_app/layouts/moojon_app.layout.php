@@ -29,6 +29,10 @@
 	
 	<div id="content">
 		
+		<?php if (moojon_flash::has('message') == true) { ?>
+			<p><?php echo moojon_flash::get('message'); ?></p>
+		<?php } ?>
+		
 		<?php echo YIELD; ?>
 	
 	</div><!-- /content -->

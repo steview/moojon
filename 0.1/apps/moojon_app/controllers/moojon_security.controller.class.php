@@ -24,6 +24,7 @@ final class moojon_security_controller extends moojon_base_controller {
 	
 	public function logout() {
 		moojon_authentication::destroy();
+		moojon_flash::set('message', 'You have been logged out');
 		$this->forward(moojon_config::get('security_action'), moojon_config::get('security_controller'), moojon_uri::get_app());
 	}
 }
