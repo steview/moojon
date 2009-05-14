@@ -18,6 +18,8 @@ final class moojon_security_controller extends moojon_base_controller {
 			}
 			if (moojon_authentication::authenticate() === false) {
 				$this->security_failure_message = sprintf(moojon_config::get('security_failure_message'), strtolower($this->security_identity_label), strtolower($this->security_password_label));
+			} else {
+				moojon_flash::set('message', 'You have been logged in');
 			}
 		}
 	}
