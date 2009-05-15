@@ -93,3 +93,13 @@
 #footer li#kyan{
 	border-right: 0;
 }
+
+#debug {
+	background-color:#FFFFCC;
+	position:absolute;
+	top:5px;
+	right:5px;
+	width:250px;
+	border:1px solid #000;
+	padding:10px;
+}

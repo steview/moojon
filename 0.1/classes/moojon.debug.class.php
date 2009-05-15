@@ -4,7 +4,7 @@ final class moojon_debug extends moojon_base {
 	
 	static public function render() {
 		if (ENVIRONMENT != 'production') {
-			$div = new moojon_div_tag(null, array('id' => 'debug', 'style' => 'clear:both;'));
+			$div = new moojon_div_tag(null, array('id' => 'debug'));
 
 			$div->add_child(new moojon_h2_tag('Session'));
 			$ul = new moojon_ul_tag();
@@ -49,7 +49,11 @@ final class moojon_debug extends moojon_base {
 			$ul->add_child(new moojon_li_tag("controller_path: $controller_path"));
 			$ul->add_child(new moojon_li_tag("view_path: $view_path"));
 			$div->add_child($ul);
-
+			
+			if (defined('REQUEST_START_TIME') == true) {
+				$div->add_child(new moojon_h2_tag('Request time: '.(time() - REQUEST_START_TIME)));
+			}
+			
 			echo $div->render();
 		}
 	}
