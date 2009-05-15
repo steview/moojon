@@ -41,43 +41,9 @@
 	
 	</div><!-- /footer -->
 	
-	<div style="clear:both">
-		<h2>Session</h2>
-		<ul>
-			<?php foreach ($_SESSION as $key => $value) {
-				echo "<li>$key: ";
-				if (is_array($value) == true) {
-					print_r($value);
-				} else {
-					echo $value;
-				}
-				echo "</li>";
-			} ?>
-		</ul>
-		<h2>Cookies</h2>
-		<ul>
-			<?php foreach ($_COOKIE as $key => $value) {
-				echo "<li>$key: $value</li>";
-			} ?>
-		</ul>
-		<h2>URI</h2>
-		<ul>
-			<li>App: <?php echo get_class($this); ?></li>
-			<li>Controller: <?php echo $this->controller_name; ?></li>
-			<li>Action: <?php echo $this->action_name; ?></li>
-		</ul>
-		<h2>Paths</h2>
-		<ul>
-			<li>app_path: <?php echo moojon_paths::get_app_path(); ?></li>
-			<li>controller_path: <?php echo moojon_paths::get_controller_path($this->controller_name); ?></li>
-			<li>layout_path: <?php echo moojon_paths::get_layout_path($this->get_layout()); ?></li>
-			<li>view_path: <?php echo moojon_paths::get_view_path($this->get_view()); ?></li>
-		</ul>
-		<p><?php //print_r(moojon_uri::get_apps()); ?></p>
-		<p><?php //print_r(moojon_uri::get_controllers(get_class($this))); ?></p>
-	</div>
-
 </div><!-- /container -->
+
+<?php moojon_debug::render(); ?>
 
 </body>
 </html>

@@ -34,7 +34,7 @@ return array(
 	'default_helpers' => 'ui, url',
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
-	'index_file' => '/index.php/',
+	'index_file' => '/',
 	'flash_key' => 'flash',
 	'cookie_expiry' => 1209600,
 	'security_login_condition_string' => "%s = '%s' AND %s = '%s'",

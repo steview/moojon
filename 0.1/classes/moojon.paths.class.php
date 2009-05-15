@@ -295,6 +295,7 @@ final class moojon_paths extends moojon_base {
 		} elseif (file_exists(self::get_moojon_views_directory().$view) === true) {
 			return self::get_moojon_views_directory().$view;
 		} else {
+			die('here: ' + $view);
 			throw new moojon_exception("404 view not found ($view)");
 		}
 	}

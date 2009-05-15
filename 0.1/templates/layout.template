@@ -60,5 +60,7 @@
 
 </div><!-- /container -->
 
+<?php moojon_debug::render(); ?>
+
 </body>
 </html>
