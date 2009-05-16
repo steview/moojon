@@ -19,14 +19,14 @@ final class moojon_security_controller extends moojon_base_controller {
 			if (moojon_authentication::authenticate() === false) {
 				$this->security_failure_message = sprintf(moojon_config::get('security_failure_message'), strtolower($this->security_identity_label), strtolower($this->security_password_label));
 			} else {
-				moojon_flash::set('message', 'You have been logged in');
+				moojon_flash::set('notification', 'You have been logged in');
 			}
 		}
 	}
 	
 	public function logout() {
 		moojon_authentication::destroy();
-		moojon_flash::set('message', 'You have been logged out');
+		moojon_flash::set('notification', 'You have been logged out');
 		$this->forward(moojon_config::get('security_action'), moojon_config::get('security_controller'), moojon_uri::get_app());
 	}
 }
