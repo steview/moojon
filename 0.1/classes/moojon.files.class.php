@@ -149,5 +149,15 @@ final class moojon_files extends moojon_base {
 		}
 		return $path.$file;
 	}
+	
+	static public function get_file_contents($path) {
+		$file_pointer = fopen($path, 'r');
+		if ($file_pointer === false) {
+			throw new moojon_exception("Unable to open file ($path)");
+		}
+		$content = fread($file_pointer, filesize($path));
+		fclose($file_pointer);
+		return $content;
+	}
 }
 ?>
