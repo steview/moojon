@@ -1,5 +1,9 @@
 <?php
 return array(
+	'charset' => 'ISO-8859-1',
+	'mail_subject' => 'No subject',
+	'mail_from_email' => 'fake@mail.com',
+	'mail_from_name' => 'Anonymous',
 	'default_app' => 'client',
 	'default_controller' => 'index',
 	'default_action' => 'index',
