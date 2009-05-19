@@ -1,36 +1,33 @@
 <?php
 abstract class moojon_base_mailer extends moojon_base {
+	private $mix;
+	private $rel;
+	private $alt;
 	private $charset;
 	private $subject;
 	private $name;
 	private $email;
 	private $from;
-	private $body;
-	private $mix;
-	private $rel;
-	private $alt;
 	private $to;
 	private $cc;
 	private $bcc;
 	private $text;
 	private $html;
 	private $type;
-	private $header;
 	private $reply_to;
 	private $return_path;
 	private $attachments = array();
 	private $attachments_img = array();
 	
 	final public function __construct() {
+		$this->mix = "=-moojon_mix_" . md5(uniqid(rand()));
+		$this->rel = "=-moojon_rel_" . md5(uniqid(rand()));
+		$this->alt = "=-moojon_alt_" . md5(uniqid(rand()));
 		$this->charset = moojon_config::get('charset');
 		$this->subject = moojon_config::get('mail_subject');
 		$this->email = moojon_config::get('mail_from_email');
 		$this->name = moojon_config::get('mail_from_name');
 		$this->from = $this->name.' <'.$this->email.'>';
-		$this->mix = "=-moojon_mix_" . md5(uniqid(rand()));
-		$this->rel = "=-moojon_rel_" . md5(uniqid(rand()));
-		$this->alt = "=-moojon_alt_" . md5(uniqid(rand()));
-		$this->attachments_index = 0;
 	}
 	
 	final protected function set_from($email, $name = '') {
@@ -164,22 +161,37 @@ abstract class moojon_base_mailer extends moojon_base {
 	}
 	
 	final protected function send() {
-		$this->build_header();
-		$this->build_body();
+		$header = $this->build_header();
+		$body = $this->build_body();
 		if (empty($this->return_path) == false) {
-			$return = mail($this->to, $this->subject, $this->body, $this->header, '-f'.$this->return_path);
+			$return = mail($this->to, $this->subject, $body, $header, '-f'.$this->return_path);
 		} else {
-			$return = mail($this->to, $this->subject, $this->body, $this->header);
+			$return = mail($this->to, $this->subject, $body, $header);
 		}
 		if ($return == true) {
-			
+			$this->charset = '';
+			$this->subject = '';
+			$this->name = '';
+			$this->email = '';
+			$this->from = '';
+			$this->to = '';
+			$this->cc = '';
+			$this->bcc = '';
+			$this->text = '';
+			$this->html = '';
+			$this->type = '';
+			$this->reply_to = '';
+			$this->return_path = '';
+			$this->attachments = array();
+			$this->attachments_img = array();
 		}
 		return $return;
 	}
 	
 	final protected function build_body() {
 		$body = '';
-		switch ($this->parse_elements()) {
+		$elements = $this->parse_elements();
+		switch ($elements) {
 			case 1:
 				$this->build_header('Content-Type: text/plain');
 				$body = $this->text;
@@ -295,8 +307,11 @@ abstract class moojon_base_mailer extends moojon_base {
 				}
 				$body .= '--'.$this->mix."--\n";
 				break;
+			default:
+				throw new moojon_exception('Unknown body type ('.$elements.')');
+				break;
 		}
-		$this->body = $body;
+		return $body;
 	}
 	
 	final protected function build_header($content_type) {
@@ -319,12 +334,12 @@ abstract class moojon_base_mailer extends moojon_base {
 		$header .= 'MIME-Version: 1.0'."\n";
 		$header .= 'X-Mailer: moojon MIME Mail - PHP/'.phpversion()."\n";
 		$header .= $content_type;
-		$this->header = $header;
+		return $header;
 	}
 	
 	final protected function parse_elements() {
 		$this->type = 0;
-		if ($this->attachments_index != 0) {
+		if (count($this->attachments) > 0) {
 			foreach ($this->attachments as $key => $value) {
 				if (preg_match('/(css|image)/i', $value['type']) && preg_match('/\s(background|href|src)\s*=\s*[\"|\']('.$value['name'].')[\"|\'].*>/is', $this->html)) {
 					$img_id = md5($value['name']).'.moojon@mimemail';
@@ -344,7 +359,7 @@ abstract class moojon_base_mailer extends moojon_base {
 				$this->type ++;
 			}
 		}
-		if ($this->attachments_index != 0) {
+		if (count($this->attachments) > 0) {
 			if (count($this->attachments_img) != 0) {
 				$this->type += 8;
 			}
