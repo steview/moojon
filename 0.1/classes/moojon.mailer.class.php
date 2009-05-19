@@ -1,5 +1,5 @@
 <?php
-abstract class moojon_base_mailer extends moojon_base {
+abstract class moojon_mailer extends moojon_base {
 	private $mix;
 	private $rel;
 	private $alt;
@@ -29,6 +29,12 @@ abstract class moojon_base_mailer extends moojon_base {
 		$this->name = moojon_config::get('mail_from_name');
 		$this->from = $this->name.' <'.$this->email.'>';
 	}
+	
+	final static public function send_view() {}
+	
+	final static public function send_text() {}
+	
+	final static public function send_html() {}
 	
 	final protected function set_from($email, $name = '') {
 		if ($this->validate_email($email) == true) {

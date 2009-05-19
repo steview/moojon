@@ -1,12 +1,20 @@
 <?php
 abstract class moojon_base_controller extends moojon_base {
-	protected $app;
+	private $app;
 	protected $layout;
 	protected $view;
 	
-	final public function __construct(moojon_base_app $app) {
+	final public function __construct(moojon_base_app $app, $action, $variables = array()) {
 		$this->app = $app;
 		$this->headers();
+		foreach ($variables as $key => $value) {
+			$this->$key = $value;
+		}
+		$this->init();
+		if (method_exists($this, $action)) {
+			$this->$action();
+		}
+		$this->close();
 		require_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
 		foreach (get_object_vars($this) as $key => $value) {
 			$$key = $value;
@@ -25,16 +33,7 @@ abstract class moojon_base_controller extends moojon_base {
 		}
 	}
 	
-	
 	protected function headers() {}
-	
-	final public function render($action) {
-		$this->init();
-		if (method_exists($this, $action)) {
-			$this->$action();
-		}
-		$this->close();
-	}
 	
 	final protected function forward($action = null, $controller = null, $app = null) {
 		$this->app->set_location($action, $controller, $app);

@@ -34,7 +34,7 @@ abstract class moojon_base_app extends moojon_base {
 		$this->app_name = $app;
 		require_once(moojon_paths::get_controller_path($controller));
 		$controller = $controller.'_controller';
-		$this->controller = new $controller($this);
+		$this->controller = new $controller($this, $action);
 		$this->close();
 		moojon_connection::close();
 	}
