@@ -317,7 +317,7 @@ abstract class moojon_base_mailer extends moojon_base {
 	final protected function build_header($content_type) {
 		$header = '';
 		$header .= 'From: '.$this->from."\n";
-		$header .= (empty($this->reply_to) == false) {
+		if (empty($this->reply_to) == false) {
 			$header .= 'Reply-To: '.$this->reply_to."\n";
 		} else {
 			$header .= 'Reply-To: '.$this->from."\n";

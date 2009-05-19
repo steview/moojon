@@ -7,7 +7,24 @@ abstract class moojon_base_controller extends moojon_base {
 	final public function __construct(moojon_base_app $app) {
 		$this->app = $app;
 		$this->headers();
+		require_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
+		foreach (get_object_vars($this) as $key => $value) {
+			$$key = $value;
+		}
+		foreach (helpers() as $helper) {
+			helper($helper);
+		}
+		ob_start();
+		require_once(moojon_paths::get_view_path($this->get_view()));
+		define('YIELD', ob_get_clean());
+		ob_end_clean();
+		if ($this->get_layout() !== false) {
+			require_once(moojon_paths::get_layout_path($this->get_layout()));
+		} else {
+			echo YIELD;
+		}
 	}
+	
 	
 	protected function headers() {}
 	

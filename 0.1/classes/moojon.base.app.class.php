@@ -22,6 +22,7 @@ abstract class moojon_base_app extends moojon_base {
 			header("Location: $location");
 			die();
 		}
+		$this->init();
 		if ($action == null) {
 			$action = moojon_uri::get_action();
 		}
@@ -34,40 +35,12 @@ abstract class moojon_base_app extends moojon_base {
 		require_once(moojon_paths::get_controller_path($controller));
 		$controller = $controller.'_controller';
 		$this->controller = new $controller($this);
-		$this->controller->render($action);
-		$this->render();
+		$this->close();
 		moojon_connection::close();
 	}
 	
-	final public function get_layout() {
-		return $this->controller->get_layout();
-	}
+	protected function init() {}
 	
-	final public function get_view() {
-		return $this->controller->get_view();
-	}
-	
-	final public function get_controller_properties() {
-		return get_object_vars($this->controller);
-	}
-	
-	final public function render() {
-		require_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
-		foreach ($this->get_controller_properties() as $key => $value) {
-			$$key = $value;
-		}
-		foreach (helpers() as $helper) {
-			helper($helper);
-		}
-		ob_start();
-		require_once(moojon_paths::get_view_path($this->get_view()));
-		define('YIELD', ob_get_clean());
-		ob_end_clean();
-		if ($this->get_layout() !== false) {
-			require_once(moojon_paths::get_layout_path($this->get_layout()));
-		} else {
-			echo YIELD;
-		}
-	}
+	protected function close() {}
 }
 ?>
