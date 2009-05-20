@@ -3,13 +3,12 @@ abstract class moojon_base_controller extends moojon_base {
 	private $app;
 	protected $layout;
 	protected $view;
+	protected $action;
 	
-	final public function __construct(moojon_base_app $app, $action, $variables = array()) {
+	final public function __construct(moojon_base_app $app, $action) {
 		$this->app = $app;
+		$this->action = $action;
 		$this->headers();
-		foreach ($variables as $key => $value) {
-			$this->$key = $value;
-		}
 		$this->init();
 		if (method_exists($this, $action)) {
 			$this->$action();
@@ -57,7 +56,7 @@ abstract class moojon_base_controller extends moojon_base {
 			if ($_SERVER['X-Requested-With'] == 'XMLHttpRequest') {
 				return false;
 			} else {
-				return moojon_uri::get_app().'.layout.php';
+				return substr(get_class($this->app), 0, (strlen(get_class($this->app)) - 4)).'.layout.php';
 			}
 		}
 	}
@@ -66,7 +65,7 @@ abstract class moojon_base_controller extends moojon_base {
 		if ($this->view) {
 			return $this->view.'.view.php';
 		} else {
-			return moojon_uri::get_action().'.view.php';
+			return $this->action.'.view.php';
 		}
 	}
 }

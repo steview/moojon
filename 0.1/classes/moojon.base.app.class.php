@@ -36,7 +36,6 @@ abstract class moojon_base_app extends moojon_base {
 		$controller = $controller.'_controller';
 		$this->controller = new $controller($this, $action);
 		$this->close();
-		moojon_connection::close();
 	}
 	
 	protected function init() {}

@@ -1,5 +1,6 @@
 <?php
-abstract class moojon_mailer extends moojon_base {
+final class moojon_mailer extends moojon_base {
+	private $header;
 	private $mix;
 	private $rel;
 	private $alt;
@@ -19,7 +20,7 @@ abstract class moojon_mailer extends moojon_base {
 	private $attachments = array();
 	private $attachments_img = array();
 	
-	final public function __construct() {
+	public function __construct() {
 		$this->mix = "=-moojon_mix_" . md5(uniqid(rand()));
 		$this->rel = "=-moojon_rel_" . md5(uniqid(rand()));
 		$this->alt = "=-moojon_alt_" . md5(uniqid(rand()));
@@ -30,13 +31,36 @@ abstract class moojon_mailer extends moojon_base {
 		$this->from = $this->name.' <'.$this->email.'>';
 	}
 	
-	final static public function send_view() {}
+	private function render_view($action, $controller, $app) {
+		if ($action == null) {
+			$action = moojon_uri::get_action();
+		}
+		if ($controller == null) {
+			$controller = moojon_uri::get_controller();
+		}
+		if ($app == null) {
+			$app = moojon_uri::get_app();
+		}
+		$app_class = $app.'_app';
+		ob_start();
+		new $app_class($action, $controller);
+		$return = ob_get_clean();
+		return $return;
+	}
 	
-	final static public function send_text() {}
+	static public function from_html_view($action, $controller, $app) {
+		$instance = new moojon_mailer();
+		$instance->set_html(self::render_view($action, $controller, $app));
+		return $instance;
+	}
 	
-	final static public function send_html() {}
+	static public function from_text_view($action, $controller, $app) {
+		$instance = new moojon_mailer();
+		$instance->set_text(self::render_view($action, $controller, $app));
+		return $instance;
+	}
 	
-	final protected function set_from($email, $name = '') {
+	public function set_from($email, $name = '') {
 		if ($this->validate_email($email) == true) {
 			if (empty($name) == true) {
 				$name = $this->name;
@@ -47,7 +71,7 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function set_to($email, $name = '') {
+	public function set_to($email, $name = '') {
 		if ($this->validate_email($email) == true) {
 			if (empty($name) == true) {
 				$name = $this->name;
@@ -58,7 +82,7 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function set_cc($email, $name = '') {
+	public function set_cc($email, $name = '') {
 		if ($this->validate_email($email) == true) {
 			if (empty($name) == true) {
 				$name = $this->name;
@@ -69,7 +93,7 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function set_bcc($email, $name = '') {
+	public function set_bcc($email, $name = '') {
 		if ($this->validate_email($email) == true) {
 			if (empty($name) == true) {
 				$name = $this->name;
@@ -80,7 +104,7 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function set_reply_to($email, $name = '') {
+	public function set_reply_to($email, $name = '') {
 		if ($this->validate_email($email) == true) {
 			if (empty($name) == true) {
 				$name = $this->name;
@@ -91,7 +115,7 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function set_return_path($email) {
+	public function set_return_path($email) {
 		if ($this->validate_email($email) == true) {
 			$this->return_path = $email;
 		} else {
@@ -99,7 +123,7 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function add_to($email, $name = '') {
+	public function add_to($email, $name = '') {
 		if ($this->validate_email($email) == true) {
 			if (empty($name) == true) {
 				$name = $this->name;
@@ -114,7 +138,7 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function add_cc($email, $name = '') {
+	public function add_cc($email, $name = '') {
 		if ($this->validate_email($email) == true) {
 			if (empty($name) == true) {
 				$name = $this->name;
@@ -129,7 +153,7 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function add_bcc($email, $name = '') {
+	public function add_bcc($email, $name = '') {
 		if ($this->validate_email($email) == true) {
 			if (empty($name) == true) {
 				$name = $this->name;
@@ -144,19 +168,19 @@ abstract class moojon_mailer extends moojon_base {
 		}
 	}
 	
-	final protected function set_subject($subject) {
+	public function set_subject($subject) {
 		$this->subject = $subject;
 	}
 	
-	final protected function set_text($text) {
+	public function set_text($text) {
 		$this->text = $text;
 	}
 	
-	final protected function set_html($html) {
+	public function set_html($html) {
 		$this->html = $html;
 	}
 	
-	final protected function add_attachment($name, $path) {
+	public function add_attachment($name, $path) {
 		$attachment = array(
 			'name' => $name,
 			'type' => shell_exec('file -bi '.escapeshellarg($path)),
@@ -166,13 +190,12 @@ abstract class moojon_mailer extends moojon_base {
 		$this->attachments[] = $attachment;
 	}
 	
-	final protected function send() {
-		$header = $this->build_header();
+	public function send() {
 		$body = $this->build_body();
 		if (empty($this->return_path) == false) {
-			$return = mail($this->to, $this->subject, $body, $header, '-f'.$this->return_path);
+			$return = mail($this->to, $this->subject, $body, $this->header, '-f'.$this->return_path);
 		} else {
-			$return = mail($this->to, $this->subject, $body, $header);
+			$return = mail($this->to, $this->subject, $body, $this->header);
 		}
 		if ($return == true) {
 			$this->charset = '';
@@ -194,7 +217,7 @@ abstract class moojon_mailer extends moojon_base {
 		return $return;
 	}
 	
-	final protected function build_body() {
+	private function build_body() {
 		$body = '';
 		$elements = $this->parse_elements();
 		switch ($elements) {
@@ -277,7 +300,7 @@ abstract class moojon_mailer extends moojon_base {
 				$this->body .= '--'.$this->rel."--\n";
 				break;
 			case 15:
-				$build_header('Content-Type: multipart/mixed; boundary="'.$this->mix.'"');
+				$this->build_header('Content-Type: multipart/mixed; boundary="'.$this->mix.'"');
 				$body .= '--'.$this->mix."\n";
 				$body .= 'Content-Type: multipart/related; type="multipart/alternative"; boundary="'.$this->rel."\"\n\n";
 				$body .= '--'.$this->rel."\n";
@@ -320,7 +343,7 @@ abstract class moojon_mailer extends moojon_base {
 		return $body;
 	}
 	
-	final protected function build_header($content_type) {
+	private function build_header($content_type) {
 		$header = '';
 		$header .= 'From: '.$this->from."\n";
 		if (empty($this->reply_to) == false) {
@@ -340,10 +363,10 @@ abstract class moojon_mailer extends moojon_base {
 		$header .= 'MIME-Version: 1.0'."\n";
 		$header .= 'X-Mailer: moojon MIME Mail - PHP/'.phpversion()."\n";
 		$header .= $content_type;
-		return $header;
+		$this->header = $header;
 	}
 	
-	final protected function parse_elements() {
+	private function parse_elements() {
 		$this->type = 0;
 		if (count($this->attachments) > 0) {
 			foreach ($this->attachments as $key => $value) {
@@ -376,7 +399,7 @@ abstract class moojon_mailer extends moojon_base {
 		return $this->type;
 	}
 	
-	final protected function validate_email($email) {
+	private function validate_email($email) {
 		if (ereg('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+'.'@'.'[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.'.'[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$', $email) == true) {
 			return true;
 		}

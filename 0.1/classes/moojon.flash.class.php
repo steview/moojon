@@ -5,12 +5,15 @@ final class moojon_flash extends moojon_base {
 	
 	private function __construct() {
 		$data = array();
-		if (moojon_session::has(moojon_config::get('flash_key')) == true) {
-			$flash = moojon_session::key(moojon_config::get('flash_key'));
+		$flash_key = moojon_config::get('flash_key');
+		if (moojon_session::has($flash_key) == true) {
+			$flash = moojon_session::key($flash_key);
 			if (is_array($flash) == true) {
 				$data = $flash;
 				self::clear();
 			}
+		} else {
+			moojon_session::set($flash_key, $data);
 		}
 		$this->data = $data;
 	}
