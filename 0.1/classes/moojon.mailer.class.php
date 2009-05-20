@@ -14,7 +14,6 @@ final class moojon_mailer extends moojon_base {
 	private $bcc;
 	private $text;
 	private $html;
-	private $type;
 	private $reply_to;
 	private $return_path;
 	private $attachments = array();
@@ -189,11 +188,13 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function send() {
-		$body = $this->build_body();
+		$elements = $this->parse_elements();
+		$header = $this->build_header($elements);
+		$body = $this->build_body($elements);
 		if (empty($this->return_path) == false) {
-			$return = mail($this->to, $this->subject, $body, $this->header, '-f'.$this->return_path);
+			$return = mail($this->to, $this->subject, $body, $header, '-f'.$this->return_path);
 		} else {
-			$return = mail($this->to, $this->subject, $body, $this->header);
+			$return = mail($this->to, $this->subject, $body, $header);
 		}
 		if ($return == true) {
 			$this->charset = '';
@@ -206,7 +207,6 @@ final class moojon_mailer extends moojon_base {
 			$this->bcc = '';
 			$this->text = '';
 			$this->html = '';
-			$this->type = '';
 			$this->reply_to = '';
 			$this->return_path = '';
 			$this->attachments = array();
@@ -215,16 +215,13 @@ final class moojon_mailer extends moojon_base {
 		return $return;
 	}
 	
-	private function build_body() {
+	private function build_body($elements) {
 		$body = '';
-		$elements = $this->parse_elements();
 		switch ($elements) {
 			case 1:
-				$this->build_header('Content-Type: text/plain');
 				$body = $this->text;
 				break;
 			case 3:
-				$this->build_header('Content-Type: multipart/alternative; boundary=\"'.$this->alt.'\"');
 				$body .= '--'.$this->alt."\n";
 				$body .= "Content-Type: text/plain\n";
 				$body .= "Content-Transfer-Encoding: 7bit\n\n";
@@ -236,7 +233,6 @@ final class moojon_mailer extends moojon_base {
 				$body .= '--'.$this->alt."--\n";
 				break;
 			case 5:
-				$this->build_header('Content-Type: multipart/mixed; boundary="'.$this->mix."\"");
 				$body .= "--".$this->mix."\n";
 				$body .= "Content-Type: text/plain\n";
 				$body .= "Content-Transfer-Encoding: 7bit\n\n";
@@ -251,7 +247,6 @@ final class moojon_mailer extends moojon_base {
 				$body .= '--'.$this->mix."--\n";
 				break;
 			case 7:
-				$this->build_header('Content-Type: multipart/mixed; boundary="'.$this->mix.'"');
 				$body .= '--'.$this->mix."\n";
 				$body .= 'Content-Type: multipart/alternative; boundary="'.$this->alt."\n\n";
 				$body .= '--'.$this->alt."\n";
@@ -273,7 +268,6 @@ final class moojon_mailer extends moojon_base {
 				$body .= '--'.$this->mix."--\n";
 				break;
 			case 11:
-				$this->build_header('Content-Type: multipart/related; type="multipart/alternative"; boundary="'.$this->rel.'"');
 				$body .= '--'.$this->rel."\n";
 				$body .= 'Content-Type: multipart/alternative; boundary="'.$this->alt."\"\n";
 				$body .= '--'.$this->alt."\n";
@@ -298,7 +292,6 @@ final class moojon_mailer extends moojon_base {
 				$this->body .= '--'.$this->rel."--\n";
 				break;
 			case 15:
-				$this->build_header('Content-Type: multipart/mixed; boundary="'.$this->mix.'"');
 				$body .= '--'.$this->mix."\n";
 				$body .= 'Content-Type: multipart/related; type="multipart/alternative"; boundary="'.$this->rel."\"\n\n";
 				$body .= '--'.$this->rel."\n";
@@ -341,7 +334,30 @@ final class moojon_mailer extends moojon_base {
 		return $body;
 	}
 	
-	private function build_header($content_type) {
+	private function build_header($elements) {
+		switch ($elements) {
+			case 1:
+				$type = 'Content-Type: text/plain';
+				break;
+			case 3:
+				$type = 'Content-Type: multipart/alternative; boundary="'.$this->alt.'"';
+				break;
+			case 5:
+				$type = 'Content-Type: multipart/mixed; boundary="'.$this->mix.'"';
+				break;
+			case 7:
+				$type = 'Content-Type: multipart/mixed; boundary="'.$this->mix.'"';
+				break;
+			case 11:
+				$type = 'Content-Type: multipart/related; type="multipart/alternative"; boundary="'.$this->rel.'"';
+				break;
+			case 15:
+				$type = 'Content-Type: multipart/mixed; boundary="'.$this->mix.'"';
+				break;
+			default:
+				throw new moojon_exception('Unknown header type ('.$elements.')');
+				break;
+		}
 		$header = '';
 		$header .= 'From: '.$this->from."\n";
 		if (empty($this->reply_to) == false) {
@@ -360,12 +376,12 @@ final class moojon_mailer extends moojon_base {
 		}
 		$header .= 'MIME-Version: 1.0'."\n";
 		$header .= 'X-Mailer: moojon MIME Mail - PHP/'.phpversion()."\n";
-		$header .= $content_type;
-		$this->header = $header;
+		$header .= $type;
+		return $header;
 	}
 	
 	private function parse_elements() {
-		$this->type = 0;
+		$type = 0;
 		if (count($this->attachments) > 0) {
 			foreach ($this->attachments as $key => $value) {
 				if (preg_match('/(css|image)/i', $value['type']) && preg_match('/\s(background|href|src)\s*=\s*[\"|\']('.$value['name'].')[\"|\'].*>/is', $this->html)) {
@@ -377,24 +393,24 @@ final class moojon_mailer extends moojon_base {
 			}
 		}
 		if (empty($this->text) == false) {
-			$this->type ++;
+			$type ++;
 		}
 		if (empty($this->html) == false) {
-			$this->type += 2;
+			$type += 2;
 			if (empty($this->text)) {
 				$this->text = strip_tags(eregi_replace('<br>', "\n", $this->html));
-				$this->type ++;
+				$type ++;
 			}
 		}
 		if (count($this->attachments) > 0) {
 			if (count($this->attachments_img) != 0) {
-				$this->type += 8;
+				$type += 8;
 			}
 			if ((count($this->attachments) - count($this->attachments_img)) >= 1) {
-				$this->type += 4;
+				$type += 4;
 			}
 		}
-		return $this->type;
+		return $type;
 	}
 	
 	private function validate_email($email) {

@@ -1,6 +1,6 @@
 <?php
 return array(
-	'charset' => 'ISO-8859-1',
+	'charset' => 'UTF-8',
 	'mail_subject' => 'No subject',
 	'mail_from_email' => 'fake@mail.com',
 	'mail_from_name' => 'Anonymous',
