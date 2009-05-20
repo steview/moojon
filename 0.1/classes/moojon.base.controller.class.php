@@ -1,19 +1,21 @@
 <?php
 abstract class moojon_base_controller extends moojon_base {
 	private $app;
-	protected $layout;
 	protected $view;
 	protected $action;
 	
 	final public function __construct(moojon_base_app $app, $action) {
 		$this->app = $app;
-		$this->action = $action;
-		$this->headers();
 		$this->init();
+		$this->headers();
+		$this->action = $action;
 		if (method_exists($this, $action)) {
 			$this->$action();
 		}
 		$this->close();
+	}
+	
+	final public function render() {
 		require_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
 		foreach (get_object_vars($this) as $key => $value) {
 			$$key = $value;
@@ -23,13 +25,11 @@ abstract class moojon_base_controller extends moojon_base {
 		}
 		ob_start();
 		require_once(moojon_paths::get_view_path($this->get_view()));
-		define('YIELD', ob_get_clean());
-		ob_end_clean();
-		if ($this->get_layout() !== false) {
-			require_once(moojon_paths::get_layout_path($this->get_layout()));
-		} else {
-			echo YIELD;
-		}
+		return ob_get_clean();
+	}
+	
+	final public function set_layout($layout) {
+		$this->app->set_layout($layout);
 	}
 	
 	protected function headers() {}
@@ -46,20 +46,6 @@ abstract class moojon_base_controller extends moojon_base {
 	protected function init() {}
 	
 	protected function close() {}
-	
-	public function get_layout() {
-		if ($this->layout === false) {
-			return false;
-		} elseif ($this->layout != null) {
-			return $this->layout.'.layout.php';
-		} else {
-			if ($_SERVER['X-Requested-With'] == 'XMLHttpRequest') {
-				return false;
-			} else {
-				return substr(get_class($this->app), 0, (strlen(get_class($this->app)) - 4)).'.layout.php';
-			}
-		}
-	}
 	
 	final public function get_view() {
 		if ($this->view) {
