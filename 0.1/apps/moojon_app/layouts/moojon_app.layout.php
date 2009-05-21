@@ -33,7 +33,7 @@
 			<p><?php echo moojon_flash::get('notification'); ?></p>
 		<?php } ?>
 		
-		<?php echo YIELD; ?>
+		YIELD
 	
 	</div><!-- /content -->
 	

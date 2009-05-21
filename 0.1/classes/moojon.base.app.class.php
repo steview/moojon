@@ -36,7 +36,7 @@ abstract class moojon_base_app extends moojon_base {
 		$this->close();
 	}
 	
-	final public function render() {
+	final public function render($echo = false) {
 		require_once(moojon_paths::get_controller_path($this->controller_name));
 		$controller = $this->controller_name.'_controller';
 		$this->controller = new $controller($this, $this->action_name);
@@ -48,8 +48,13 @@ abstract class moojon_base_app extends moojon_base {
 			}
 			require_once(moojon_paths::get_layout_path($this->get_layout()));
 			$return = str_replace('YIELD', $return, ob_get_clean());
+			ob_end_clean();
 		}
-		return $return;
+		if ($echo == true) {
+			echo $return;
+		} else {
+			return $return;
+		}
 	}
 	
 	final public function set_layout($layout) {

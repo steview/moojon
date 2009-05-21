@@ -19,11 +19,7 @@ final class moojon_runner extends moojon_base {
 		}
 		try {
 			$instance = new $moojon;
-			switch (strtoupper(UI)) {
-				case 'CGI':
-					echo '**'.$instance->render();
-					break;
-			}
+			$instance->render(true);
 			moojon_connection::close();
 		} catch (moojon_exception $exception) {
 			moojon_connection::close();

@@ -42,7 +42,7 @@ final class moojon_mailer extends moojon_base {
 		}
 		$app_class = $app.'_app';
 		$return = new $app_class($action, $controller);
-		return $return->render();
+		return $return->render(false);
 	}
 	
 	static public function from_html_view($action, $controller, $app) {

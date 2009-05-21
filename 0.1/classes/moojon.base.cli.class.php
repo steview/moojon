@@ -5,6 +5,9 @@ abstract class moojon_base_cli extends moojon_base {
 		if (!defined("STDIN")) {
 			define("STDIN", fopen('php://stdin','r'));
 		}
+	}
+	
+	final public function render($echo = false) {
 		$arguments = $_SERVER['argv'];
 		array_shift($arguments);
 		$this->run($arguments);
@@ -30,7 +33,7 @@ abstract class moojon_base_cli extends moojon_base {
 		return $read;
 	}
 	
-	abstract protected function run($arguments);
+	abstract protected function render($arguments);
 	
 	final protected function check_arguments($method, $expected, Array $arguments) {
 		if (count($arguments) > $expected) {

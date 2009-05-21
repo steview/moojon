@@ -25,7 +25,9 @@ abstract class moojon_base_controller extends moojon_base {
 		}
 		ob_start();
 		require_once(moojon_paths::get_view_path($this->get_view()));
-		return ob_get_clean();
+		$return = ob_get_clean();
+		ob_end_clean();
+		return $return;
 	}
 	
 	final public function set_layout($layout) {
