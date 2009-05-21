@@ -1,6 +1,6 @@
 <?php
 abstract class moojon_base_controller extends moojon_base {
-	private $app;
+	protected $app;
 	protected $view;
 	protected $action;
 	
