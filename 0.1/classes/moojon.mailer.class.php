@@ -42,7 +42,6 @@ final class moojon_mailer extends moojon_base {
 		}
 		$app_class = $app.'_app';
 		$return = new $app_class($action, $controller);
-		die($return->render(false));
 		return $return->render(false);
 	}
 	
