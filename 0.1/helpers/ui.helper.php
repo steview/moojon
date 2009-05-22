@@ -1,7 +1,11 @@
 <?php
-function image_tag($href, $alt, $width = null, $height = null, $attributes = array()) {
-	if (array_key_exists('href', $attributes) == false) {
-		$attributes['href'] = $href;
+function img_tag($src, $alt, $width = null, $height = null, $attributes = array()) {
+	echo "$src<br />";
+	$url = parse_url($src);
+	print_r($url);
+	die();
+	if (array_key_exists('src', $attributes) == false) {
+		$attributes['src'] = $src;
 	}
 	if (array_key_exists('alt', $attributes) == false) {
 		$attributes['alt'] = $alt;

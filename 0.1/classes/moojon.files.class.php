@@ -7,7 +7,7 @@ final class moojon_files extends moojon_base {
 	}
 	
 	static public function require_files_then_require_directory_files($files, $path, $recursive = false) {
-		if (!is_array($files)) {
+		if (is_array($files) == false) {
 			$files = array($files);
 		}
 		foreach($files as $file) {

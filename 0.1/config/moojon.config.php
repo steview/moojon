@@ -1,5 +1,6 @@
 <?php
 return array(
+	'scheme' => 'http',
 	'charset' => 'UTF-8',
 	'mail_subject' => 'No subject',
 	'mail_from_email' => 'fake@mail.com',
