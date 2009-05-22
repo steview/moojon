@@ -68,7 +68,8 @@ final class moojon_config extends moojon_base {
 	
 	static public function clear() {
 		$instance = self::get();
-		$instance->data = array();
+		self::$instance->data = array();
+		self::$instance = null;
 	}
 	
 	static public function dump() {

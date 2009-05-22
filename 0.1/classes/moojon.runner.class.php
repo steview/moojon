@@ -1,6 +1,13 @@
 <?php
 final class moojon_runner extends moojon_base {
-	private function __construct() {}
+	static private $instance;
+	
+	private function __construct() {
+		include_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
+		foreach (helpers() as $helper) {
+			helper($helper);
+		}
+	}
 	
 	static public function run() {
 		switch (strtoupper(UI)) {
@@ -26,6 +33,25 @@ final class moojon_runner extends moojon_base {
 			$exception_handler_class = moojon_config::get('exception_handler_class');
 			new $exception_handler_class($exception);
 		}
+	}
+	
+	static public function get() {
+		if (!self::$instance) {
+			self::$instance = new moojon_runner();
+		}
+		return self::$instance;
+	}
+	
+	static public function render($path, moojon_base_controller $controller) {
+		self::get();
+		foreach (get_object_vars($controller) as $key => $value) {
+			$$key = $value;
+		}
+		ob_start();
+		require_once($path);
+		$return = ob_get_clean();
+		ob_end_clean();
+		return $return;
 	}
 }
 ?>

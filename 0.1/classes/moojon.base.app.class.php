@@ -42,13 +42,7 @@ abstract class moojon_base_app extends moojon_base {
 		$this->controller = new $controller($this, $this->action_name);
 		$return = $this->controller->render();
 		if ($this->get_layout() !== false) {
-			ob_start();
-			foreach (get_object_vars($this->controller) as $key => $value) {
-				$$key = $value;
-			}
-			require_once(moojon_paths::get_layout_path($this->get_layout()));
-			$return = str_replace('YIELD', $return, ob_get_clean());
-			ob_end_clean();
+			$return = str_replace('YIELD', $return, moojon_runner::render(moojon_paths::get_layout_path($this->get_layout()), $this->controller));
 		}
 		if ($echo == true) {
 			echo $return;
