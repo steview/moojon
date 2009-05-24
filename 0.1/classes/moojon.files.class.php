@@ -1,5 +1,58 @@
 <?php
 final class moojon_files extends moojon_base {
+	
+	private function __construct() {}
+	
+	static public function has($key) {
+		if (is_array($_FILES) == false) {
+			return false;
+		}
+		if (array_key_exists($key, $_FILES) === true) {
+			if ($_FILES[$key] !== null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	static public function set($key, $value = null) {
+		if ($value !== null) {
+			$_FILES[$key] = $value;
+		} else {
+			$_FILES[$key] = null;
+			unset($_FILES[$key]);
+		}
+	}
+	
+	static public function clear() {
+		if (is_array($_FILES) == true) {
+			foreach($_FILES as $key) {
+				$_FILES[$key] = null;
+				unset($_FILES[$key]);
+			}
+		}
+	}
+	
+	static public function key($key) {
+		if (is_array($_FILES) == true) {
+			if (array_key_exists($key, $_FILES) == true) {
+				return $_FILES[$key];
+			} else {
+				throw new moojon_exception("Key does not exists in moojon_files ($key)");
+			}
+		} else {
+			throw new moojon_exception("Key does not exists in moojon_files ($key)");
+		}
+	}
+	
+	static public function get_list() {
+		if (is_array($_FILES) == true) {
+			return $_FILES;
+		} else {
+			return array();
+		}
+	}
+	
 	static public function require_directory_files($path, $recursive = false) {
 		foreach(self::directory_files($path, $recursive) as $file) {
 			require_once($file);
