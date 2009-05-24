@@ -52,13 +52,5 @@ final class moojon_request extends moojon_base {
 			return array();
 		}
 	}
-	
-	static public function method() {
-		return $_SERVER['REQUEST_METHOD'];
-	}
-	
-	static public function post() {
-		return (strtolower(self::method()) == 'post');
-	}
 }
 ?>
