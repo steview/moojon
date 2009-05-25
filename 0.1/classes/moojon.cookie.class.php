@@ -1,7 +1,22 @@
 <?php
 final class moojon_cookie extends moojon_base {
 	
+	static private $instance;
+	static private $data = array();
+	
 	private function __construct() {}
+	
+	static public function get() {
+		if (!self::$instance) {
+			self::$instance = new moojon_cookie();
+		}
+		return self::$instance;
+	}
+	
+	static private function get_data() {
+		$instance = self::get();
+		return $instance->data;
+	}
 	
 	static public function has($key) {
 		if (is_array($_COOKIE) == false) {
@@ -52,14 +67,6 @@ final class moojon_cookie extends moojon_base {
 			}
 		} else {
 			throw new moojon_exception("Key does not exists in moojon_cookie ($key)");
-		}
-	}
-	
-	static public function get_list() {
-		if (is_array($_COOKIE) == true) {
-			return $_COOKIE;
-		} else {
-			return array();
 		}
 	}
 }

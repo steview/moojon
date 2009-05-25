@@ -1,7 +1,22 @@
 <?php
 final class moojon_env extends moojon_base {
 	
+	static private $instance;
+	static private $data = array();
+	
 	private function __construct() {}
+	
+	static public function get() {
+		if (!self::$instance) {
+			self::$instance = new moojon_env();
+		}
+		return self::$instance;
+	}
+	
+	static private function get_data() {
+		$instance = self::get();
+		return $instance->data;
+	}
 	
 	static public function has($key) {
 		if (is_array($_ENV) == false) {
@@ -42,14 +57,6 @@ final class moojon_env extends moojon_base {
 			}
 		} else {
 			throw new moojon_exception("Key does not exists in moojon_env ($key)");
-		}
-	}
-	
-	static public function get_list() {
-		if (is_array($_ENV) == true) {
-			return $_ENV;
-		} else {
-			return array();
 		}
 	}
 }

@@ -1,7 +1,22 @@
 <?php
 final class moojon_post extends moojon_base {
 	
+	static private $instance;
+	static private $data = array();
+	
 	private function __construct() {}
+	
+	static public function get() {
+		if (!self::$instance) {
+			self::$instance = new moojon_post();
+		}
+		return self::$instance;
+	}
+	
+	static private function get_data() {
+		$instance = self::get();
+		return $instance->data;
+	}
 	
 	static public function has($key) {
 		if (is_array($_POST) == false) {
@@ -42,14 +57,6 @@ final class moojon_post extends moojon_base {
 			}
 		} else {
 			throw new moojon_exception("Key does not exists in moojon_post ($key)");
-		}
-	}
-	
-	static public function get_list() {
-		if (is_array($_POST) == true) {
-			return $_POST;
-		} else {
-			return array();
 		}
 	}
 }

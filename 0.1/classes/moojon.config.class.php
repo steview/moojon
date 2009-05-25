@@ -71,9 +71,5 @@ final class moojon_config extends moojon_base {
 		self::$instance->data = array();
 		self::$instance = null;
 	}
-	
-	static public function dump() {
-		print_r($data = self::get_data());
-	}
 }
 ?>
