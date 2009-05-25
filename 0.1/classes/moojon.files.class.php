@@ -69,6 +69,20 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
+	static public function move_uploaded_file($key, $destination) {
+		$file = self::key($key);
+		if ($file['error'] == UPLOAD_ERR_OK) {
+			if (move_uploaded_file($file['tmp_name'], $destination) === true) {
+				return $destination;
+			} else {
+				return false;
+			}
+		} else {
+			throw new moojon_exception('Unable to upload file ('.$file['error'].')');
+		}
+		return false;
+	}
+	
 	static public function require_directory_files($path, $recursive = false) {
 		foreach(self::directory_files($path, $recursive) as $file) {
 			require_once($file);
