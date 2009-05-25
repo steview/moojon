@@ -34,7 +34,8 @@ final class moojon_request extends moojon_base {
 	}
 	
 	static public function set($key, $value = null) {
-		$data = self::get_data();
+		$instance = self::get();
+		$instance->data[$key] = $value;
 		if ($value !== null) {
 			$_REQUEST[$key] = $value;
 		} else {
@@ -47,9 +48,11 @@ final class moojon_request extends moojon_base {
 		$data = self::get_data();
 		if (is_array($data) == true) {
 			foreach($data as $key => $value) {
-				$data[$key] = null;
-				unset($data[$key]);
+				self::set($key, $value);
 			}
+		} else {
+			$instance = self::get();
+			$instance->data = array();
 		}
 	}
 	
@@ -59,10 +62,10 @@ final class moojon_request extends moojon_base {
 			if (array_key_exists($key, $data) == true) {
 				return $data[$key];
 			} else {
-				throw new moojon_exception("Key does not exists in moojon_request ($key)");
+				throw new moojon_exception("Key does not exists ($key)");
 			}
 		} else {
-			throw new moojon_exception("Key does not exists in moojon_request ($key)");
+			throw new moojon_exception("Key does not exists ($key)");
 		}
 	}
 }

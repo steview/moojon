@@ -4,7 +4,9 @@ final class moojon_get extends moojon_base {
 	static private $instance;
 	static private $data = array();
 	
-	private function __construct() {}
+	private function __construct() {
+		$this->data = $_GET;
+	}
 	
 	static public function get() {
 		if (!self::$instance) {
@@ -19,11 +21,12 @@ final class moojon_get extends moojon_base {
 	}
 	
 	static public function has($key) {
-		if (is_array($_GET) == false) {
+		$data = self::get_data();
+		if (is_array($data) == false) {
 			return false;
 		}
-		if (array_key_exists($key, $_GET) === true) {
-			if ($_GET[$key] !== null) {
+		if (array_key_exists($key, $data) === true) {
+			if ($data[$key] !== null) {
 				return true;
 			}
 		}
@@ -31,6 +34,8 @@ final class moojon_get extends moojon_base {
 	}
 	
 	static public function set($key, $value = null) {
+		$instance = self::get();
+		$instance->data[$key] = $value;
 		if ($value !== null) {
 			$_GET[$key] = $value;
 		} else {
@@ -40,23 +45,27 @@ final class moojon_get extends moojon_base {
 	}
 	
 	static public function clear() {
-		if (is_array($_GET) == true) {
-			foreach($_GET as $key) {
-				$_GET[$key] = null;
-				unset($_GET[$key]);
+		$data = self::get_data();
+		if (is_array($data) == true) {
+			foreach($data as $key => $value) {
+				self::set($key, $value);
 			}
+		} else {
+			$instance = self::get();
+			$instance->data = array();
 		}
 	}
 	
 	static public function key($key) {
-		if (is_array($_GET) == true) {
-			if (array_key_exists($key, $_GET) == true) {
-				return $_GET[$key];
+		$data = self::get_data();
+		if (is_array($data) == true) {
+			if (array_key_exists($key, $data) == true) {
+				return $data[$key];
 			} else {
-				throw new moojon_exception("Key does not exists in moojon_get ($key)");
+				throw new moojon_exception("Key does not exists ($key)");
 			}
 		} else {
-			throw new moojon_exception("Key does not exists in moojon_get ($key)");
+			throw new moojon_exception("Key does not exists ($key)");
 		}
 	}
 }

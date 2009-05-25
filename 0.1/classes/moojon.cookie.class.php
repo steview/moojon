@@ -4,7 +4,9 @@ final class moojon_cookie extends moojon_base {
 	static private $instance;
 	static private $data = array();
 	
-	private function __construct() {}
+	private function __construct() {
+		$this->data = $_COOKIE;
+	}
 	
 	static public function get() {
 		if (!self::$instance) {
@@ -19,11 +21,12 @@ final class moojon_cookie extends moojon_base {
 	}
 	
 	static public function has($key) {
-		if (is_array($_COOKIE) == false) {
+		$data = self::get_data();
+		if (is_array($data) == false) {
 			return false;
 		}
-		if (array_key_exists($key, $_COOKIE) === true) {
-			if ($_COOKIE[$key] !== null) {
+		if (array_key_exists($key, $data) === true) {
+			if ($data[$key] !== null) {
 				return true;
 			}
 		}
@@ -38,6 +41,8 @@ final class moojon_cookie extends moojon_base {
 				throw new moojon_exception('cookie_expiry must be an integer ('.moojon_config::get('cookie_expiry').')');
 			}
 		}
+		$instance = self::get();
+		$instance->data[$key] = $value;
 		if ($value !== null) {
 			$_COOKIE[$key] = $value;
 			setcookie($key, $value, $cookie_expiry, '/');
@@ -49,24 +54,27 @@ final class moojon_cookie extends moojon_base {
 	}
 	
 	static public function clear() {
-		if (is_array($_COOKIE) == true) {
-			foreach($_COOKIE as $key) {
-				$_COOKIE[$key] = null;
-				setcookie($key, null, time());
-				unset($_COOKIE[$key]);
+		$data = self::get_data();
+		if (is_array($data) == true) {
+			foreach($data as $key => $value) {
+				self::set($key, $value);
 			}
+		} else {
+			$instance = self::get();
+			$instance->data = array();
 		}
 	}
 	
 	static public function key($key) {
-		if (is_array($_COOKIE) == true) {
-			if (array_key_exists($key, $_COOKIE) == true) {
-				return $_COOKIE[$key];
+		$data = self::get_data();
+		if (is_array($data) == true) {
+			if (array_key_exists($key, $data) == true) {
+				return $data[$key];
 			} else {
-				throw new moojon_exception("Key does not exists in moojon_cookie ($key)");
+				throw new moojon_exception("Key does not exists ($key)");
 			}
 		} else {
-			throw new moojon_exception("Key does not exists in moojon_cookie ($key)");
+			throw new moojon_exception("Key does not exists ($key)");
 		}
 	}
 }

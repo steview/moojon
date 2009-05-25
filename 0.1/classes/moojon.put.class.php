@@ -1,15 +1,33 @@
 <?php
 final class moojon_put extends moojon_base {
 	
-	private function __construct() {}
+	static private $instance;
+	static private $data = array();
+	
+	private function __construct() {
+		parse_str(file_get_contents('php://input'), $put);
+		$this->data = $put;
+	}
+	
+	static public function get() {
+		if (!self::$instance) {
+			self::$instance = new moojon_put();
+		}
+		return self::$instance;
+	}
+	
+	static private function get_data() {
+		$instance = self::get();
+		return $instance->data;
+	}
 	
 	static public function has($key) {
-		parse_str(file_get_contents('php://input'), $put);
-		if (is_array($put) == false) {
+		$data = self::get_data();
+		if (is_array($data) == false) {
 			return false;
 		}
-		if (array_key_exists($key, $put) === true) {
-			if ($put[$key] !== null) {
+		if (array_key_exists($key, $data) === true) {
+			if ($data[$key] !== null) {
 				return true;
 			}
 		}
@@ -17,44 +35,32 @@ final class moojon_put extends moojon_base {
 	}
 	
 	static public function set($key, $value = null) {
-		parse_str(file_get_contents('php://input'), $put);
-		if ($value !== null) {
-			$put[$key] = $value;
-		} else {
-			$put[$key] = null;
-			unset($put[$key]);
-		}
+		$instance = self::get();
+		$instance->data[$key] = $value;
 	}
 	
 	static public function clear() {
-		parse_str(file_get_contents('php://input'), $put);
-		if (is_array($put) == true) {
-			foreach($put as $key) {
-				$put[$key] = null;
-				unset($put[$key]);
+		$data = self::get_data();
+		if (is_array($data) == true) {
+			foreach($data as $key => $value) {
+				self::set($key, $value);
 			}
+		} else {
+			$instance = self::get();
+			$instance->data = array();
 		}
 	}
 	
 	static public function key($key) {
-		parse_str(file_get_contents('php://input'), $put);
-		if (is_array($put) == true) {
-			if (array_key_exists($key, $put) == true) {
-				return $put[$key];
+		$data = self::get_data();
+		if (is_array($data) == true) {
+			if (array_key_exists($key, $data) == true) {
+				return $data[$key];
 			} else {
-				throw new moojon_exception("Key does not exists in moojon_put ($key)");
+				throw new moojon_exception("Key does not exists ($key)");
 			}
 		} else {
-			throw new moojon_exception("Key does not exists in moojon_put ($key)");
-		}
-	}
-	
-	static public function get_list() {
-		parse_str(file_get_contents('php://input'), $put);
-		if (is_array($put) == true) {
-			return $put;
-		} else {
-			return array();
+			throw new moojon_exception("Key does not exists ($key)");
 		}
 	}
 }
