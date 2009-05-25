@@ -34,7 +34,7 @@ final class moojon_security extends moojon_base_security {
 			if (is_array($security) == true && moojon_server::is_post() == true) {
 				if (array_key_exists($security_remember_key, $security) == true) {
 					if (strlen($security[$security_remember_key]) > 0) {
-						moojon_cookies::set($security_token_key, $security_token);
+						moojon_cookie::set($security_token_key, $security_token);
 						self::log("$log_message, creating cookie: ".$security_token);
 					}
 				}
@@ -50,7 +50,7 @@ final class moojon_security extends moojon_base_security {
 		self::log("logout: $security_token");
 		$security_token_key = moojon_config::get('security_token_key');
 		moojon_session::set($security_token_key, null);
-		moojon_cookies::set($security_token_key, null);
+		moojon_cookie::set($security_token_key, null);
 		$_REQUEST[moojon_config::get('security_identity_key')] = null;
 		$_REQUEST[moojon_config::get('security_password_key')] = null;
 	}
