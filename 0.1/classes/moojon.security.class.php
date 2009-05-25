@@ -9,7 +9,7 @@ final class moojon_security extends moojon_base_security {
 		$security_password_key = moojon_config::get('security_password_key');
 		$log_message = 'Log in attempt';
 		if ($security_token === false) {
-			if (moojon_server::post() == true && moojon_request::has('security') == true) {
+			if (moojon_server::is_post() == true && moojon_request::has('security') == true) {
 				$security_identity_value = $security[$security_identity_key];
 				$security_password_value = $security[$security_password_key];
 				$where = sprintf(moojon_config::get('security_login_condition_string'), $security_identity_key, $security_identity_value, $security_password_key, $security_password_value);
@@ -31,7 +31,7 @@ final class moojon_security extends moojon_base_security {
 		} else {
 			$security_remember_key = moojon_config::get('security_remember_key');
 			$security_token = $records->first->$primary_key;
-			if (is_array($security) == true && moojon_server::post() == true) {
+			if (is_array($security) == true && moojon_server::is_post() == true) {
 				if (array_key_exists($security_remember_key, $security) == true) {
 					if (strlen($security[$security_remember_key]) > 0) {
 						moojon_cookies::set($security_token_key, $security_token);

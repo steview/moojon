@@ -9,7 +9,7 @@ final class moojon_security_controller extends moojon_base_controller {
 		$this->security_remember_key = moojon_config::get('security_remember_key');
 		$this->security_key = moojon_config::get('security_key');
 		$security = $_REQUEST[$this->security_key];
-		if (is_array($security) == true && moojon_server::post() == true) {
+		if (is_array($security) == true && moojon_server::is_post() == true) {
 			$this->security_identity_value = $security[$this->security_identity_key];
 			$this->security_password_value = $security[$this->security_password_key];
 			$this->security_remember_value = $security[$this->security_remember_key];

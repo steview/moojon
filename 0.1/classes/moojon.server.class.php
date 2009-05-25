@@ -57,19 +57,19 @@ final class moojon_server extends moojon_base {
 		return $_SERVER['REQUEST_METHOD'];
 	}
 	
-	static public function get() {
+	static public function is_get() {
 		return (strtolower(self::method()) == 'get');
 	}
 	
-	static public function post() {
+	static public function is_post() {
 		return (strtolower(self::method()) == 'post');
 	}
 	
-	static public function put() {
+	static public function is_put() {
 		return (strtolower(self::method()) == 'put');
 	}
 	
-	static public function delete() {
+	static public function is_delete() {
 		return (strtolower(self::method()) == 'delete');
 	}
 }
