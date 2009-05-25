@@ -1,10 +1,23 @@
 <?php
 function img_tag($src, $alt, $width = null, $height = null, $attributes = array()) {
-	echo "$src<br />";
 	$url = parse_url($src);
-	print_r($url);
-	die();
-	if (array_key_exists('src', $attributes) == false) {
+	$host = (array_key_exists('host', $url)) ? $url['host'] : '';
+	if (array_key_exists('host', $url) == ture) {
+		$host = $url['host'];
+		$scheme = $url['scheme'];
+		$path = $url['path'];
+	} else {
+		$host = moojon_server::get('HTTP_HOST');
+		if (strpos(strtolower(moojon_server::get('SERVER_PROTOCOL')), 'http/') !== false) {
+			$scheme = 'https';
+		} else {
+			$scheme = 'http';
+		}
+		if (file_exists($url['path']) === false) {
+			
+		}
+	}
+ 	if (array_key_exists('src', $attributes) == false) {
 		$attributes['src'] = $src;
 	}
 	if (array_key_exists('alt', $attributes) == false) {

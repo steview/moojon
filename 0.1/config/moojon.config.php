@@ -31,6 +31,7 @@ return array(
 	'migrations_directory' => 'migrations',
 	'public_directory' => 'public',
 	'images_directory' => 'images',
+	'default_image_ext' => 'png',
 	'css_directory' => 'css',
 	'js_directory' => 'js',
 	'script_directory' => 'script',
