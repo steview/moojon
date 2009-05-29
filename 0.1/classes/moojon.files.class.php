@@ -187,7 +187,10 @@ final class moojon_files extends moojon_base {
 		}
 	}
 	
-	static private function has_suffix($file, $suffix) {
+	static public function has_suffix($file, $suffix, $ext = 'php') {
+		if (self::has_ext($file, $ext) == true) {
+			$file = self::strip_ext($file, $ext);
+		}
 		if (substr($file, (0 + (strlen($file) - strlen($suffix)))) == $suffix) {
 			return true;
 		} else {

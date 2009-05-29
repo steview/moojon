@@ -11,10 +11,12 @@ final class moojon_config extends moojon_base {
 	static public function update($directory) {
 		if (is_dir($directory) == true) {
 			foreach (moojon_files::directory_files($directory, true) as $file) {
-				$array = require_once($file);
-				if (is_array($array) === true) {
-					foreach ($array as $key => $value) {
-						self::set($key, $value);
+				if (moojon_files::has_suffix($file, 'config')) {
+					$array = require_once($file);
+					if (is_array($array) === true) {
+						foreach ($array as $key => $value) {
+							self::set($key, $value);
+						}
 					}
 				}
 			}
