@@ -16,7 +16,7 @@ final class moojon_uri extends moojon_base {
 				$request_uri = substr($request_uri, 0, (strlen($request_uri) - 1));
 			}
 			$return = explode('/', $request_uri);
-			while (strpos($return[0], '.') !== false) {
+			while (strpos($return[0], '.')) {
 				array_shift($return);
 			}
 			
@@ -31,12 +31,12 @@ final class moojon_uri extends moojon_base {
 		foreach (moojon_files::directory_directories(moojon_paths::get_moojon_apps_directory()) as $app) {
 			$apps[] = $app;
 		}
-		if (is_dir(moojon_paths::get_vendor_apps_directory()) == true) {
+		if (is_dir(moojon_paths::get_vendor_apps_directory())) {
 			foreach (moojon_files::directory_directories(moojon_paths::get_vendor_apps_directory()) as $app) {
 				$apps[] = $app;
 			}
 		}
-		if (is_dir(moojon_paths::get_library_apps_directory()) == true) {
+		if (is_dir(moojon_paths::get_library_apps_directory())) {
 			foreach (moojon_files::directory_directories(moojon_paths::get_library_apps_directory()) as $app) {
 				$apps[] = $app;
 			}
@@ -49,22 +49,22 @@ final class moojon_uri extends moojon_base {
 	
 	static public function get_controllers($app) {
 		$controllers = array();
-		if (is_dir(moojon_paths::get_moojon_controllers_directory($app)) == true) {
+		if (is_dir(moojon_paths::get_moojon_controllers_directory($app))) {
 			foreach (moojon_files::directory_files(moojon_paths::get_moojon_controllers_directory($app)) as $controller) {
 				$controllers[] = $controller;
 			}
 		}
-		if (is_dir(moojon_paths::get_vendor_controllers_directory($app)) == true) {
+		if (is_dir(moojon_paths::get_vendor_controllers_directory($app))) {
 			foreach (moojon_files::directory_files(moojon_paths::get_vendor_controllers_directory($app)) as $controller) {
 				$controllers[] = $controller;
 			}
 		}
-		if (is_dir(moojon_paths::get_library_controllers_directory($app)) == true) {
+		if (is_dir(moojon_paths::get_library_controllers_directory($app))) {
 			foreach (moojon_files::directory_files(moojon_paths::get_library_controllers_directory($app)) as $controller) {
 				$controllers[] = $controller;
 			}
 		}
-		if (is_dir(moojon_paths::get_controllers_directory($app)) == true) {
+		if (is_dir(moojon_paths::get_controllers_directory($app))) {
 			foreach (moojon_files::directory_files(moojon_paths::get_controllers_directory($app)) as $controller) {
 				$controllers[] = $controller;
 			}
@@ -73,6 +73,12 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function process() {
+		foreach (moojon_routes::get_routes() as $route) {
+			if ($return = $route->map_uri(self::get_request_uri_array())) {
+				return $return;
+			}
+		}
+		//throw new moojon_excepetion('404');
 		$request_uri = self::get_request_uri_array();
 		$return = array();
 		$counter;
@@ -93,7 +99,7 @@ final class moojon_uri extends moojon_base {
 					$return['action'] = $default_action;
 				} else {
 					$return['app'] = $default_app;
-					if (in_array($request_uri[0], self::get_controllers($default_app)) == true) {
+					if (in_array($request_uri[0], self::get_controllers($default_app))) {
 						$return['controller'] = $request_uri[0];
 						$return['action'] = $default_action;
 					} else {
@@ -151,14 +157,14 @@ final class moojon_uri extends moojon_base {
 			array_shift($request_uri);
 		}
 		$return['querystring'] = $request_uri;
-		if (defined('EXCEPTION') === true && EXCEPTION === true) {
+		if (defined('EXCEPTION') && EXCEPTION === true) {
 			$return['app'] = moojon_config::get('exception_app');
 			$return['controller'] = moojon_config::get('exception_controller');
 			$return['action'] = moojon_config::get('exception_action');
 		} else {
-			if (moojon_config::has('security') === true) {
-				if (moojon_config::get('security') === true) {
-					if (moojon_authentication::authenticate() === false) {
+			if (moojon_config::has('security')) {
+				if (moojon_config::get('security')) {
+					if (!moojon_authentication::authenticate()) {
 						$return['app'] = moojon_config::get('security_app');
 						$return['controller'] = moojon_config::get('security_controller');
 						$return['action'] = moojon_config::get('security_action');
