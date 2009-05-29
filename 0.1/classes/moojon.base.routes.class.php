@@ -13,6 +13,8 @@ abstract class moojon_base_routes extends moojon_base {
 		return self::$instance;
 	}
 	
+	final public function get_routes() {}
+	
 	final static public function route($pattern) {
 		$instance = self::get();
 		$instance->routes[] = new moojon_route($pattern);
