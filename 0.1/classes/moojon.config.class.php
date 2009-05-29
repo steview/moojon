@@ -9,7 +9,7 @@ final class moojon_config extends moojon_base {
 	}
 	
 	static public function update($directory) {
-		if (is_dir($directory) == true) {
+		if (is_dir($directory)) {
 			foreach (moojon_files::directory_files($directory, true) as $file) {
 				if (moojon_files::has_suffix($file, 'config')) {
 					$array = require_once($file);
@@ -35,7 +35,7 @@ final class moojon_config extends moojon_base {
 	}
 	
 	static public function set($key, $value = null) {
-		if (is_array($key) == false) {
+		if (!is_array($key)) {
 			$data = array($key => $value);
 		} else {
 			$data = $key;
@@ -48,7 +48,7 @@ final class moojon_config extends moojon_base {
 	
 	static public function __get($key) {
 		$data = self::get_data();
-		if (array_key_exists($key, $data) == true && $data[$key] != null) {
+		if (array_key_exists($key, $data) && $data[$key] != null) {
 			return $data[$key];
 		} else {
 			if (array_key_exists($key, $data)) {
