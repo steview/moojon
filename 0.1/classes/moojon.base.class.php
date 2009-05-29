@@ -1,7 +1,5 @@
 <?php
 abstract class moojon_base {
-	private function __construct() {}
-	
 	final static public function log($text) {
 		$text = date('Y-m-d H:i:s e: ').$text."\n\n";
 		$log_dir = PROJECT_DIRECTORY.'log/';
