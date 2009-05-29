@@ -22,7 +22,7 @@ final class moojon_files extends moojon_base {
 	
 	static public function has($key) {
 		$data = self::get_data();
-		if (is_array($data) == false) {
+		if (!is_array($data)) {
 			return false;
 		}
 		if (array_key_exists($key, $data) === true) {
@@ -46,7 +46,7 @@ final class moojon_files extends moojon_base {
 	
 	static public function clear() {
 		$data = self::get_data();
-		if (is_array($data) == true) {
+		if (is_array($data)) {
 			foreach($data as $key => $value) {
 				self::set($key, $value);
 			}
@@ -58,8 +58,8 @@ final class moojon_files extends moojon_base {
 	
 	static public function key($key) {
 		$data = self::get_data();
-		if (is_array($data) == true) {
-			if (array_key_exists($key, $data) == true) {
+		if (is_array($data)) {
+			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
 				throw new moojon_exception("Key does not exists ($key)");
@@ -90,7 +90,7 @@ final class moojon_files extends moojon_base {
 	}
 	
 	static public function require_files_then_require_directory_files($files, $path, $recursive = false) {
-		if (is_array($files) == false) {
+		if (!is_array($files)) {
 			$files = array($files);
 		}
 		foreach($files as $file) {
@@ -188,7 +188,7 @@ final class moojon_files extends moojon_base {
 	}
 	
 	static public function has_suffix($file, $suffix, $ext = 'php') {
-		if (self::has_ext($file, $ext) == true) {
+		if (self::has_ext($file, $ext)) {
 			$file = self::strip_ext($file, $ext);
 		}
 		if (substr($file, (0 + (strlen($file) - strlen($suffix)))) == $suffix) {
@@ -201,7 +201,7 @@ final class moojon_files extends moojon_base {
 	static public function require_suffix($path, $suffix, $ext = 'php') {
 		$file = basename($path);
 		$path = dirname($path).'/';
-		if (self::has_ext($file, $ext) == true) {
+		if (self::has_ext($file, $ext)) {
 			$file = self::strip_ext($file, $ext);
 		}
 		if (self::has_suffix($file, $suffix) == false) {
@@ -224,10 +224,10 @@ final class moojon_files extends moojon_base {
 	static public function require_prefix($path, $prefix, $ext = 'php') {
 		$file = basename($path);
 		$path = dirname($path).'/';
-		if (self::has_ext($file, $ext) == true) {
+		if (self::has_ext($file, $ext)) {
 			$file = self::strip_ext($file, $ext);
 		}
-		if (self::has_prefix($file, $prefix) == false) {
+		if (!self::has_prefix($file, $prefix)) {
 			$file .= ".$prefix";
 		}
 		if (strlen($ext) > 0) {
@@ -238,7 +238,7 @@ final class moojon_files extends moojon_base {
 	
 	static public function get_file_contents($path) {
 		$file_pointer = fopen($path, 'r');
-		if ($file_pointer === false) {
+		if (!$file_pointer) {
 			throw new moojon_exception("Unable to open file ($path)");
 		}
 		$content = fread($file_pointer, filesize($path));
