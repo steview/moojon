@@ -17,7 +17,7 @@ final class moojon_migrator extends moojon_base {
 	
 	static public function roll_back($migration_file, $all = false) {
 		self::find_or_create_schema_migrations_table();
-		if (schema_migration::read("version = '$migration_file'")->count && $all == false) {
+		if (schema_migration::read("version = '$migration_file'")->count && !$all) {
 			throw new moojon_exception("No such migration ($migration_file)");
 		}
 		foreach (schema_migration::read(null, 'version DESC') as $migration) {
@@ -44,19 +44,19 @@ final class moojon_migrator extends moojon_base {
 			case 'down':
 				schema_migration::destroy("version = '$migration_file'");
 				break;
-		}		
+		}
 	}
 	
 	static private function find_or_create_schema_migrations_table() {
 		$table_exists = false;
 		foreach (moojon_query_runner::show_tables() as $table) {
-			if ($table !== false) {
+			if ($table) {
 				if (in_array('schema_migrations', $table)) {
 					$table_exists = true;
 				}
-			}						
+			}
 		}
-		if ($table_exists == false) {
+		if (!$table_exists) {
 			moojon_query_runner::create_table('schema_migrations', new moojon_string_column('version'));
 		}
 	}

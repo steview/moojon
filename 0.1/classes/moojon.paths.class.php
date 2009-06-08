@@ -181,11 +181,11 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_library_controller_views_directory() {
-		return self::get_library_app_direstory().moojon_config::get('views_directory').'/'.moojon_uri::get_controller().'/';
+		return self::get_library_app_directory().moojon_config::get('views_directory').'/'.moojon_uri::get_controller().'/';
 	}
 	
 	static public function get_library_views_directory() {
-		return self::get_library_app_direstory().moojon_config::get('views_directory').'/'.moojon_uri::get_controller().'/';
+		return self::get_library_app_directory().moojon_config::get('views_directory').'/'.moojon_uri::get_controller().'/';
 	}
 	
 	static public function get_vendor_controller_views_directory() {
