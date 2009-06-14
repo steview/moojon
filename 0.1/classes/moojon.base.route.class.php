@@ -18,7 +18,7 @@ abstract class moojon_base_route extends moojon_base {
 		return (substr($subject, 0, 1) == ':');
 	}
 	
-	final private function get_symbol_name($symbol) {
+	final protected function get_symbol_name($symbol) {
 		return substr($symbol, 1);
 	}
 	

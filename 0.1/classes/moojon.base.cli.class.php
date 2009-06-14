@@ -33,7 +33,7 @@ abstract class moojon_base_cli extends moojon_base {
 		return $read;
 	}
 	
-	abstract protected function render($arguments);
+	abstract protected function run($arguments);
 	
 	final protected function check_arguments($method, $expected, Array $arguments) {
 		if (count($arguments) > $expected) {

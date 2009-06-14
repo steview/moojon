@@ -2,27 +2,11 @@
 final class moojon_uri extends moojon_base {
 	private function __construct() {}
 
-	static private function get_request_uri_array() {
+	static private function get_uri() {
 		if (array_key_exists('REQUEST_URI', $_SERVER)) {
-			$request_uri = $_SERVER['REQUEST_URI'];
+			return $_SERVER['REQUEST_URI'];
 		} else {
-			$request_uri = $_SERVER['PATH_INFO'];
-		}
-		while (substr($request_uri, 0, 1) == '/') {
-			$request_uri = substr($request_uri, 1);
-		}
-		if (strlen($request_uri) > 0) {
-			while (substr($request_uri, (strlen($request_uri) - 1)) == '/') {
-				$request_uri = substr($request_uri, 0, (strlen($request_uri) - 1));
-			}
-			$return = explode('/', $request_uri);
-			while (strpos($return[0], '.')) {
-				array_shift($return);
-			}
-			
-			return $return;
-		} else {
-			return array();
+			return $_SERVER['PATH_INFO'];
 		}
 	}
 	
@@ -72,105 +56,35 @@ final class moojon_uri extends moojon_base {
 		return $controllers;
 	}
 	
+	static public function get_actions($controller) {
+		$actions = get_class_methods(moojon_paths::get_controller_class($controller));
+		//if ($actions)
+		return $actions;
+	}
+	
 	static public function process() {
 		foreach (moojon_routes::get_routes() as $route) {
-			if ($return = $route->map_uri(self::get_request_uri_array())) {
-				return $return;
+			if ($return = $route->map_uri(self::get_uri())) {
+				break;
 			}
 		}
-		//throw new moojon_excepetion('404');
-		$request_uri = self::get_request_uri_array();
-		$return = array();
-		$counter;
-		$default_app = moojon_config::get('default_app');
-		$default_controller = moojon_config::get('default_controller');
-		$default_action = moojon_config::get('default_action');
-		switch (count($request_uri)) {
-			case 0:
-				$return['app'] = $default_app;
-				$return['controller'] = $default_controller;
-				$return['action'] = $default_action;
-				$counter = 0;
-				break;
-			case 1:
-				if (in_array($request_uri[0], self::get_apps())) {
-					$return['app'] = $request_uri[0];
-					$return['controller'] = $default_controller;
-					$return['action'] = $default_action;
-				} else {
-					$return['app'] = $default_app;
-					if (in_array($request_uri[0], self::get_controllers($default_app))) {
-						$return['controller'] = $request_uri[0];
-						$return['action'] = $default_action;
-					} else {
-						$return['controller'] = $default_controller;
-						$return['action'] = $request_uri[0];
-					}
-				}
-				$counter = 1;
-				break;
-			case 2:
-				if (in_array($request_uri[0], self::get_apps())) {
-					$return['app'] = $request_uri[0];
-					$return['controller'] = $request_uri[1];
-					$return['action'] = $default_action;
-				} else {
-					$return['app'] = $default_app;
-					$return['controller'] = $request_uri[0];
-					$return['action'] = $request_uri[1];
-				}
-				$counter = 2;
-				break;
-			case 3:
-				if (in_array($request_uri[0], self::get_apps())) {
-					$return['app'] = $request_uri[0];
-					$return['controller'] = $request_uri[1];
-					$return['action'] = $request_uri[2];
-					$counter = 3;
-				} else {
-					$return['app'] = $default_app;
-					$return['controller'] = $request_uri[0];
-					$return['action'] = $request_uri[1];
-					$counter = 2;
-				}
-				break;
-			default:
-				if (in_array($request_uri[0], self::get_apps())) {
-					$return['app'] = $request_uri[0];
-					$return['controller'] = $request_uri[1];
-					$return['action'] = $request_uri[2];
-					$counter = 3;
-				} elseif (in_array($request_uri[0], self::get_controllers($default_app))) {
-					$return['app'] = $default_app;
-					$return['controller'] = $request_uri[0];
-					$return['action'] = $request_uri[1];
-					$counter = 2;
-				} else {
-					$return['app'] = $default_app;
-					$return['controller'] = $default_controller;
-					$return['action'] = $request_uri[0];
-					$counter = 1;
-				}
-				break;
+		if (!$return) {
+			die('404');
+			//throw new moojon_excepetion('404');
 		}
-		for ($i = 0; $i < $counter; $i ++) {
-			array_shift($request_uri);
-		}
-		$return['querystring'] = $request_uri;
+		print_r($return);
+		die();
 		if (defined('EXCEPTION') && EXCEPTION === true) {
 			$return['app'] = moojon_config::get('exception_app');
 			$return['controller'] = moojon_config::get('exception_controller');
 			$return['action'] = moojon_config::get('exception_action');
-		} else {
-			if (moojon_config::has('security')) {
-				if (moojon_config::get('security')) {
-					if (!moojon_authentication::authenticate()) {
-						$return['app'] = moojon_config::get('security_app');
-						$return['controller'] = moojon_config::get('security_controller');
-						$return['action'] = moojon_config::get('security_action');
-					}
-				}
-			}
+			return $return;
+		}
+		if (moojon_config::has('security') && moojon_config::get('security') && !moojon_authentication::authenticate()) {
+			$return['app'] = moojon_config::get('security_app');
+			$return['controller'] = moojon_config::get('security_controller');
+			$return['action'] = moojon_config::get('security_action');
+			return $return;
 		}
 		return $return;
 	}

@@ -5,7 +5,7 @@ final class moojon_routes extends moojon_base {
 	static private $routes = array();
 	
 	protected function __construct() {
-		foreach (require_once(moojon_paths::get_project_directory().'routes.php') as $route) {
+		foreach (require_once(moojon_paths::get_project_config_directory().'routes.php') as $route) {
 			if (is_subclass_of($route, 'moojon_base_route')) {
 				$this->routes[] = $route;
 			}

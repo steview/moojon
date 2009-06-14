@@ -1,0 +1,5 @@
+<?php
+return array(
+	new moojon_route(':app/:controller/:action')
+);
+?>

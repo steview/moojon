@@ -13,7 +13,7 @@ final class moojon_runner extends moojon_base {
 		switch (strtoupper(UI)) {
 			case 'CGI':
 				moojon_config::update(moojon_paths::get_project_config_directory());
-				moojon_config::update(moojon_paths::get_app_config_directory());
+				moojon_config::update(moojon_paths::get_app_config_directory(moojon_uri::get_app()));
 				require_once(moojon_paths::get_app_path());
 				$moojon = moojon_uri::get_app().'_app';
 				break;
