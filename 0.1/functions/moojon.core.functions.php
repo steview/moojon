@@ -20,10 +20,6 @@ function __autoload($class_name) {
 		require_once(moojon_paths::get_moojon_models_directory().$class_filename);
 	} elseif (file_exists(moojon_paths::get_moojon_base_models_directory().$class_filename) == true) {
 		require_once(moojon_paths::get_moojon_base_models_directory().$class_filename);
-	} elseif (file_exists(moojon_paths::get_vendor_directory().$class_filename) == true) {
-		require_once(moojon_paths::get_vendor_directory().$class_filename);
-	} elseif (file_exists(moojon_paths::get_library_directory().$class_filename) == true) {
-		require_once(moojon_paths::get_library_directory().$class_filename);
 	} elseif (file_exists(moojon_paths::get_models_directory().$class_name.'.model.class.php') == true) {
 		require_once(moojon_paths::get_models_directory().$class_name.'.model.class.php');
 	} elseif (file_exists(moojon_paths::get_base_models_directory().str_replace('base_', 'base.', $class_name).'.model.class.php') == true) {

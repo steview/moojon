@@ -1,42 +1,9 @@
 <?php
 final class moojon_paths extends moojon_base {
-	static private $instance;
-	
-	private $project_directory;
-	
-	private function __construct() {
-		$this->project_directory = PROJECT_DIRECTORY;
-	}
-	
-	static public function get() {
-		if (!self::$instance) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}
-	
-	static public function __get($key) {
-		if (substr($key, 0, 4) != 'get_') {
-			$key = "get_$key";
-		}
-		$instance = self::get();
-		if (in_array($key, get_class_methods('self'))) {
-			return $instance->$key();
-		} else {
-			throw new moojon_exception('Unknown path property ($key)');
-		}
-	}
+	private function __construct() {}
 	
 	static public function get_project_directory() {
 		return PROJECT_DIRECTORY;
-	}
-	
-	static public function get_library_directory() {
-		return self::get_project_directory().moojon_config::get('library_directory').'/';
-	}
-	
-	static public function get_vendor_directory() {
-		return self::get_project_directory().moojon_config::get('vendor_directory').'/';
 	}
 	
 	static public function get_moojon_directory() {
@@ -72,24 +39,12 @@ final class moojon_paths extends moojon_base {
 		return self::get_tags_directory().moojon_config::get('tag_attributes_directory').'/';
 	}
 	
-	static public function get_moojon_migrations_directory() {
-		return self::get_moojon_models_directory().moojon_config::get('migrations_directory').'/';
-	}
-	
 	static public function get_project_config_directory() {
 		return self::get_project_directory().'config/';
 	}
 	
 	static public function get_app_config_directory($app) {
-		return self::get_app_directory($app).'config/';
-	}
-	
-	static public function get_library_config_directory() {
-		return self::get_library_directory().'config/';
-	}
-	
-	static public function get_vendor_config_directory() {
-		return self::get_vendor_directory().'config/';
+		return self::get_project_config_directory()."$app/";
 	}
 	
 	static public function get_moojon_config_directory() {
@@ -100,92 +55,36 @@ final class moojon_paths extends moojon_base {
 		return self::get_project_directory().moojon_config::get('apps_directory').'/';
 	}
 	
-	static public function get_library_apps_directory() {
-		return self::get_library_directory().moojon_config::get('apps_directory').'/';
-	}
-	
-	static public function get_vendor_apps_directory() {
-		return self::get_vendor_directory().moojon_config::get('apps_directory').'/';
-	}
-	
 	static public function get_moojon_apps_directory() {
 		return self::get_moojon_directory().moojon_config::get('apps_directory').'/';
 	}
 	
-	static public function get_app_directory($app) {
-		return self::get_apps_directory()."$app/";
+	static public function get_app_controllers_directory($app) {
+		return self::get_project_directory().moojon_config::get('controllers_directory')."$app/";
 	}
 	
-	static public function get_library_app_directory($app) {
-		return self::get_library_apps_directory()."$app/";
+	static public function get_moojon_app_controllers_directory($app) {
+		return self::get_moojon_directory().moojon_config::get('controllers_directory')."$app/";
 	}
 	
-	static public function get_vendor_app_directory($app) {
-		return self::get_vendor_apps_directory()."$app/";
+	static public function get_app_controller_views_directory($app, $controller) {
+		return self::get_project_directory().moojon_config::get('views_directory')."$app/$controller/";
 	}
 	
-	static public function get_moojon_app_directory($app) {
-		return self::get_moojon_apps_directory()."$app/";
+	static public function get_app_views_directory($app) {
+		return self::get_project_directory().moojon_config::get('views_directory')."$app/";
 	}
 	
-	static public function get_controllers_directory($app) {
-		return self::get_app_directory($app).moojon_config::get('controllers_directory').'/';
+	static public function get_moojon_app_controller_views_directory($app, $controller) {
+		return self::get_moojon_directory().moojon_config::get('views_directory')."$app/$controller/";
 	}
 	
-	static public function get_library_controllers_directory($app) {
-		return self::get_library_app_directory($app).moojon_config::get('controllers_directory').'/';
-	}
-	
-	static public function get_vendor_controllers_directory($app) {
-		return self::get_vendor_app_directory($app).moojon_config::get('controllers_directory').'/';
-	}
-	
-	static public function get_moojon_controllers_directory($app) {
-		return self::get_moojon_app_directory($app).moojon_config::get('controllers_directory').'/';
-	}
-	
-	static public function get_controller_views_directory($controller, $app) {
-		return self::get_app_directory($app).moojon_config::get('views_directory')."/$controller/";
-	}
-	
-	static public function get_views_directory($app) {
-		return self::get_app_directory($app).moojon_config::get('views_directory');
-	}
-	
-	static public function get_library_controller_views_directory($controller, $app) {
-		return self::get_library_app_directory($app).moojon_config::get('views_directory')."/$controller/";
-	}
-	
-	static public function get_library_views_directory($app) {
-		return self::get_library_app_directory($app).moojon_config::get('views_directory');
-	}
-	
-	static public function get_vendor_controller_views_directory($controller, $app) {
-		return self::get_vendor_app_directory($app).moojon_config::get('views_directory')."/$controller/";
-	}
-	
-	static public function get_vendor_views_directory($controller, $app) {
-		return self::get_vendor_app_directory($app).moojon_config::get('views_directory')."/$controller/";
-	}
-	
-	static public function get_moojon_controller_views_directory($controller, $app) {
-		return self::get_moojon_app_directory($app).moojon_config::get('views_directory')."/$controller/";
-	}
-	
-	static public function get_moojon_views_directory($controller, $app) {
-		return self::get_moojon_app_directory($app).moojon_config::get('views_directory')."/$controller/";
+	static public function get_moojon_app_views_directory($app) {
+		return self::get_moojon_apps_directory().moojon_config::get('views_directory')."$app/";
 	}
 	
 	static public function get_layouts_directory() {
 		return get_project_directory().moojon_config::get('layouts_directory').'/';
-	}
-	
-	static public function get_library_layouts_directory() {
-		return self::get_library_directory().moojon_config::get('layouts_directory').'/';
-	}
-	
-	static public function get_vendor_layouts_directory() {
-		return self::get_vendor_directory().moojon_config::get('layouts_directory').'/';
 	}
 	
 	static public function get_moojon_layouts_directory() {
@@ -194,14 +93,6 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_helpers_directory() {
 		return self::get_project_directory().moojon_config::get('helpers_directory').'/';
-	}
-	
-	static public function get_library_helpers_directory() {
-		return self::get_library_directory().moojon_config::get('helpers_directory').'/';
-	}
-	
-	static public function get_vendor_helpers_directory() {
-		return self::get_vendor_directory().moojon_config::get('helpers_directory').'/';
 	}
 	
 	static public function get_moojon_helpers_directory() {
@@ -228,6 +119,10 @@ final class moojon_paths extends moojon_base {
 		return self::get_models_directory().moojon_config::get('migrations_directory').'/';
 	}
 	
+	static public function get_moojon_migrations_directory() {
+		return self::get_moojon_models_directory().moojon_config::get('migrations_directory').'/';
+	}
+	
 	static public function get_public_directory() {
 		return self::get_project_directory().moojon_config::get('public_directory').'/';
 	}
@@ -250,90 +145,53 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_app_path($app) {
 		$paths = array(
-			self::get_apps_directory()."$app/$app.app.class.php",
-			self::get_library_apps_directory()."$app/$app.app.class.php",
-			self::get_vendor_apps_directory()."$app/$app.app.class.php",
-			self::get_moojon_apps_directory()."$app/$app.app.class.php",
+			self::get_apps_directory()."$app.app.class.php",
+			self::get_moojon_apps_directory()."$app.app.class.php",
 		);
-		foreach ($paths as $path) {
-			if (file_exists($path)) {
-				return $path;
-			}
-		}
-		throw new moojon_exception("404 app not found ($app)");
+		return self::get_path($paths);
 	}
 	
-	static public function get_controller_path($controller, $app) {
+	static public function get_controller_path($app, $controller) {
 		$paths = array(
-			self::get_controllers_directory($app)."$controller.controller.class.php",
-			self::get_library_controllers_directory($app)."$controller.controller.class.php",
-			self::get_vendor_controllers_directory($app)."$controller.controller.class.php",
-			self::get_moojon_controllers_directory($app)."$controller.controller.class.php"
+			self::get_app_controllers_directory($app)."$app/$controller.controller.class.php",
+			self::get_moojon_app_controllers_directory($app)."$app/$controller.controller.class.php"
 		);
-		foreach ($paths as $path) {
-			if (file_exists($path)) {
-				return $path;
-			}
-		}
-		throw new moojon_exception("404 controller not found ($controller)");
+		return self::get_path($paths);
 	}
 	
 	static public function get_layout_path($layout) {
 		$paths = array(
-			self::get_layouts_directory().$layout,
-			self::get_library_layouts_directory().$layout,
-			self::get_vendor_layouts_directory().$layout,
-			self::get_moojon_layouts_directory().$layout
+			self::get_layouts_directory()."$layout.layout.php",
+			self::get_moojon_layouts_directory()."$layout.layout.php"
 		);
-		foreach ($paths as $path) {
-			if (file_exists($path)) {
-				return $path;
-			}
-		}
-		throw new moojon_exception("404 layout not found ($layout)");
+		return self::get_path($paths);
 	}
 	
-	static public function get_view_path($view) {
+	static public function get_view_path($view, $app, $controller) {
 		$paths = array(
-			self::get_controller_views_directory(moojon_uri::get_controller(), moojon_uri::get_app()).$view,
-			self::get_views_directory(moojon_uri::get_app()).$view,
-			self::get_library_controller_views_directory(moojon_uri::get_controller(), moojon_uri::get_app()).$view,
-			self::get_library_views_directory().$view,
-			self::get_vendor_controller_views_directory().$view,
-			self::get_vendor_views_directory().$view,
-			self::get_moojon_controller_views_directory().$view,
-			self::get_moojon_views_directory().$view
+			self::get_app_controller_views_directory($app, $controller)."$view.view.php",
+			self::get_app_views_directory($app)."$view.view.php",
+			self::get_moojon_app_controller_views_directory($app, $controller)."$view.view.php",
+			self::get_moojon_app_views_directory($app)."$view.view.php"
 		);
-		foreach ($paths as $path) {
-			if (file_exists($path)) {
-				return $path;
-			}
-		}
-		throw new moojon_exception("404 view not found ($view)");
-	}
-	
-	static public function get_partial_path($partial) {
-		$paths = array(
-			
-		);
-		foreach ($paths as $path) {
-			if (file_exists($path)) {
-				return $path;
-			}
-		}
-		throw new moojon_exception("404 partial not found ($partial)");
+		return self::get_path($paths);
 	}
 	
 	static public function get_helper_path($helper) {
 		$paths = array(
-			
+			self::get_helpers_directory()."$helper.helper.php",
+			self::get_moojon_helpers_directory()."$helper.helper.php"
 		);
+		return self::get_path($paths);
+	}
+	
+	static private function get_path($paths) {
 		foreach ($paths as $path) {
 			if (file_exists($path)) {
 				return $path;
 			}
 		}
-		throw new moojon_exception("404 helper not found ($helper)");
+		return false;
 	}
 }
 ?>

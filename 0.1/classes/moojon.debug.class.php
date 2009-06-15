@@ -37,7 +37,7 @@ final class moojon_debug extends moojon_base {
 			$ul = new moojon_ul_tag();
 			$app_path = moojon_paths::get_app_path();
 			$controller_path = moojon_paths::get_controller_path($controller);
-			//$view_path = moojon_paths::get_view_path($action);
+			//$view_path = moojon_paths::get_view_path($action //app //controller);
 			$ul->add_child(new moojon_li_tag("app_path: $app_path"));
 			$ul->add_child(new moojon_li_tag("controller_path: $controller_path"));
 			$ul->add_child(new moojon_li_tag("view_path: $view_path"));

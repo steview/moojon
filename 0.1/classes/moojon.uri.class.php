@@ -15,16 +15,6 @@ final class moojon_uri extends moojon_base {
 		foreach (moojon_files::directory_directories(moojon_paths::get_moojon_apps_directory()) as $app) {
 			$apps[] = $app;
 		}
-		if (is_dir(moojon_paths::get_vendor_apps_directory())) {
-			foreach (moojon_files::directory_directories(moojon_paths::get_vendor_apps_directory()) as $app) {
-				$apps[] = $app;
-			}
-		}
-		if (is_dir(moojon_paths::get_library_apps_directory())) {
-			foreach (moojon_files::directory_directories(moojon_paths::get_library_apps_directory()) as $app) {
-				$apps[] = $app;
-			}
-		}
 		foreach (moojon_files::directory_directories(moojon_paths::get_apps_directory()) as $app) {
 			$apps[] = $app;
 		}
@@ -33,23 +23,13 @@ final class moojon_uri extends moojon_base {
 	
 	static public function get_controllers($app) {
 		$controllers = array();
-		if (is_dir(moojon_paths::get_moojon_controllers_directory($app))) {
-			foreach (moojon_files::directory_files(moojon_paths::get_moojon_controllers_directory($app)) as $controller) {
+		if (is_dir(moojon_paths::get_moojon_app_controllers_directory($app))) {
+			foreach (moojon_files::directory_files(moojon_paths::get_moojon_app_controllers_directory($app)) as $controller) {
 				$controllers[] = $controller;
 			}
 		}
-		if (is_dir(moojon_paths::get_vendor_controllers_directory($app))) {
-			foreach (moojon_files::directory_files(moojon_paths::get_vendor_controllers_directory($app)) as $controller) {
-				$controllers[] = $controller;
-			}
-		}
-		if (is_dir(moojon_paths::get_library_controllers_directory($app))) {
-			foreach (moojon_files::directory_files(moojon_paths::get_library_controllers_directory($app)) as $controller) {
-				$controllers[] = $controller;
-			}
-		}
-		if (is_dir(moojon_paths::get_controllers_directory($app))) {
-			foreach (moojon_files::directory_files(moojon_paths::get_controllers_directory($app)) as $controller) {
+		if (is_dir(moojon_paths::get_app_controllers_directory($app))) {
+			foreach (moojon_files::directory_files(moojon_paths::get_app_controllers_directory($app)) as $controller) {
 				$controllers[] = $controller;
 			}
 		}

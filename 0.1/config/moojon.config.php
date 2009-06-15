@@ -34,8 +34,6 @@ return array(
 	'css_directory' => 'css',
 	'js_directory' => 'js',
 	'script_directory' => 'script',
-	'library_directory' => 'library',
-	'vendor_directory' => 'vendor',
 	'default_helpers' => 'ui, url',
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
