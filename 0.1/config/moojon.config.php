@@ -21,7 +21,6 @@ return array(
 	'tag_attributes_directory' => 'attributes',
 	'apps_directory' => 'apps',
 	'controllers_directory' => 'controllers',
-	'shared_directory' => 'shared',
 	'views_directory' => 'views',
 	'layouts_directory' => 'layouts',
 	'models_directory' => 'models',

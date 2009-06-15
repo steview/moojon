@@ -49,5 +49,13 @@ abstract class moojon_base {
 		}
 		return $subject;
 	}
+	
+	static public function get_app_class($app) {
+		return $app.'_app';
+	}
+	
+	static public function get_controller_class($controller) {
+		return $controller.'_controller';
+	}
 }
 ?>

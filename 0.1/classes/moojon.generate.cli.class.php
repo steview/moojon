@@ -67,37 +67,12 @@ final class moojon_generate_cli extends moojon_base_cli {
 				$partial = $this->prompt_until($arguments[1], 'Please enter a name for this partial');
 				moojon_generator::partial($app, $controller, $partial);
 				break;
-			case 'shared_view':
-				self::check_arguments('moojon_generate_cli::shared_view()', 1, $arguments);
-				$view = $this->prompt_until($arguments[1], 'Please enter a view name');
-				moojon_generator::shared_view($view);
-				break;
-			case 'shared_layout':
-				self::check_arguments('moojon_generate_cli::shared_layout()', 1, $arguments);
-				$layout = $this->prompt_until($arguments[1], 'Please enter a layout name');
-				moojon_generator::shared_layout($layout);
-				break;
-			case 'shared_partial':
-				self::check_arguments('moojon_generate_cli::shared_partial()', 1, $arguments);
-				$partial = $this->prompt_until($arguments[1], 'Please enter a name for this partial');
-				moojon_generator::shared_partial($partial);
-				break;
-			case 'shared_controller':
-				self::check_arguments('moojon_generate_cli::shared_controller()', 1, $arguments);
-				$controller = $this->prompt_until($arguments[1], 'Please enter a controller name');
-				moojon_generator::shared_controller($controller);
-				break;
 			case 'javascript_controller':
 				self::check_arguments('moojon_generate_cli::javascript_controller()', 3, $arguments);
 				$app = $this->prompt_for_app($arguments[0]);
 				$controller = $this->prompt_until($arguments[1], 'Please enter a controller name');
 				$action = $this->prompt_until($arguments[2], 'Please enter an action name');
 				moojon_generator::javascript_controller($app, $controller, $action);
-				break;
-			case 'shared_javascript_controller':
-				self::check_arguments('moojon_generate_cli::shared_javascript_controller()', 1, $arguments);
-				$controller = $this->prompt_until($arguments[1], 'Please enter a controller name');
-				moojon_generator::shared_javascript_controller($controller);
 				break;
 			case 'scaffold':
 				self::check_arguments('moojon_generate_cli::scaffold()', 3, $arguments);
@@ -132,7 +107,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 	}
 	
 	private function get_commands() {
-		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'shared_view', 'shared_layout', 'shared_partial', 'shared_controller', 'shared_javascript_controller', 'javascript_controller', 'scaffold');
+		return array('model', 'models', 'migration', 'app', 'controller', 'test', 'config', 'helper', 'view', 'layout', 'partial', 'javascript_controller', 'scaffold');
 	}
 }
 ?>

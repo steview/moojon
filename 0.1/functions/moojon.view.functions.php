@@ -35,10 +35,8 @@ function partial($partial, $variables = array()) {
 		$basename = substr($basename, 1);
 	}
 	$partial = $path.'_'.$basename.'.php';
-	if (file_exists(moojon_paths::get_views_directory().$partial) == true) {
-		require_once(moojon_paths::get_views_directory().$partial);
-	} elseif (file_exists(moojon_paths::get_shared_views_directory().$partial) == true) {
-		require_once(moojon_paths::get_shared_views_directory().$partial);
+	if (file_exists(moojon_paths::get_views_directory(moojon_uri::get_app()).$partial) == true) {
+		require_once(moojon_paths::get_views_directory(moojon_uri::get_app()).$partial);
 	} else {
 		throw new moojon_exception("Unknown partial ($partial)");
 	}

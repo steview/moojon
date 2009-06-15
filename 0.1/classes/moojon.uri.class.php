@@ -57,7 +57,7 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function get_actions($controller) {
-		$actions = get_class_methods(moojon_paths::get_controller_class($controller));
+		$actions = get_class_methods(self::get_controller_class($controller));
 		//if ($actions)
 		return $actions;
 	}
