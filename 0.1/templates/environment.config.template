@@ -1,0 +1,9 @@
+<?php
+return array(
+	//'adapter' => '',
+	//'db_host' => '',
+	//'db_username' => '',
+	//'db_password' => '',
+	//'db' => '',
+);
+?>
