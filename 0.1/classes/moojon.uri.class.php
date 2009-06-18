@@ -12,24 +12,32 @@ final class moojon_uri extends moojon_base {
 	
 	static public function get_apps() {
 		$apps = array();
-		foreach (moojon_files::directory_directories(moojon_paths::get_moojon_apps_directory()) as $app) {
-			$apps[] = $app;
+		$project_apps_directory = moojon_paths::get_project_apps_directory();
+		if (is_dir($project_apps_directory)) {
+			foreach (moojon_files::directory_directories($project_apps_directory) as $app) {
+				$apps[] = $app;
+			}
 		}
-		foreach (moojon_files::directory_directories(moojon_paths::get_apps_directory()) as $app) {
-			$apps[] = $app;
+		$moojon_apps_directory = moojon_paths::get_moojon_apps_directory();
+		if (is_dir($moojon_apps_directory)) {
+			foreach (moojon_files::directory_directories($moojon_apps_directory) as $app) {
+				$apps[] = $app;
+			}
 		}
 		return $apps;
 	}
 	
 	static public function get_controllers($app) {
 		$controllers = array();
-		if (is_dir(moojon_paths::get_moojon_app_controllers_directory($app))) {
-			foreach (moojon_files::directory_files(moojon_paths::get_moojon_app_controllers_directory($app)) as $controller) {
+		$project_controllers_app_directory = moojon_paths::get_project_controllers_app_directory($app);
+		if (is_dir($project_controllers_app_directory)) {
+			foreach (moojon_files::directory_files($project_controllers_app_directory) as $controller) {
 				$controllers[] = $controller;
 			}
 		}
-		if (is_dir(moojon_paths::get_app_controllers_directory($app))) {
-			foreach (moojon_files::directory_files(moojon_paths::get_app_controllers_directory($app)) as $controller) {
+		$moojon_controllers_app_directory = moojon_paths::get_moojon_controllers_app_directory($app);
+		if (is_dir($moojon_controllers_app_directory)) {
+			foreach (moojon_files::directory_files($moojon_controllers_app_directory) as $controller) {
 				$controllers[] = $controller;
 			}
 		}

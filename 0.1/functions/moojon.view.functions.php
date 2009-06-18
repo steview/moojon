@@ -1,15 +1,12 @@
 <?php
 function helper($helper) {
-	$helper = trim($helper);
-	$helper = moojon_files::require_suffix($helper, 'helper');
-	if (file_exists(moojon_paths::get_helpers_directory().$helper) == true) {
-		require_once(moojon_paths::get_helpers_directory().$helper);
-	} elseif (file_exists(moojon_paths::get_moojon_helpers_directory().$helper) == true) {
-		require_once(moojon_paths::get_moojon_helpers_directory().$helper);
+	if ($helper_path = moojon_paths::get_helper_path($helper)) {
+		require_once($helper_path);
 	} else {
 		throw new moojon_exception("Unknown helper ($helper)");
 	}
 }
+
 function helpers() {
 	$helpers = array();
 	if (moojon_config::has('helpers') == true) {
@@ -22,21 +19,13 @@ function helpers() {
 	}
 	return $helpers;
 }
+
 function partial($partial, $variables = array()) {
-	foreach ($variables as $key => $value) {
-		$$key = $value;
-	}
-	$path = dirname($partial).'/';
-	if ($path == './') {
-		$path = '';
-	}
-	$basename = basename($partial);
-	if (substr($basename, 0, 1) == '_') {
-		$basename = substr($basename, 1);
-	}
-	$partial = $path.'_'.$basename.'.php';
-	if (file_exists(moojon_paths::get_app_views_directory(moojon_uri::get_app()).$partial) == true) {
-		require_once(moojon_paths::get_app_views_directory(moojon_uri::get_app()).$partial);
+	if ($partial_path = moojon_paths::get_view_path($partial, moojon_uri::get_app(), moojon_uri::get_controller())) {
+		foreach ($variables as $key => $value) {
+			$$key = $value;
+		}
+		require_once($partial_path);
 	} else {
 		throw new moojon_exception("Unknown partial ($partial)");
 	}

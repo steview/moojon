@@ -26,7 +26,7 @@ final class moojon_migrate_cli extends moojon_base_cli {
 	
 	private function get_migrations() {
 		$migrations = array();
-		foreach (moojon_files::directory_files(moojon_paths::get_migrations_directory()) as $migration) {
+		foreach (moojon_files::directory_files(moojon_paths::get_project_migrations_directory()) as $migration) {
 			$migration_file = moojon_migrator::get_migration_class_name($migration);
 			$migrations[] = substr($migration_file, 0, (strlen($migration_file) - 10));
 		}

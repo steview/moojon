@@ -192,46 +192,71 @@ final class moojon_paths extends moojon_base {
 		return false;
 	}
 	
-	static public function get_app_path($app) {
+	static public function get_class_path($class) {
+		$class_filename = str_replace('_', '.', $class).'.class.php';
 		$paths = array(
-			self::get_project_apps_directory()."$app.app.class.php",
-			self::get_moojon_apps_directory()."$app.app.class.php",
+			self::get_classes_directory().$class_filename,
+			self::get_adapter_directory().$class_filename,
+			self::get_columns_directory().$class_filename,
+			self::get_validations_directory().$class_filename,
+			self::get_tags_directory().$class_filename,
+			self::get_tag_attributes_directory().$class_filename,
+			self::get_project_models_directory().$class_name.$class_filename,
+			self::get_project_base_models_directory().$class_filename,
+			self::get_project_migrations_directory().$class_filename,
+			//add library and vendor checks here
+			self::get_moojon_models_directory().$class_filename,
+			self::get_moojon_base_models_directory().$class_filename,
+			self::get_moojon_migrations_directory().$class_filename,
+		);
+		return self::get_path($paths);
+	}
+	
+	static public function get_app_path($app) {
+		$app_filename = "$app.app.class.php";
+		$paths = array(
+			self::get_project_apps_directory().$app_filename,
+			self::get_moojon_apps_directory().$app_filename,
 		);
 		return self::get_path($paths);
 	}
 	
 	static public function get_controller_path($app, $controller) {
+		$controller_filename = "$app/$controller.controller.class.php";
 		$paths = array(
-			self::get_project_controllers_app_directory($app)."$app/$controller.controller.class.php",
-			self::get_moojon_controllers_app_directory($app)."$app/$controller.controller.class.php"
+			self::get_project_controllers_app_directory($app).$controller_filename,
+			self::get_moojon_controllers_app_directory($app).$controller_filename
 		);
 		return self::get_path($paths);
 	}
 	
 	static public function get_layout_path($layout) {
+		$layout_filename = "$layout.layout.php";
 		$paths = array(
-			self::get_layouts_directory()."$layout.layout.php",
-			self::get_moojon_layouts_directory()."$layout.layout.php"
+			self::get_layouts_directory().$layout_filename,
+			self::get_moojon_layouts_directory().$layout_filename
 		);
 		return self::get_path($paths);
 	}
 	
 	static public function get_view_path($view, $app, $controller) {
+		$view_filename = "$view.view.php";
 		$paths = array(
-			self::get_project_views_app_controller_directory($app, $controller)."$view.view.php",
-			self::get_project_views_app_directory($app)."$view.view.php",
-			self::get_project_views_directory()."$view.view.php",
-			self::get_moojon_views_app_controller_directory($app, $controller)."$view.view.php",
-			self::get_moojon_views_app_directory($app)."$view.view.php",
-			self::get_moojon_views_directory()."$view.view.php"
+			self::get_project_views_app_controller_directory($app, $controller).$view_filename,
+			self::get_project_views_app_directory($app).$view_filename,
+			self::get_project_views_directory().$view_filename,
+			self::get_moojon_views_app_controller_directory($app, $controller).$view_filename,
+			self::get_moojon_views_app_directory($app).$view_filename,
+			self::get_moojon_views_directory().$view_filename
 		);
 		return self::get_path($paths);
 	}
 	
 	static public function get_helper_path($helper) {
+		$helper_filename = "$helper.helper.php";
 		$paths = array(
-			self::get_helpers_directory()."$helper.helper.php",
-			self::get_moojon_helpers_directory()."$helper.helper.php"
+			self::get_helpers_directory().$helper_filename,
+			self::get_moojon_helpers_directory().$helper_filename
 		);
 		return self::get_path($paths);
 	}

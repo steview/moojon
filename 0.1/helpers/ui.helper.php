@@ -11,14 +11,16 @@ function img_tag($src, $alt, $width = null, $height = null, $attributes = array(
 		$scheme = $url['scheme'];
 	} else {
 		$host = moojon_server::key('HTTP_HOST');
-		if (!file_exists(moojon_paths::get_public_directory().$path)) {
-			if (file_exists(moojon_paths::get_public_directory().$path.'.'.moojon_config::get('default_image_ext'))) {
+		$public_directory = moojon_paths::get_public_directory();
+		$images_directory = moojon_paths::get_images_directory();
+		if (!file_exists($public_directory.$path)) {
+			if (file_exists($public_directory.$path.'.'.moojon_config::get('default_image_ext'))) {
 				$path .= '.'.moojon_config::get('default_image_ext');
 			} else {
-				if (file_exists(moojon_paths::get_images_directory().$path)) {
+				if (file_exists($images_directory.$path)) {
 					$path = '/'.moojon_config::get('images_directory').$path;
 				} else {
-					if (file_exists(moojon_paths::get_images_directory().$path.'.'.moojon_config::get('default_image_ext'))) {
+					if (file_exists($images_directory.$path.'.'.moojon_config::get('default_image_ext'))) {
 						$path = '/'.moojon_config::get('images_directory').$path.'.'.moojon_config::get('default_image_ext');
 					}
 				}
