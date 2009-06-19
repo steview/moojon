@@ -124,8 +124,8 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	static public function helper($helper) {
-		self::attempt_mkdir(moojon_paths::get_helpers_directory());
-		self::run(MOOJON_PATH.'templates/helper.template', moojon_paths::get_helpers_directory()."$helper.helper.php", array(), false, true);
+		self::attempt_mkdir(moojon_paths::get_project_helpers_directory());
+		self::run(MOOJON_PATH.'templates/helper.template', moojon_paths::get_project_helpers_directory()."$helper.helper.php", array(), false, true);
 	}
 	
 	static public function models() {
@@ -198,8 +198,8 @@ final class moojon_generator extends moojon_base {
 			$controller = moojon_config::get('default_controller');
 		}
 		self::try_define('CONTROLLER', $controller);
-		self::attempt_mkdir(moojon_paths::get_app_views_directory(APP));
-		self::run(MOOJON_PATH.'templates/partial.template', moojon_paths::get_app_views_directory(APP).'_'.$partial.'.php', array(), false, true);
+		self::attempt_mkdir(moojon_paths::get_project_views_app_directory(APP));
+		self::run(MOOJON_PATH.'templates/partial.template', moojon_paths::get_project_views_app_directory(APP).'_'.$partial.'.php', array(), false, true);
 	}
 	
 	static public function layout($app, $layout = null) {
@@ -218,6 +218,7 @@ final class moojon_generator extends moojon_base {
 	
 	static public function scaffold($app, $model, $controller) {
 		self::try_define('APP', $app);
+		self::try_define('CONTROLLER', $controller);
 		$swaps = array();
 		$swaps['Plural'] = ucfirst(moojon_inflect::pluralize($model));
 		$swaps['plural'] = moojon_inflect::pluralize($model);
@@ -229,11 +230,10 @@ final class moojon_generator extends moojon_base {
 		$swaps['humans'] = str_replace('_', ' ', moojon_inflect::pluralize($model));
 		$swaps['app'] = APP;
 		$swaps['controller'] = $controller;
-		self::try_define('CONTROLLER', $controller);
-		$views_path = moojon_paths::get_app_views_directory(APP);
-		self::attempt_mkdir(moojon_paths::get_project_controllers_app_directory(APP));
+		$views_path = moojon_paths::get_project_views_app_directory(APP);
+		self::attempt_mkdir(moojon_paths::get_project_controllers_app_directory(APP, CONTROLLER));
 		self::attempt_mkdir($views_path);
-		self::run(MOOJON_PATH.'templates/scaffold/controller.template', moojon_paths::get_project_controllers_app_directory(APP)."$controller.controller.class.php", $swaps, false, true);
+		self::run(MOOJON_PATH.'templates/scaffold/controller.template', moojon_paths::get_project_controllers_app_directory(APP, CONTROLLER)."$controller.controller.class.php", $swaps, false, true);
 		self::run(MOOJON_PATH.'templates/scaffold/_destroy_form.template', $views_path.'_destroy_form.php', $swaps, false, true);
 		self::run(MOOJON_PATH.'templates/scaffold/_dl.template', $views_path.'_dl.php', $swaps, false, true);
 		self::run(MOOJON_PATH.'templates/scaffold/_form.template', $views_path.'_form.php', $swaps, false, true);

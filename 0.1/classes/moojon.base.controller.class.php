@@ -16,7 +16,7 @@ abstract class moojon_base_controller extends moojon_base {
 	}
 	
 	final public function render() {
-		return moojon_runner::render(moojon_paths::get_view_path($this->get_view(), $this->app, str_replace('_controller', '', get_class($this))), $this);
+		return moojon_runner::render(moojon_paths::get_view_path($this->app, str_replace('_controller', '', get_class($this))), $this, $this->get_view());
 	}
 	
 	final public function set_layout($layout) {

@@ -35,11 +35,11 @@ abstract class moojon_base_route extends moojon_base {
 	}
 	
 	final protected function match_app($app) {
-		return in_array($app, moojon_files::directory_directories(moojon_paths::get_apps_path()));
+		return moojon_paths::get_app_path($app);
 	}
 	
-	final protected function match_controller($controller, $app) {
-		return in_array("$controller.controller.class.php", moojon_files::directory_directories(moojon_paths::get_controller_path($app), false, false));
+	final protected function match_controller($app, $controller) {
+		return moojon_paths::get_controller_path($app, $controller);
 	}
 }
 ?>

@@ -239,7 +239,7 @@ final class moojon_paths extends moojon_base {
 		return self::get_path($paths);
 	}
 	
-	static public function get_view_path($view, $app, $controller) {
+	static public function get_view_path($app, $controller, $view) {
 		$view_filename = "$view.view.php";
 		$paths = array(
 			self::get_project_views_app_controller_directory($app, $controller).$view_filename,
@@ -255,7 +255,7 @@ final class moojon_paths extends moojon_base {
 	static public function get_helper_path($helper) {
 		$helper_filename = "$helper.helper.php";
 		$paths = array(
-			self::get_helpers_directory().$helper_filename,
+			self::get_project_helpers_directory().$helper_filename,
 			self::get_moojon_helpers_directory().$helper_filename
 		);
 		return self::get_path($paths);

@@ -78,7 +78,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 				self::check_arguments('moojon_generate_cli::scaffold()', 3, $arguments);
 				$app = $this->prompt_for_app($arguments[0]);
 				$models = array();
-				foreach (moojon_files::directory_files(moojon_paths::get_models_directory()) as $path) {
+				foreach (moojon_files::directory_files(moojon_paths::get_project_models_directory()) as $path) {
 					$models[] = basename($path);
 				}
 				if (count($models) == 0) {
