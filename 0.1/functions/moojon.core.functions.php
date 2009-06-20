@@ -5,7 +5,7 @@ function __autoload($class) {
 		require_once($class_path);
 	} else {
 		require_once(moojon_paths::get_classes_directory().'/moojon.exception.class.php');
-		throw new moojon_exception("Not found ($class_filename)");
+		throw new moojon_exception("Not found ($class)");
 	}
 }
 ?>

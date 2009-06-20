@@ -14,7 +14,7 @@ final class moojon_runner extends moojon_base {
 			case 'CGI':
 				moojon_config::update(moojon_paths::get_project_config_directory());
 				moojon_config::update(moojon_paths::get_project_app_config_directory(moojon_uri::get_app()));
-				require_once(moojon_paths::get_app_path());
+				require_once(moojon_paths::get_app_path(moojon_uri::get_app()));
 				$moojon = moojon_uri::get_app().'_app';
 				break;
 			case 'CLI':
@@ -52,7 +52,9 @@ final class moojon_runner extends moojon_base {
 		ob_start();
 		require($path);
 		$return = ob_get_clean();
-		ob_end_clean();
+		if (ob_get_length()) {
+			ob_end_clean();
+		}
 		return $return;
 	}
 }

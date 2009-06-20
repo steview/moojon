@@ -55,16 +55,16 @@ final class moojon_paths extends moojon_base {
 		return self::get_moojon_models_directory().moojon_config::get('migrations_directory').'/';
 	}
 	
-	static public function get_moojon_app_controller_views_directory($app, $controller) {
-		return self::get_moojon_app_views_directory($app)."$controller/";
+	static public function get_moojon_views_app_controller_directory($app, $controller) {
+		return self::get_moojon_views_app_directory($app)."$controller/";
 	}
 	
-	static public function get_moojon_app_views_directory($app) {
+	static public function get_moojon_views_app_directory($app) {
 		return self::get_moojon_views_directory()."$app/";
 	}
 	
 	static public function get_moojon_views_directory() {
-		return self::get_moojon_views_directory().moojon_config::get('views_directory').'/';
+		return self::get_moojon_directory().moojon_config::get('views_directory').'/';
 	}
 	
 	static public function get_moojon_layouts_directory() {
@@ -201,7 +201,7 @@ final class moojon_paths extends moojon_base {
 			self::get_validations_directory().$class_filename,
 			self::get_tags_directory().$class_filename,
 			self::get_tag_attributes_directory().$class_filename,
-			self::get_project_models_directory().$class_name.$class_filename,
+			self::get_project_models_directory().$class_filename,
 			self::get_project_base_models_directory().$class_filename,
 			self::get_project_migrations_directory().$class_filename,
 			//add library and vendor checks here
@@ -222,7 +222,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_controller_path($app, $controller) {
-		$controller_filename = "$app/$controller.controller.class.php";
+		$controller_filename = "$controller.controller.class.php";
 		$paths = array(
 			self::get_project_controllers_app_directory($app).$controller_filename,
 			self::get_moojon_controllers_app_directory($app).$controller_filename
@@ -233,7 +233,7 @@ final class moojon_paths extends moojon_base {
 	static public function get_layout_path($layout) {
 		$layout_filename = "$layout.layout.php";
 		$paths = array(
-			self::get_layouts_directory().$layout_filename,
+			self::get_project_layouts_directory().$layout_filename,
 			self::get_moojon_layouts_directory().$layout_filename
 		);
 		return self::get_path($paths);

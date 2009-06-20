@@ -1,13 +1,67 @@
 <?php
 final class moojon_uri extends moojon_base {
-	private function __construct() {}
-
+	static private $instance;
+	static private $data = array();
+	
+	private function __construct() {
+		foreach (moojon_routes::get_routes() as $route) {
+			if ($data = $route->map_uri(self::get_uri())) {
+				break;
+			}
+		}
+		if (!$data) {
+			die('404');
+			//throw new moojon_excepetion('404');
+		}
+		if (defined('EXCEPTION') && EXCEPTION === true) {
+			$data['app'] = moojon_config::get('exception_app');
+			$data['controller'] = moojon_config::get('exception_controller');
+			$data['action'] = moojon_config::get('exception_action');
+			$this->data = $data;
+			return;
+		}
+		if (moojon_config::has('security') && moojon_config::get('security') && !moojon_authentication::authenticate()) {
+			$data['app'] = moojon_config::get('security_app');
+			$data['controller'] = moojon_config::get('security_controller');
+			$data['action'] = moojon_config::get('security_action');
+			$this->data = $data;
+			return;
+		}
+		$this->data = $data;
+	}
+	
+	static public function get() {
+		if (!self::$instance) {
+			self::$instance = new moojon_uri();
+		}
+		return self::$instance;
+	}
+	
+	static private function get_data() {
+		$instance = self::get();
+		return $instance->data;
+	}
+	
+	static public function has($key) {
+		$data = self::get_data();
+		return array_key_exists($key, $data);
+	}
+	
+	static public function key($key) {
+		$data = self::get_data();
+		return $data[$key];
+	}
+	
 	static private function get_uri() {
 		if (array_key_exists('REQUEST_URI', $_SERVER)) {
-			return $_SERVER['REQUEST_URI'];
+			$uri = $_SERVER['REQUEST_URI'];
 		} else {
-			return $_SERVER['PATH_INFO'];
+			$uri = $_SERVER['PATH_INFO'];
 		}
+		if (substr($uri, 0, strlen(moojon_config::get('index_file'))) == moojon_config::get('index_file')) {
+			$uri = substr($uri, strlen(moojon_config::get('index_file')));
+		}
+		return $uri;
 	}
 	
 	static public function get_apps() {
@@ -45,43 +99,16 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function get_actions($controller) {
-		$actions = get_class_methods(self::get_controller_class($controller));
-		//if ($actions)
-		return $actions;
-	}
-	
-	static public function process() {
-		foreach (moojon_routes::get_routes() as $route) {
-			if ($return = $route->map_uri(self::get_uri())) {
-				break;
-			}
-		}
-		if (!$return) {
-			die('404');
-			//throw new moojon_excepetion('404');
-		}
-		print_r($return);
-		die();
-		if (defined('EXCEPTION') && EXCEPTION === true) {
-			$return['app'] = moojon_config::get('exception_app');
-			$return['controller'] = moojon_config::get('exception_controller');
-			$return['action'] = moojon_config::get('exception_action');
-			return $return;
-		}
-		if (moojon_config::has('security') && moojon_config::get('security') && !moojon_authentication::authenticate()) {
-			$return['app'] = moojon_config::get('security_app');
-			$return['controller'] = moojon_config::get('security_controller');
-			$return['action'] = moojon_config::get('security_action');
-			return $return;
-		}
-		return $return;
+		$data = self::get_data();
+		require_once(moojon_paths::get_controller_path($data['app'], $data['controller']));
+		return get_class_methods(self::get_controller_class($data['controller']));
 	}
 	
 	static public function get_app() {
 		switch (strtoupper(UI)) {
 			case 'CGI':
-				$request_uri = self::process();
-				return $request_uri['app'];
+				$data = self::get_data();
+				return $data['app'];
 				break;
 			case 'CLI':
 				return moojon_config::get('default_app');
@@ -92,8 +119,8 @@ final class moojon_uri extends moojon_base {
 	static public function get_controller() {
 		switch (strtoupper(UI)) {
 			case 'CGI':
-				$request_uri = self::process();
-				return $request_uri['controller'];
+				$data = self::get_data();
+				return $data['controller'];
 				break;
 			case 'CLI':
 				return CONTROLLER;
@@ -103,22 +130,8 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function get_action() {
-		$request_uri = self::process();
-		return $request_uri['action'];
-	}
-	
-	static public function get_querystring() {
-		$request_uri = self::process();
-		return $request_uri['querystring'];
-	}
-	
-	static public function get($key) {
-		$request = $_REQUEST;
-		$querystring = self::get_querystring();
-		for ($i = 0; $i < count($querystring); $i += 2) {
-			$request[$querystring[$i]] = $querystring[($i + 1)];
-		}
-		return $request[$key];
+		$data = self::get_data();
+		return $data['action'];
 	}
 }
 ?>

@@ -7,26 +7,36 @@ class moojon_exception extends Exception {
 		$ol = new moojon_ol_tag();
 		foreach($backtrace as $call) {
 			$string = '';
-			switch ($call['type']) {
-				case '->':
-					$string .= 'method call';
-					break;
-				case '::':
-					$string .= 'static method call';
-					break;
-				default:
-					$string .= 'function call';
-					break;
+			if (array_key_exists('type', $call)) {
+				switch ($call['type']) {
+					case '->':
+						$string .= 'method call';
+						break;
+					case '::':
+						$string .= 'static method call';
+						break;
+					default:
+						$string .= 'function call';
+						break;
+				}
 			}
 			$string .= self::new_line();
 			$string .= 'function: '.$call['function'].self::new_line();
-			$string .= 'line: '.$call['line'].self::new_line();
-			$string .= 'file: '.$call['file'].self::new_line();
-			$string .= 'class: '.$call['class'].self::new_line();
-			$string .= 'object:';
-			$string .= self::new_line().'------------------------------------------------------------'.self::new_line();
-			$string .= $call['object'];
-			$string .= self::new_line().'------------------------------------------------------------'.self::new_line();
+			if (array_key_exists('line', $call)) {
+				$string .= 'line: '.$call['line'].self::new_line();
+			}
+			if (array_key_exists('file', $call)) {
+				$string .= 'file: '.$call['file'].self::new_line();
+			}
+			if (array_key_exists('class', $call)) {
+				$string .= 'class: '.$call['class'].self::new_line();
+			}
+			if (array_key_exists('object', $call)) {
+				$string .= 'object:';
+				$string .= self::new_line().'------------------------------------------------------------'.self::new_line();
+				$string .= $call['object'];
+				$string .= self::new_line().'------------------------------------------------------------'.self::new_line();
+			}
 			$string .= self::new_line();
 			$string .= 'args:';
 			$string .= self::new_line().'------------------------------------------------------------'.self::new_line();
@@ -40,7 +50,9 @@ class moojon_exception extends Exception {
 					$string .= "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 					break;
 			}
-			$string = $this->get_line($call['file'], $call['line']);
+			if (array_key_exists('file', $call) && array_key_exists('line', $call)) {
+				$string = $this->get_line($call['file'], $call['line']);
+			}
 			$ol->add_child(new moojon_li_tag($string));
 		}
 		$div->add_child($ol);

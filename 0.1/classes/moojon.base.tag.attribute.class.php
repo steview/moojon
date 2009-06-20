@@ -3,19 +3,10 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 	
 	protected $name;
 	protected $value;
-	protected $legal_values;
+	protected $legal_values = array();
 	
 	final public function __construct($value = null) {
 		$this->init();
-		if ($legal_values != null) {
-			if (is_array($legal_values) == true) {
-				$this->legal_values = $legal_values;
-			} else {
-				throw new moojon_exception("Legal values must be an array");
-			}
-		} else {
-			$this->legal_values = array();
-		}
 		$this->set_value($value);
 	}
 	
