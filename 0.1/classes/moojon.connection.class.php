@@ -4,8 +4,8 @@ final class moojon_connection {
 	private $resource;
 	
 	private function __construct() {
-		$this->resource = mysql_connect(moojon_config::get('db_host'), moojon_config::get('db_username'), moojon_config::get('db_password'));
-		mysql_select_db(moojon_config::get('db'), $this->resource);
+		$this->resource = mysql_connect(moojon_config::key('db_host'), moojon_config::key('db_username'), moojon_config::key('db_password'));
+		mysql_select_db(moojon_config::key('db'), $this->resource);
 	}
 	
 	static public function get() {
@@ -21,9 +21,10 @@ final class moojon_connection {
 	}
 	
 	static public function close() {
-		$instance = self::get();
-		mysql_close($instance->resource);
-		return self::$instance;
+		if (self::$instance) {
+			$instance = self::get();
+			mysql_close($instance->resource);
+		}
 	}
 }
 ?>

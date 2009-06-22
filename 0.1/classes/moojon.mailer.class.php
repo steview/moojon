@@ -23,10 +23,10 @@ final class moojon_mailer extends moojon_base {
 		$this->mix = "=-moojon_mix_" . md5(uniqid(rand()));
 		$this->rel = "=-moojon_rel_" . md5(uniqid(rand()));
 		$this->alt = "=-moojon_alt_" . md5(uniqid(rand()));
-		$this->charset = moojon_config::get('charset');
-		$this->subject = moojon_config::get('mail_subject');
-		$this->email = moojon_config::get('mail_from_email');
-		$this->name = moojon_config::get('mail_from_name');
+		$this->charset = moojon_config::key('charset');
+		$this->subject = moojon_config::key('mail_subject');
+		$this->email = moojon_config::key('mail_from_email');
+		$this->name = moojon_config::key('mail_from_name');
 		$this->from = $this->name.' <'.$this->email.'>';
 	}
 	

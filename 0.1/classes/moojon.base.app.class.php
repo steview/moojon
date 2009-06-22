@@ -13,7 +13,7 @@ abstract class moojon_base_app extends moojon_base {
 	
 	final public function set_location($action = null, $controller = null, $app = null) {
 		if ($app != null) {
-			$location = moojon_config::get('index_file').$app;
+			$location = moojon_config::key('index_file').$app;
 			if ($controller != null) {
 				$location .= "/$controller";
 			}

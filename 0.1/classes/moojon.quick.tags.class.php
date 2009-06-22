@@ -10,7 +10,7 @@ final class moojon_quick_tags extends moojon_base {
 			if ($app == null) {
 				$app = moojon_uri::get_app();
 			}
-			$attributes['href'] = moojon_config::get('index_file')."$app/$controller/$action";
+			$attributes['href'] = moojon_config::key('index_file')."$app/$controller/$action";
 		}
 		return new moojon_a_tag($text, $attributes);
 	}

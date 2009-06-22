@@ -6,13 +6,13 @@ final class moojon_assets extends moojon_base {
 	
 	private function __construct() {
 		$csss = array();
-		foreach (explode(',', moojon_config::get('default_css')) as $css) {
-			$csss[] = '/'.moojon_config::get('css_directory').'/'.moojon_files::require_ext(trim($css), 'css');
+		foreach (explode(',', moojon_config::key('default_css')) as $css) {
+			$csss[] = '/'.moojon_config::key('css_directory').'/'.moojon_files::require_ext(trim($css), 'css');
 		}
 		$this->css = self::prepare_additions($csss, 'css');
 		$jss = array();
-		foreach (explode(',', moojon_config::get('default_js')) as $js) {
-			$jss[] = '/'.moojon_config::get('js_directory').'/'.moojon_files::require_ext(trim($js), 'js');
+		foreach (explode(',', moojon_config::key('default_js')) as $js) {
+			$jss[] = '/'.moojon_config::key('js_directory').'/'.moojon_files::require_ext(trim($js), 'js');
 		}
 		$this->js = self::prepare_additions($jss, 'js');
 	}

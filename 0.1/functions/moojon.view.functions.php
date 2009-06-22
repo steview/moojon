@@ -10,9 +10,9 @@ function helper($helper) {
 function helpers() {
 	$helpers = array();
 	if (moojon_config::has('helpers') == true) {
-		$helpers = explode(', ', moojon_config::get('helpers'));
+		$helpers = explode(', ', moojon_config::key('helpers'));
 	}
-	foreach (explode(', ', moojon_config::get('default_helpers')) as $helper) {
+	foreach (explode(', ', moojon_config::key('default_helpers')) as $helper) {
 		if (in_array($helper, $helpers) === false) {
 			$helpers[] = $helper;
 		}

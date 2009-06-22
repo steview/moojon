@@ -156,7 +156,7 @@ final class moojon_generator extends moojon_base {
 	static public function controller($app, $controller = null, $action = null) {
 		self::try_define('APP', $app);
 		if (!$controller) {
-			$controller = moojon_config::get('default_controller');
+			$controller = moojon_config::key('default_controller');
 		}
 		self::attempt_mkdir(moojon_paths::get_project_controllers_app_directory(APP));
 		self::run(MOOJON_PATH.'templates/controller.template', moojon_paths::get_project_controllers_app_directory(APP)."$controller.controller.class.php", array('controller' => $controller), false, true);
@@ -168,7 +168,7 @@ final class moojon_generator extends moojon_base {
 	static public function javascript_controller($app, $controller = null, $action = null) {
 		self::try_define('APP', $app);
 		if (!$controller) {
-			$controller = moojon_config::get('default_controller');
+			$controller = moojon_config::key('default_controller');
 		}
 		self::attempt_mkdir(moojon_paths::get_project_controllers_app_directory(APP));
 		self::run(MOOJON_PATH.'templates/javascript.controller.template', moojon_paths::get_project_controllers_app_directory(APP)."$controller.controller.class.php", array('controller' => $controller), false, true);
@@ -180,11 +180,11 @@ final class moojon_generator extends moojon_base {
 	static public function view($app, $controller = null, $view = null) {
 		self::try_define('APP', $app);
 		if (!$controller) {
-			$controller = moojon_config::get('default_controller');
+			$controller = moojon_config::key('default_controller');
 		}
 		self::try_define('CONTROLLER', $controller);
 		if (!$view) {
-			$view = moojon_config::get('default_action');
+			$view = moojon_config::key('default_action');
 		}
 		self::attempt_mkdir(moojon_paths::get_project_views_directory());
 		self::attempt_mkdir(moojon_paths::get_project_views_app_directory(APP));
@@ -195,7 +195,7 @@ final class moojon_generator extends moojon_base {
 	static public function partial($app, $controller = null, $partial) {
 		self::try_define('APP', $app);
 		if (!$controller) {
-			$controller = moojon_config::get('default_controller');
+			$controller = moojon_config::key('default_controller');
 		}
 		self::try_define('CONTROLLER', $controller);
 		self::attempt_mkdir(moojon_paths::get_project_views_app_directory(APP));

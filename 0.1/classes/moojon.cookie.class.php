@@ -35,10 +35,10 @@ final class moojon_cookie extends moojon_base {
 	
 	static public function set($key, $value = null) {
 		if (moojon_config::has('cookie_expiry') == true) {
-			if (is_int(moojon_config::get('cookie_expiry')) == true) {
-				$cookie_expiry = (time() + moojon_config::get('cookie_expiry'));
+			if (is_int(moojon_config::key('cookie_expiry')) == true) {
+				$cookie_expiry = (time() + moojon_config::key('cookie_expiry'));
 			} else {
-				throw new moojon_exception('cookie_expiry must be an integer ('.moojon_config::get('cookie_expiry').')');
+				throw new moojon_exception('cookie_expiry must be an integer ('.moojon_config::key('cookie_expiry').')');
 			}
 		}
 		$instance = self::get();

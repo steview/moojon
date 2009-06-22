@@ -14,14 +14,14 @@ function img_tag($src, $alt, $width = null, $height = null, $attributes = array(
 		$public_directory = moojon_paths::get_public_directory();
 		$images_directory = moojon_paths::get_images_directory();
 		if (!file_exists($public_directory.$path)) {
-			if (file_exists($public_directory.$path.'.'.moojon_config::get('default_image_ext'))) {
-				$path .= '.'.moojon_config::get('default_image_ext');
+			if (file_exists($public_directory.$path.'.'.moojon_config::key('default_image_ext'))) {
+				$path .= '.'.moojon_config::key('default_image_ext');
 			} else {
 				if (file_exists($images_directory.$path)) {
-					$path = '/'.moojon_config::get('images_directory').$path;
+					$path = '/'.moojon_config::key('images_directory').$path;
 				} else {
-					if (file_exists($images_directory.$path.'.'.moojon_config::get('default_image_ext'))) {
-						$path = '/'.moojon_config::get('images_directory').$path.'.'.moojon_config::get('default_image_ext');
+					if (file_exists($images_directory.$path.'.'.moojon_config::key('default_image_ext'))) {
+						$path = '/'.moojon_config::key('images_directory').$path.'.'.moojon_config::key('default_image_ext');
 					}
 				}
 			}

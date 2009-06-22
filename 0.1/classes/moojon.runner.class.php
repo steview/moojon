@@ -21,7 +21,7 @@ final class moojon_runner extends moojon_base {
 				$moojon = CLI;
 				break;
 			default:
-				$exception_handler_class = moojon_config::get('exception_handler_class');
+				$exception_handler_class = moojon_config::key('exception_handler_class');
 				new $exception_handler_class(new moojon_exception('Invalid UI ('.UI.')'));
 				die();
 				break;
@@ -32,7 +32,7 @@ final class moojon_runner extends moojon_base {
 			moojon_connection::close();
 		} catch (moojon_exception $exception) {
 			moojon_connection::close();
-			$exception_handler_class = moojon_config::get('exception_handler_class');
+			$exception_handler_class = moojon_config::key('exception_handler_class');
 			new $exception_handler_class($exception);
 		}
 	}

@@ -14,16 +14,16 @@ final class moojon_uri extends moojon_base {
 			//throw new moojon_excepetion('404');
 		}
 		if (defined('EXCEPTION') && EXCEPTION === true) {
-			$data['app'] = moojon_config::get('exception_app');
-			$data['controller'] = moojon_config::get('exception_controller');
-			$data['action'] = moojon_config::get('exception_action');
+			$data['app'] = moojon_config::key('exception_app');
+			$data['controller'] = moojon_config::key('exception_controller');
+			$data['action'] = moojon_config::key('exception_action');
 			$this->data = $data;
 			return;
 		}
-		if (moojon_config::has('security') && moojon_config::get('security') && !moojon_authentication::authenticate()) {
-			$data['app'] = moojon_config::get('security_app');
-			$data['controller'] = moojon_config::get('security_controller');
-			$data['action'] = moojon_config::get('security_action');
+		if (moojon_config::has('security') && moojon_config::key('security') && !moojon_authentication::authenticate()) {
+			$data['app'] = moojon_config::key('security_app');
+			$data['controller'] = moojon_config::key('security_controller');
+			$data['action'] = moojon_config::key('security_action');
 			$this->data = $data;
 			return;
 		}
@@ -58,8 +58,8 @@ final class moojon_uri extends moojon_base {
 		} else {
 			$uri = $_SERVER['PATH_INFO'];
 		}
-		if (substr($uri, 0, strlen(moojon_config::get('index_file'))) == moojon_config::get('index_file')) {
-			$uri = substr($uri, strlen(moojon_config::get('index_file')));
+		if (substr($uri, 0, strlen(moojon_config::key('index_file'))) == moojon_config::key('index_file')) {
+			$uri = substr($uri, strlen(moojon_config::key('index_file')));
 		}
 		return $uri;
 	}
@@ -111,7 +111,7 @@ final class moojon_uri extends moojon_base {
 				return $data['app'];
 				break;
 			case 'CLI':
-				return moojon_config::get('default_app');
+				return moojon_config::key('default_app');
 				break;
 		}
 	}

@@ -23,14 +23,19 @@ final class moojon_config extends moojon_base {
 		}
 	}
 	
-	static public function get($key = null) {
+	static public function get() {
 		if (!self::$instance) {
 			self::$instance = new moojon_config();
 		}
-		if ($key == null) {
-			return self::$instance;
+		return self::$instance;
+	}
+	
+	static public function key($key) {
+		if (self::has($key)) {
+			$data = self::get_data();
+			return $data[$key];
 		} else {
-			return self::$instance->$key;
+			throw new moojon_exception("Unknown config property ($key)");
 		}
 	}
 	
@@ -46,21 +51,13 @@ final class moojon_config extends moojon_base {
 		}
 	}
 	
-	static public function __get($key) {
+	static public function has($key) {
 		$data = self::get_data();
 		if (array_key_exists($key, $data) && $data[$key] != null) {
-			return $data[$key];
+			return true;
 		} else {
-			if (array_key_exists($key, $data)) {
-				return $data[$key];
-			} else {
-				throw new moojon_exception("Unknown config property ($key)");
-			}
+			return false;
 		}
-	}
-	
-	static public function has($key) {
-		return array_key_exists($key, self::get_data());
 	}
 	
 	static private function get_data() {
