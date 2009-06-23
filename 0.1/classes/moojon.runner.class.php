@@ -29,7 +29,7 @@ final class moojon_runner extends moojon_base {
 		try {
 			$instance = new $moojon;
 			$instance->render(true);
-			moojon_connection::close();
+			//moojon_connection::close();
 		} catch (moojon_exception $exception) {
 			moojon_connection::close();
 			$exception_handler_class = moojon_config::key('exception_handler_class');

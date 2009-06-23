@@ -75,6 +75,7 @@ final class moojon_generator extends moojon_base {
 		self::try_define('PROJECT_DIRECTORY', $_SERVER['PWD']."/$project/");
 		self::try_define('APP', $app);
 		self::try_define('CONTROLLER', $controller);
+		self::try_define('ACTION', $action);
 		self::attempt_mkdir(PROJECT_DIRECTORY);
 		self::attempt_mkdir(moojon_paths::get_project_models_directory());
 		self::attempt_mkdir(moojon_paths::get_project_base_models_directory());
@@ -92,9 +93,12 @@ final class moojon_generator extends moojon_base {
 		self::attempt_mkdir(moojon_paths::get_js_directory());
 		self::attempt_mkdir(moojon_paths::get_script_directory());
 		self::run(MOOJON_PATH.'templates/routes.template', moojon_paths::get_project_config_directory().'routes.php', array(), true, false);
-		self::run(MOOJON_PATH.'templates/project.config.template', moojon_paths::get_project_config_directory().'project.config.php', array('default_app' => APP), true, false);
-		self::run(MOOJON_PATH.'templates/all.config.template', moojon_paths::get_project_app_config_directory(APP).'all.config.php', array('default_controller' => $controller, 'default_action' => $action), true, false);
-		self::run(MOOJON_PATH.'templates/environment.config.template', moojon_paths::get_project_app_config_directory(APP).'production.config.php', array(), true, false);
+		self::run(MOOJON_PATH.'templates/project.config.template', moojon_paths::get_project_config_directory().'project.config.php', array('default_app' => APP, 'default_controller' => CONTROLLER, 'default_action' => ACTION), true, false);
+		
+		
+		self::run(MOOJON_PATH.'templates/app.config.template', moojon_paths::get_project_app_config_directory(APP).'testing/'.APP.'.config.php', array(), true, false);
+		self::run(MOOJON_PATH.'templates/app.config.template', moojon_paths::get_project_app_config_directory(APP).'development/'.APP.'.config.php', array(), true, false);
+		self::run(MOOJON_PATH.'templates/app.config.template', moojon_paths::get_project_app_config_directory(APP).'production/'.APP.'.config.php', array(), true, false);
 		self::run(MOOJON_PATH.'templates/environment.config.template', moojon_paths::get_project_app_config_directory(APP).'development.config.php', array(), true, false);
 		self::run(MOOJON_PATH.'templates/environment.config.template', moojon_paths::get_project_app_config_directory(APP).'testing.config.php', array(), true, false);
 		self::run(MOOJON_PATH.'templates/index.template', moojon_paths::get_public_directory().'index.php', array('MOOJON_VERSION' => MOOJON_VERSION, 'MOOJON_PATH' => MOOJON_PATH, 'PROJECT_DIRECTORY' => PROJECT_DIRECTORY), true, false);

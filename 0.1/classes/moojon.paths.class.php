@@ -185,6 +185,7 @@ final class moojon_paths extends moojon_base {
 	
 	static private function get_path($paths) {
 		foreach ($paths as $path) {
+			echo "$path<br />";
 			if (file_exists($path)) {
 				return $path;
 			}
@@ -194,6 +195,7 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_class_path($class) {
 		$class_filename = str_replace('_', '.', $class).'.class.php';
+		echo "get_class_path $class_filename<br />";
 		$paths = array(
 			self::get_classes_directory().$class_filename,
 			self::get_adapter_directory().$class_filename,

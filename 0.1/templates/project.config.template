@@ -1,5 +1,7 @@
 <?php
 return array(
-	'default_app' => 'APP',
+	'default_app' => '<[default_app]>',
+	'default_controller' => '<[default_controller]>',
+	'default_action' => '<[default_action]>',
 );
 ?>

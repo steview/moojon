@@ -4,7 +4,9 @@ final class moojon_session extends moojon_base {
 	static private $instance;
 	static private $data = array();
 	
-	private function __construct() {}
+	private function __construct() {
+		session_start();
+	}
 	
 	static public function get() {
 		if (!self::$instance) {
