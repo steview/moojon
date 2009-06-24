@@ -91,11 +91,13 @@ final class moojon_paths extends moojon_base {
 		return self::get_moojon_directory().'config/';
 	}
 	
-	static public function get_moojon_app_config_directory($app) {
+	static public function get_moojon_app_config_directory($app, $environment) {
 		return self::get_moojon_config_directory()."$app/";
 	}
 	
-	
+	static public function get_moojon_app_environment_config_directory($app, $environment) {
+		return self::get_moojon_config_directory($app)."$environment/";
+	}
 	
 	
 	
@@ -153,6 +155,10 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_project_app_config_directory($app) {
 		return self::get_project_config_directory()."$app/";
+	}
+	
+	static public function get_project_app_environment_config_directory($app, $environment) {
+		return self::get_project_app_config_directory($app)."$environment/";
 	}
 	
 	
