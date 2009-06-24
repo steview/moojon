@@ -26,9 +26,9 @@ final class moojon_debug extends moojon_base {
 			$div->add_child($ul);
 			$div->add_child(new moojon_h2_tag('URL'));
 			$ul = new moojon_ul_tag();
-			$app = moojon_uri::get_app();
-			$controller = moojon_uri::get_controller();
-			$action = moojon_uri::get_action();
+			$app = APP;
+			$controller = CONTROLLER;
+			$action = ACTION;
 			$ul->add_child(new moojon_li_tag("App: $app"));
 			$ul->add_child(new moojon_li_tag("Controller: $controller"));
 			$ul->add_child(new moojon_li_tag("Action: $action"));

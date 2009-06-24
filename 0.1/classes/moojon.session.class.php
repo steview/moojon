@@ -21,6 +21,7 @@ final class moojon_session extends moojon_base {
 	}
 	
 	static public function has($key) {
+		self::get();
 		if (is_array($_SESSION) == false) {
 			return false;
 		}

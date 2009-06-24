@@ -27,6 +27,9 @@ final class moojon_uri extends moojon_base {
 			$this->data = $data;
 			return;
 		}
+		self::try_define('APP', $data['app']);
+		self::try_define('CONTROLLER', $data['controller']);
+		self::try_define('ACTION', $data['action']);
 		$this->data = $data;
 	}
 	

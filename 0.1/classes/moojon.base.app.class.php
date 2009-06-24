@@ -25,10 +25,10 @@ abstract class moojon_base_app extends moojon_base {
 		}
 		$this->init();
 		if ($action == null) {
-			$action = moojon_uri::get_action();
+			$action = ACTION;
 		}
 		if ($controller == null) {
-			$controller = moojon_uri::get_controller();
+			$controller = CONTROLLER;
 		}
 		$this->action_name = $action;
 		$this->controller_name = $controller;

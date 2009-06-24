@@ -5,10 +5,10 @@ final class moojon_quick_tags extends moojon_base {
 	static public function link_to($text, $action, $controller = null, $app = null, $attributes = array()) {
 		if (array_key_exists('href', $attributes) == false) {
 			if ($controller == null) {
-				$controller = moojon_uri::get_controller();
+				$controller = CONTROLLER;
 			}
 			if ($app == null) {
-				$app = moojon_uri::get_app();
+				$app = APP;
 			}
 			$attributes['href'] = moojon_config::key('index_file')."$app/$controller/$action";
 		}

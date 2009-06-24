@@ -95,7 +95,7 @@ final class moojon_generator extends moojon_base {
 		self::attempt_mkdir(moojon_paths::get_css_directory());
 		self::attempt_mkdir(moojon_paths::get_js_directory());
 		self::attempt_mkdir(moojon_paths::get_script_directory());
-		self::run(MOOJON_PATH.'templates/routes.template', moojon_paths::get_project_config_directory().'routes.php', array(), true, false);
+		self::run(MOOJON_PATH.'templates/routes.template', moojon_paths::get_project_config_directory().'routes.php', array('default_app' => APP, 'default_controller' => CONTROLLER, 'default_action' => ACTION), true, false);
 		self::run(MOOJON_PATH.'templates/project.config.template', moojon_paths::get_project_config_directory().'project.config.php', array('default_app' => APP, 'default_controller' => CONTROLLER, 'default_action' => ACTION), true, false);
 		
 		
