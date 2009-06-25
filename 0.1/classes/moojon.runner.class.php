@@ -20,6 +20,8 @@ final class moojon_runner extends moojon_base {
 				$moojon = APP.'_app';
 				break;
 			case 'CLI':
+				moojon_uri::get();
+				moojon_config::update(moojon_paths::get_project_config_directory());
 				$moojon = CLI;
 				break;
 			default:

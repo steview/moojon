@@ -10,8 +10,7 @@ final class moojon_uri extends moojon_base {
 			}
 		}
 		if (!$data) {
-			die('404');
-			//throw new moojon_excepetion('404');
+			throw new moojon_exception('404');
 		}
 		if (defined('EXCEPTION') && EXCEPTION === true) {
 			$data['app'] = moojon_config::key('exception_app');

@@ -201,19 +201,21 @@ final class moojon_paths extends moojon_base {
 	static public function get_class_path($class) {
 		$class_filename = str_replace('_', '.', $class).'.class.php';
 		$paths = array(
-			self::get_classes_directory().$class_filename,
-			//self::get_adapter_directory().$class_filename,
-			//self::get_columns_directory().$class_filename,
-			self::get_validations_directory().$class_filename,
-			self::get_tags_directory().$class_filename,
-			self::get_tag_attributes_directory().$class_filename,
-			self::get_project_models_directory().$class_filename,
-			self::get_project_base_models_directory().$class_filename,
-			self::get_project_migrations_directory().$class_filename,
-			self::get_moojon_models_directory().$class_filename,
-			self::get_moojon_base_models_directory().$class_filename,
-			self::get_moojon_migrations_directory().$class_filename,
+			self::get_classes_directory().$class_filename
 		);
+		if (moojon_config::has('adapter')) {
+			$paths[] = self::get_adapter_directory().$class_filename;
+			$paths[] = self::get_columns_directory().$class_filename;
+		}
+		$paths[] = self::get_validations_directory().$class_filename;
+		$paths[] = self::get_tags_directory().$class_filename;
+		$paths[] = self::get_tag_attributes_directory().$class_filename;
+		$paths[] = self::get_project_models_directory().$class_filename;
+		$paths[] = self::get_project_base_models_directory().$class_filename;
+		$paths[] = self::get_project_migrations_directory().$class_filename;
+		$paths[] = self::get_moojon_models_directory().$class_filename;
+		$paths[] = self::get_moojon_base_models_directory().$class_filename;
+		$paths[] = self::get_moojon_migrations_directory().$class_filename;
 		return self::get_path($paths);
 	}
 	

@@ -4,7 +4,7 @@ final class moojon_migrator extends moojon_base {
 	
 	static public function run() {
 		self::find_or_create_schema_migrations_table();
-		$migration_files = array();
+		/*$migration_files = array();
 		foreach (schema_migration::read(null, 'version') as $migration) {
 			$migration_files[] = $migration->version;
 		}
@@ -12,7 +12,7 @@ final class moojon_migrator extends moojon_base {
 			if (!in_array($migration_file, $migration_files)) {
 				self::run_migration($migration_file, 'up');
 			}
-		}	
+		}*/
 	}
 	
 	static public function roll_back($migration_file, $all = false) {
