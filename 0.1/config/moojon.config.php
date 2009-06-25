@@ -53,12 +53,12 @@ return array(
 	'security_failure_message' => 'Invalid %s / %s combination. Login failure.',
 	'security_class' => 'moojon_security',
 	'security_model' => 'coach',
-	'security_app' => 'moojon_app',
-	'security_controller' => 'moojon_security',
+	'security_app' => 'moojon',
+	'security_controller' => 'security',
 	'security_action' => 'login',
 	'exception_handler_class' => 'moojon_exception_handler',
-	'exception_app' => 'moojon_app',
-	'exception_controller' => 'moojon_exception',
+	'exception_app' => 'moojon',
+	'exception_controller' => 'exception',
 	'exception_action' => 'index',
 );
 ?>

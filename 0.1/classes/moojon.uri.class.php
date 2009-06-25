@@ -4,19 +4,12 @@ final class moojon_uri extends moojon_base {
 	static private $data = array();
 	
 	private function __construct() {
-		foreach (moojon_routes::get_routes() as $route) {
-			if ($data = $route->map_uri(self::get_uri())) {
-				break;
-			}
-		}
-		if (!$data) {
-			throw new moojon_exception('404');
-		}
-		if (defined('EXCEPTION') && EXCEPTION === true) {
+		if (defined('EXCEPTION')) {
 			$data['app'] = moojon_config::key('exception_app');
 			$data['controller'] = moojon_config::key('exception_controller');
 			$data['action'] = moojon_config::key('exception_action');
 			$this->data = $data;
+			self::define_segments($this->data);
 			return;
 		}
 		if (moojon_config::has('security') && moojon_config::key('security') && !moojon_authentication::authenticate()) {
@@ -24,12 +17,31 @@ final class moojon_uri extends moojon_base {
 			$data['controller'] = moojon_config::key('security_controller');
 			$data['action'] = moojon_config::key('security_action');
 			$this->data = $data;
+			self::define_segments($this->data);
 			return;
 		}
+		foreach (moojon_routes::get_routes() as $route) {
+			if ($data = $route->map_uri(self::get_uri())) {
+				break;
+			}
+		}
+		if (!$data) {
+			$data['app'] = moojon_config::key('exception_app');
+			$data['controller'] = moojon_config::key('exception_controller');
+			$data['action'] = moojon_config::key('exception_action');
+			$this->data = $data;
+			self::define_segments($this->data);
+			throw new moojon_exception('404');
+			return;
+		} else {
+			$this->data = $data;
+		}
+	}
+	
+	static public function define_segments($data) {
 		self::try_define('APP', $data['app']);
 		self::try_define('CONTROLLER', $data['controller']);
 		self::try_define('ACTION', $data['action']);
-		$this->data = $data;
 	}
 	
 	static public function get() {
@@ -107,28 +119,13 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function get_app() {
-		switch (strtoupper(UI)) {
-			case 'CGI':
-				$data = self::get_data();
-				return $data['app'];
-				break;
-			case 'CLI':
-				return moojon_config::key('default_app');
-				break;
-		}
+		$data = self::get_data();
+		return $data['app'];
 	}
 	
 	static public function get_controller() {
-		switch (strtoupper(UI)) {
-			case 'CGI':
-				$data = self::get_data();
-				return $data['controller'];
-				break;
-			case 'CLI':
-				return CONTROLLER;
-				break;
-		}
-		
+		$data = self::get_data();
+		return $data['controller'];
 	}
 	
 	static public function get_action() {

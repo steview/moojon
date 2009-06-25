@@ -20,7 +20,7 @@ final class moojon_runner extends moojon_base {
 				$moojon = APP.'_app';
 				break;
 			case 'CLI':
-				moojon_uri::get();
+				//moojon_uri::get();
 				moojon_config::update(moojon_paths::get_project_config_directory());
 				$moojon = CLI;
 				break;
@@ -55,6 +55,7 @@ final class moojon_runner extends moojon_base {
 		foreach (get_object_vars($controller) as $key => $value) {
 			$$key = $value;
 		}
+		//echo file_exists($path)." $path\n";
 		ob_start();
 		require($path);
 		$return = ob_get_clean();
