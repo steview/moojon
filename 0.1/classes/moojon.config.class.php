@@ -1,7 +1,7 @@
 <?php
 final class moojon_config extends moojon_base {
 	static private $instance;
-	static private $data = array();
+	private $data = array();
 	
 	private function __construct() {
 		$data = require_once(MOOJON_PATH.'config/moojon.config.php');
@@ -13,13 +13,15 @@ final class moojon_config extends moojon_base {
 			foreach (moojon_files::directory_files($directory, true) as $file) {
 				if (moojon_files::has_suffix($file, 'config')) {
 					$array = require_once($file);
-					if (is_array($array) === true) {
+					if (is_array($array)) {
 						foreach ($array as $key => $value) {
 							self::set($key, $value);
 						}
 					}
 				}
 			}
+		} else {
+			throw new moojon_exception("Not a directory ($directory)");
 		}
 	}
 	
@@ -53,7 +55,7 @@ final class moojon_config extends moojon_base {
 	
 	static public function has($key) {
 		$data = self::get_data();
-		if (array_key_exists($key, $data) && $data[$key] != null) {
+		if (array_key_exists($key, $data) && isset($data[$key])) {
 			return true;
 		} else {
 			return false;

@@ -43,7 +43,7 @@
 	
 </div><!-- /container -->
 
-<?php moojon_debug::render(); ?>
+<?php //moojon_debug::render(); ?>
 
 </body>
 </html>

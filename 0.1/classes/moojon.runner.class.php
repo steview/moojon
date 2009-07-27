@@ -10,6 +10,7 @@ final class moojon_runner extends moojon_base {
 	}
 	
 	static public function run() {
+		self::get();
 		switch (strtoupper(UI)) {
 			case 'CGI':
 				moojon_uri::get();
@@ -20,27 +21,16 @@ final class moojon_runner extends moojon_base {
 				$moojon = APP.'_app';
 				break;
 			case 'CLI':
-				//moojon_uri::get();
 				moojon_config::update(moojon_paths::get_project_config_directory());
 				$moojon = CLI;
 				break;
 			default:
-				self::run_exception(new moojon_exception('Invalid UI ('.UI.')'));
+				throw new moojon_exception('Invalid UI ('.UI.')');
 				break;
 		}
-		try {
-			$instance = new $moojon;
-			$instance->render(true);
-		} catch (moojon_exception $exception) {
-			self::run_exception($exception);
-		}
-	}
-	
-	static public function run_exception(moojon_exception $exception) {
-		$exception_handler_class = moojon_config::key('exception_handler_class');
-		new $exception_handler_class($exception);
+		$instance = new $moojon;
+		$instance->render(true);
 		moojon_connection::close();
-		die();
 	}
 	
 	static public function get() {
@@ -55,7 +45,6 @@ final class moojon_runner extends moojon_base {
 		foreach (get_object_vars($controller) as $key => $value) {
 			$$key = $value;
 		}
-		//echo file_exists($path)." $path\n";
 		ob_start();
 		require($path);
 		$return = ob_get_clean();

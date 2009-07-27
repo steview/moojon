@@ -1,1 +1,1 @@
-<?php echo $exception; ?>
+<p>We are in an exception</p>

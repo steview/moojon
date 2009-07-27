@@ -101,6 +101,8 @@ final class moojon_paths extends moojon_base {
 	
 	
 	
+	
+	
 	static public function get_project_directory() {
 		return PROJECT_DIRECTORY;
 	}
@@ -221,7 +223,6 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_app_path($app) {
 		$app_filename = "$app.app.class.php";
-		echo "\n$app_filename\n";
 		$paths = array(
 			self::get_project_apps_directory().$app_filename,
 			self::get_moojon_apps_directory().$app_filename,

@@ -1,23 +1,14 @@
 <?php
 final class moojon_uri extends moojon_base {
 	static private $instance;
-	static private $data = array();
+	private $data = array();
 	
 	private function __construct() {
-		if (defined('EXCEPTION')) {
-			$data['app'] = moojon_config::key('exception_app');
-			$data['controller'] = moojon_config::key('exception_controller');
-			$data['action'] = moojon_config::key('exception_action');
-			$this->data = $data;
-			self::define_segments($this->data);
-			return;
-		}
 		if (moojon_config::has('security') && moojon_config::key('security') && !moojon_authentication::authenticate()) {
 			$data['app'] = moojon_config::key('security_app');
 			$data['controller'] = moojon_config::key('security_controller');
 			$data['action'] = moojon_config::key('security_action');
-			$this->data = $data;
-			self::define_segments($this->data);
+			$this->set_data($data);
 			return;
 		}
 		foreach (moojon_routes::get_routes() as $route) {
@@ -26,22 +17,11 @@ final class moojon_uri extends moojon_base {
 			}
 		}
 		if (!$data) {
-			$data['app'] = moojon_config::key('exception_app');
-			$data['controller'] = moojon_config::key('exception_controller');
-			$data['action'] = moojon_config::key('exception_action');
-			$this->data = $data;
-			self::define_segments($this->data);
 			throw new moojon_exception('404');
 			return;
 		} else {
-			$this->data = $data;
+			$this->set_data($data);
 		}
-	}
-	
-	static public function define_segments($data) {
-		self::try_define('APP', $data['app']);
-		self::try_define('CONTROLLER', $data['controller']);
-		self::try_define('ACTION', $data['action']);
 	}
 	
 	static public function get() {
@@ -49,6 +29,13 @@ final class moojon_uri extends moojon_base {
 			self::$instance = new moojon_uri();
 		}
 		return self::$instance;
+	}
+	
+	private function set_data($data) {
+		self::try_define('APP', $data['app']);
+		self::try_define('CONTROLLER', $data['controller']);
+		self::try_define('ACTION', $data['action']);
+		$this->data = $data;
 	}
 	
 	static private function get_data() {
@@ -74,6 +61,9 @@ final class moojon_uri extends moojon_base {
 		}
 		if (substr($uri, 0, strlen(moojon_config::key('index_file'))) == moojon_config::key('index_file')) {
 			$uri = substr($uri, strlen(moojon_config::key('index_file')));
+		}
+		if (!$uri) {
+			$uri = '/';
 		}
 		return $uri;
 	}

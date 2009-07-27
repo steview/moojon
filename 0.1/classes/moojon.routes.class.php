@@ -2,7 +2,7 @@
 final class moojon_routes extends moojon_base {
 	
 	static private $instance;
-	static private $routes = array();
+	private $routes = array();
 	
 	protected function __construct() {
 		foreach (require_once(moojon_paths::get_project_config_directory().'routes.php') as $route) {
