@@ -29,9 +29,9 @@
 	
 	<div id="content">
 		
-		<?php if (moojon_flash::has('notification') == true) { ?>
-			<p><?php echo moojon_flash::get('notification'); ?></p>
-		<?php } ?>
+		<?php //if (moojon_flash::has('notification') == true) { ?>
+			<p><?php //echo moojon_flash::get('notification'); ?></p>
+		<?php //} ?>
 		
 		YIELD
 	

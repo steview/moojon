@@ -42,7 +42,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			$this->columns[$key]->set_value($value);
 			$this->unsaved = true;
 		} else {
-			throw new moojon_exception("$key doesn't exist");
+			throw moojon_exception::create("$key doesn't exist");
 		}
 	}
 	
@@ -61,7 +61,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 				if (method_exists($this, $get_method)) {
 					return $this->$get_method();
 				} else {
-					throw new moojon_exception("unknown property ($key)");
+					throw moojon_exception::create("unknown property ($key)");
 				}
 			}
 		}	
@@ -89,7 +89,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		if ($this->has_relationship($key)) {
 			return $this->relationships[$key];
 		} else {
-			throw new moojon_exception("no such relationship ($key)");
+			throw moojon_exception::create("no such relationship ($key)");
 		}
 	}
 	
@@ -99,7 +99,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	final protected function add_relationship($relationship_type, $name, $foreign_obj, $foreign_key, $key) {
 		if ($this->has_property($name)) {
-			throw new moojon_exception("duplicate property when adding relationship ($name)");
+			throw moojon_exception::create("duplicate property when adding relationship ($name)");
 		}
 		if ($foreign_obj == null) {
 			$foreign_obj = moojon_inflect::pluralize($name);
@@ -112,7 +112,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			$key = moojon_primary_key::NAME;
 		}
 		if (!$this->has_column($key)) {
-			throw new moojon_exception("no such column to use as key for relationship ($key)");
+			throw moojon_exception::create("no such column to use as key for relationship ($key)");
 		}
 		$this->relationships[$name] = new $relationship_type($name, $foreign_obj, $foreign_key, $key);
 	}
@@ -129,7 +129,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		if  ($this->has_validation($key)) {
 			return $this->validations[$key];
 		} else {
-			throw new moojon_exception("no such validation ($key)");
+			throw moojon_exception::create("no such validation ($key)");
 		}
 	}
 	
@@ -219,7 +219,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		if (!$this->has_property($column->get_name())) {
 			$this->columns[$column->get_name()] = $column;
 		} else {
-			throw new moojon_exception('duplicate property ('.$column->get_name().')');
+			throw moojon_exception::create('duplicate property ('.$column->get_name().')');
 		}
 	}
 	

@@ -18,7 +18,7 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 	
 	final public function set_value($value) {
 		if (count($this->legal_values) > 0 && in_array($value, $this->legal_values) == false) {
-			throw new moojon_exception("Illegal value for tag ($value). Please use any of the following values (".implode(',', $this->legal_values).')');
+			throw moojon_exception::create("Illegal value for tag ($value). Please use any of the following values (".implode(',', $this->legal_values).')');
 		}
 		$this->value = $value;
 	}

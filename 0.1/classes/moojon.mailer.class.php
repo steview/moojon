@@ -55,7 +55,7 @@ final class moojon_mailer extends moojon_base {
 			}
 			$this->from = "$name <$email>";
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -66,7 +66,7 @@ final class moojon_mailer extends moojon_base {
 			}
 			$this->to = "$name <$email>";
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -77,7 +77,7 @@ final class moojon_mailer extends moojon_base {
 			}
 			$this->cc = "$name <$email>";
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -88,7 +88,7 @@ final class moojon_mailer extends moojon_base {
 			}
 			$this->bcc = "$name <$email>";
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -99,7 +99,7 @@ final class moojon_mailer extends moojon_base {
 			}
 			$this->reply_to = "$name <$email>";
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -107,7 +107,7 @@ final class moojon_mailer extends moojon_base {
 		if ($this->validate_email($email) == true) {
 			$this->return_path = $email;
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -122,7 +122,7 @@ final class moojon_mailer extends moojon_base {
 				$this->to .= "$name <$email>";
 			}
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -137,7 +137,7 @@ final class moojon_mailer extends moojon_base {
 				$this->cc .= "$name <$email>";
 			}
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -152,7 +152,7 @@ final class moojon_mailer extends moojon_base {
 				$this->bcc .= "$name <$email>";
 			}
 		} else {
-			throw new moojon_exception("Invalid email ($email)");
+			throw moojon_exception::create("Invalid email ($email)");
 		}
 	}
 	
@@ -319,7 +319,7 @@ final class moojon_mailer extends moojon_base {
 				$body .= '--'.$this->mix."--\n";
 				break;
 			default:
-				throw new moojon_exception('Unknown body type ('.$elements.')');
+				throw moojon_exception::create('Unknown body type ('.$elements.')');
 				break;
 		}
 		return $body;
@@ -346,7 +346,7 @@ final class moojon_mailer extends moojon_base {
 				$type = 'Content-Type: multipart/mixed; boundary="'.$this->mix.'"';
 				break;
 			default:
-				throw new moojon_exception('Unknown header type ('.$elements.')');
+				throw moojon_exception::create('Unknown header type ('.$elements.')');
 				break;
 		}
 		$header = '';

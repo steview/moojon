@@ -15,7 +15,7 @@ abstract class moojon_base_empty_tag extends moojon_base_tag {
 	}
 	
 	final protected function get_property($key) {
-		throw new moojon_exception("No such attribute or child ($key)");
+		throw moojon_exception::create("No such attribute or child ($key)");
 	}
 }
 ?>

@@ -1,6 +1,37 @@
 <?php
-class moojon_exception extends Exception {
-	final public function __toString() {
+final class moojon_exception extends Exception {
+	static private $instance;
+	private $previous;
+	
+	public function __construct($message = null, $code = null, moojon_exception $previous = null, $severity = null, $file = null, $line = null) {
+		if ($code == null) {
+			$code = 0;
+		}
+		parent::__construct($message, $code);
+		$this->severity = $severity;
+		$this->file = $file;
+		$this->line = $line;
+		die($message + '<<<');
+	}
+	
+	static private function get() {
+		if (!self::$instance) {
+			return new moojon_exception();
+		}
+		return self::$instance;
+	}
+	
+	static public function create($message, $code = null, $severity = null, $file = null, $line = null) {
+		$instance = self::get();
+		return new moojon_exception($message, $code, $instance->getPrevious(), $severity, $file, $line);
+	}
+	
+	static private function get_previous() {
+		$instance = self::get();
+		return $instance->previous;
+	}
+	
+	public function __toString() {
 		$div = new moojon_div_tag(new moojon_h1_tag($this->getMessage()), array('id' => 'exception_report'));
 		$backtrace = $this->getTrace();
 		$backtrace = array_reverse($backtrace);
@@ -59,7 +90,7 @@ class moojon_exception extends Exception {
 		return $div->render();
 	}
 	
-	final static public function new_line() {
+	static public function new_line() {
 		switch (UI) {
 			case 'CGI':
 				return '<br />';
@@ -70,7 +101,7 @@ class moojon_exception extends Exception {
 		}
 	}
 	
-	final static private function get_line($path, $line) {
+	static private function get_line($path, $line) {
 		$file_handle = fopen($path, 'r');
 		for ($i = 1; $i < $line; $i ++) {
 			fgets($file_handle);

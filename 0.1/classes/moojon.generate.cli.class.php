@@ -85,7 +85,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 					if ($this->prompt_until_in(null, array('y', 'n'), 'No models found. Would you like to generate models?') == 'y') {
 						moojon_generator::models();
 					} else {
-						throw new moojon_exception('Unable to generate scaffold (no models)');
+						throw moojon_exception::create('Unable to generate scaffold (no models)');
 					}
 				}
 				$model = $this->prompt_until_in($arguments[1], moojon_adapter::list_tables(), 'What model would you like to generate a scaffold for?');

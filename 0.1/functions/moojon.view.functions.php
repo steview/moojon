@@ -3,7 +3,7 @@ function helper($helper) {
 	if ($helper_path = moojon_paths::get_helper_path($helper)) {
 		require_once($helper_path);
 	} else {
-		throw new moojon_exception("Unknown helper ($helper)");
+		throw moojon_exception::create("Unknown helper ($helper)");
 	}
 }
 
@@ -27,7 +27,7 @@ function partial($partial, $variables = array()) {
 		}
 		require_once($partial_path);
 	} else {
-		throw new moojon_exception("Unknown partial ($partial)");
+		throw moojon_exception::create("Unknown partial ($partial)");
 	}
 }
 ?>

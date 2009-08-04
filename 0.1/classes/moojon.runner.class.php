@@ -25,7 +25,7 @@ final class moojon_runner extends moojon_base {
 				$moojon = CLI;
 				break;
 			default:
-				throw new moojon_exception('Invalid UI ('.UI.')');
+				throw moojon_exception::create('Invalid UI ('.UI.')');
 				break;
 		}
 		$instance = new $moojon;

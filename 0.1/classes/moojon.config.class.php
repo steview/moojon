@@ -21,7 +21,7 @@ final class moojon_config extends moojon_base {
 				}
 			}
 		} else {
-			throw new moojon_exception("Not a directory ($directory)");
+			throw moojon_exception::create("Not a directory ($directory)");
 		}
 	}
 	
@@ -37,7 +37,7 @@ final class moojon_config extends moojon_base {
 			$data = self::get_data();
 			return $data[$key];
 		} else {
-			throw new moojon_exception("Unknown config property ($key)");
+			throw moojon_exception::create("Unknown config property ($key)");
 		}
 	}
 	

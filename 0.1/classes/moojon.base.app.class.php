@@ -12,6 +12,11 @@ abstract class moojon_base_app extends moojon_base {
 	}
 	
 	final public function set_location($action = null, $controller = null, $app = null) {
+		/*********************************/
+		/*
+		In light of the new routing system, this method needs to be re-written
+		*/
+		/*********************************/
 		if ($app != null) {
 			$location = moojon_config::key('index_file').$app;
 			if ($controller != null) {

@@ -38,7 +38,7 @@ final class moojon_cookie extends moojon_base {
 			if (is_int(moojon_config::key('cookie_expiry')) == true) {
 				$cookie_expiry = (time() + moojon_config::key('cookie_expiry'));
 			} else {
-				throw new moojon_exception('cookie_expiry must be an integer ('.moojon_config::key('cookie_expiry').')');
+				throw moojon_exception::create('cookie_expiry must be an integer ('.moojon_config::key('cookie_expiry').')');
 			}
 		}
 		$instance = self::get();
@@ -71,10 +71,10 @@ final class moojon_cookie extends moojon_base {
 			if (array_key_exists($key, $data) == true) {
 				return $data[$key];
 			} else {
-				throw new moojon_exception("Key does not exists ($key)");
+				throw moojon_exception::create("Key does not exists ($key)");
 			}
 		} else {
-			throw new moojon_exception("Key does not exists ($key)");
+			throw moojon_exception::create("Key does not exists ($key)");
 		}
 	}
 }

@@ -57,10 +57,10 @@ final class moojon_put extends moojon_base {
 			if (array_key_exists($key, $data) == true) {
 				return $data[$key];
 			} else {
-				throw new moojon_exception("Key does not exists ($key)");
+				throw moojon_exception::create("Key does not exists ($key)");
 			}
 		} else {
-			throw new moojon_exception("Key does not exists ($key)");
+			throw moojon_exception::create("Key does not exists ($key)");
 		}
 	}
 }

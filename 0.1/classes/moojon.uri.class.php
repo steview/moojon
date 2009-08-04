@@ -17,7 +17,7 @@ final class moojon_uri extends moojon_base {
 			}
 		}
 		if (!$data) {
-			throw new moojon_exception('404');
+			throw moojon_exception::create('404');
 			return;
 		} else {
 			$this->set_data($data);
@@ -102,10 +102,29 @@ final class moojon_uri extends moojon_base {
 		return $controllers;
 	}
 	
-	static public function get_actions($controller) {
+	static public function get_actions() {
+		/*****************************************/
+		/*This method needs to work. We need to 
+		also include actionless (view only) 
+		requests*/
+		/*****************************************/
 		$data = self::get_data();
 		require_once(moojon_paths::get_controller_path($data['app'], $data['controller']));
-		return get_class_methods(self::get_controller_class($data['controller']));
+		$actions = get_class_methods(self::get_controller_class($data['controller']));
+		$paths = array(
+			moojon_paths::get_moojon_views_directory(),
+			moojon_paths::get_moojon_views_app_directory(moojon_uri::get_app()),
+			moojon_paths::get_moojon_views_app_controller_directory(moojon_uri::get_app(), moojon_uri::get_controller()),
+			moojon_paths::get_project_views_directory(),
+			moojon_paths::get_project_views_app_directory(moojon_uri::get_app()),
+			moojon_paths::get_project_views_app_controller_directory(moojon_uri::get_app(), moojon_uri::get_controller())
+		);
+		foreach (self::colate_view($paths) as $view) {
+			if (!in_array($actions, $view)) {
+				$actions[] = $view;
+			}
+		}
+		return $actions;
 	}
 	
 	static public function get_app() {
@@ -121,6 +140,20 @@ final class moojon_uri extends moojon_base {
 	static public function get_action() {
 		$data = self::get_data();
 		return $data['action'];
+	}
+	
+	static private function colate_views($paths) {
+		$views = array();
+		foreach ($paths as $path) {
+			if (is_dir($path)) {
+				foreach (moojon_files::directory_files($path, false, false) as $file) {
+					if (moojon_files::has_suffix($file, 'view', 'php')) {
+						$views[] = $file;
+					}
+				}
+			}
+		}
+		return $views;
 	}
 }
 ?>

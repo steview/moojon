@@ -37,7 +37,7 @@ final class moojon_flash extends moojon_base {
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
-				throw new moojon_exception("Unknown flash property ($key)");
+				throw moojon_exception::create("Unknown flash property ($key)");
 			}
 		}
 	}
