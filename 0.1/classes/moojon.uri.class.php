@@ -17,7 +17,7 @@ final class moojon_uri extends moojon_base {
 			}
 		}
 		if (!$data) {
-			throw moojon_exception::create('404');
+			throw new moojon_exception('404');
 			return;
 		} else {
 			$this->set_data($data);

@@ -21,14 +21,14 @@ final class moojon_model_collection extends ArrayObject {
 				if (count($this)) {
 					return $this[0];
 				} else {
-					throw moojon_exception::create('moojon_model_collection empty');
+					throw new moojon_exception('moojon_model_collection empty');
 				}
 				break;
 			case 'last':
 				if ($count = count($this)) {
 					return $this[($count - 1)];
 				} else {
-					throw moojon_exception::create('moojon_model_collection empty');
+					throw new moojon_exception('moojon_model_collection empty');
 				}
 				break;
 			case 'count':
@@ -40,10 +40,10 @@ final class moojon_model_collection extends ArrayObject {
 					if ($this->iterator->current()->has_property($key)) {
 						return $this->iterator->current()->$key;
 					} else {
-						throw moojon_exception::create("moojon_model_collection get what? ($key)");
+						throw new moojon_exception("moojon_model_collection get what? ($key)");
 					}
 				} else {
-					throw moojon_exception::create('moojon_model_collection empty');
+					throw new moojon_exception('moojon_model_collection empty');
 				}
 				break;
 		}

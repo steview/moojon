@@ -25,7 +25,7 @@ final class moojon_runner extends moojon_base {
 				$moojon = CLI;
 				break;
 			default:
-				throw moojon_exception::create('Invalid UI ('.UI.')');
+				throw new moojon_exception('Invalid UI ('.UI.')');
 				break;
 		}
 		$instance = new $moojon;
@@ -41,7 +41,6 @@ final class moojon_runner extends moojon_base {
 	}
 	
 	static public function render($path, moojon_base_controller $controller) {
-		self::get();
 		foreach (get_object_vars($controller) as $key => $value) {
 			$$key = $value;
 		}

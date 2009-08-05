@@ -141,7 +141,7 @@ final class moojon_query extends moojon_query_utilities {
 		$query = mysql_query($query, moojon_connection::get_resource());
 		if ($mysql_error = mysql_error()) {
 			self::log("MySQL error: $mysql_error");
-			throw moojon_exception::create("MySQL error: $mysql_error");
+			throw new moojon_exception("MySQL error: $mysql_error");
 		}
 		$result = array();
 		if (gettype($query) == 'resource') {

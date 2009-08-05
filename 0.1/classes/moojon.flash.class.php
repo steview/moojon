@@ -1,7 +1,7 @@
 <?php
 final class moojon_flash extends moojon_base {
 	static private $instance;
-	static private $data;
+	private $data;
 	
 	private function __construct() {
 		$data = array();
@@ -37,7 +37,7 @@ final class moojon_flash extends moojon_base {
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
-				throw moojon_exception::create("Unknown flash property ($key)");
+				throw new moojon_exception("Unknown flash property ($key)");
 			}
 		}
 	}

@@ -18,7 +18,7 @@ final class moojon_migrator extends moojon_base {
 	static public function roll_back($migration_file, $all = false) {
 		self::find_or_create_schema_migrations_table();
 		/*if (schema_migration::read("version = '$migration_file'")->count && !$all) {
-			throw moojon_exception::create("No such migration ($migration_file)");
+			throw new moojon_exception("No such migration ($migration_file)");
 		}
 		foreach (schema_migration::read(null, 'version DESC') as $migration) {
 			if (self::get_migration_class_name($migration->version) == $migration_file.'_migration') {

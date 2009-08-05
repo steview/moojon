@@ -62,10 +62,10 @@ final class moojon_files extends moojon_base {
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
-				throw moojon_exception::create("Key does not exists ($key)");
+				throw new moojon_exception("Key does not exists ($key)");
 			}
 		} else {
-			throw moojon_exception::create("Key does not exists ($key)");
+			throw new moojon_exception("Key does not exists ($key)");
 		}
 	}
 	
@@ -78,7 +78,7 @@ final class moojon_files extends moojon_base {
 				return false;
 			}
 		} else {
-			throw moojon_exception::create('Unable to upload file ('.$file['error'].')');
+			throw new moojon_exception('Unable to upload file ('.$file['error'].')');
 		}
 		return false;
 	}
@@ -121,7 +121,7 @@ final class moojon_files extends moojon_base {
 			}
 			closedir($directory_handler);
 		} else {
-			throw moojon_exception::create("Not a directory ($path)");
+			throw new moojon_exception("Not a directory ($path)");
 		}
 		return $directories;
 	}
@@ -138,7 +138,7 @@ final class moojon_files extends moojon_base {
 			}
 			closedir($directory_handler);
 		} else {
-			throw moojon_exception::create("Not a directory ($path)");
+			throw new moojon_exception("Not a directory ($path)");
 		}
 		return $directories;
 	}
@@ -243,7 +243,7 @@ final class moojon_files extends moojon_base {
 	static public function get_file_contents($path) {
 		$file_pointer = fopen($path, 'r');
 		if (!$file_pointer) {
-			throw moojon_exception::create("Unable to open file ($path)");
+			throw new moojon_exception("Unable to open file ($path)");
 		}
 		$content = fread($file_pointer, filesize($path));
 		fclose($file_pointer);

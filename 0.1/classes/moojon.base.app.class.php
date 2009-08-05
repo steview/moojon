@@ -48,7 +48,6 @@ abstract class moojon_base_app extends moojon_base {
 		$return = $this->controller->render();
 		if ($this->get_layout() !== false) {
 			$return = str_replace('YIELD', $return, moojon_runner::render(moojon_paths::get_layout_path($this->get_layout()), $this->controller));
-			//moojon_paths::get_layout_path($this->get_layout());
 		}
 		if ($echo) {
 			echo $return;

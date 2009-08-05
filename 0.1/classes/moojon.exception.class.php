@@ -1,9 +1,6 @@
 <?php
 final class moojon_exception extends Exception {
-	static private $instance;
-	private $previous;
-	
-	public function __construct($message = null, $code = null, moojon_exception $previous = null, $severity = null, $file = null, $line = null) {
+	public function __construct($message = null, $code = null, $severity = null, $file = null, $line = null) {
 		if ($code == null) {
 			$code = 0;
 		}
@@ -11,24 +8,6 @@ final class moojon_exception extends Exception {
 		$this->severity = $severity;
 		$this->file = $file;
 		$this->line = $line;
-		die($message + '<<<');
-	}
-	
-	static private function get() {
-		if (!self::$instance) {
-			return new moojon_exception();
-		}
-		return self::$instance;
-	}
-	
-	static public function create($message, $code = null, $severity = null, $file = null, $line = null) {
-		$instance = self::get();
-		return new moojon_exception($message, $code, $instance->getPrevious(), $severity, $file, $line);
-	}
-	
-	static private function get_previous() {
-		$instance = self::get();
-		return $instance->previous;
 	}
 	
 	public function __toString() {
