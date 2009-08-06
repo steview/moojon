@@ -1,5 +1,7 @@
 <?php
 final class moojon_exception extends Exception {
+	static private $instance;
+	
 	public function __construct($message = null, $code = null, $severity = null, $file = null, $line = null) {
 		if ($code == null) {
 			$code = 0;
@@ -8,6 +10,18 @@ final class moojon_exception extends Exception {
 		$this->severity = $severity;
 		$this->file = $file;
 		$this->line = $line;
+		self::$instance = $this;
+	}
+	
+	static private function get() {
+		if (!self::$instance) {
+			self::$instance = new moojon_excption();
+		}
+		return self::$instance;
+	}
+	
+	static public function find() {
+		return self::$instance;
 	}
 	
 	public function __toString() {
