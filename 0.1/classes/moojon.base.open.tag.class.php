@@ -9,21 +9,21 @@ abstract class moojon_base_open_tag extends moojon_base_tag {
 	abstract protected function init();
 	
 	final public function render() {
-		$render = '<'.$this->node_name;
-		foreach ($this->attributes as $attribute) {
-			$render .= ' '.$attribute->render();
-		}
-		$render .= '>';
-		if (count($this->children) > 0) {
-			foreach ($this->children as $child) {
-				if (method_exists($child, 'render') == true) {
-					$render .= $child->render();
-				} else {
-					$render .= $child;
+			$render = '<'.$this->node_name;
+			foreach ($this->attributes as $attribute) {
+				$render .= ' '.$attribute->render();
+			}
+			$render .= '>';
+			if (count($this->children) > 0) {
+				foreach ($this->children as $child) {
+					if (is_object($child)) {
+						$render .= $child->render();
+					} else {
+						$render .= $child;
+					}
 				}
 			}
-		}
-		return $render.'</'.$this->node_name.'>';
+			return $render.'</'.$this->node_name.'>';
 	}
 	
 	final protected function get_property($key) {

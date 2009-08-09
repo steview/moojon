@@ -51,6 +51,7 @@ abstract class moojon_base_app extends moojon_base {
 		}
 		if ($echo) {
 			echo $return;
+			die();
 		} else {
 			return $return;
 		}

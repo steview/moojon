@@ -1,8 +1,8 @@
 <?php
 final class moojon_assets extends moojon_base {
 	static private $instance;
-	static private $css = array();
-	static private $js = array();
+	private $css = array();
+	private $js = array();
 	
 	private function __construct() {
 		$csss = array();

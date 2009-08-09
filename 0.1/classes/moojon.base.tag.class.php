@@ -1,7 +1,7 @@
 <?php
 abstract class moojon_base_tag extends moojon_base {
 	
-	protected $node_name;
+	public $node_name;
 	protected $legal_attributes = array();
 	protected $attributes = array();
 	protected $children = array();
