@@ -45,11 +45,7 @@ final class moojon_runner extends moojon_base {
 			$$key = $value;
 		}
 		ob_start();
-		try {
-			require($path);
-		} catch (Exception $exception) {
-			throw $exception;
-		}
+		require($path);
 		$return = ob_get_clean();
 		if (ob_get_length()) {
 			ob_end_clean();
