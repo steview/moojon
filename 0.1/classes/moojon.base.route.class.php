@@ -34,6 +34,15 @@ abstract class moojon_base_route extends moojon_base {
 		return $return;
 	}
 	
+	final protected function contains_no_symbols($subject) {
+		foreach ($subject as $element) {
+			if ($this->is_symbol($element)) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
 	final protected function match_app($app) {
 		return moojon_paths::get_app_path($app);
 	}

@@ -4,8 +4,7 @@ final class moojon_config extends moojon_base {
 	private $data = array();
 	
 	private function __construct() {
-		$data = require_once(MOOJON_PATH.'config/moojon.config.php');
-		$this->data = $data;
+		$this->data = require_once(MOOJON_PATH.'config/moojon.config.php');
 	}
 	
 	static public function update($directory) {

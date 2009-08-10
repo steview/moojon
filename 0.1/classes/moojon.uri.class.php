@@ -59,8 +59,12 @@ final class moojon_uri extends moojon_base {
 		} else {
 			$uri = $_SERVER['PATH_INFO'];
 		}
-		if (substr($uri, 0, strlen(moojon_config::key('index_file'))) == moojon_config::key('index_file')) {
-			$uri = substr($uri, strlen(moojon_config::key('index_file')));
+		if (substr($uri, 0, (strlen($uri) - 1)) != '/') {
+			$uri .= '/';
+		}
+		$uri = str_replace(moojon_config::key('index_file'), '', $uri);
+		if (substr($uri, (strlen($uri) - 1)) == '/') {
+			$uri = substr($uri, 0, (strlen($uri) - 1));
 		}
 		if (!$uri) {
 			$uri = '/';
@@ -103,11 +107,6 @@ final class moojon_uri extends moojon_base {
 	}
 	
 	static public function get_actions() {
-		/*****************************************/
-		/*This method needs to work. We need to 
-		also include actionless (view only) 
-		requests*/
-		/*****************************************/
 		$data = self::get_data();
 		require_once(moojon_paths::get_controller_path($data['app'], $data['controller']));
 		$actions = get_class_methods(self::get_controller_class($data['controller']));
