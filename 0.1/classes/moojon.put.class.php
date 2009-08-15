@@ -1,8 +1,7 @@
 <?php
 final class moojon_put extends moojon_base {
-	
 	static private $instance;
-	static private $data = array();
+	private $data = array();
 	
 	private function __construct() {
 		parse_str(file_get_contents('php://input'), $put);

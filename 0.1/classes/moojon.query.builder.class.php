@@ -284,7 +284,4 @@ class moojon_query_builder extends moojon_query_utilities
 		return moojon_query::build($this);
 	}
 }
-
-class mqb extends moojon_query_builder {}
-class qb extends moojon_query_builder {}
 ?>

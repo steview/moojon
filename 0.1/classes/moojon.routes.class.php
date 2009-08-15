@@ -1,6 +1,5 @@
 <?php
 final class moojon_routes extends moojon_base {
-	
 	static private $instance;
 	private $routes = array();
 	

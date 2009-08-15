@@ -57,5 +57,9 @@ abstract class moojon_base {
 	static public function get_controller_class($controller) {
 		return $controller.'_controller';
 	}
+	
+	final protected function is_symbol($subject) {
+		return (substr($subject, 0, 1) == ':');
+	}
 }
 ?>

@@ -1,8 +1,7 @@
 <?php
 final class moojon_cookie extends moojon_base {
-	
 	static private $instance;
-	static private $data = array();
+	private $data = array();
 	
 	private function __construct() {
 		$this->data = $_COOKIE;
@@ -22,10 +21,10 @@ final class moojon_cookie extends moojon_base {
 	
 	static public function has($key) {
 		$data = self::get_data();
-		if (is_array($data) == false) {
+		if (!is_array($data)) {
 			return false;
 		}
-		if (array_key_exists($key, $data) === true) {
+		if (array_key_exists($key, $data)) {
 			if ($data[$key] !== null) {
 				return true;
 			}
@@ -34,8 +33,8 @@ final class moojon_cookie extends moojon_base {
 	}
 	
 	static public function set($key, $value = null) {
-		if (moojon_config::has('cookie_expiry') == true) {
-			if (is_int(moojon_config::key('cookie_expiry')) == true) {
+		if (moojon_config::has('cookie_expiry')) {
+			if (is_int(moojon_config::key('cookie_expiry'))) {
 				$cookie_expiry = (time() + moojon_config::key('cookie_expiry'));
 			} else {
 				throw new moojon_exception('cookie_expiry must be an integer ('.moojon_config::key('cookie_expiry').')');
@@ -55,7 +54,7 @@ final class moojon_cookie extends moojon_base {
 	
 	static public function clear() {
 		$data = self::get_data();
-		if (is_array($data) == true) {
+		if (is_array($data)) {
 			foreach($data as $key => $value) {
 				self::set($key, $value);
 			}
@@ -67,8 +66,8 @@ final class moojon_cookie extends moojon_base {
 	
 	static public function key($key) {
 		$data = self::get_data();
-		if (is_array($data) == true) {
-			if (array_key_exists($key, $data) == true) {
+		if (is_array($data)) {
+			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
 				throw new moojon_exception("Key does not exists ($key)");

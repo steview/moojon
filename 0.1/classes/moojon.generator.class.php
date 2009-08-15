@@ -114,7 +114,7 @@ final class moojon_generator extends moojon_base {
 		$swaps = array('model' => $model);
 		$model_path = moojon_paths::get_project_models_directory()."$model.model.class.php";
 		self::run(MOOJON_PATH.'templates/model.template', $model_path, $swaps, false, false);
-		$swaps['columns'] = moojon_adapter::get_add_columns($table);
+		$swaps['columns'] = moojon_db_driver::get_add_columns($table);
 		self::run(MOOJON_PATH.'templates/base.model.template', moojon_paths::get_project_base_models_directory()."base.$model.model.class.php", $swaps, true, false);
 	}
 	
@@ -126,7 +126,7 @@ final class moojon_generator extends moojon_base {
 	static public function models() {
 		self::attempt_mkdir(moojon_paths::get_project_models_directory());
 		self::attempt_mkdir(moojon_paths::get_project_base_models_directory());
-		foreach (moojon_adapter::list_tables() as $table) {
+		foreach (moojon_db_driver::list_tables() as $table) {
 			self::model($table);
 		}
 	}

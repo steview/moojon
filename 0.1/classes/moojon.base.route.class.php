@@ -14,10 +14,6 @@ abstract class moojon_base_route extends moojon_base {
 		return (count(explode('/', $uri)) == count(explode('/', $this->pattern)));
 	}
 	
-	final protected function is_symbol($subject) {
-		return (substr($subject, 0, 1) == ':');
-	}
-	
 	final protected function get_symbol_name($symbol) {
 		return substr($symbol, 1);
 	}

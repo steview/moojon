@@ -40,6 +40,10 @@ final class moojon_config extends moojon_base {
 		}
 	}
 	
+	static public function key_or_null($key) {
+		return (self::has($key)) ? self::key($key) : null;
+	}
+	
 	static public function set($key, $value = null) {
 		if (!is_array($key)) {
 			$data = array($key => $value);

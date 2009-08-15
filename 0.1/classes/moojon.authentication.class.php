@@ -1,7 +1,7 @@
 <?php
 final class moojon_authentication extends moojon_base {
 	static private $instance;
-	static private $profile = false;
+	private $profile = false;
 	
 	private function __construct() {
 		$security = $this->get_security();
@@ -39,7 +39,7 @@ final class moojon_authentication extends moojon_base {
 	static private function get_security() {
 		$security_class = moojon_config::key('security_class');
 		$security = new $security_class;
-		if (is_subclass_of($security, 'moojon_base_security') === false) {
+		if (!is_subclass_of($security, 'moojon_base_security')) {
 			throw new moojon_exception('Invalid security class ('.get_class($security).')');
 		}
 		return $security;

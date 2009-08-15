@@ -17,15 +17,11 @@ final class moojon_assets extends moojon_base {
 		$this->js = self::prepare_additions($jss, 'js');
 	}
 	
-	static public function get($key = null) {
+	static public function get() {
 		if (!self::$instance) {
 			self::$instance = new moojon_assets();
 		}
-		if ($key == null) {
-			return self::$instance;
-		} else {
-			return self::$instance->$key;
-		}
+		return self::$instance;
 	}
 	
 	static private function prepare_additions($additions, $ext) {
@@ -35,7 +31,7 @@ final class moojon_assets extends moojon_base {
 		} else {
 			$dot = '';
 		}
-		if (is_array($additions) == false) {
+		if (!is_array($additions)) {
 			foreach (explode(',', $additions) as $addition) {
 				$return[] = moojon_files::strip_ext(trim($addition), $ext).$dot.$ext;
 			}
@@ -49,9 +45,9 @@ final class moojon_assets extends moojon_base {
 	
 	static public function add_css($additions, $dynamic = false) {
 		$instance = self::get();
-		$ext = ($dynamic === false) ? 'css' : '';
+		$ext = (!$dynamic) ? 'css' : '';
 		foreach (self::prepare_additions($additions, $ext) as $css) {
-			if (in_array($css, $instance->css) === false) {
+			if (!in_array($css, $instance->css)) {
 				$instance->css[] = $css;
 			}
 		}
@@ -59,9 +55,9 @@ final class moojon_assets extends moojon_base {
 	
 	static public function add_js($additions, $dynamic = false) {
 		$instance = self::get();
-		$ext = ($dynamic === false) ? 'js' : '';
+		$ext = (!$dynamic) ? 'js' : '';
 		foreach (self::prepare_additions($additions, $ext) as $js) {
-			if (in_array($js, $instance->js) === false) {
+			if (!in_array($js, $instance->js)) {
 				$instance->js[] = $js;
 			}
 		}

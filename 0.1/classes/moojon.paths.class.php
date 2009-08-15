@@ -11,16 +11,20 @@ final class moojon_paths extends moojon_base {
 		return self::get_moojon_directory().moojon_config::key('classes_directory').'/';
 	}
 	
-	static public function get_adapters_directory() {
-		return self::get_classes_directory().moojon_config::key('adapters_directory').'/';
+	static public function get_interfaces_directory() {
+		return self::get_moojon_directory().moojon_config::key('interfaces_directory').'/';
 	}
 	
-	static public function get_adapter_directory() {
-		return self::get_adapters_directory().moojon_config::key('adapter').'/';
+	static public function get_db_drivers_directory() {
+		return self::get_classes_directory().moojon_config::key('db_drivers_directory').'/';
+	}
+	
+	static public function get_db_driver_directory() {
+		return self::get_db_drivers_directory().moojon_config::key('db_driver').'/';
 	}
 	
 	static public function get_columns_directory() {
-		return self::get_adapter_directory().moojon_config::key('columns_directory').'/';
+		return self::get_db_driver_directory().moojon_config::key('columns_directory').'/';
 	}
 	
 	static public function get_validations_directory() {
@@ -195,8 +199,8 @@ final class moojon_paths extends moojon_base {
 		$paths = array(
 			self::get_classes_directory()
 		);
-		if (moojon_config::has('adapter')) {
-			$paths[] = self::get_adapter_directory();
+		if (moojon_config::has('db_driver')) {
+			$paths[] = self::get_db_driver_directory();
 			$paths[] = self::get_columns_directory();
 		}
 		$paths[] = self::get_validations_directory();
@@ -208,6 +212,13 @@ final class moojon_paths extends moojon_base {
 		$paths[] = self::get_moojon_models_directory();
 		$paths[] = self::get_moojon_base_models_directory();
 		$paths[] = self::get_moojon_migrations_directory();
+		return $paths;
+	}
+	
+	static public function get_interface_paths() {
+		$paths = array(
+			self::get_interfaces_directory()
+		);
 		return $paths;
 	}
 	
@@ -261,6 +272,10 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_class_path($class) {
 		return self::get_path(self::get_class_paths(), str_replace('_', '.', $class).'.class.php');
+	}
+	
+	static public function get_interface_path($interface) {
+		return self::get_path(self::get_interface_paths(), str_replace('_', '.', $interface).'.interface.php');
 	}
 	
 	static public function get_app_path($app) {

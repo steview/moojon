@@ -486,7 +486,6 @@ abstract class moojon_base_model extends moojon_query_utilities {
 			}
 		}
 		moojon_query_runner::delete($instance->obj, $where);
-		
 	}
 	
 	final protected function base_delete() {

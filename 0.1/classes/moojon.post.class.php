@@ -1,8 +1,7 @@
 <?php
 final class moojon_post extends moojon_base {
-	
 	static private $instance;
-	static private $data = array();
+	private $data = array();
 	
 	private function __construct() {
 		$this->data = $_POST;

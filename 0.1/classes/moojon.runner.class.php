@@ -31,7 +31,7 @@ final class moojon_runner extends moojon_base {
 		}
 		$instance = new $moojon;
 		$instance->render(true);
-		moojon_connection::close();
+		moojon_db::close();
 	}
 	
 	static public function get() {

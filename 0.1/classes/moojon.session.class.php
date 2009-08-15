@@ -1,6 +1,5 @@
 <?php
 final class moojon_session extends moojon_base {
-	
 	static private $instance;
 	private $data = array();
 	

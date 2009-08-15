@@ -60,7 +60,7 @@ final class moojon_query_runner extends moojon_query_utilities {
 		return self::run('SHOW FULL TABLES', $obj, null, $where, null, null);
 	}
 	
-	static public function create_table($obj, $data, $option = null) {
+	static public function create_table($obj, $data, $options = null) {
 		return self::run('CREATE TABLE', $obj, $data, $options, null, null);
 	}
 	

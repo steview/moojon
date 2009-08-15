@@ -2,7 +2,7 @@
 final class moojon_env extends moojon_base {
 	
 	static private $instance;
-	static private $data = array();
+	private $data = array();
 	
 	private function __construct() {
 		$this->data = $_ENV;
