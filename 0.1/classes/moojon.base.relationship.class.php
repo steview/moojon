@@ -1,14 +1,13 @@
 <?php
-abstract class moojon_base_relationship extends moojon_base
-{
+abstract class moojon_base_relationship extends moojon_base {
 	protected $name;
-	protected $foreign_obj;
+	protected $foreign_table;
 	protected $foreign_key;
 	protected $key;
 	
-	final public function __construct($name, $foreign_obj, $foreign_key, $key) {
+	final public function __construct($name, $foreign_table, $foreign_key, $key) {
 		$this->name = $name;
-		$this->foreign_obj = moojon_inflect::pluralize($foreign_obj);
+		$this->foreign_table = moojon_inflect::pluralize($foreign_table);
 		$this->foreign_key = $foreign_key;
 		$this->key = $key;
 	}
@@ -17,8 +16,8 @@ abstract class moojon_base_relationship extends moojon_base
 		return $this->name;
 	}
 	
-	final public function get_foreign_obj() {
-		return $this->foreign_obj;
+	final public function get_foreign_table() {
+		return $this->foreign_table;
 	}
 	
 	final public function get_foreign_key() {
@@ -30,10 +29,10 @@ abstract class moojon_base_relationship extends moojon_base
 	}
 	
 	public function get_where(moojon_base_model $accessor) {
-		$foreign_obj = $this->foreign_obj;
+		$foreign_table = $this->foreign_table;
 		$foreign_key = $this->foreign_key;
 		$key = $this->key;
-		return "$foreign_obj.$foreign_key = ".$accessor->$key;
+		return "$foreign_table.$foreign_key = ".$accessor->$key;
 	}
 }
 ?>

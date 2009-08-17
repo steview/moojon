@@ -10,7 +10,7 @@ final class moojon_model_ui extends moojon_base {
 	}
 	
 	static private function process_text(moojon_base_column $column) {
-		return ucfirst(str_replace('_', ' ', moojon_primary_key::get_obj($column->get_name())));
+		return ucfirst(str_replace('_', ' ', moojon_primary_key::get_table($column->get_name())));
 	}
 	
 	static private function process_attributes(moojon_base_column $column, moojon_base_model $model) {

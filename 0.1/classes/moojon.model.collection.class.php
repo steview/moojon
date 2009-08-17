@@ -51,7 +51,7 @@ final class moojon_model_collection extends ArrayObject {
 	
 	public function get() {
 		if ($this->relationship != null) {
-			$foreign_class_name = moojon_inflect::singularize($this->relationship->get_foreign_obj());
+			$foreign_class_name = moojon_inflect::singularize($this->relationship->get_foreign_table());
 			$foreign_class = new $foreign_class_name;
 			$records = $foreign_class->read($this->relationship->get_where($this->accessor), null, null, $this->accessor);
 			switch (get_class($this->relationship)) {

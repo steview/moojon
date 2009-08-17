@@ -10,14 +10,14 @@ final class moojon_primary_key extends moojon_base_column {
 		$this->name = self::NAME;
 	}
 	
-	public function get_foreign_key($obj) {
-		if (substr($obj, 0, 5) == 'base_') {
-			$obj = substr($obj, 5);
+	public function get_foreign_key($table) {
+		if (substr($table, 0, 5) == 'base_') {
+			$table = substr($table, 5);
 		}
-		return moojon_inflect::singularize($obj).'_'.self::NAME;
+		return moojon_inflect::singularize($table).'_'.self::NAME;
 	}
 	
-	public function get_obj($foreign_key) {
+	public function get_table($foreign_key) {
 		return str_replace('_'.self::NAME, '', $foreign_key);
 	}
 	
