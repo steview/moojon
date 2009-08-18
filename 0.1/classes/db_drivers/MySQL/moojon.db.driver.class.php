@@ -77,8 +77,8 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 			$apos = (!$symbol) ? "'" : '';
 			$values .= ", $apos$value$apos";
 		}
-		$columns = ' VALUES('.substr($values, 2).')';
 		$columns = implode(', ', array_keys($columns));
+		$values = ' VALUES('.substr($values, 2).')';
 		return "INSERT INTO $table ($columns)$values;";
 	}
 	
@@ -86,7 +86,8 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		$where = self::require_prefix($where, 'WHERE ');
 		$values = '';
 		foreach($columns as $key => $value) {
-			$values .= ", $key = '$value'";
+			$apos = (!$symbol) ? "'" : '';
+			$values .= ", $key = $apos$value$apos";
 		}
 		return "UPDATE $table SET ".substr($values, 2)."$where;";
 	}

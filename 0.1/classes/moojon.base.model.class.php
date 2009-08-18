@@ -384,12 +384,12 @@ abstract class moojon_base_model extends moojon_query_utilities {
 				$placeholders[$column_name] = ":$column_name";
 			}
 			if ($this->new_record == true) {
-				$statement = moojon_db::insert($this->table, $placeholders);
+				$statement = moojon_db::insert($this->table, $placeholders, true);
 			} else {
 				if ($this->unsaved === true) {
 					$id_property = moojon_primary_key::NAME;
 					$data[":$id_property"] = $this->$id_property;
-					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property");
+					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", true);
 				} else {
 					$saved = false;
 				}
@@ -453,25 +453,16 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	final static protected function base_update($class, $data, $where) {
-		$args = func_get_args();
-		array_shift($args);
-		$builder = self::find_builder($args);
-		$data = self::resolve($data, $builder, 'data');
-		$where = self::resolve($where, $builder, 'where');
 		$instance = self::init($class);
 		$id_property = moojon_primary_key::NAME;
-		$query_data = array();
-		foreach ($instance->get_editable_column_names() as $column_name) {
-			$query_data[$column_name] = $data[$column_name];
+		$placeholders = array();
+		$values = array();
+		foreach ($data as $key => $value) {
+			$placeholders[$key]= ":$key";
+			$values[":$key"] = $value;
 		}
-		if (!$where) {
-			$where = $data[$id_property];
-		}
-		$builder = moojon_query_builder::init()->update($instance->table, $query_data);
-		if ($where) {
-			$builder->where($where);
-		}
-		$builder->run();
+		$statement = moojon_db::update($instance->table, $placeholders, $where, true);
+		return $statement->execute($values);
 	}
 	
 	final static protected function base_destroy($class, $where) {
@@ -483,7 +474,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 		foreach ($instance->read($where) as $record) {
 			foreach($record->get_relationships() as $relationship) {
 				if (get_class($relationship) == 'moojon_has_many_relationship' || get_class($relationship) == 'moojon_has_many_to_many_relationship') {
-					//$relationship->delete();
+					$relationship->delete();
 				}
 			}
 		}
@@ -492,12 +483,14 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	
 	final protected function base_delete() {
 		$where = '';
+		$data = array();
 		foreach ($this->get_primary_keys() as $column) {
-			$where .= $column->get_name()." = '".$column->get_value()."' AND ";
+			$where .= $column->get_name().' = :'.$column->get_name().' AND ';
+			$data[':'.$column->get_name()] = $column->get_value();
 		}
 		$where = substr($where, 0, (strlen($where) - 5)).';';
-		moojon_query_runner::delete($this->table, $where);
-		return true;
+		$statement = moojon_db::delete($this->table, $where);
+		return $statement->execute($data);
 	}
 	
 	final public function set($data, $value = null) {

@@ -5,16 +5,16 @@ final class moojon_migrate_cli extends moojon_base_cli {
 		$this->get_migrations();
 		switch ($command) {
 			case 'roll_back':
-				self::check_arguments('moojon_migrate_cli::roll_back()', 1, $arguments);
+				$arguments = self::check_arguments('moojon_migrate_cli::roll_back()', 1, $arguments);
 				$migration = $this->prompt_until_in($arguments[0], $this->get_migrations(), 'Which migration?');
 				moojon_migrator::roll_back($migration);
 				break;
 			case 'reset':
-				self::check_arguments('moojon_migrate_cli::reset()', 0, $arguments);
+				$arguments = self::check_arguments('moojon_migrate_cli::reset()', 0, $arguments);
 				moojon_migrator::reset();
 				break;
 			case 'run':
-				self::check_arguments('moojon_migrate_cli::run()', 0, $arguments);
+				$arguments = self::check_arguments('moojon_migrate_cli::run()', 0, $arguments);
 				moojon_migrator::run();
 				break;
 		}

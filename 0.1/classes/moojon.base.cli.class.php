@@ -39,6 +39,10 @@ abstract class moojon_base_cli extends moojon_base {
 		if (count($arguments) > $expected) {
 			self::handle_argument_mismatch_error($method, $expected, $arguments);
 		}
+		while (count($arguments) < $expected) {
+			$arguments[] = '';
+		}
+		return $arguments;
 	}
 	
 	final protected function handle_argument_mismatch_error($method, $expected, Array $arguments) {
