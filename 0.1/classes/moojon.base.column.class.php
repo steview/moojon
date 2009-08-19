@@ -46,7 +46,7 @@ abstract class moojon_base_column extends moojon_base {
 	}
 	
 	final protected function get_default_string() {
-		if ($default) {
+		if ($this->default) {
 			return 'DEFAULT '.$this->default;
 		} else {
 			return '';

@@ -241,7 +241,7 @@ final class moojon_db {
 	}
 	
 	static public function show_tables() {
-		return self::run(self::prepare(moojon_db_driver::show_tables()), $params);
+		return self::run(self::prepare(moojon_db_driver::show_tables()));
 	}
 	
 	static public function show_columns($table, $params = array()) {
@@ -296,7 +296,7 @@ final class moojon_db {
 		return self::run(self::prepare(moojon_db_driver::delete($table, $where)), $params);
 	}
 	
-	static public function run(PDOStatement $statement, $params, $fetch_style = self::FETCH_ASSOC) {
+	static public function run(PDOStatement $statement, $params = array(), $fetch_style = self::FETCH_ASSOC) {
 		$statement->execute($params);
 		return $statement->fetchAll($fetch_style);
 	}

@@ -409,6 +409,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static protected function base_read($class, $where, $order, $limit, $accessor) {
+		die("\n$class, $where, $order, $limit, $accessor\n");
 		$instance = self::init(self::strip_base($class));
 		$columns = array();
 		foreach($instance->columns as $column) {

@@ -5,14 +5,16 @@ final class moojon_migrator extends moojon_base {
 	static public function run() {
 		self::find_or_create_schema_migrations_table();
 		$migration_files = array();
-		foreach (schema_migration::read(null, 'version') as $migration) {
+		echo schema_migration::read(null, 'version');
+		/*foreach (schema_migration::read(null, 'version') as $migration) {
 			$migration_files[] = $migration->version;
-		}
-		foreach (moojon_files::directory_files(moojon_paths::get_project_migrations_directory()) as $migration_file) {
+		}*/
+		die("\nDying...\n");
+		/*foreach (moojon_files::directory_files(moojon_paths::get_project_migrations_directory()) as $migration_file) {
 			if (!in_array($migration_file, $migration_files)) {
 				self::run_migration($migration_file, 'up');
 			}
-		}
+		}*/
 	}
 	
 	static public function roll_back($migration_file, $all = false) {

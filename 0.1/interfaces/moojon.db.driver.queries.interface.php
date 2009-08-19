@@ -1,6 +1,6 @@
 <?php
 interface moojon_db_driver_queries {
-	static public function create_table($table, $columns, $options = null);
+	static public function create_table($table, $columns = array(), $options = null);
 	
 	static public function show_tables();
 	

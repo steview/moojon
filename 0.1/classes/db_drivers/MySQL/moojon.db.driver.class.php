@@ -1,11 +1,11 @@
 <?php
 final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_driver_queries {
-	static public function create_table($table, $columns, $options = null) {
+	static public function create_table($table, $columns = array(), $options = null) {
 		if (is_array($columns)) {
 			$columns = implode(', ', $columns);
 		}
-		$query .= "CREATE TABLE $table($columns)";
-		if ($where) {
+		$query = "CREATE TABLE $table($columns)";
+		if ($options) {
 			$query .= " $options";
 		}
 		return $query .= ';';
