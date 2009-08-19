@@ -67,32 +67,32 @@ abstract class moojon_base_migration extends moojon_base {
 			$primary_key->create_table($name, $data, $options);
 		} else {
 			$data = implode(', ', $data);
-			moojon_query_runner::create_table($name, $data, $options);
+			moojon_db::create_table($name, $data, $options);
 		}
 	}
 	
 	final protected function remove_table($name) {
-		moojon_query_runner::drop_table($name);
+		moojon_db::drop_table($name);
 	}
 	
 	final protected function rename_table($old_table_name, $new_table_name) {
-		moojon_query_runner::alter_table_rename($old_table_name, $new_table_name);
+		moojon_db::alter_table_rename($old_table_name, $new_table_name);
 	}
 	
 	final protected function add_column($table_name, $column) {
-		moojon_query_runner::alter_table_add_column($table_name, $column->get_add_column());
+		moojon_db::alter_table_add_column($table_name, $column->get_add_column());
 	}
 	
 	final protected function remove_column($table_name, $column_name) {
-		moojon_query_runner::alter_table_drop_column($table_name, $column_name);
+		moojon_db::alter_table_drop_column($table_name, $column_name);
 	}
 	
 	final protected function rename_column($table_name, $old_column_name, $new_column_name) {
-		moojon_query_runner::alter_table_change_column($table_name, "$old_column_name $new_column_name");
+		moojon_db::alter_table_change_column($table_name, "$old_column_name $new_column_name");
 	}
 	
 	final protected function change_column($table_name, $column) {
-		moojon_query_runner::alter_table_modify_column($table_name, $column->get_add_column());
+		moojon_db::alter_table_modify_column($table_name, $column->get_add_column());
 	}
 	
 	final protected function add_index($table_name, $column_name, $options = null) {
@@ -100,11 +100,11 @@ abstract class moojon_base_migration extends moojon_base {
 		if ($options) {
 			$data = "$data $options";
 		}
-		moojon_query_runner::alter_table_add_index($table_name, $data);
+		moojon_db::alter_table_add_index($table_name, $data);
 	}
 	
 	final protected function remove_index($table_name, $column_name) {
-		moojon_query_runner::alter_table_drop_index($table_name, $column_name);
+		moojon_db::alter_table_drop_index($table_name, $column_name);
 	}
 }
 ?>

@@ -21,21 +21,6 @@ final class moojon_primary_key extends moojon_base_column {
 		return str_replace('_'.self::NAME, '', $foreign_key);
 	}
 	
-	public function create_table($name, $columns, $options = null) {
-		if (!is_array($columns)) {
-			$data = array($columns);
-		} else {
-			$data = $columns;
-		}
-		$type = self::TYPE;
-		if (self::LIMIT) {
-			$type .= '('.self::LIMIT.')';
-		}
-		array_unshift($data, self::NAME." $type ".self::NULL.' '.self::OPTIONS);
-		$data[] = 'PRIMARY KEY('.self::NAME.')';
-		moojon_query_runner::create_table($name, implode(', ', $data), $options);
-	}
-	
 	public function __toString() {
 		return $this->name.' INTEGER('.$this->limit.') '.$this->get_null_string().' '.$this->get_default_string().' AUTO_INCREMENT';
 	}

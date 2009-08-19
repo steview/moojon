@@ -5,7 +5,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 		switch ($command) {
 			case 'model':
 				$arguments = self::check_arguments('moojon_generate_cli::model()', 1, $arguments);
-				$table = $this->prompt_until_in($arguments[0], moojon_db_driver::list_tables(), 'What table would you like to generate a model for?');
+				$table = $this->prompt_until_in($arguments[0], moojon_db::list_tables(), 'What table would you like to generate a model for?');
 				moojon_generator::model($table);
 				break;
 			case 'models':
@@ -76,7 +76,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 						throw new moojon_exception('Unable to generate scaffold (no models)');
 					}
 				}
-				$model = $this->prompt_until_in($arguments[1], moojon_db_driver::list_tables(), 'What model would you like to generate a scaffold for?');
+				$model = $this->prompt_until_in($arguments[1], moojon_db::list_tables(), 'What model would you like to generate a scaffold for?');
 				
 				$controller = $this->prompt_until($arguments[2], 'Please enter a controller name', $model);
 				moojon_generator::scaffold($app, $model, $controller);

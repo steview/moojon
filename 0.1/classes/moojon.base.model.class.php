@@ -1,5 +1,5 @@
 <?php
-abstract class moojon_base_model extends moojon_query_utilities {
+abstract class moojon_base_model extends moojon_base {
 	
 	protected $table;
 	protected $class;
@@ -409,21 +409,13 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	final static protected function base_read($class, $where, $order, $limit, $accessor) {
-		$class = self::strip_base($class);
-		$args = func_get_args();
-		array_shift($args);
-		$builder = self::find_builder($args);
-		$where = self::resolve($where, $builder, 'where');
-		$order = self::resolve($order, $builder, 'order');
-		$limit = self::resolve($limit, $builder, 'limit');
-		$instance = self::init($class);
+		$instance = self::init(self::strip_base($class));
 		$columns = array();
 		foreach($instance->columns as $column) {
 			$columns[$instance->table.'.'.$column->get_name()] = strtoupper(moojon_inflect::singularize(get_class($instance)).'_'.$column->get_name());
 		}
 		$records = new moojon_model_collection($accessor);
-		$rows = moojon_query_runner::select($instance->table, $columns, $where, $order, $limit);
-		foreach($rows as $row) {
+		foreach(moojon_db::select($instance->table, $columns, $where, $order, $limit) as $row) {
 			$record = self::init($class);
 			foreach($instance->columns as $column) {
 				$column_name = $column->get_name();
@@ -435,14 +427,10 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	final static protected function base_create($class, $data) {
-		$args = func_get_args();
-		array_shift($args);
-		$builder = self::find_builder($args);
-		$data = self::resolve($data, $builder, 'data');
 		if ($data == null) {
 			$data = array();
 		}
-		$instance = self::init($class);
+		$instance = self::init(self::strip_base($class));
 		$instance->new_record = true;
 		foreach ($instance->get_editable_column_names() as $column_name) {
 			if (array_key_exists($column_name, $data)) {
@@ -453,7 +441,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	final static protected function base_update($class, $data, $where) {
-		$instance = self::init($class);
+		$instance = self::init(self::strip_base($class));
 		$id_property = moojon_primary_key::NAME;
 		$placeholders = array();
 		$values = array();
@@ -466,10 +454,6 @@ abstract class moojon_base_model extends moojon_query_utilities {
 	}
 	
 	final static protected function base_destroy($class, $where) {
-		$args = func_get_args();
-		array_shift($args);
-		$builder = self::find_builder($args);
-		$where = self::resolve($where, $builder, 'where');
 		$instance = self::init($class);
 		foreach ($instance->read($where) as $record) {
 			foreach($record->get_relationships() as $relationship) {
@@ -478,7 +462,7 @@ abstract class moojon_base_model extends moojon_query_utilities {
 				}
 			}
 		}
-		moojon_query_runner::delete($instance->table, $where);
+		moojon_db::delete($instance->table, $where);
 	}
 	
 	final protected function base_delete() {
