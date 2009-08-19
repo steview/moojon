@@ -172,128 +172,133 @@ final class moojon_db {
 	}
 	
 	static public function begin_transaction() {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->beginTransaction();
 	}
 	
 	static public function commit() {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->commit();
 	}
 	
 	static public function error_code() {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->errorCode();
 	}
 	
 	static public function error_info() {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->errorInfo();
 	}
 	
 	static public function exec() {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->exec();
 	}
 	
 	static public function get_attribute($attribute) {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->getAttribute($attribute);
 	}
 	
 	static public function get_available_drivers() {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->getAvailableDrivers();
 	}
 	
 	static public function last_insert_id($name = null) {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->lastInsertId($name);
 	}
 	
 	static public function prepare($statement, $driver_options = array()) {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->prepare($statement, $driver_options);
 	}
 	
 	static public function query($statement) {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->query($statement);
 	}
 	
 	static public function quote($string, $parameter_type = PDO::PARAM_STR) {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->quote($string, $parameter_type);
 	}
 	
 	static public function roll_back() {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->rollBack();
 	}
 	
 	static public function set_attribute($attribute, $value) {
-		$data = moojon_db::get_data();
+		$data = self::get_data();
 		return $data->setAttribute($attribute, $value);
 	}
 	
-	static public function create_table($table, $data, $options = null) {
-		return self::prepare(moojon_db_driver::create_table($table, $data, $options));
+	static public function create_table($table, $data, $options = null, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::create_table($table, $data, $options)), $params);
 	}
 	
 	static public function show_tables() {
-		return self::prepare(moojon_db_driver::show_tables());
+		return self::run(self::prepare(moojon_db_driver::show_tables()), $params);
 	}
 	
-	static public function show_columns($table) {
-		return self::prepare(moojon_db_driver::show_columns($table));
+	static public function show_columns($table, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::show_columns($table)), $params);
 	}
 	
-	static public function drop_table($table) {
-		return self::prepare(moojon_db_driver::drop_table($table));
+	static public function drop_table($table, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::drop_table($table)), $params);
 	}
 	
-	static public function alter_table_rename($table, $data) {
-		return self::prepare(moojon_db_driver::alter_table_rename($table, $data));
+	static public function alter_table_rename($table, $data, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::alter_table_rename($table, $data)), $params);
 	}
 	
-	static public function add_column($table, $data) {
-		return self::prepare(moojon_db_driver::add_column($table, $data));
+	static public function add_column($table, $data, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::add_column($table, $data)), $params);
 	}
 	
-	static public function drop_column($table, $data) {
-		return self::prepare(moojon_db_driver::drop_column($table, $data));
+	static public function drop_column($table, $data, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::drop_column($table, $data)), $params);
 	}
 	
-	static public function change_column($table, $data) {
-		return self::prepare(moojon_db_driver::change_column($table, $data));
+	static public function change_column($table, $data, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::change_column($table, $data)), $params);
 	}
 	
-	static public function modify_column($table, $data) {
-		return self::prepare(moojon_db_driver::modify_column($table, $data));
+	static public function modify_column($table, $data, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::modify_column($table, $data)), $params);
 	}
 	
-	static public function add_index($table, $data, $options = null) {
-		return self::prepare(moojon_db_driver::add_index($table, $data));
+	static public function add_index($table, $data, $options = null, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::add_index($table, $data)), $params);
 	}
 	
-	static public function drop_index($table, $data) {
-		return self::prepare(moojon_db_driver::drop_index($table, $data));
+	static public function drop_index($table, $data, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::drop_index($table, $data)), $params);
 	}
 	
-	static public function select($table, $data = null, $where = null, $order = null, $limit = null) {
-		return self::prepare(moojon_db_driver::select($table, $data, $where, $order, $limit));
+	static public function select($table, $data = null, $where = null, $order = null, $limit = null, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::select($table, $data, $where, $order, $limit)), $params);
 	}
 	
-	static public function insert($table, $data = null) {
-		return self::prepare(moojon_db_driver::insert($table, $data));
+	static public function insert($table, $data = null, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::insert($table, $data)), $params);
 	}
 	
-	static public function update($table, $data = null, $where = null) {
-		return self::prepare(moojon_db_driver::update($table, $data, $where));
+	static public function update($table, $data = null, $where = null, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::update($table, $data, $where)), $params);
 	}
 	
-	static public function delete($table, $where = null) {
-		return self::prepare(moojon_db_driver::delete($table, $where));
+	static public function delete($table, $where = null, $params = array()) {
+		return self::run(self::prepare(moojon_db_driver::delete($table, $where)), $params);
+	}
+	
+	static public function run(PDOStatement $statement, $params, $fetch_style = self::FETCH_ASSOC) {
+		$statement->execute($params);
+		return $statement->fetchAll($fetch_style);
 	}
 }
 ?>
