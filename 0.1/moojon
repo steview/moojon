@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/Applications/MAMP/bin/php5/bin/php
 <?php
 define('MOOJON_VERSION', '0.1');
 define('MOOJON_PATH', '/Library/Moojon/'.MOOJON_VERSION.'/');

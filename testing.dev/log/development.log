@@ -1,0 +1,18 @@
+2009-06-25 13:50:02 Europe/London: Running: SHOW TABLES ;
+
+2009-06-25 13:53:09 Europe/London: Running: SHOW TABLES ;
+
+2009-06-25 13:54:45 Europe/London: Running: SHOW TABLES ;
+
+2009-06-25 13:55:20 Europe/London: Running: SHOW TABLES ;
+
+2009-06-25 13:56:08 Europe/London: Running: SHOW TABLES ;
+
+2009-06-25 13:59:04 Europe/London: Running: SHOW TABLES ;
+
+2009-06-25 14:00:02 Europe/London: Running: SHOW TABLES ;
+
+2009-08-20 14:08:36 Europe/London: SHOW FULL TABLES;
+
+2009-08-20 14:08:36 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+

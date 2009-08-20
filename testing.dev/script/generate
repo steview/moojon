@@ -1,0 +1,10 @@
+#!/Applications/MAMP/bin/php5/bin/php
+<?php
+define('MOOJON_VERSION', '0.1');
+define('MOOJON_PATH', '/Library/Moojon/0.1/');
+define('PROJECT_DIRECTORY', '/Library/Moojon/testing.dev/');
+define('ENVIRONMENT', 'development');
+define('UI', 'CLI');
+define('CLI', 'moojon_generate_cli');
+require_once('/Library/Moojon/0.1/moojon.php');
+?>

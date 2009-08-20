@@ -1,5 +1,5 @@
 <?php
-final class moojon_db {
+final class moojon_db  extends moojon_base {
 	const PARAM_BOOL = PDO::PARAM_BOOL;
 	const PARAM_NULL = PDO::PARAM_NULL;
 	const PARAM_INT = PDO::PARAM_INT;
@@ -298,6 +298,7 @@ final class moojon_db {
 	
 	static public function run(PDOStatement $statement, $params = array(), $fetch_style = self::FETCH_ASSOC) {
 		$statement->execute($params);
+		self::log($statement->queryString);
 		return $statement->fetchAll($fetch_style);
 	}
 }
