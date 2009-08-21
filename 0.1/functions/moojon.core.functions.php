@@ -10,6 +10,9 @@ function __autoload($class) {
 	if (!$class_path) {
 		$class_path = moojon_paths::get_interface_path($class);
 	}
+	if (!$class_path) {
+		$class_path = moojon_paths::get_column_path($class);
+	}
 	if ($class_path) {
 		require_once($class_path);
 	} else {

@@ -227,6 +227,14 @@ final class moojon_paths extends moojon_base {
 		return $paths;
 	}
 	
+	static public function get_column_paths() {
+		$paths = array();
+		if (moojon_config::has('db_driver')) {
+			$paths[] = self::get_columns_directory();
+		}
+		return $paths;
+	}
+	
 	static public function get_interface_paths() {
 		$paths = array(
 			self::get_interfaces_directory()
@@ -292,6 +300,10 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_base_model_path($model) {
 		return self::get_path(self::get_base_model_paths(), 'base.'.moojon_base_model::strip_base($model).'.model.class.php');
+	}
+	
+	static public function get_column_path($column) {
+		return self::get_path(self::get_column_paths(), str_replace('_', '.', $column).'.column.class.php');
 	}
 	
 	static public function get_interface_path($interface) {

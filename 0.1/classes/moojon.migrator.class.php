@@ -8,11 +8,15 @@ final class moojon_migrator extends moojon_base {
 		foreach (schema_migration::read(null, 'version') as $migration) {
 			$migration_files[] = $migration->version;
 		}
+		echo "run1\n";
 		foreach (moojon_files::directory_files(moojon_paths::get_project_migrations_directory()) as $migration_file) {
 			if (!in_array($migration_file, $migration_files)) {
+				echo "run2\n";
 				self::run_migration($migration_file, 'up');
+				echo "run3\n";
 			}
 		}
+		echo "run\n";
 	}
 	
 	static public function roll_back($migration_file, $all = false) {
@@ -33,9 +37,13 @@ final class moojon_migrator extends moojon_base {
 	}
 	
 	static private function run_migration($migration_file, $direction) {
+		require_once($migration_file);
 		$migration_class_name = self::get_migration_class_name($migration_file);
 		$migration = new $migration_class_name;
+		echo "run_migration1\n";
+		var_dump($migration);
 		$migration->$direction();
+		echo "run_migration2\n";
 		switch ($direction) {
 			case 'up':
 				schema_migration::create(array('version' => $migration_file))->save();

@@ -304,7 +304,7 @@ final class moojon_db  extends moojon_base {
 		$statement->execute($params);
 		self::log($statement->queryString);
 		if ($statement->rowCount()) {
-			$statement->fetchAll($fetch_style);
+			return $statement->fetchAll($fetch_style);
 		} else {
 			return array();
 		}
