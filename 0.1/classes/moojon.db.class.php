@@ -149,7 +149,11 @@ final class moojon_db  extends moojon_base {
 			}
 			$db_dsn = substr($db_dsn, 0, (strlen($db_dsn) - 1));
 		}
-		$this->data = new PDO("$db_driver:$db_dsn", moojon_config::key_or_null('db_username'), moojon_config::key_or_null('db_password'), moojon_config::key_or_null('db_driver_options'));
+		$db_username = moojon_config::key_or_null('db_username');
+		$db_password = moojon_config::key_or_null('db_password');
+		$db_driver_options = moojon_config::key_or_null('db_driver_options');
+		$this->data = new PDO("$db_driver:$db_dsn", $db_username, $db_password, $db_driver_options);
+		$this->data->setAttribute(self::ATTR_ERRMODE, self::ERRMODE_EXCEPTION);
 	}
 	
 	static public function get() {
@@ -166,8 +170,8 @@ final class moojon_db  extends moojon_base {
 	
 	static public function close() {
 		if (self::$instance) {
-			$instance->data = null;
-			$instance = self::get();
+			//$instance->data = null;
+			//$instance = self::get();
 		}
 	}
 	
@@ -299,7 +303,11 @@ final class moojon_db  extends moojon_base {
 	static public function run(PDOStatement $statement, $params = array(), $fetch_style = self::FETCH_ASSOC) {
 		$statement->execute($params);
 		self::log($statement->queryString);
-		return $statement->fetchAll($fetch_style);
+		if ($statement->rowCount()) {
+			$statement->fetchAll($fetch_style);
+		} else {
+			return array();
+		}
 	}
 }
 ?>

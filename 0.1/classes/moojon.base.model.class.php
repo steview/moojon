@@ -26,7 +26,7 @@ abstract class moojon_base_model extends moojon_base {
 		return $class;
 	}
 	
-	final protected function init($class) {
+	final static protected function init($class) {
 		$class = self::strip_base($class);
 		$instance = new $class;
 		$instance->add_columns();
@@ -383,13 +383,13 @@ abstract class moojon_base_model extends moojon_base {
 				$data[":$column_name"] = $this->$column_name;
 				$placeholders[$column_name] = ":$column_name";
 			}
-			if ($this->new_record == true) {
-				$statement = moojon_db::insert($this->table, $placeholders, true);
+			if ($this->new_record) {
+				$statement = moojon_db::insert($this->table, $placeholders, $data);
 			} else {
 				if ($this->unsaved === true) {
 					$id_property = moojon_primary_key::NAME;
 					$data[":$id_property"] = $this->$id_property;
-					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", true);
+					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $data);
 				} else {
 					$saved = false;
 				}
@@ -409,8 +409,8 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static protected function base_read($class, $where, $order, $limit, $accessor) {
-		die("\n$class, $where, $order, $limit, $accessor\n");
-		$instance = self::init(self::strip_base($class));
+		$class = self::strip_base($class);
+		$instance = self::init($class);
 		$columns = array();
 		foreach($instance->columns as $column) {
 			$columns[$instance->table.'.'.$column->get_name()] = strtoupper(moojon_inflect::singularize(get_class($instance)).'_'.$column->get_name());

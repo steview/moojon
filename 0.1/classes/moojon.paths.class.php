@@ -206,12 +206,24 @@ final class moojon_paths extends moojon_base {
 		$paths[] = self::get_validations_directory();
 		$paths[] = self::get_tags_directory();
 		$paths[] = self::get_tag_attributes_directory();
-		$paths[] = self::get_project_models_directory();
-		$paths[] = self::get_project_base_models_directory();
 		$paths[] = self::get_project_migrations_directory();
-		$paths[] = self::get_moojon_models_directory();
-		$paths[] = self::get_moojon_base_models_directory();
 		$paths[] = self::get_moojon_migrations_directory();
+		return $paths;
+	}
+	
+	static public function get_model_paths() {
+		$paths = array(
+			self::get_moojon_models_directory(),
+			self::get_project_models_directory(),
+		);
+		return $paths;
+	}
+	
+	static public function get_base_model_paths() {
+		$paths = array(
+			self::get_moojon_base_models_directory(),
+			self::get_project_base_models_directory()
+		);
 		return $paths;
 	}
 	
@@ -272,6 +284,14 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_class_path($class) {
 		return self::get_path(self::get_class_paths(), str_replace('_', '.', $class).'.class.php');
+	}
+	
+	static public function get_model_path($model) {
+		return self::get_path(self::get_model_paths(), "$model.model.class.php");
+	}
+	
+	static public function get_base_model_path($model) {
+		return self::get_path(self::get_base_model_paths(), 'base.'.moojon_base_model::strip_base($model).'.model.class.php');
 	}
 	
 	static public function get_interface_path($interface) {
