@@ -371,22 +371,27 @@ abstract class moojon_base_model extends moojon_base {
 		
 	final public function save($cascade = false) {
 		$saved = true;
-		if ($this->validate($cascade) === true) {
+		echo "save1\n";
+		if ($this->validate($cascade)) {
+			echo "save2\n";
 			foreach ($this->get_editable_column_names() as $column_name) {
 				if (method_exists($this, "set_$column_name")) {
 					$this->$column_name = call_user_func_array(array(get_class($this), "set_$column_name"), array($this, $this->get_column($column_name)));
 				}
 			}
+			echo "save3\n";
 			$data = array();
 			$placeholders = array();
 			foreach ($this->get_editable_column_names() as $column_name) {
 				$data[":$column_name"] = $this->$column_name;
 				$placeholders[$column_name] = ":$column_name";
 			}
+			echo "save4\n";
 			if ($this->new_record) {
-				$statement = moojon_db::insert($this->table, $placeholders, $data);
+				moojon_db::insert($this->table, $placeholders, $data);
+				echo "save5\n";
 			} else {
-				if ($this->unsaved === true) {
+				if ($this->unsaved) {
 					$id_property = moojon_primary_key::NAME;
 					$data[":$id_property"] = $this->$id_property;
 					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $data);
@@ -397,7 +402,7 @@ abstract class moojon_base_model extends moojon_base {
 		} else {
 			$saved = false;
 		}
-		if ($saved == true) {
+		if ($saved) {
 			$statement->execute($data);
 			if ($cascade) {
 				foreach($this->relationships as $relationship) {
@@ -428,16 +433,21 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static protected function base_create($class, $data) {
+		echo "base_create1\n";
 		if ($data == null) {
 			$data = array();
 		}
+		echo "base_create2\n";
 		$instance = self::init(self::strip_base($class));
+		echo "base_create3\n";
 		$instance->new_record = true;
+		echo "base_create4\n";
 		foreach ($instance->get_editable_column_names() as $column_name) {
 			if (array_key_exists($column_name, $data)) {
 				$instance->$column_name = $data[$column_name];
 			}
 		}
+		echo "base_create5\n";
 		return $instance;
 	}
 	

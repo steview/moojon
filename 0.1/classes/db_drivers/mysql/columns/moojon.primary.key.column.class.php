@@ -4,10 +4,14 @@ final class moojon_primary_key extends moojon_base_column {
 	const LIMIT = 11;
 	const NULL = 'NOT NULL';
 	const TYPE = 'INTEGER';
-	const OPTIONS = 'AUTO_INCREMENT';
+	const OPTIONS = 'AUTO_INCREMENT, PRIMARY KEY(id)';
 	
 	public function __construct() {
 		$this->name = self::NAME;
+		$this->limit = self::LIMIT;
+		$this->null = self::NULL;
+		$this->type = self::TYPE;
+		$this->options = self::OPTIONS;
 	}
 	
 	public function get_foreign_key($table) {
@@ -22,7 +26,7 @@ final class moojon_primary_key extends moojon_base_column {
 	}
 	
 	public function __toString() {
-		return $this->name.' INTEGER('.$this->limit.') '.$this->get_null_string().' '.$this->get_default_string().' AUTO_INCREMENT';
+		return $this->name.' '.$this->type.'('.$this->limit.') '.$this->get_null_string().' '.$this->get_default_string().'  '.$this->options;
 	}
 }
 ?>

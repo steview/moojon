@@ -1,8 +1,10 @@
 <?php
 abstract class moojon_base_migration extends moojon_base {
-	protected $include_primary_key = true;
+	protected $primary_key;
 	
-	final public function __construct() {}
+	final public function __construct() {
+		$this->primary_key = new moojon_primary_key;
+	}
 		
 	abstract public function up();
 	
@@ -57,20 +59,16 @@ abstract class moojon_base_migration extends moojon_base {
 	}
 	
 	final protected function create_table($name, $columns, $options = null) {
-		echo "create_table1\n";
 		if (!is_array($columns)) {
 			$data = array($columns);
 		} else {
 			$data = $columns;
 		}
-		echo "create_table2\n";
-		if ($this->include_primary_key) {
-			$primary_key = new moojon_primary_key;
+		if ($this->primary_key) {
+			array_unshift($data, $this->primary_key);
 		}
 		$data = implode(', ', $data);
-		echo "create_table5\n";
 		moojon_db::create_table($name, $data, $options);
-		echo "create_table6\n";
 	}
 	
 	final protected function remove_table($name) {

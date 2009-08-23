@@ -678,3 +678,917 @@
 
 2009-08-21 14:46:07 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
 
+2009-08-23 18:44:32 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 18:44:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 18:44:32 Europe/London: CREATE TABLE table1(column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 18:44:32 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 18:53:40 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 18:53:40 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 18:53:40 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 18:53:40 Europe/London: CREATE TABLE table1(column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 18:53:40 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 19:22:33 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:22:33 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 19:22:33 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 19:22:33 Europe/London: CREATE TABLE table1(column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 19:22:33 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 19:30:02 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:30:02 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 19:30:02 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 19:31:40 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:31:40 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 19:31:40 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 19:33:43 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:33:43 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 19:33:43 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 19:36:37 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:38:02 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:46:26 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:51:34 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:52:08 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:52:27 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:52:38 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:54:11 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:54:11 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 19:54:11 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 19:55:37 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:55:37 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 19:56:48 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:56:48 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 19:57:25 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 19:57:25 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:03:37 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:03:37 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:04:32 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:04:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:04:32 Europe/London: CREATE TABLE table1(column1 VARCHAR(255) NOT NULL , id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id));
+
+2009-08-23 20:04:32 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 20:06:47 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:06:47 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 20:06:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:06:47 Europe/London: CREATE TABLE table1(column1 VARCHAR(255) NOT NULL , id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id));
+
+2009-08-23 20:06:47 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 20:15:40 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:15:40 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 20:15:40 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:15:40 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 20:15:40 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 20:16:44 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:16:44 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:16:44 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:31:23 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:31:23 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 20:31:23 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:31:23 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 20:31:23 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 20:32:18 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:32:18 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:32:18 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:34:02 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:34:02 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:34:02 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:35:23 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:35:23 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:35:23 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:38:46 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:38:46 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:38:46 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:42:34 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:42:34 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:42:34 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:45:06 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:45:06 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:45:06 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:45:45 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:45:45 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:45:45 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:48:13 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:48:13 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:48:13 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:48:23 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:48:23 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:48:23 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:49:01 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:49:01 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:49:01 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:49:17 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:49:17 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:49:17 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:49:55 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:49:55 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:49:55 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:50:41 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:50:41 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:50:41 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:50:59 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:50:59 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:50:59 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:51:38 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:51:38 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:51:38 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:53:24 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:53:24 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:53:24 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:54:16 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:54:16 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:54:16 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:54:53 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:54:53 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:54:53 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:56:10 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:56:10 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:56:10 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:57:15 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:57:15 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:57:15 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:57:15 Europe/London: DROP TABLE table1;
+
+2009-08-23 20:57:15 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php'  ;
+
+2009-08-23 20:57:15 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php';
+
+2009-08-23 20:57:53 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:57:53 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:57:53 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 20:57:53 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 20:58:09 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:58:09 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 20:58:09 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:58:09 Europe/London: DROP TABLE table1;
+
+2009-08-23 20:58:09 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php'  ;
+
+2009-08-23 20:58:09 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php';
+
+2009-08-23 20:59:28 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:59:28 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:59:28 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 20:59:28 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 20:59:31 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:59:31 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 20:59:31 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:59:31 Europe/London: DROP TABLE table1;
+
+2009-08-23 20:59:31 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php'  ;
+
+2009-08-23 20:59:31 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php';
+
+2009-08-23 20:59:38 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:59:38 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 20:59:38 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 20:59:38 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 20:59:47 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 20:59:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 20:59:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 20:59:47 Europe/London: DROP TABLE table1;
+
+2009-08-23 20:59:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php'  ;
+
+2009-08-23 20:59:47 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php';
+
+2009-08-23 21:00:42 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:00:42 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 21:00:42 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 21:00:46 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:00:46 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:00:46 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:00:46 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:02:52 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:02:52 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:02:52 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:02:52 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:03:32 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:03:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 21:03:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 21:03:32 Europe/London: DROP TABLE table2;
+
+2009-08-23 21:03:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210159.second.migration.class.php'  ;
+
+2009-08-23 21:03:32 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210159.second.migration.class.php';
+
+2009-08-23 21:03:48 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:03:48 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:03:48 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:03:48 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:04:47 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:04:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:04:47 Europe/London: CREATE TABLE table3(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:04:47 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:05:03 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:05:03 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'second'  ;
+
+2009-08-23 21:05:03 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 21:05:03 Europe/London: DROP TABLE table3;
+
+2009-08-23 21:05:03 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php'  ;
+
+2009-08-23 21:05:03 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php';
+
+2009-08-23 21:07:55 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:07:55 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 21:07:55 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:07:55 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:07:55 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:08:04 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:08:04 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:08:04 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:08:04 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:08:25 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:08:25 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:08:25 Europe/London: CREATE TABLE table3(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:08:25 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:08:37 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:08:37 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 21:08:37 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 21:08:37 Europe/London: DROP TABLE table3;
+
+2009-08-23 21:08:37 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php'  ;
+
+2009-08-23 21:08:37 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php';
+
+2009-08-23 21:36:55 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:36:55 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 21:36:55 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:36:55 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:36:55 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:44:47 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:44:47 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 21:44:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:44:47 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:44:47 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:45:50 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:45:50 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 21:45:50 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:45:50 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:45:50 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:48:12 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:48:12 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:48:54 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:48:54 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:48:54 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:48:54 Europe/London: CREATE TABLE table3(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:49:55 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:49:55 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 21:49:55 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:49:55 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:49:55 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:49:55 Europe/London: CREATE TABLE table3(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:52:19 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:52:19 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 21:52:19 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:52:19 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:52:19 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:53:59 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:53:59 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:53:59 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:53:59 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:54:00 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:54:00 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:54:00 Europe/London: CREATE TABLE table3(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:54:00 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:54:29 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:54:29 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 21:54:29 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 21:54:29 Europe/London: DROP TABLE table3;
+
+2009-08-23 21:54:29 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php'  ;
+
+2009-08-23 21:54:29 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php';
+
+2009-08-23 21:54:57 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:54:57 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 21:54:57 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 21:54:57 Europe/London: DROP TABLE table2;
+
+2009-08-23 21:54:57 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210159.second.migration.class.php'  ;
+
+2009-08-23 21:54:57 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210159.second.migration.class.php';
+
+2009-08-23 21:55:09 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:55:09 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 21:55:09 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 21:55:09 Europe/London: DROP TABLE table1;
+
+2009-08-23 21:55:09 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php'  ;
+
+2009-08-23 21:55:09 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php';
+
+2009-08-23 21:57:47 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:57:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:57:47 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:57:47 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:58:46 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:58:46 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:58:46 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:58:46 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 21:59:03 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 21:59:03 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 21:59:03 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 21:59:03 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 21:59:03 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:00:45 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:00:45 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:00:45 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:02:47 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:02:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:03:43 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:03:43 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:19:19 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:19:19 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:19:19 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:19:32 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:19:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:20:34 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:20:34 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:21:00 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:21:00 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:21:23 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:21:23 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:22:01 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:22:01 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:22:01 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:22:30 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:22:30 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:22:30 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:22:30 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:22:30 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:24:21 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:24:21 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:24:21 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:24:21 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:24:21 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:24:21 Europe/London: CREATE TABLE table3(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:25:06 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:25:06 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 22:25:06 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:25:32 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:25:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = 'first'  ;
+
+2009-08-23 22:25:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:27:15 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:27:15 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:27:29 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:27:29 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:27:29 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:27:29 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:27:29 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:27:32 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:27:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:27:32 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:27:32 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:27:33 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:27:33 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:27:33 Europe/London: CREATE TABLE table3(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:27:33 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:28:02 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:28:02 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 22:28:02 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:28:02 Europe/London: DROP TABLE table3;
+
+2009-08-23 22:28:02 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php'  ;
+
+2009-08-23 22:28:02 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php';
+
+2009-08-23 22:28:12 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:28:12 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 22:28:12 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:28:12 Europe/London: DROP TABLE table2;
+
+2009-08-23 22:28:12 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210159.second.migration.class.php'  ;
+
+2009-08-23 22:28:12 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210159.second.migration.class.php';
+
+2009-08-23 22:28:15 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:28:15 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 22:28:15 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:28:15 Europe/London: DROP TABLE table1;
+
+2009-08-23 22:28:15 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php'  ;
+
+2009-08-23 22:28:15 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php';
+
+2009-08-23 22:28:17 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:28:17 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 22:28:17 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:29:33 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:29:33 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:29:33 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:29:33 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:29:34 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:29:34 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:29:34 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:29:34 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:29:37 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:29:37 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:29:37 Europe/London: CREATE TABLE table3(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:29:37 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:29:42 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:29:42 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 22:29:42 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:29:42 Europe/London: DROP TABLE table3;
+
+2009-08-23 22:29:42 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php'  ;
+
+2009-08-23 22:29:42 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210412.third.migration.class.php';
+
+2009-08-23 22:29:43 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:29:43 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 22:29:43 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:29:44 Europe/London: DROP TABLE table2;
+
+2009-08-23 22:29:44 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210159.second.migration.class.php'  ;
+
+2009-08-23 22:29:44 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090823210159.second.migration.class.php';
+
+2009-08-23 22:29:45 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:29:45 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = ''  ;
+
+2009-08-23 22:29:45 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version DESC ;
+
+2009-08-23 22:29:45 Europe/London: DROP TABLE table1;
+
+2009-08-23 22:29:45 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php'  ;
+
+2009-08-23 22:29:45 Europe/London: DELETE FROM schema_migrations WHERE version = '/Library/Moojon/testing.dev/models/migrations/20090820134823.first.migration.class.php';
+
+2009-08-23 22:43:02 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:43:02 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:43:02 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:43:02 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:45:30 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:45:30 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:45:30 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:45:30 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:45:30 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:48:29 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:48:29 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:48:29 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:48:29 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:48:29 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:50:06 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:50:06 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:50:06 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:50:06 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:50:06 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:51:23 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:51:23 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:51:23 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:51:23 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:51:23 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:55:19 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:55:19 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:55:19 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:55:19 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:56:09 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:56:10 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:56:10 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:56:10 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:56:10 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:56:46 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:56:46 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:56:46 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:56:46 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:56:46 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:57:46 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:57:46 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:57:46 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:57:46 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:58:10 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:58:10 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:58:10 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:58:10 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:58:10 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:58:35 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:58:35 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:58:35 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:58:35 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:58:35 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 22:59:47 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 22:59:47 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 22:59:47 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 22:59:47 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 22:59:47 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 23:01:20 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 23:01:20 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 23:01:20 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 23:01:20 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 23:01:20 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 23:03:40 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 23:03:40 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 23:03:40 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 23:03:40 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 23:03:40 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 23:05:38 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 23:05:38 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 23:05:38 Europe/London: CREATE TABLE table2(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 23:05:38 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
+2009-08-23 23:06:32 Europe/London: SHOW FULL TABLES;
+
+2009-08-23 23:06:32 Europe/London: CREATE TABLE schema_migrations(version VARCHAR(255) NOT NULL );
+
+2009-08-23 23:06:32 Europe/London: SELECT schema_migrations.version AS SCHEMA_MIGRATION_VERSION FROM schema_migrations  ORDER BY version ;
+
+2009-08-23 23:06:32 Europe/London: CREATE TABLE table1(id INTEGER(11) NULL   AUTO_INCREMENT, PRIMARY KEY(id), column1 VARCHAR(255) NOT NULL );
+
+2009-08-23 23:06:32 Europe/London: INSERT INTO schema_migrations (version) VALUES(:version);
+
