@@ -2,7 +2,7 @@
 final class moojon_model_ui extends moojon_base {
 	static private function find_relationship(moojon_base_column $column, moojon_base_model $model) {
 		foreach ($model->get_relationships() as $relationship) {
-			if (is_subclass_of($relationship, 'moojon_base_relationship') == true && $relationship->get_foreign_key() == $column->get_name()) {
+			if (is_subclass_of($relationship, 'moojon_base_relationship') && $relationship->get_foreign_key() == $column->get_name()) {
 				return $relationship;
 			}
 		}
@@ -20,7 +20,7 @@ final class moojon_model_ui extends moojon_base {
 	static public function form(moojon_base_model $model, $column_names = array(), $attributes = array()) {
 		$attributes['action'] = '#';
 		$attributes['method'] = 'post';
-		if ($model->get_new_record() == true) {
+		if ($model->get_new_record()) {
 			$submit_value = 'Create';
 			$id = 'create';
 		} else {
@@ -44,7 +44,7 @@ final class moojon_model_ui extends moojon_base {
 		$dt_dd_tags = array();
 		foreach ($column_names as $column_name) {
 			$column = $model->get_column($column_name);
-			if (self::find_relationship($column, $model) == false) {
+			if (!self::find_relationship($column, $model)) {
 				$content = $column->get_value();
 			} else {
 				$relationship = self::find_relationship($column, $model);
@@ -71,7 +71,7 @@ final class moojon_model_ui extends moojon_base {
 	}
 	
 	static public function table(moojon_model_collection $models = null, $empty_message, $column_names = array(), $attributes = array()) {
-		if ($models->count > 0) {
+		if ($models->count) {
 			$model = $models->first;
 			$ths = array(new moojon_th_tag('&nbsp;'));
 			foreach ($column_names as $column_name) {
@@ -90,7 +90,7 @@ final class moojon_model_ui extends moojon_base {
 				$tds = array(new moojon_td_tag(self::model_read_tag($model)));
 				foreach ($column_names as $column_name) {
 					if ($model->to_string_column != $column_name) {
-						if (self::find_relationship($column, $model) == false) {
+						if (!self::find_relationship($column, $model)) {
 							$column = $model->get_column($column_name);
 							$content = $column->get_value();
 						} else {
@@ -146,7 +146,7 @@ final class moojon_model_ui extends moojon_base {
 	
 	static public function control(moojon_base_column $column, moojon_base_model $model) {
 		$control = null;
-		if (self::find_relationship($column, $model) == false) {
+		if (!self::find_relationship($column, $model)) {
 			switch (get_class($column)) {
 				case 'moojon_binary_column':
 					$control = self::binary_tag($column, $model);
@@ -198,7 +198,7 @@ final class moojon_model_ui extends moojon_base {
 		$relationship_name = $relationship->get_name();
 		$relationship = new $relationship_name();
 		$options = array();
-		if ($attributes->get_null() == true) {
+		if ($attributes->get_null()) {
 			$options['Please select...'] = 0;
 		}
 		foreach($relationship->read() as $option) {
@@ -215,7 +215,7 @@ final class moojon_model_ui extends moojon_base {
 		$attributes = self::process_attributes($column, $model);
 		$attributes['type'] = 'checkbox';
 		$attributes['value'] = '1';
-		if ($column->get_value() > 0 || $column->get_default()) {
+		if ($column->get_value() || $column->get_default()) {
 			$attributes['checked'] = 'checked';
 		}
 		return new moojon_input_tag($attributes);
@@ -310,7 +310,7 @@ final class moojon_model_ui extends moojon_base {
 	static public function dt_tag(moojon_base_column $column, $attributes = array()) {
 		$content = self::process_text($column);
 		$column_name = $column->get_name();
-		if ($column_name == null) {
+		if (!$column_name) {
 			$column_name = str_replace(' ', '_', strtolower($column_name));
 		}
 		$attributes['id'] = $column_name.'_dt';
@@ -319,7 +319,7 @@ final class moojon_model_ui extends moojon_base {
 	
 	static public function dd_tag(moojon_base_column $column, $content, $attributes = array()) {
 		$column_name = $column->get_name();
-		if ($column_name == null) {
+		if (!$column_name) {
 			$column_name = str_replace(' ', '_', strtolower($column_name));
 		}
 		$attributes['id'] = $column_name.'_dd';

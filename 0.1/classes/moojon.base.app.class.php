@@ -17,22 +17,22 @@ abstract class moojon_base_app extends moojon_base {
 		In light of the new routing system, this method needs to be re-written
 		*/
 		/*********************************/
-		if ($app != null) {
+		if ($app) {
 			$location = moojon_config::key('index_file').$app;
-			if ($controller != null) {
+			if ($controller) {
 				$location .= "/$controller";
 			}
-			if ($action != null) {
+			if ($action) {
 				$location .= "/$action";
 			}
 			header("Location: $location");
 			die();
 		}
 		$this->init();
-		if ($action == null) {
+		if (!$action) {
 			$action = ACTION;
 		}
-		if ($controller == null) {
+		if (!$controller) {
 			$controller = CONTROLLER;
 		}
 		$this->action_name = $action;

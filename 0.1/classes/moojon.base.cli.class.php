@@ -14,18 +14,18 @@ abstract class moojon_base_cli extends moojon_base {
 	}
 	
 	static final protected function prompt($message, $default = null, $characters = null) {
-		if ($default != null) {
+		if ($default) {
 			$message = "$message (default: $default)";
 		}
 		echo "$message > ";
-		if ($characters == null) {
+		if (!$characters) {
 			$characters = 80;
 		}
 		$read = str_replace(chr(10), '', fread(STDIN, $characters));
-		if (strlen($read) == 0) {
+		if (!strlen($read)) {
 			$read = $default;
 		} else {
-			while (strlen($read) == 0) {
+			while (!strlen($read)) {
 				$read = str_replace(chr(10), '', fread(STDIN, $characters));
 				echo "$message > ";
 			}
@@ -51,7 +51,7 @@ abstract class moojon_base_cli extends moojon_base {
 	
 	final protected function prompt_until($initial, $message, $default = null) {
 		$return = ($initial) ? $initial : $this->prompt($message, $default);
-		while (strlen($return) == 0) {
+		while (strlen($return)) {
 			echo '(invalid command) ';
 			$return = $this->prompt($message, $default);
 		}
@@ -66,7 +66,7 @@ abstract class moojon_base_cli extends moojon_base {
 			$default = null;
 		}
 		$return = ($initial) ? $initial : $this->prompt($message, $default);
-		while (in_array($return, $collection) == false) {
+		while (!in_array($return, $collection)) {
 			echo '(invalid command) ';
 			$return = $this->prompt($message, $default);
 		}

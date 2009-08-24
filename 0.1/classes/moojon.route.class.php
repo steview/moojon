@@ -53,7 +53,7 @@ final class moojon_route extends moojon_base_route {
 				}
 				$counter ++;
 			}
-			if (array_key_exists('app', $return) == false || array_key_exists('controller', $return) == false || array_key_exists('action', $return) == false) {
+			if (!array_key_exists('app', $return) || !array_key_exists('controller', $return) || !array_key_exists('action', $return)) {
 				return false;
 			}
 			require_once(moojon_paths::get_controller_path($return['app'], $return['controller']));

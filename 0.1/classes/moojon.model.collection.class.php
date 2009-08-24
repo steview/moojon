@@ -8,7 +8,7 @@ final class moojon_model_collection extends ArrayObject {
 	
 	public function __construct(moojon_base_model $accessor = null, $key = null) {
 		$this->accessor = $accessor;
-		if ($accessor != null && $key != null) {
+		if ($accessor && $key) {
 			$this->relationship = $this->accessor->get_relationship($key);
 			$this->key = $key;
 		}
@@ -50,7 +50,7 @@ final class moojon_model_collection extends ArrayObject {
 	}
 	
 	public function get() {
-		if ($this->relationship != null) {
+		if ($this->relationship) {
 			$foreign_class_name = moojon_inflect::singularize($this->relationship->get_foreign_table());
 			$foreign_class = new $foreign_class_name;
 			$records = $foreign_class->read($this->relationship->get_where($this->accessor), null, null, $this->accessor);
@@ -80,7 +80,7 @@ final class moojon_model_collection extends ArrayObject {
 	
 	public function filter($value, $property = null) {
 		$collection = new moojon_model_collection($this->accessor, $this->key);
-		if ($property == null) {
+		if (!$property) {
 			$property = moojon_primary_key::NAME;
 		}
 		foreach ($this as $record) {
@@ -104,7 +104,7 @@ final class moojon_model_collection extends ArrayObject {
 		$errors = array();
 		foreach ($this as $record) {
 			$validation = $record->validate($cascade);
-			if ($validation !== true) {
+			if (!$validation) {
 				foreach ($record->get_errors() as $error) {
 					$errors[] = $error;
 				}
@@ -173,7 +173,7 @@ final class moojon_model_collection extends ArrayObject {
 	
 	public function save($cascade = false) {
 		$saved = true;
-		if ($this->validate($cascade) === true) {
+		if ($this->validate($cascade)) {
 			foreach ($this as $record) {
 				$record->save($cascade);
 			}

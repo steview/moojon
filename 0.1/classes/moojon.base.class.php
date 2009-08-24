@@ -9,7 +9,7 @@ abstract class moojon_base {
 			}
 		}
 		$log_file = $log_dir.strtolower(ENVIRONMENT).'.log';
-		if (file_exists($log_file) == false) {
+		if (!file_exists($log_file)) {
 			touch($log_file);
 			chmod($log_file, 0666);
 		}
@@ -17,7 +17,7 @@ abstract class moojon_base {
 			fclose($handle);
 			throw new moojon_exception("Unable to open / create log file ($log_file)");
 		}
-		if (fwrite($handle, $text) === false) {
+		if (!fwrite($handle, $text)) {
 			fclose($handle);
 			throw new moojon_exception("Unable to write to log file ($log_file)");
 		}
@@ -31,7 +31,7 @@ abstract class moojon_base {
 	}
 	
 	final static public function remove_prefix($subject, $prefix) {
-		if (is_object($subject) == true) {
+		if (is_object($subject)) {
 			$subject = get_class($subject);
 		}
 		if (substr($subject, 0, strlen($prefix)) == $prefix) {
@@ -41,7 +41,7 @@ abstract class moojon_base {
 	}
 	
 	final static public function remove_suffix($subject, $suffix) {
-		if (is_object($subject) == true) {
+		if (is_object($subject)) {
 			$subject = get_class($subject);
 		}
 		if (substr($subject, (strlen($subject) - strlen($suffix))) == $suffix) {

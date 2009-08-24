@@ -1,5 +1,5 @@
 <?php
-if (count($<[plural]>) > 0) {
+if (count($<[plural]>)) {
 	$columns = $<[plural]>->first->get_editable_column_names();
 } else {
 	$columns = array();

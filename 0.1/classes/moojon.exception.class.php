@@ -3,7 +3,7 @@ final class moojon_exception extends Exception {
 	static private $instance;
 	
 	public function __construct($message = null, $code = null, $severity = null, $file = null, $line = null) {
-		if ($code == null) {
+		if (!$code) {
 			$code = 0;
 		}
 		parent::__construct($message, $code);

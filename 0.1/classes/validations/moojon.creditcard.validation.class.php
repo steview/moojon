@@ -39,7 +39,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 		if ($this->card_type == -1) {
 			return false;
 		}
-		if (strlen($card_number) == 0) {
+		if (!strlen($card_number)) {
 			return false;
 		}
 		$card_number = str_replace (' ', '', $card_number);
@@ -63,7 +63,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 					$j = 1;
 				}
 			}
-			if ($checksum % 10 != 0) {
+			if ($checksum % 10) {
 				return false;
 			}
 		}

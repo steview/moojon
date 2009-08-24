@@ -39,7 +39,7 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	static final protected function attempt_mkdir($path, $mode = null) {
-		if ($mode == null) {
+		if (!$mode) {
 			$mode = 0755;
 		}
 		if (!is_dir($path)) {

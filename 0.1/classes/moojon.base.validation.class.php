@@ -26,14 +26,14 @@ abstract class moojon_base_validation extends moojon_base {
 	}
 	
 	final public function validate(moojon_base_model $model, moojon_base_column $column) {
-		if ($this->required === true) {
-			if (strlen($column->get_value()) > 0) {
+		if ($this->required) {
+			if (strlen($column->get_value())) {
 				return $this->valid($model, $column);
 			} else {
 				return false;
 			}
 		} else {
-			if (strlen($column->get_value()) < 1) {
+			if (!strlen($column->get_value())) {
 				return true;
 			} else {
 				return $this->valid($model, $column);

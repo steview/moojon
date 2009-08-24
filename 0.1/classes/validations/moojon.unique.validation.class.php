@@ -10,7 +10,7 @@ final class moojon_unique_validation extends moojon_base_validation {
 	}
 	
 	public function valid(moojon_base_model $model, moojon_base_column $column) {
-		if ($this->model->read($column->get_name()." = '".$column->get_value()."'")->count == 0) {
+		if (!$this->model->read($column->get_name()." = '".$column->get_value()."'")->count) {
 			return true;
 		} else {
 			return false;

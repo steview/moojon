@@ -2,8 +2,8 @@
 
 <div id="content_main">
 
-<?php if (moojon_authentication::authenticate() === false) { ?>
-	<?php if (strlen($security_failure_message) > 0) {?>
+<?php if (!moojon_authentication::authenticate()) { ?>
+	<?php if (strlen($security_failure_message)) {?>
 		<p><?php echo $security_failure_message; ?></p>
 	<?php } ?>
 	<form action="#" method="post">

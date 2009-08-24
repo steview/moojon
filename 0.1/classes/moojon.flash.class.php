@@ -6,9 +6,9 @@ final class moojon_flash extends moojon_base {
 	private function __construct() {
 		$data = array();
 		$flash_key = moojon_config::key('flash_key');
-		if (moojon_session::has($flash_key) == true) {
+		if (moojon_session::has($flash_key)) {
 			$flash = moojon_session::key($flash_key);
-			if (is_array($flash) == true) {
+			if (is_array($flash)) {
 				$data = $flash;
 				self::clear();
 			}
@@ -31,7 +31,7 @@ final class moojon_flash extends moojon_base {
 	
 	static public function __get($key) {
 		$data = self::get_data();
-		if (array_key_exists($key, $data) == true && $data[$key] != null) {
+		if (array_key_exists($key, $data) && $data[$key]) {
 			return $data[$key];
 		} else {
 			if (array_key_exists($key, $data)) {
@@ -43,7 +43,7 @@ final class moojon_flash extends moojon_base {
 	}
 	
 	static public function set($key, $value = null) {
-		if (is_array($key) == false) {
+		if (!is_array($key)) {
 			$data = array($key => $value);
 		} else {
 			$data = $key;

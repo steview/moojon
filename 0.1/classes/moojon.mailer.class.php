@@ -49,8 +49,8 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function set_from($email, $name = '') {
-		if ($this->validate_email($email) == true) {
-			if (empty($name) == true) {
+		if ($this->validate_email($email)) {
+			if (empty($name)) {
 				$name = $this->name;
 			}
 			$this->from = "$name <$email>";
@@ -60,8 +60,8 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function set_to($email, $name = '') {
-		if ($this->validate_email($email) == true) {
-			if (empty($name) == true) {
+		if ($this->validate_email($email)) {
+			if (empty($name)) {
 				$name = $this->name;
 			}
 			$this->to = "$name <$email>";
@@ -71,8 +71,8 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function set_cc($email, $name = '') {
-		if ($this->validate_email($email) == true) {
-			if (empty($name) == true) {
+		if ($this->validate_email($email)) {
+			if (empty($name)) {
 				$name = $this->name;
 			}
 			$this->cc = "$name <$email>";
@@ -82,8 +82,8 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function set_bcc($email, $name = '') {
-		if ($this->validate_email($email) == true) {
-			if (empty($name) == true) {
+		if ($this->validate_email($email)) {
+			if (empty($name)) {
 				$name = $this->name;
 			}
 			$this->bcc = "$name <$email>";
@@ -93,8 +93,8 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function set_reply_to($email, $name = '') {
-		if ($this->validate_email($email) == true) {
-			if (empty($name) == true) {
+		if ($this->validate_email($email)) {
+			if (empty($name)) {
 				$name = $this->name;
 			}
 			$this->reply_to = "$name <$email>";
@@ -104,7 +104,7 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function set_return_path($email) {
-		if ($this->validate_email($email) == true) {
+		if ($this->validate_email($email)) {
 			$this->return_path = $email;
 		} else {
 			throw new moojon_exception("Invalid email ($email)");
@@ -112,11 +112,11 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function add_to($email, $name = '') {
-		if ($this->validate_email($email) == true) {
-			if (empty($name) == true) {
+		if ($this->validate_email($email)) {
+			if (empty($name)) {
 				$name = $this->name;
 			}
-			if (empty($this->to) == true) {
+			if (empty($this->to)) {
 				$this->to = "$name <$email>";;
 			} else {
 				$this->to .= "$name <$email>";
@@ -127,11 +127,11 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function add_cc($email, $name = '') {
-		if ($this->validate_email($email) == true) {
-			if (empty($name) == true) {
+		if ($this->validate_email($email)) {
+			if (empty($name)) {
 				$name = $this->name;
 			}
-			if (empty($this->cc) == true) {
+			if (empty($this->cc)) {
 				$this->cc = "$name <$email>";;
 			} else {
 				$this->cc .= "$name <$email>";
@@ -142,11 +142,11 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	public function add_bcc($email, $name = '') {
-		if ($this->validate_email($email) == true) {
-			if (empty($name) == true) {
+		if ($this->validate_email($email)) {
+			if (empty($name)) {
 				$name = $this->name;
 			}
-			if (empty($this->bcc) == true) {
+			if (empty($this->bcc)) {
 				$this->bcc = "$name <$email>";;
 			} else {
 				$this->bcc .= "$name <$email>";
@@ -182,12 +182,12 @@ final class moojon_mailer extends moojon_base {
 		$elements = $this->parse_elements();
 		$header = $this->build_header($elements);
 		$body = $this->build_body($elements);
-		if (empty($this->return_path) == false) {
+		if (!empty($this->return_path)) {
 			$return = mail($this->to, $this->subject, $body, $header, '-f'.$this->return_path);
 		} else {
 			$return = mail($this->to, $this->subject, $body, $header);
 		}
-		if ($return == true) {
+		if ($return) {
 			$this->charset = '';
 			$this->subject = '';
 			$this->name = '';
@@ -351,18 +351,18 @@ final class moojon_mailer extends moojon_base {
 		}
 		$header = '';
 		$header .= 'From: '.$this->from."\n";
-		if (empty($this->reply_to) == false) {
+		if (!empty($this->reply_to)) {
 			$header .= 'Reply-To: '.$this->reply_to."\n";
 		} else {
 			$header .= 'Reply-To: '.$this->from."\n";
 		}
-		if (empty($this->cc) == false) {
+		if (!empty($this->cc)) {
 			$header .= 'Cc: '.$this->cc."\n";
 		}
-		if (empty($this->bcc) == false) {
+		if (!empty($this->bcc)) {
 			$header .= 'Bcc: '.$this->bcc."\n";
 		}
-		if (empty($this->return_path) == false) {
+		if (!empty($this->return_path)) {
 			$header .= 'Return-Path: '.$this->return_path."\n";
 		}
 		$header .= 'MIME-Version: 1.0'."\n";
@@ -373,7 +373,7 @@ final class moojon_mailer extends moojon_base {
 	
 	private function parse_elements() {
 		$type = 0;
-		if (count($this->attachments) > 0) {
+		if (count($this->attachments)) {
 			foreach ($this->attachments as $key => $value) {
 				if (preg_match('/(css|image)/i', $value['type']) && preg_match('/\s(background|href|src)\s*=\s*[\"|\']('.$value['name'].')[\"|\'].*>/is', $this->html)) {
 					$img_id = md5($value['name']).'.moojon@mimemail';
@@ -383,18 +383,18 @@ final class moojon_mailer extends moojon_base {
 				}
 			}
 		}
-		if (empty($this->text) == false) {
+		if (!empty($this->text)) {
 			$type ++;
 		}
-		if (empty($this->html) == false) {
+		if (!empty($this->html)) {
 			$type += 2;
 			if (empty($this->text)) {
 				$this->text = strip_tags(eregi_replace('<br>', "\n", $this->html));
 				$type ++;
 			}
 		}
-		if (count($this->attachments) > 0) {
-			if (count($this->attachments_img) != 0) {
+		if (count($this->attachments)) {
+			if (count($this->attachments_img)) {
 				$type += 8;
 			}
 			if ((count($this->attachments) - count($this->attachments_img)) >= 1) {
@@ -405,7 +405,7 @@ final class moojon_mailer extends moojon_base {
 	}
 	
 	private function validate_email($email) {
-		if (ereg('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+'.'@'.'[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.'.'[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$', $email) == true) {
+		if (ereg('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+'.'@'.'[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.'.'[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$', $email)) {
 			return true;
 		}
 		return false;

@@ -7,7 +7,7 @@ final class moojon_required_validation extends moojon_base_validation {
 	}
 	
 	public function valid(moojon_base_model $model, moojon_base_column $column) {
-		if (strlen($column->get_value()) > 0) {
+		if (strlen($column->get_value())) {
 			return true;
 		} else {
 			return false;

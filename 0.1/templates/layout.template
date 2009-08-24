@@ -43,7 +43,7 @@
 	
 	<div id="content">
 		
-		<?php if (moojon_flash::has('notification') == true) { ?>
+		<?php if (moojon_flash::has('notification')) { ?>
 			<p><?php echo moojon_flash::get('notification'); ?></p>
 		<?php } ?>
 		

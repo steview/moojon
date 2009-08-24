@@ -6,9 +6,9 @@ final class <[plural]>_controller extends moojon_base_controller {
 	
 	public function create() {
 		$this-><[singular]> = <[singular]>::create($_POST['<[singular]>']);
-		if (moojon_server::is_post() == true) {
+		if (moojon_server::is_post()) {
 			if ($_POST['submit_button'] == 'Create') {
-				if ($this-><[singular]>->save() === true) {
+				if ($this-><[singular]>->save()) {
 					$this->redirect('<[plural]>');
 				}
 			} elseif ($_POST['submit_button'] == 'Cancel') {
@@ -23,10 +23,10 @@ final class <[plural]>_controller extends moojon_base_controller {
 	
 	public function update() {
 		$this->read_from_id();
-		if (moojon_server::is_post() == true) {
+		if (moojon_server::is_post()) {
 			if ($_POST['submit_button'] == 'Update') {
 				$this-><[singular]>->set($_POST['<[singular]>']);
-				if ($this-><[singular]>->save() === true) {
+				if ($this-><[singular]>->save()) {
 					$this->redirect('<[plural]>/read/id/'.$this->get_id());
 				}
 			}
@@ -37,7 +37,7 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	public function destroy() {
-		if (moojon_server::is_post() == true) {
+		if (moojon_server::is_post()) {
 			if ($_POST['submit_button'] == 'Destroy') {
 				<[singular]>::destroy('id = '.$this->get_id());
 				$this->redirect('<[plural]>');
@@ -56,7 +56,7 @@ final class <[plural]>_controller extends moojon_base_controller {
 	
 	private function get_id() {
 		$<[singular]> = $_POST['<[singular]>'];
-		if ($<[singular]>[moojon_primary_key::NAME] != null) {
+		if ($<[singular]>[moojon_primary_key::NAME]) {
 			return $<[singular]>[moojon_primary_key::NAME];
 		} else {
 			return moojon_uri::get(moojon_primary_key::NAME);

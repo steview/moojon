@@ -7,16 +7,16 @@ abstract class moojon_base_tag extends moojon_base {
 	protected $children = array();
 	
 	public function __construct($children = null, $attributes = null) {
-		if (is_array($children) == false) {
+		if (!is_array($children)) {
 			$children = array($children);
 		}
 		foreach($children as $child) {
 			$this->add_child($child);
 		}
-		if ($attributes == null) {
+		if (!$attributes) {
 			$attributes = array();
 		}
-		if (is_array($attributes) == false) {
+		if (!is_array($attributes)) {
 			$attributes = array($attributes => $attributes);
 		}
 		foreach ($attributes as $key => $value) {
@@ -27,7 +27,7 @@ abstract class moojon_base_tag extends moojon_base {
 	abstract public function render();
 	
 	final public function __get($key) {
-		if ($this->has_attribute($key) == true) {
+		if ($this->has_attribute($key)) {
 			return $this->get_attribute($key);
 		} else {
 			return $this->get_property($key);
@@ -41,7 +41,7 @@ abstract class moojon_base_tag extends moojon_base {
 	}
 	
 	final protected function set_attribute($key, $value) {
-		if ($this->has_attribute($key) == true) {
+		if ($this->has_attribute($key)) {
 			$attribute = $this->get_attribute($key);
 			$attribute->set_value($value);
 		} else {
@@ -58,7 +58,7 @@ abstract class moojon_base_tag extends moojon_base {
 		if ($this->has_attribute($name)) {
 			throw new moojon_exception("Duplicate attribute ($name)");
 		}
-		if (in_array($name, $this->legal_attributes) == true) {
+		if (in_array($name, $this->legal_attributes)) {
 			$this->attributes[$name] = $attribute;
 		} else {
 			throw new moojon_exception("Illegal attribute ($name)");
@@ -70,7 +70,7 @@ abstract class moojon_base_tag extends moojon_base {
 	}
 	
 	final public function has_attributes() {
-		if (count($this->attributes) > 0) {
+		if (count($this->attributes)) {
 			return true;
 		} else {
 			return flase;
@@ -115,7 +115,7 @@ abstract class moojon_base_tag extends moojon_base {
 	}
 	
 	final public function has_children() {
-		if (count($this->children) > 0) {
+		if (count($this->children)) {
 			return true;
 		} else {
 			return flase;
@@ -145,9 +145,9 @@ abstract class moojon_base_tag extends moojon_base {
 	final public function get_by_attribute($attribute, $value = null, $recursive = false) {
 		$return = array();
 		foreach ($this->children as $child) {
-			if (is_subclass_of($child, 'moojon_base_tag') == true) {
-				if ($child->has_attribute($attribute) == true) {
-					if ($value != null) {
+			if (is_subclass_of($child, 'moojon_base_tag')) {
+				if ($child->has_attribute($attribute)) {
+					if ($value) {
 						if ($child->$attribute->get_value() == $value) {
 							$return[] = $child;
 						}
@@ -155,7 +155,7 @@ abstract class moojon_base_tag extends moojon_base {
 						$return[] = $child;
 					}
 				}
-				if (is_subclass_of($child, 'moojon_base_open_tag') == true && $recursive == true) {
+				if (is_subclass_of($child, 'moojon_base_open_tag') && $recursive) {
 					$return = array_merge($return, $child->get_by_attribute($attribute, $value));
 				}
 			}
@@ -166,9 +166,9 @@ abstract class moojon_base_tag extends moojon_base {
 	final public function remove_by_attribute($attribute, $value = null, $recursive = false) {
 		$remaining_children = array();
 		foreach ($this->children as $child) {
-			if (is_object($child) && is_subclass_of($child, 'moojon_base_tag') == true) {
-				if ($child->has_attribute($attribute) == true) {
-					if ($value != null) {
+			if (is_object($child) && is_subclass_of($child, 'moojon_base_tag')) {
+				if ($child->has_attribute($attribute)) {
+					if ($value) {
 						if ($child->$attribute->get_value() == $value) {
 							$child = null;
 						}
@@ -176,11 +176,11 @@ abstract class moojon_base_tag extends moojon_base {
 						$child = null;
 					}
 				}
-				if ($child != null && is_subclass_of($child, 'moojon_base_open_tag') == true && $recursive == true) {
+				if ($child && is_subclass_of($child, 'moojon_base_open_tag') && $recursive) {
 					$child->remove_by_attribute($attribute, $value, $recursive);
 				}
 			}
-			if ($child != null) {
+			if ($child) {
 				$remaining_children[] = $child;
 			}
 		}

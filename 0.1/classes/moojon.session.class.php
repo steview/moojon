@@ -21,10 +21,10 @@ final class moojon_session extends moojon_base {
 	
 	static public function has($key) {
 		self::get();
-		if (is_array($_SESSION) == false) {
+		if (!is_array($_SESSION)) {
 			return false;
 		}
-		if (array_key_exists($key, $_SESSION) === true) {
+		if (array_key_exists($key, $_SESSION)) {
 			if ($_SESSION[$key] !== null) {
 				return true;
 			}
@@ -42,7 +42,7 @@ final class moojon_session extends moojon_base {
 	}
 	
 	static public function clear() {
-		if (is_array($_SESSION) == true) {
+		if (is_array($_SESSION)) {
 			foreach($_SESSION as $key) {
 				$_SESSION[$key] = null;
 				unset($_SESSION[$key]);
@@ -51,8 +51,8 @@ final class moojon_session extends moojon_base {
 	}
 	
 	static public function key($key) {
-		if (is_array($_SESSION) == true) {
-			if (array_key_exists($key, $_SESSION) == true) {
+		if (is_array($_SESSION)) {
+			if (array_key_exists($key, $_SESSION)) {
 				return $_SESSION[$key];
 			} else {
 				throw new moojon_exception("Key does not exists in moojon_session ($key)");

@@ -26,7 +26,7 @@ final class moojon_assets extends moojon_base {
 	
 	static private function prepare_additions($additions, $ext) {
 		$return = array();
-		if (strlen($ext) > 0) {
+		if (strlen($ext)) {
 			$dot = '.';
 		} else {
 			$dot = '';

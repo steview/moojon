@@ -15,7 +15,7 @@ abstract class moojon_base_column extends moojon_base {
 	}
 	
 	final public function get_value() {
-		if ($this->value == null && $this->default != null) {
+		if (!$this->value && $this->default) {
 			return $this->default;
 		}
 		return $this->value;

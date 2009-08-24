@@ -69,7 +69,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 				foreach (moojon_files::directory_files(moojon_paths::get_project_models_directory()) as $path) {
 					$models[] = basename($path);
 				}
-				if (count($models) == 0) {
+				if (!count($models)) {
 					if ($this->prompt_until_in(null, array('y', 'n'), 'No models found. Would you like to generate models?') == 'y') {
 						moojon_generator::models();
 					} else {

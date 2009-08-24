@@ -24,10 +24,8 @@ final class moojon_files extends moojon_base {
 		if (!is_array($data)) {
 			return false;
 		}
-		if (array_key_exists($key, $data) === true) {
-			if ($data[$key] !== null) {
-				return true;
-			}
+		if (array_key_exists($key, $data) && $data[$key] !== null) {
+			return true;
 		}
 		return false;
 	}
@@ -71,7 +69,7 @@ final class moojon_files extends moojon_base {
 	static public function move_uploaded_file($key, $destination) {
 		$file = self::key($key);
 		if ($file['error'] == UPLOAD_ERR_OK) {
-			if (move_uploaded_file($file['tmp_name'], $destination) === true) {
+			if (move_uploaded_file($file['tmp_name'], $destination)) {
 				return $destination;
 			} else {
 				return false;
@@ -175,7 +173,7 @@ final class moojon_files extends moojon_base {
 	}
 	
 	static public function get_ext($file) {
-		if (strpos($file, '.') > 0) {
+		if (strpos($file, '.')) {
 			return substr($file, (strrpos($file, '.') + 1));
 		} else {
 			return false;
@@ -207,10 +205,10 @@ final class moojon_files extends moojon_base {
 		if (self::has_ext($file, $ext)) {
 			$file = self::strip_ext($file, $ext);
 		}
-		if (self::has_suffix($file, $suffix) == false) {
+		if (!self::has_suffix($file, $suffix)) {
 			$file .= ".$suffix";
 		}
-		if (strlen($ext) > 0) {
+		if (strlen($ext)) {
 			$file .= ".$ext";
 		}
 		return $path.$file;
@@ -233,7 +231,7 @@ final class moojon_files extends moojon_base {
 		if (!self::has_prefix($file, $prefix)) {
 			$file .= ".$prefix";
 		}
-		if (strlen($ext) > 0) {
+		if (strlen($ext)) {
 			$file .= ".$ext";
 		}
 		return $path.$file;

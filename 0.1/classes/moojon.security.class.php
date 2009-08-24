@@ -8,8 +8,8 @@ final class moojon_security extends moojon_base_security {
 		$security_identity_key = moojon_config::key('security_identity_key');
 		$security_password_key = moojon_config::key('security_password_key');
 		$log_message = 'Log in attempt';
-		if ($security_token === false) {
-			if (moojon_server::is_post() == true && moojon_request::has('security') == true) {
+		if (!$security_token) {
+			if (moojon_server::is_post() && moojon_request::has('security')) {
 				$security_identity_value = $security[$security_identity_key];
 				$security_password_value = $security[$security_password_key];
 				$where = sprintf(moojon_config::key('security_login_condition_string'), $security_identity_key, $security_identity_value, $security_password_key, $security_password_value);
@@ -24,16 +24,16 @@ final class moojon_security extends moojon_base_security {
 		$security_model = new $security_model;
 		$records = $security_model->read($where);
 		self::log('------------------------------');
-		if ($records->count < 1) {
+		if (!$records->count) {
 			self::log("$log_message failure, $security_token");
 			self::destroy();
 			return false;
 		} else {
 			$security_remember_key = moojon_config::key('security_remember_key');
 			$security_token = $records->first->$primary_key;
-			if (is_array($security) == true && moojon_server::is_post() == true) {
-				if (array_key_exists($security_remember_key, $security) == true) {
-					if (strlen($security[$security_remember_key]) > 0) {
+			if (is_array($security) && moojon_server::is_post()) {
+				if (array_key_exists($security_remember_key, $security)) {
+					if (strlen($security[$security_remember_key])) {
 						moojon_cookie::set($security_token_key, $security_token);
 						self::log("$log_message, creating cookie: ".$security_token);
 					}

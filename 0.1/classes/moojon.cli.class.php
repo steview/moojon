@@ -1,7 +1,7 @@
 <?php
 final class moojon_cli extends moojon_base_cli {
 	public function run($arguments) {
-		if (count($arguments) < 1) {
+		if (!count($arguments)) {
 			echo 'Moojon version: '.MOOJON_VERSION."\n";
 		} else {
 			$project = $this->prompt_until($arguments[0], 'Please enter a project name');

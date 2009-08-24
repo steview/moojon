@@ -3,11 +3,11 @@ final class moojon_quick_tags extends moojon_base {
 	private function __construct() {}
 	
 	static public function link_to($text, $action, $controller = null, $app = null, $attributes = array()) {
-		if (array_key_exists('href', $attributes) == false) {
-			if ($controller == null) {
+		if (!array_key_exists('href', $attributes)) {
+			if (!$controller) {
 				$controller = CONTROLLER;
 			}
-			if ($app == null) {
+			if (!$app) {
 				$app = APP;
 			}
 			$attributes['href'] = moojon_config::key('index_file')."$app/$controller/$action";
@@ -16,7 +16,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function year_select_options($start = null, $end = null, $attributes = null, $selected = null, $format = null) {
-		if ($selected == null) {
+		if (!$selected) {
 			$selected = date('Y');
 		}
 		return self::select_options(self::year_options($start, $end, $format), $selected, $attributes);
@@ -27,10 +27,10 @@ final class moojon_quick_tags extends moojon_base {
 			$format = 'Y';
 		}
 		$years = array();
-		if ($start == null) {
+		if (!$start) {
 			$start = abs(date('Y') - 50);
 		}
-		if ($end == null) {
+		if (!$end) {
 			$end = abs(date('Y') + 50);
 		}
 		for($i = min($start, $end); $i < (max($start, $end) + 1); $i ++) {
@@ -45,7 +45,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function month_select_options($attributes = null, $selected = null, $format = null) {
-		if ($selected == null) {
+		if (!$selected) {
 			$selected = date('n');
 		}
 		return self::select_options(self::month_options($format), $selected, $attributes);
@@ -68,7 +68,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function day_select_options($attributes = null, $selected = null, $format = null) {
-		if ($selected == null) {
+		if (!$selected) {
 			$selected = date('j');
 		}
 		return self::select_options(self::day_options($format), $selected, $attributes);
@@ -91,7 +91,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function hour_select_options($attributes = null, $selected = null, $format = null) {
-		if ($selected == null) {
+		if (!$selected) {
 			$selected = date('G');
 		}
 		return self::select_options(self::hour_options($format), $selected, $attributes);
@@ -114,7 +114,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function minute_select_options($attributes = null, $selected = null) {
-		if ($selected == null) {
+		if (!$selected) {
 			$selected = date('i');
 		}
 		return self::select_options(self::minute_options(), $selected, $attributes);
@@ -134,7 +134,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function second_select_options($attributes = null, $selected = null) {
-		if ($selected == null) {
+		if (!$selected) {
 			$selected = date('s');
 		}
 		return self::select_options(self::second_options(), $selected, $attributes);
@@ -154,7 +154,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function datetime_selects($attributes = null, $format = null, $selected = null, $start = null, $end = null) {
-		if ($format == null) {
+		if (!$format) {
 			$format = 'Y/m/d G:i:s';
 		}
 		$return = '';
@@ -204,7 +204,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function options($data, $selected = null) {
-		if (is_array($data) == false) {
+		if (!is_array($data)) {
 			$data = array($data);
 		}
 		$options = array();
@@ -219,7 +219,7 @@ final class moojon_quick_tags extends moojon_base {
 	}
 	
 	static public function css_tag($path, $media = null) {
-		if ($media == null) {
+		if (!$media) {
 			$media = 'screen, projection';
 		}
 		return new moojon_link_tag(array('rel' => 'stylesheet', 'type' => 'text/css', 'href' => "$path", 'media' => $media));

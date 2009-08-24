@@ -9,11 +9,11 @@ function helper($helper) {
 
 function helpers() {
 	$helpers = array();
-	if (moojon_config::has('helpers') == true) {
+	if (moojon_config::has('helpers')) {
 		$helpers = explode(', ', moojon_config::key('helpers'));
 	}
 	foreach (explode(', ', moojon_config::key('default_helpers')) as $helper) {
-		if (in_array($helper, $helpers) === false) {
+		if (!in_array($helper, $helpers)) {
 			$helpers[] = $helper;
 		}
 	}

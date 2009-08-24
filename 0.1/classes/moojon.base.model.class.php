@@ -101,14 +101,14 @@ abstract class moojon_base_model extends moojon_base {
 		if ($this->has_property($name)) {
 			throw new moojon_exception("duplicate property when adding relationship ($name)");
 		}
-		if ($foreign_table == null) {
+		if (!$foreign_table) {
 			$foreign_table = moojon_inflect::pluralize($name);
 		}
 		$foreign_table = self::strip_base($foreign_table);
-		if ($foreign_key == null) {
+		if (!$foreign_key) {
 			$foreign_key = moojon_primary_key::get_foreign_key($foreign_table);
 		}
-		if ($key == null) {
+		if (!$key) {
 			$key = moojon_primary_key::NAME;
 		}
 		if (!$this->has_column($key)) {
@@ -344,9 +344,9 @@ abstract class moojon_base_model extends moojon_base {
 		$valid = true;
 		$errors = array();
 		foreach ($this->get_editable_columns() as $column) {
-			if ($this->has_validation($column->get_name()) == true) {
+			if ($this->has_validation($column->get_name())) {
 				foreach ($this->validations[$column->get_name()] as $validation) {
-					if ($validation->validate($this, $column) === false) {
+					if (!$validation->validate($this, $column)) {
 						$errors[$column->get_name()] = $validation->get_message();
 						$valid = false;
 						break;
@@ -354,10 +354,10 @@ abstract class moojon_base_model extends moojon_base {
 				}
 			}
 		}
-		if ($cascade == true) {
+		if ($cascade) {
 			foreach ($this->relationships as $relationship) {
 				$validation = $relationship->validate(true);
-				if ($validation !== true) {
+				if (!$validation) {
 					foreach ($relationship->get_errors() as $error) {
 						$errors[] = $error;
 					}
@@ -427,7 +427,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static protected function base_create($class, $data) {
-		if ($data == null) {
+		if (!$data) {
 			$data = array();
 		}
 		$instance = self::init(self::strip_base($class));
@@ -492,7 +492,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	public function __toString() {
-		if ($this->to_string_column == null) {
+		if (!$this->to_string_column) {
 			$to_string_column = moojon_primary_key::NAME;
 		} else {
 			$to_string_column = $this->to_string_column;
@@ -501,7 +501,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final public function __clone() {
-		$this->new_record == true;
+		$this->new_record = true;
 		foreach ($this->get_primary_key_columns() as $column) {
 			$column_name = $column->get_name();
 			$this->$column_name = null;

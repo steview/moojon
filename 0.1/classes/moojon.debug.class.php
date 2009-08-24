@@ -9,7 +9,7 @@ final class moojon_debug extends moojon_base {
 			$div->add_child(new moojon_h2_tag('Session'));
 			$ul = new moojon_ul_tag();
 			foreach ($_SESSION as $key => $value) {
-				if (is_array($value) == true) {
+				if (is_array($value)) {
 					$value = 'array('.implode(', ', $value).')';
 				}
 				$ul->add_child(new moojon_li_tag("$key: $value"));
@@ -18,7 +18,7 @@ final class moojon_debug extends moojon_base {
 			$div->add_child(new moojon_h2_tag('Cookie'));
 			$ul = new moojon_ul_tag();
 			foreach ($_COOKIE as $key => $value) {
-				if (is_array($value) == true) {
+				if (is_array($value)) {
 					$value = 'array('.implode(', ', $value).')';
 				}
 				$ul->add_child(new moojon_li_tag("$key: $value"));
@@ -42,7 +42,7 @@ final class moojon_debug extends moojon_base {
 			$ul->add_child(new moojon_li_tag("controller_path: $controller_path"));
 			$ul->add_child(new moojon_li_tag("view_path: $view_path"));
 			$div->add_child($ul);
-			if (defined('REQUEST_START_TIME') == true) {
+			if (defined('REQUEST_START_TIME')) {
 				$div->add_child(new moojon_h2_tag('Request time: '.(time() - REQUEST_START_TIME)));
 			}
 			echo $div->render();
