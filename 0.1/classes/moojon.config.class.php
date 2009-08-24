@@ -5,8 +5,10 @@ final class moojon_config extends moojon_base {
 	
 	private function __construct() {
 		$this->data = require_once(MOOJON_PATH.'config/moojon.config.php');
-		foreach (require_once(moojon_paths::get_project_config_directory().ENVIRONMENT.'.config.php') as $key => $value) {
-			$this->data[$key] = $value;
+		if (defined('PROJECT_DIRECTORY')) {
+			foreach (require_once(moojon_paths::get_project_config_directory().ENVIRONMENT.'.config.php') as $key => $value) {
+				$this->data[$key] = $value;
+			}
 		}
 	}
 	

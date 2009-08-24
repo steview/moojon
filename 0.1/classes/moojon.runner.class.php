@@ -3,9 +3,11 @@ final class moojon_runner extends moojon_base {
 	static private $instance;
 	
 	private function __construct() {
-		include_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
-		foreach (helpers() as $helper) {
-			helper($helper);
+		if (defined('PROJECT_DIRECTORY')) {
+			include_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
+			foreach (helpers() as $helper) {
+				helper($helper);
+			}
 		}
 	}
 	

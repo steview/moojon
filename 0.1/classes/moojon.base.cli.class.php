@@ -51,7 +51,7 @@ abstract class moojon_base_cli extends moojon_base {
 	
 	final protected function prompt_until($initial, $message, $default = null) {
 		$return = ($initial) ? $initial : $this->prompt($message, $default);
-		while (strlen($return)) {
+		while (!strlen($return)) {
 			echo '(invalid command) ';
 			$return = $this->prompt($message, $default);
 		}

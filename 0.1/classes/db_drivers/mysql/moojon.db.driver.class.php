@@ -100,7 +100,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	
 	static public function get_add_columns($table) {
 		$add_columns = array();
-		foreach (self::list_columns($table) as $column) {
+		foreach (self::show_columns($table) as $column) {
 			$name = $column['Field'];
 			if ($bracket_position = strpos($column['Type'], '(')) {
 				$type = substr($column['Type'], 0, $bracket_position);

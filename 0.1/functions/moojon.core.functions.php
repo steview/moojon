@@ -28,5 +28,7 @@ function exception_error_handler($code, $message, $file, $line) {
 	exception_handler(new moojon_exception($message, 0, $code, $file, $line));
 }
 set_error_handler('exception_error_handler');
-date_default_timezone_set(moojon_config::key('timezone'));
+if (moojon_config::has('timezone')) {
+	date_default_timezone_set(moojon_config::key('timezone'));
+}
 ?>

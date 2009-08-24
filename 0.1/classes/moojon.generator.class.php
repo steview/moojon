@@ -126,7 +126,7 @@ final class moojon_generator extends moojon_base {
 	static public function models() {
 		self::attempt_mkdir(moojon_paths::get_project_models_directory());
 		self::attempt_mkdir(moojon_paths::get_project_base_models_directory());
-		foreach (moojon_db::list_tables() as $table) {
+		foreach (moojon_db::show_tables() as $table) {
 			self::model($table);
 		}
 	}
