@@ -303,7 +303,7 @@ final class moojon_db  extends moojon_base {
 	static public function run(PDOStatement $statement, $params = array(), $fetch_style = self::FETCH_ASSOC) {
 		$statement->execute($params);
 		self::log($statement->queryString);
-		if ($statement->rowCount()) {
+		if ($statement->columnCount()) {
 			return $statement->fetchAll($fetch_style);
 		} else {
 			return array();

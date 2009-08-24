@@ -10,7 +10,7 @@ final class moojon_exception_handler extends moojon_base_exception_handler {
 				$instance->render(true);
 				break;
 			case 'CLI':
-				echo moojon_exception::find();
+				echo $this->exception;
 				break;
 		}
 	}
