@@ -11,12 +11,20 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return $query .= ';';
 	}
 	
-	static public function show_tables() {
-		return 'SHOW FULL TABLES;';
+	static public function show_tables($where = null) {
+		$return = array();
+		$table_name_column = 'Tables_in_'.moojon_config::key('db_dbname');
+		if ($where === null) {
+			$where = " WHERE $table_name_column != 'schema_migrations'";
+		}
+		foreach (moojon_db::run(moojon_db::prepare("SHOW TABLES$where;")) as $table) {
+			$return[] = $table[$table_name_column];
+		}
+		return $return;
 	}
 	
 	static public function show_columns($table) {
-		return "SHOW FULL COLUMNS FROM $table;";
+		return "SHOW COLUMNS FROM $table;";
 	}
 	
 	static public function drop_table($table) {
@@ -100,7 +108,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	
 	static public function get_add_columns($table) {
 		$add_columns = array();
-		foreach (self::show_columns($table) as $column) {
+		foreach (moojon_db::show_columns($table) as $column) {
 			$name = $column['Field'];
 			if ($bracket_position = strpos($column['Type'], '(')) {
 				$type = substr($column['Type'], 0, $bracket_position);

@@ -140,6 +140,56 @@ final class moojon_files extends moojon_base {
 		return $directories;
 	}
 	
+	static public function get_project_apps() {
+		$return = array();
+		foreach (moojon_files::directory_files(moojon_paths::get_project_apps_directory(), false, false) as $app) {
+			$return[] = str_replace('.app.class.php', '', $app);
+		}
+		return $return;
+	}
+	
+	static public function get_app_controllers($app) {
+		$return = array();
+		foreach (moojon_files::directory_files(moojon_paths::get_project_controllers_app_directory($app), false, false) as $controller) {
+			$return[] = str_replace('.controller.class.php', '', $controller);
+		}
+		return $return;
+	}
+	
+	static public function get_actions() {
+		$data = self::get_data();
+		require_once(moojon_paths::get_controller_path($data['app'], $data['controller']));
+		$actions = get_class_methods(self::get_controller_class($data['controller']));
+		$paths = array(
+			moojon_paths::get_moojon_views_directory(),
+			moojon_paths::get_moojon_views_app_directory(moojon_uri::get_app()),
+			moojon_paths::get_moojon_views_app_controller_directory(moojon_uri::get_app(), moojon_uri::get_controller()),
+			moojon_paths::get_project_views_directory(),
+			moojon_paths::get_project_views_app_directory(moojon_uri::get_app()),
+			moojon_paths::get_project_views_app_controller_directory(moojon_uri::get_app(), moojon_uri::get_controller())
+		);
+		foreach (self::colate_view($paths) as $view) {
+			if (!in_array($actions, $view)) {
+				$actions[] = $view;
+			}
+		}
+		return $actions;
+	}
+	
+	static private function colate_views($paths) {
+		$views = array();
+		foreach ($paths as $path) {
+			if (is_dir($path)) {
+				foreach (moojon_files::directory_files($path, false, false) as $file) {
+					if (moojon_files::has_suffix($file, 'view', 'php')) {
+						$views[] = $file;
+					}
+				}
+			}
+		}
+		return $views;
+	}
+	
 	static private function parent_or_current($file) {
 		if ($file == '.' || $file == '..') {
 			return true;

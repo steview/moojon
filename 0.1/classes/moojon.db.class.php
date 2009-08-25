@@ -244,8 +244,8 @@ final class moojon_db  extends moojon_base {
 		return self::run(self::prepare(moojon_db_driver::create_table($table, $data, $options)), $params);
 	}
 	
-	static public function show_tables() {
-		return self::run(self::prepare(moojon_db_driver::show_tables()));;
+	static public function show_tables($where = null) {
+		return moojon_db_driver::show_tables($where);
 	}
 	
 	static public function show_columns($table, $params = array()) {

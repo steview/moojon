@@ -50,16 +50,7 @@ final class moojon_migrator extends moojon_base {
 	}
 	
 	static private function find_or_create_schema_migrations_table() {
-		$table_exists = false;
-		moojon_db_driver::show_tables();
-		foreach (moojon_db::show_tables() as $table) {
-			if ($table) {
-				if (in_array('schema_migrations', $table)) {
-					$table_exists = true;
-				}
-			}
-		}
-		if (!$table_exists) {
+		if (!in_array('schema_migrations', moojon_db::show_tables(''))) {
 			moojon_db::create_table('schema_migrations', array(new moojon_string_column('version')));
 		}
 	}

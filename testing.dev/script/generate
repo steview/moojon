@@ -1,8 +1,8 @@
-#!/Applications/MAMP/bin/php5/bin/php
+#!/usr/bin/php -q
 <?php
 define('MOOJON_VERSION', '0.1');
 define('MOOJON_PATH', '/Library/Moojon/0.1/');
-define('PROJECT_DIRECTORY', '/Library/Moojon/testing.dev/');
+define('PROJECT_DIRECTORY', '/Users/stevenwake/Moojon/testing.dev/');
 define('ENVIRONMENT', 'development');
 define('UI', 'CLI');
 define('CLI', 'moojon_generate_cli');

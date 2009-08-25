@@ -163,10 +163,6 @@ final class moojon_paths extends moojon_base {
 		return self::get_project_config_directory()."$app/";
 	}
 	
-	static public function get_project_app_environment_config_directory($app, $environment) {
-		return self::get_project_app_config_directory($app)."$environment/";
-	}
-	
 	
 	
 	
@@ -206,8 +202,10 @@ final class moojon_paths extends moojon_base {
 		$paths[] = self::get_validations_directory();
 		$paths[] = self::get_tags_directory();
 		$paths[] = self::get_tag_attributes_directory();
-		$paths[] = self::get_project_migrations_directory();
-		$paths[] = self::get_moojon_migrations_directory();
+		if (defined('PROJECT_DIRECTORY')) {
+			$paths[] = self::get_project_migrations_directory();
+			$paths[] = self::get_moojon_migrations_directory();
+		}
 		return $paths;
 	}
 	
@@ -283,6 +281,7 @@ final class moojon_paths extends moojon_base {
 	
 	static private function get_path($paths, $file) {
 		foreach ($paths as $path) {
+			$exists = (file_exists("$path$file")) ? 1 : 0;
 			if (file_exists("$path$file")) {
 				return "$path$file";
 			}

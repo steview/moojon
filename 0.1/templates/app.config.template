@@ -1,9 +1,5 @@
 <?php
 return array(
-	//'db_driver' => '',
-	//'db_host' => '',
-	//'db_username' => '',
-	//'db_password' => '',
-	//'db' => '',
+	
 );
 ?>

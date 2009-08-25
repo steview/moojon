@@ -12,9 +12,7 @@
 	<link href="/css/layout.css" rel="stylesheet" type="text/css" media="screen, projection" />
 	<link href="/css/form.css" rel="stylesheet" type="text/css" media="screen, projection" />
 	<link href="/css/print.css" rel="stylesheet" type="text/css" media="print" />
-	<script type="text/javascript" src="/js/jquery.js"></script>
-	<script type="text/javascript" src="/js/jquery.flash.js"></script>
-	<script type="text/javascript" src="/js/site.js"></script>
+	<script type="text/javascript" src="/js/project.js"></script>
 </head>
 <body id="body_" class="js-disabled"> 
 

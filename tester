@@ -1,0 +1,7 @@
+#!/Applications/MAMP/bin/php5/bin/php
+<?php
+while (1) {
+	include('test');
+	sleep(5);
+}
+?>

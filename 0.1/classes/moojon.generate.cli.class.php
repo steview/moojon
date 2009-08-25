@@ -4,13 +4,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 		$command = $this->prompt_until_in(array_shift($arguments), $this->get_commands(), 'What would you like to generate?');
 		switch ($command) {
 			case 'model':
-				$tables = array();
-				foreach(moojon_db::show_tables() as $table) {
-					$name = $table['Tables_in_'.moojon_config::key('db_dbname')];
-					if ($name != 'schema_migrations') {
-						$tables[] = $name;
-					}
-				}
+				$tables = moojon_db::show_tables();
 				if (!count($tables)) {
 					throw new moojon_exception('No tables to generate models from');
 				}
@@ -38,14 +32,8 @@ final class moojon_generate_cli extends moojon_base_cli {
 				$arguments = self::check_arguments('moojon_generate_cli::controller()', 3, $arguments);
 				$app = $this->prompt_for_app($arguments[0]);
 				$controller = $this->prompt_until($arguments[1], 'Please enter a controller name');
-				$action = $this->prompt_until($arguments[2], 'Please enter an action name');
+				$action = $this->prompt_until($arguments[2], 'Please enter an action name', 'index');
 				moojon_generator::controller($app, $controller, $action);
-				break;
-			case 'config':
-				$arguments = self::check_arguments('moojon_generate_cli::config()', 1, $arguments);
-				$config = $this->prompt_until($arguments[0], 'Please enter a name for this config');
-				$path = $this->prompt('Path?', $_SERVER['PWD'].'/'.'config/');
-				moojon_generator::config($config, $path);
 				break;
 			case 'helper':
 				$arguments = self::check_arguments('moojon_generate_cli::helper()', 1, $arguments);
@@ -53,10 +41,9 @@ final class moojon_generate_cli extends moojon_base_cli {
 				moojon_generator::helper($helper);
 				break;
 			case 'layout':
-				$arguments = self::check_arguments('moojon_generate_cli::layout()', 2, $arguments);
-				$app = $this->prompt_for_app($arguments[0]);
-				$layout = $this->prompt_until($arguments[1], 'Please enter a layout name');
-				moojon_generator::layout($app, $layout);
+				$arguments = self::check_arguments('moojon_generate_cli::layout()', 1, $arguments);
+				$layout = $this->prompt_until($arguments[0], 'Please enter a layout name');
+				moojon_generator::layout($layout);
 				break;
 			case 'view':
 				$arguments = self::check_arguments('moojon_generate_cli::view()', 3, $arguments);
@@ -69,7 +56,7 @@ final class moojon_generate_cli extends moojon_base_cli {
 				$arguments = self::check_arguments('moojon_generate_cli::partial()', 3, $arguments);
 				$app = $this->prompt_for_app($arguments[0]);
 				$controller = $this->prompt_for_controller($app, $arguments[1]);
-				$partial = $this->prompt_until($arguments[1], 'Please enter a name for this partial');
+				$partial = $this->prompt_until($arguments[2], 'Please enter a name for this partial');
 				moojon_generator::partial($app, $controller, $partial);
 				break;
 			case 'scaffold':
@@ -87,7 +74,6 @@ final class moojon_generate_cli extends moojon_base_cli {
 					}
 				}
 				$model = $this->prompt_until_in($arguments[1], moojon_db::show_tables(), 'What model would you like to generate a scaffold for?');
-				
 				$controller = $this->prompt_until($arguments[2], 'Please enter a controller name', $model);
 				moojon_generator::scaffold($app, $model, $controller);
 				break;
@@ -95,17 +81,17 @@ final class moojon_generate_cli extends moojon_base_cli {
 	}
 	
 	private function prompt_for_app($initial) {
-		$app = $this->prompt_until_in($initial, moojon_uri::get_apps(), 'Which app');
+		$app = $this->prompt_until_in($initial, moojon_files::get_project_apps(), 'Which app');
 		define('APP', $app);
 		return $app;
 	}
 	
 	private function prompt_for_controller($app, $initial) {
-		return $this->prompt_until_in($initial, moojon_uri::get_controllers($app), 'Which controller');
+		return $this->prompt_until_in($initial, moojon_files::get_app_controllers($app), 'Which controller');
 	}
 	
 	private function get_commands() {
-		return array('model', 'models', 'migration', 'app', 'controller', 'config', 'helper', 'view', 'layout', 'partial', 'scaffold');
+		return array('model', 'models', 'migration', 'app', 'controller', 'helper', 'view', 'layout', 'partial', 'scaffold');
 	}
 }
 ?>

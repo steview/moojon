@@ -2,7 +2,7 @@
 interface moojon_db_driver_queries {
 	static public function create_table($table, $columns = array(), $options = null);
 	
-	static public function show_tables();
+	static public function show_tables($where = null);
 	
 	static public function show_columns($table);
 	
