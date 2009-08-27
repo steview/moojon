@@ -1,5 +1,4 @@
-<?php 
-define('REQUEST_START_TIME', time());
+<?php
 define('MOOJON_VERSION', '<[MOOJON_VERSION]>');
 define('MOOJON_PATH', '<[MOOJON_PATH]>');
 define('PROJECT_DIRECTORY', '<[PROJECT_DIRECTORY]>');

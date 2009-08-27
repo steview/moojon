@@ -1,7 +1,7 @@
 <?php
 abstract class moojon_base_cli extends moojon_base {
 	
-	final public function __construct($uri) {
+	final public function __construct() {
 		if (!defined("STDIN")) {
 			define("STDIN", fopen('php://stdin','r'));
 		}

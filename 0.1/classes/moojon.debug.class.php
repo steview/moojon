@@ -42,9 +42,6 @@ final class moojon_debug extends moojon_base {
 			$ul->add_child(new moojon_li_tag("controller_path: $controller_path"));
 			$ul->add_child(new moojon_li_tag("view_path: $view_path"));
 			$div->add_child($ul);
-			if (defined('REQUEST_START_TIME')) {
-				$div->add_child(new moojon_h2_tag('Request time: '.(time() - REQUEST_START_TIME)));
-			}
 			echo $div->render();
 		}
 	}

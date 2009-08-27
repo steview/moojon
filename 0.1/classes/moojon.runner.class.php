@@ -19,16 +19,17 @@ final class moojon_runner extends moojon_base {
 				moojon_uri::get();
 				moojon_config::update(moojon_paths::get_project_app_config_directory(APP));
 				require_once(moojon_paths::get_app_path(APP));
-				$moojon = self::get_app_class(APP);
+				$app_class = self::get_app_class(APP);
+				new $app_class(moojon_uri::get_uri());
 				break;
 			case 'CLI':
-				$moojon = CLI;
+				$cli_class = CLI;
+				new $cli_class;
 				break;
 			default:
 				throw new moojon_exception('Invalid UI ('.UI.')');
 				break;
 		}
-		new $moojon(moojon_uri::get_uri());
 	}
 	
 	static public function get() {
