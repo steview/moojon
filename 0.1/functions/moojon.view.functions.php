@@ -21,7 +21,7 @@ function helpers() {
 }
 
 function partial($partial, $variables = array()) {
-	if ($partial_path = moojon_paths::get_view_path(APP, CONTROLLER, $partial)) {
+	if ($partial_path = moojon_paths::get_partial_path(APP, CONTROLLER, $partial)) {
 		foreach ($variables as $key => $value) {
 			$$key = $value;
 		}

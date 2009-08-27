@@ -4,7 +4,18 @@ final class moojon_uri extends moojon_base {
 	private $data = array();
 	
 	private function __construct() {
-		if (moojon_config::has('security') && moojon_config::key('security') && !moojon_authentication::authenticate()) {
+		$data = self::find(self::get_uri());
+		if (!$data) {
+			throw new moojon_exception('404');
+			return;
+		} else {
+			$this->set_data($data);
+		}
+	}
+	
+	static public function find($uri) {
+		$data = array();
+		if (moojon_config::has('security') && !moojon_authentication::authenticate()) {
 			$data['app'] = moojon_config::key('security_app');
 			$data['controller'] = moojon_config::key('security_controller');
 			$data['action'] = moojon_config::key('security_action');
@@ -12,16 +23,11 @@ final class moojon_uri extends moojon_base {
 			return;
 		}
 		foreach (moojon_routes::get_routes() as $route) {
-			if ($data = $route->map_uri(self::get_uri())) {
+			if ($data = $route->map_uri($uri)) {
 				break;
 			}
 		}
-		if (!$data) {
-			throw new moojon_exception('404');
-			return;
-		} else {
-			$this->set_data($data);
-		}
+		return $data;
 	}
 	
 	static public function get() {
@@ -53,7 +59,7 @@ final class moojon_uri extends moojon_base {
 		return $data[$key];
 	}
 	
-	static private function get_uri() {
+	static public function get_uri() {
 		if (array_key_exists('REQUEST_URI', $_SERVER)) {
 			$uri = $_SERVER['REQUEST_URI'];
 		} else {

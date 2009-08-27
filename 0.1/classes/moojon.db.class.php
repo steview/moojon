@@ -168,13 +168,6 @@ final class moojon_db  extends moojon_base {
 		return $instance->data;
 	}
 	
-	static public function close() {
-		if (self::$instance) {
-			//$instance->data = null;
-			//$instance = self::get();
-		}
-	}
-	
 	static public function begin_transaction() {
 		$data = self::get_data();
 		return $data->beginTransaction();

@@ -16,7 +16,7 @@ abstract class moojon_base_controller extends moojon_base {
 	}
 	
 	final public function render() {
-		return moojon_runner::render(moojon_paths::get_view_path(str_replace('_app', '', get_class($this->app)), str_replace('_controller', '', get_class($this)), $this->get_view()), $this);
+		return moojon_runner::render(moojon_paths::get_view_path(str_replace('_app', '', get_class($this->app)), str_replace('_controller', '', get_class($this)), $this->get_view()), get_object_vars($this));
 	}
 	
 	final public function set_layout($layout) {
@@ -25,8 +25,8 @@ abstract class moojon_base_controller extends moojon_base {
 	
 	protected function headers() {}
 	
-	final protected function forward($action = null, $controller = null, $app = null) {
-		$this->app->set_location($action, $controller, $app);
+	final protected function forward($uri) {
+		$this->app->set_location($uri);
 	}
 	
 	final protected function redirect($uri) {

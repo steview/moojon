@@ -21,7 +21,7 @@ final class moojon_primary_key extends moojon_base_column {
 		return moojon_inflect::singularize($table).'_'.self::NAME;
 	}
 	
-	public function get_table($foreign_key) {
+	static public function get_table($foreign_key) {
 		return str_replace('_'.self::NAME, '', $foreign_key);
 	}
 	

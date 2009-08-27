@@ -67,5 +67,9 @@ final class moojon_post extends moojon_base {
 			throw new moojon_exception("Key does not exists ($key)");
 		}
 	}
+	
+	static public function key_or_null($key) {
+		return (self::has($key)) ? self::key($key) : null;
+	}
 }
 ?>

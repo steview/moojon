@@ -325,6 +325,10 @@ final class moojon_paths extends moojon_base {
 		return self::get_path(self::get_view_paths($app, $controller), "$view.view.php");
 	}
 	
+	static public function get_partial_path($app, $controller, $partial) {
+		return self::get_path(self::get_view_paths($app, $controller), "_$partial.php");
+	}
+	
 	static public function get_helper_path($helper) {
 		return self::get_path(self::get_helper_paths(), "$helper.helper.php");
 	}

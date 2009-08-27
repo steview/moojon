@@ -19,7 +19,7 @@ final class moojon_runner extends moojon_base {
 				moojon_uri::get();
 				moojon_config::update(moojon_paths::get_project_app_config_directory(APP));
 				require_once(moojon_paths::get_app_path(APP));
-				$moojon = APP.'_app';
+				$moojon = self::get_app_class(APP);
 				break;
 			case 'CLI':
 				$moojon = CLI;
@@ -28,9 +28,7 @@ final class moojon_runner extends moojon_base {
 				throw new moojon_exception('Invalid UI ('.UI.')');
 				break;
 		}
-		$instance = new $moojon;
-		$instance->render(true);
-		moojon_db::close();
+		new $moojon(moojon_uri::get_uri());
 	}
 	
 	static public function get() {
@@ -40,8 +38,8 @@ final class moojon_runner extends moojon_base {
 		return self::$instance;
 	}
 	
-	static public function render($path, moojon_base_controller $controller) {
-		foreach (get_object_vars($controller) as $key => $value) {
+	static public function render($path, $variables = array()) {
+		foreach ($variables as $key => $value) {
 			$$key = $value;
 		}
 		ob_start();
