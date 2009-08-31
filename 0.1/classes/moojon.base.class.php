@@ -58,6 +58,24 @@ abstract class moojon_base {
 		return $controller.'_controller';
 	}
 	
+	static public function get_app_name($app) {
+		$app_class = get_class($app);
+		if (substr($app_class, -4) == '_app') {
+			return substr($app_class, 0, (strlen($app_class) - 4));
+		} else {
+			return $app_class;
+		}
+	}
+	
+	static public function get_controller_name($controller) {
+		$controller_class = get_class($controller);
+		if (substr($controller_class, -11) == '_controller') {
+			return substr($controller_class, 0, (strlen($controller_class) - 11));
+		} else {
+			return $controller_class;
+		}
+	}
+	
 	final protected function is_symbol($subject) {
 		return (substr($subject, 0, 1) == ':');
 	}

@@ -4,30 +4,30 @@ final class moojon_uri extends moojon_base {
 	private $data = array();
 	
 	private function __construct() {
-		$data = self::find(self::get_uri());
-		if (!$data) {
-			throw new moojon_exception('404');
-			return;
-		} else {
-			$this->set_data($data);
-		}
-	}
-	
-	static public function find($uri) {
 		$data = array();
 		if (moojon_config::has('security') && !moojon_authentication::authenticate()) {
 			$data['app'] = moojon_config::key('security_app');
 			$data['controller'] = moojon_config::key('security_controller');
 			$data['action'] = moojon_config::key('security_action');
-			$this->set_data($data);
-			return;
+		} else {
+			$data = self::find(self::get_uri());
 		}
+		$this->set_data($data);
+	}
+	
+	static public function find($uri) {
+		$data = array();
 		foreach (moojon_routes::get_routes() as $route) {
 			if ($data = $route->map_uri($uri)) {
 				break;
 			}
 		}
-		return $data;
+		if (!$data) {
+			throw new moojon_exception('404');
+			return;
+		} else {
+			return $data;
+		}
 	}
 	
 	static public function get() {
