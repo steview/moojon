@@ -1,0 +1,197 @@
+/*-------------------------*//*global text styles & classes *//*-------------------------*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+/*define basic elements*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+*{
+	margin:0;
+	padding:0;
+}
+
+html{
+	font-size: 100%; /* :hack: make IE resize text nicely */
+}
+
+body{
+	font: .75em Arial,Helvetica,sans-serif;
+	color:#000;
+}
+
+/*headings*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+h1, h2, h3, h4, h5{
+	margin:0 0 10px;
+}
+
+h1{
+	
+}
+
+h2{
+
+}
+
+h3{
+	
+}
+
+h4{
+	
+}
+
+h5{
+	
+}
+
+/*paragraphs etc*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+p{
+	margin:0 0 10px;
+}
+
+address{
+	font-style:normal;
+	margin:0 0 10px;
+}
+
+blockquote{
+	
+}
+
+cite{
+	
+}
+
+/*list styles*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+ol, ul {
+	margin:0 0 10px 30px;	
+}
+
+/*definition list styles*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+dl{
+	
+}
+
+dt{
+	clear:left;
+	float:left;
+	width:10em;
+}
+	
+dd{
+	
+}
+
+/*link styles*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+a {
+	text-decoration: none;
+}
+
+a:focus, a:hover {
+	text-decoration: underline;
+}
+
+a img{
+	border: 0;
+}
+
+#skiplinks {
+	margin: 0;
+	list-style: none;
+}
+
+#skiplinks a {
+	border: 1px solid #665;
+	background: #fff;
+	padding: 7px 5px;
+	position: absolute;
+	top: 10px;
+	left: -9999px;
+	font-size: 1.3em;
+	font-weight: bold;
+	z-index: 10;
+}
+#skiplinks a:focus, #skiplinks a:active {
+	left: 20px;
+	text-decoration: none;
+	border-color: #666; /* IE requires a border-color change (!?) for this to work */
+}
+
+/*image replacement*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+.replace{ 
+	position:relative; 
+	overflow:hidden;
+} 
+
+.replace span{ 
+	display:block; 
+	position:absolute; 
+	top:0; 
+	left:0;
+}
+
+a.replace span{
+	cursor:pointer;
+}
+
+.flash-replaced .alt {
+	display: block;
+	width: 0;
+	height: 0;
+	position: absolute;
+	overflow: hidden;
+}
+
+/*general custom classes*/
+/*/////////////////////////////////////////////////////////////////////////////////////////*/
+
+.dotrule{
+	height:1px; 
+	font-size:1px;
+	background:url(/images/dot.gif) repeat-x; 
+	clear:both;
+	margin:5px 0;
+}
+
+.dotrule hr {
+	display: none;
+}
+	
+.right{
+	float:right;
+}
+
+.left{
+	float:left;
+}
+
+.thumb{
+	border:1px solid #999;
+	padding:1px;
+}
+
+.thumb.left{
+	margin:0 15px 15px 0;
+}
+
+.thumb.right{
+	margin:0 0 15px 15px;
+}
+
+.clear{
+	clear:both;
+}
+
+.intro{
+	font-weight:bold;
+}

@@ -1,7 +1,10 @@
 #!/Applications/MAMP/bin/php5/bin/php
 <?php
+require_once 'growl.php';
 abstract class moojon_base_test {
+	private $growl;
 	final public function __construct() {
+		$this->growl =& Net_Growl::singleton('Net_Growl', array('Messages'));
 		try {
 			$this->init();
 			$this->run();
@@ -10,6 +13,7 @@ abstract class moojon_base_test {
 			echo $exception->getMessage();
 			echo "\n";
 		}
+		//$this->notify();
 	}
 	
 	final public function __destruct() {
@@ -20,6 +24,10 @@ abstract class moojon_base_test {
 			echo $exception->getMessage();
 			echo "\n";
 		}
+	}
+	
+	final private function notify() {
+		$this->growl->notify('Messages', 'Hello', 'How are you ?');
 	}
 	
 	protected function init() {}
@@ -33,21 +41,20 @@ abstract class moojon_base_test {
 class moojon_cli_test extends moojon_base_test {
 	final protected function init() {
 		exec('moojon testing2.dev client index index');
+		echo time()."\n";
 	}
 	
-	final protected function run() {
-		echo "run\n";
-	}
+	final protected function run() {}
 	
 	final protected function close() {
-		$dir = $_SERVER['PWD'].'/testing2.dev';
-		exec("rm -rf $dir");
+		$dir = '~/Moojon/testing2.dev';
+		exec("sudo rm -rf $dir");
 	}
 }
 while (1) {
 	$test = new moojon_cli_test();
-	sleep(2);
+	//sleep(2);
 	unset($test);
-	sleep(2);
+	//sleep(2);
 }
 ?>
