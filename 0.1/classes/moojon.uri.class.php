@@ -4,15 +4,7 @@ final class moojon_uri extends moojon_base {
 	private $data = array();
 	
 	private function __construct() {
-		$data = array();
-		if (moojon_config::has('security') && !moojon_authentication::authenticate()) {
-			$data['app'] = moojon_config::key('security_app');
-			$data['controller'] = moojon_config::key('security_controller');
-			$data['action'] = moojon_config::key('security_action');
-		} else {
-			$data = self::find(self::get_uri());
-		}
-		$this->set_data($data);
+		$this->set_data(self::find(self::get_uri()));
 	}
 	
 	static public function find($uri) {

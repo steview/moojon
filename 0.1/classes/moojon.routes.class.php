@@ -7,6 +7,8 @@ final class moojon_routes extends moojon_base {
 		foreach (require_once(moojon_paths::get_project_config_directory().'routes.php') as $route) {
 			if (is_subclass_of($route, 'moojon_base_route')) {
 				$this->routes[] = $route;
+			} else {
+				throw new moojon_exception('Only moojon_base_route derived objects may be included in '.moojon_paths::get_project_config_directory().'routes.php ('.get_class($route).' found)');
 			}
 		}
 	}
