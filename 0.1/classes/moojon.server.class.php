@@ -69,7 +69,7 @@ final class moojon_server extends moojon_base {
 	}
 	
 	static public function method() {
-		return $_SERVER['REQUEST_METHOD'];
+		return (!moojon_post::key_or_null('_method')) ? self::key('REQUEST_METHOD') : moojon_post::key('_method');
 	}
 	
 	static public function is_get() {

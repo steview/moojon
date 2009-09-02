@@ -4,8 +4,16 @@ abstract class moojon_base_route extends moojon_base {
 	protected $params;
 	
 	final public function __construct($pattern, $params = array()) {
-		$this->pattern = $pattern;
-		$this->params = $params;
+		if (!is_string($pattern)) {
+			throw new moojon_exception('Pattern passed to a moojon_base_route must be a string ('.get_class($pattern).' passed )');
+		} else {
+			$this->pattern = $pattern;
+		}
+		if (!is_array($params)) {
+			throw new moojon_exception('Params passed to a moojon_base_route must be an array ('.get_class($params).' passed )');
+		} else {
+			$this->params = $params;
+		}
 	}
 	
 	abstract public function map_uri($uri);
@@ -20,7 +28,7 @@ abstract class moojon_base_route extends moojon_base {
 	
 	final protected function get_symbol_values($uri) {
 		$pattern = explode('/', $this->pattern);
-		$uri = explode('/', $this->uri);
+		$uri = explode('/', $uri);
 		$return = array();
 		for ($i = 0; $i < count($pattern); $i ++) {
 			if ($this->is_symbol($pattern[$i])) {

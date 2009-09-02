@@ -3,7 +3,7 @@
 <div id="content_main">
 
 <ul>
-	<li><?php echo link_to('Create', 'create/id/'.moojon_uri::get('id'), first, client); ?></li>
+	<li><?php echo link_to('Create', 'client/firsts/create'); ?></li>
 </ul>
 
 <?php

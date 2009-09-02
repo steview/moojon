@@ -3,8 +3,8 @@
 <div id="content_main">
 
 <ul>
-	<li><?php echo link_to('Read', 'read/id/'.moojon_uri::get('id'), first, client); ?></li>
-	<li><?php echo link_to('Destroy', 'destroy/id/'.moojon_uri::get('id'), first, client); ?></li>
+	<li><?php echo link_to('Read', 'read/id/'.moojon_uri::get('id'), firsts, client); ?></li>
+	<li><?php echo link_to('Destroy', 'destroy/id/'.moojon_uri::get('id'), firsts, client); ?></li>
 </ul>
 
 <?php

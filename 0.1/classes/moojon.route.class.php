@@ -26,7 +26,6 @@ final class moojon_route extends moojon_base_route {
 					if ($this->is_symbol($patterns[$i])) {
 						switch ($this->get_symbol_name($patterns[$i])) {
 							case 'app':
-								echo 'app '.moojon_paths::get_app_path($uris[$i]).file_exists(moojon_paths::get_app_path($uris[$i])).'<br />';
 								if (moojon_paths::get_app_path($uris[$i])) {
 									$return['app'] = $uris[$i];
 								} else {
@@ -34,7 +33,6 @@ final class moojon_route extends moojon_base_route {
 								}
 								break;
 							case 'controller':
-								echo 'controller '.$uris[$i].' '.moojon_paths::get_controller_path($return['app'], $uris[$i]).file_exists(moojon_paths::get_controller_path($return['app'], $uris[$i])).'<br />';
 								if (moojon_paths::get_controller_path($return['app'], $uris[$i])) {
 									$return['controller'] = $uris[$i];
 								} else {
