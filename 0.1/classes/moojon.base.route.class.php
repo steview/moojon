@@ -54,5 +54,16 @@ abstract class moojon_base_route extends moojon_base {
 	final protected function match_controller($app, $controller) {
 		return moojon_paths::get_controller_path($app, $controller);
 	}
+	
+	final protected function validate_sections($data) {
+		if (!array_key_exists('app', $data) || !array_key_exists('controller', $data) || !array_key_exists('action', $data)) {
+			return false;
+		}
+		require_once(moojon_paths::get_controller_path($data['app'], $data['controller']));
+		if (!method_exists(self::get_controller_class($data['controller']), $data['action']) && !moojon_paths::get_view_path($data['app'], $data['controller'], $return['action'])) {
+			return false;
+		}
+		return $data;
+	}
 }
 ?>

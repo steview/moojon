@@ -4,8 +4,11 @@ final class moojon_rest_route extends moojon_base_route {
 	private $controller;
 	
 	public function map_uri($uri) {
+		if (strpos($uri, '?')) {
+			$uri = substr($uri, 0, strpos($uri, '?'));
+		}
 		$resource = (strpos($uri, '/')) ? substr($uri, 0, strpos($uri, '/')) : $uri;
-		if ($uri != $resource) {
+		if ($resource != $this->pattern) {
 			return false;
 		}
 		$return = $this->params;
@@ -20,21 +23,47 @@ final class moojon_rest_route extends moojon_base_route {
 		$uris = explode('/', $uri);
 		switch (strtolower(moojon_server::method())) {
 			case 'get':
-				
+				switch (count($uris)) {
+					case 1:
+						$return['action'] = 'index';
+						break;
+					case 2:
+						if ($uris[1] == 'create') {
+							$return['action'] = 'create';
+						} else {
+							$return['action'] = 'read';
+							$return['id'] = $uris[1];
+						}
+						break;
+					case 3:
+						$return['id'] = $uris[1];
+						if ($uris[2] == 'destroy') {
+							$return['action'] = 'destroy';
+						} else {
+							$return['action'] = 'update';
+						}
+						break;
+					default;
+						$return = $this->resolve_custom_actions();
+						break;
+				} 
 				break;
 			case 'post':
-				
+				$return['action'] = 'save';
 				break;
 			case 'put':
-				
+				$return['action'] = 'save';
+				$return['id'] = $uris[1];
 				break;
 			case 'delete':
-				
+				$return['action'] = 'destroy';
+				$return['id'] = $uris[1];
+				break;
+			default:
+				return false;
 				break;
 		}
-		print_r($return);
-		die('<br />'.$uri);
-		return false;
+		return $this->validate_sections($return);
 	}
 	
 	public function set_app($app) {
@@ -43,6 +72,10 @@ final class moojon_rest_route extends moojon_base_route {
 	
 	public function set_controller($controller) {
 		$this->controller = $controller;
+	}
+	
+	public function resolve_custom_actions() {
+		return false;
 	}
 }
 ?>
