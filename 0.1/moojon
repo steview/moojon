@@ -1,6 +1,8 @@
 #!/Applications/MAMP/bin/php5/bin/php
 <?php
 define('MOOJON_VERSION', '0.1');
+print_r($_SERVER);
+die();
 define('MOOJON_PATH', '/Library/Moojon/'.MOOJON_VERSION.'/');
 define('ENVIRONMENT', 'development');
 define('UI', 'CLI');
