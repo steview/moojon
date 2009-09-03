@@ -2,6 +2,7 @@
 final class moojon_rest_route extends moojon_base_route {
 	private $app;
 	private $controller;
+	private $id_property = moojon_primary_key::NAME;
 	
 	public function map_uri($uri) {
 		if (strpos($uri, '?')) {
@@ -32,7 +33,7 @@ final class moojon_rest_route extends moojon_base_route {
 							$return['action'] = 'create';
 						} else {
 							$return['action'] = 'read';
-							$return['id'] = $uris[1];
+							$return[$this->id_property] = $uris[1];
 						}
 						break;
 					case 3:
@@ -53,11 +54,11 @@ final class moojon_rest_route extends moojon_base_route {
 				break;
 			case 'put':
 				$return['action'] = 'save';
-				$return['id'] = $uris[1];
+				$return[$this->id_property] = $uris[1];
 				break;
 			case 'delete':
 				$return['action'] = 'destroy';
-				$return['id'] = $uris[1];
+				$return[$this->id_property] = $uris[1];
 				break;
 			default:
 				return false;
@@ -74,8 +75,20 @@ final class moojon_rest_route extends moojon_base_route {
 		$this->controller = $controller;
 	}
 	
+	public function set_id_property($id_property) {
+		$this->id_property = $id_property;
+	}
+	
 	public function resolve_custom_actions() {
 		return false;
+	}
+	
+	public function get_resource() {
+		return $this->pattern;
+	}
+	
+	public function get_id_property() {
+		return $this->id_property;
 	}
 }
 ?>

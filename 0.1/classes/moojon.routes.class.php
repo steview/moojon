@@ -24,5 +24,15 @@ final class moojon_routes extends moojon_base {
 		$instance = self::get();
 		return $instance->routes;
 	}
+	
+	static public function get_rest_routes() {
+		$return  = array();
+		foreach (self::get_routes() as $route) {
+			if (get_class($route) == 'moojon_rest_route') {
+				$return[] = $route;
+			}
+		}
+		return $return;
+	}
 }
 ?>

@@ -60,7 +60,7 @@ abstract class moojon_base_route extends moojon_base {
 			return false;
 		}
 		require_once(moojon_paths::get_controller_path($data['app'], $data['controller']));
-		if (!method_exists(self::get_controller_class($data['controller']), $data['action']) && !moojon_paths::get_view_path($data['app'], $data['controller'], $return['action'])) {
+		if (!method_exists(self::get_controller_class($data['controller']), $data['action']) && !moojon_paths::get_view_path($data['app'], $data['controller'], $data['action'])) {
 			return false;
 		}
 		return $data;
