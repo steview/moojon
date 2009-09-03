@@ -5,7 +5,7 @@ final class firsts_controller extends moojon_base_controller {
 	}
 	
 	public function create() {
-		$this->first = first::read(moojon_uri::get('id'));
+		//$this->first = first::read(moojon_uri::get('id'));
 	}
 	
 	public function read() {

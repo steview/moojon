@@ -5,6 +5,9 @@ final class moojon_rest_route extends moojon_base_route {
 	private $id_property = moojon_primary_key::NAME;
 	
 	public function map_uri($uri) {
+		if (substr($uri, -1) == '/') {
+			$uri = substr($uri, 0, (strlen($uri) - 1));
+		}
 		if (strpos($uri, '?')) {
 			$uri = substr($uri, 0, strpos($uri, '?'));
 		}

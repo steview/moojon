@@ -8,7 +8,7 @@
 </ul>
 
 <?php
-partial('dl', array('first' => $first));
+//partial('dl', array('first' => $first));
 ?>
 
 </div><!-- /content_main -->
