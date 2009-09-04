@@ -1,8 +1,6 @@
 <?php
-define('MOOJON_VERSION', '0.1');
-define('MOOJON_PATH', '/Library/Moojon/0.1/');
-define('PROJECT_DIRECTORY', '/Users/stevenwake/Moojon/testing.dev/');
-define('ENVIRONMENT', 'development');
 define('UI', 'CGI');
-require_once('/Library/Moojon/0.1/moojon.php');
+define('PROJECT_DIRECTORY', $_SERVER['DOCUMENT_ROOT'].'/../');
+require_once(PROJECT_DIRECTORY.'config/constants.php');
+require_once(MOOJON_PATH.'moojon.php');
 ?>

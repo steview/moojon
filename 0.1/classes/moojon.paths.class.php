@@ -47,6 +47,26 @@ final class moojon_paths extends moojon_base {
 		return MOOJON_PATH;
 	}
 	
+	static public function get_moojon_templates_directory() {
+		return self::get_moojon_directory().moojon_config::key('templates_directory').'/';
+	}
+	
+	static public function get_moojon_templates_scaffolds_directory() {
+		return self::get_moojon_templates_directory().moojon_config::key('scaffolds_directory').'/';
+	}
+	
+	static public function get_moojon_templates_images_directory() {
+		return self::get_moojon_templates_directory().moojon_config::key('images_directory').'/';
+	}
+	
+	static public function get_moojon_templates_css_directory() {
+		return self::get_moojon_templates_directory().moojon_config::key('css_directory').'/';
+	}
+	
+	static public function get_moojon_templates_js_directory() {
+		return self::get_moojon_templates_directory().moojon_config::key('js_directory').'/';
+	}
+	
 	static public function get_moojon_base_models_directory() {
 		return self::get_moojon_models_directory().moojon_config::key('base_models_directory').'/';
 	}
