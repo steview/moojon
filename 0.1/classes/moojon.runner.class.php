@@ -12,6 +12,7 @@ final class moojon_runner extends moojon_base {
 	}
 	
 	static public function run() {
+		self::dump_array($_SERVER);
 		self::get();
 		switch (strtoupper(UI)) {
 			case 'CGI':

@@ -79,5 +79,22 @@ abstract class moojon_base {
 	final protected function is_symbol($subject) {
 		return (substr($subject, 0, 1) == ':');
 	}
+	
+	static final protected function dump_array(Array $array) {
+		switch (strtoupper(UI)) {
+			case 'CGI':
+				foreach ($array as $key => $value) {
+					echo "$key: $value<br />";
+				}
+				break;
+			case 'CLI':
+				print_r($array);
+				break;
+			default:
+				throw new moojon_exception('Invalid UI ('.UI.')');
+				break;
+		}
+		
+	}
 }
 ?>
