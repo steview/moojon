@@ -15,8 +15,8 @@ final class firsts_controller extends moojon_base_controller {
 	
 	public function create() {
 		$this->first = first::create(moojon_post::key('first'));
-		if (!$this->first->save()) {
-			die('redirecting...'.first_uri($this->first));
+		if ($this->first->save()) {
+			$this->redirect(first_uri($this->first));
 		} else {
 			$this->view = 'new';
 		}
@@ -31,7 +31,7 @@ final class firsts_controller extends moojon_base_controller {
 		$this->first = first::read('id = '.$columns['id'])->first;
 		$this->first->set($columns);
 		if ($this->first->save()) {
-			die('redirecting...'.first_uri($this->first));
+			$this->redirect(first_uri($this->first));
 		} else {
 			$this->view = 'edit';
 		}
@@ -43,7 +43,7 @@ final class firsts_controller extends moojon_base_controller {
 	
 	public function destroy() {
 		first::destroy('id = '.moojon_uri::key('id'));
-		die('redirecting...'.firsts_uri());
+		$this->redirect(firsts_uri());
 	}
 }
 ?>
