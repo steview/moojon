@@ -3,12 +3,7 @@ final class moojon_runner extends moojon_base {
 	static private $instance;
 	
 	private function __construct() {
-		if (defined('PROJECT_DIRECTORY')) {
-			include_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
-			foreach (helpers() as $helper) {
-				helper($helper);
-			}
-		}
+		self::require_view_functions();
 	}
 	
 	static public function run() {
@@ -40,11 +35,14 @@ final class moojon_runner extends moojon_base {
 	}
 	
 	static public function render($path, $variables = array()) {
+		if (!file_exists($path)) {
+			throw new moojon_exception("Render path not found ($path)");
+		}
 		foreach ($variables as $key => $value) {
 			$$key = $value;
 		}
 		ob_start();
-		require($path);
+		require_once($path);
 		$return = ob_get_clean();
 		if (ob_get_length()) {
 			ob_end_clean();

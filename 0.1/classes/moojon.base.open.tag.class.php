@@ -16,7 +16,7 @@ abstract class moojon_base_open_tag extends moojon_base_tag {
 			$render .= '>';
 			if (count($this->children)) {
 				foreach ($this->children as $child) {
-					if (is_object($child)) {
+					if (is_object($child) && method_exists($child, 'render')) {
 						$render .= $child->render();
 					} else {
 						$render .= $child;

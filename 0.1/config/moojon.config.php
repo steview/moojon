@@ -41,7 +41,7 @@ return array(
 	'scaffolds_directory' => 'scaffold',
 	'script_directory' => 'script',
 	'default_image_ext' => 'gif',
-	'default_helpers' => 'ui, url',
+	'default_helpers' => 'ui, uri, rest',
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/',

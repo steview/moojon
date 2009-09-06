@@ -34,5 +34,14 @@ final class moojon_routes extends moojon_base {
 		}
 		return $return;
 	}
+	
+	static public function get_rest_route($resource) {
+		foreach (self::get_rest_routes() as $rest_route) {
+			if ($resource == $rest_route->get_resource()) {
+				return $rest_route;
+			}
+		}
+		throw new moojon_exception("Invalid rest route ($resource)");
+	}
 }
 ?>

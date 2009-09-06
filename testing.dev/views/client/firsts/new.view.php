@@ -1,13 +1,13 @@
-<h1>Firsts</h1>
+<h1>New first</h1>
 
 <div id="content_main">
 
 <ul>
-	<li><?php echo link_to('New', new_first_uri()); ?></li>
+	<li><?php echo link_to('Firsts', firsts_uri()); ?></li>
 </ul>
 
 <?php
-partial('table', array('firsts' => $firsts));
+partial('new_form', array('first' => $first));
 ?>
 
 </div><!-- /content_main -->

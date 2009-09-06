@@ -80,7 +80,16 @@ abstract class moojon_base {
 		return (substr($subject, 0, 1) == ':');
 	}
 	
-	static final protected function dump_array(Array $array) {
+	final static protected function require_view_functions() {
+		if (defined('PROJECT_DIRECTORY')) {
+			include_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
+			foreach (helpers() as $helper) {
+				helper($helper);
+			}
+		}
+	}
+	
+	final static protected function dump_array(Array $array) {
 		switch (strtoupper(UI)) {
 			case 'CGI':
 				foreach ($array as $key => $value) {

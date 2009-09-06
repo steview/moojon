@@ -305,7 +305,7 @@ abstract class moojon_base_model extends moojon_base {
 				return $column;
 			}
 		}
-		return false;
+		throw new moojon_exception("Invalid column ($column_name)");
 	}
 	
 	final public function get_editable_columns() {
@@ -383,17 +383,20 @@ abstract class moojon_base_model extends moojon_base {
 				$data[":$column_name"] = $this->$column_name;
 				$placeholders[$column_name] = ":$column_name";
 			}
+			$id_property = moojon_primary_key::NAME;
 			if ($this->new_record) {
 				moojon_db::insert($this->table, $placeholders, $data);
+				$this->$id_property = moojon_db::last_insert_id($id_property);
+				$this->new_record = false;
 			} else {
 				if ($this->unsaved) {
-					$id_property = moojon_primary_key::NAME;
 					$data[":$id_property"] = $this->$id_property;
 					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $data);
 				} else {
 					$saved = false;
 				}
 			}
+			$this->unsaved = (!$saved);
 		} else {
 			$saved = false;
 		}

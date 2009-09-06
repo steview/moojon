@@ -8,6 +8,7 @@ abstract class moojon_base_app extends moojon_base {
 	private $layout;
 	
 	final public function __construct($uri) {
+		self::require_view_functions();
 		$this->set_location($uri);
 		$this->init();
 		$this->render(true);

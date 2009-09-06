@@ -29,6 +29,18 @@ final class moojon_exception extends Exception {
 		$report = "\n".$this->getMessage()."\n\n";
 		$ol = new moojon_ol_tag();
 		$counter = 0;
+		foreach($this->get_trace() as $call) {
+			$string = '';
+			if (array_key_exists('file', $call) && array_key_exists('line', $call)) {
+				$counter ++;
+				$string = $call['file'].' on line '.$call['line'].' ('.$this->get_line($call['file'], $call['line']).')';
+				$report .= "\033[0m $counter. ".$this->get_line($call['file'], $call['line'])." \033[31m".$call['file'].' on line '.$call['line']."\n";
+			}
+			$ol->add_child(new moojon_li_tag($string));
+		}
+		$div->add_child($ol);
+		$ol = new moojon_ol_tag();
+		$counter = 0;
 		foreach($this->getTrace() as $call) {
 			$string = '';
 			if (array_key_exists('file', $call) && array_key_exists('line', $call)) {
@@ -68,6 +80,10 @@ final class moojon_exception extends Exception {
 		$return = trim(fgets($file_handle));
 		fclose($file_handle);
 		return $return;
+	}
+	
+	public function get_trace() {
+		return debug_backtrace();
 	}
 }
 ?>

@@ -5,6 +5,7 @@ abstract class moojon_base_controller extends moojon_base {
 	protected $action;
 	
 	final public function __construct(moojon_base_app $app, $action) {
+		self::require_view_functions();
 		$this->app = $app;
 		$this->init();
 		$this->headers();

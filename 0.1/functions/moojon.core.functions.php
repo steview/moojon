@@ -20,12 +20,19 @@ function __autoload($class) {
 	}
 }
 function exception_handler(Exception $exception) {
+	if (!is_subclass_of($exception, 'moojon_exception')) {
+		$message = ($exception->getMessage()) ? $exception->getMessage() : 'No message available for exception';
+		$code = ($exception->getCode()) ? $exception->getCode() : -1;
+		$file = ($exception->getFile()) ? $exception->getFile() : 'Unable to determine file';
+		$line = ($exception->getLine()) ? $exception->getLine() : -1;
+		$exception = new moojon_exception($message, 0, 0, $file, $line);
+	}
 	$exception_handler_class = moojon_config::key('exception_handler_class');
 	new $exception_handler_class($exception);
 }
 set_exception_handler('exception_handler');
 function exception_error_handler($code, $message, $file, $line) {
-	exception_handler(new moojon_exception($message, 0, $code, $file, $line));
+	exception_handler(new moojon_exception($message, $code, 0, $file, $line));
 }
 set_error_handler('exception_error_handler');
 if (moojon_config::has('timezone')) {

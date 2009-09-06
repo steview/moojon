@@ -93,7 +93,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function update($table, $columns = array(), $where = null) {
-		$where = self::require_prefix($where, 'WHERE ');
+		$where = self::require_prefix($where, ' WHERE ');
 		$values = '';
 		foreach($columns as $key => $value) {
 			$values .= ", $key = $value";
