@@ -36,27 +36,27 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function add_column($table, $column) {
-		return "ALTER TABLE $table ADD COLUMN $column";
+		return "ALTER TABLE $table ADD COLUMN $column;";
 	}
 	
 	static public function drop_column($table, $column) {
-		return "ALTER TABLE $table DROP COLUMN $column";
+		return "ALTER TABLE $table DROP COLUMN $column;";
 	}
 	
 	static public function change_column($table, $column) {
-		return "ALTER TABLE $table CHANGE COLUMN $column";
+		return "ALTER TABLE $table CHANGE COLUMN $column;";
 	}
 	
 	static public function modify_column($table, $column) {
-		return "ALTER TABLE $table MODIFY COLUMN $column";
+		return "ALTER TABLE $table MODIFY COLUMN $column;";
 	}
 	
 	static public function add_index($table, $index) {
-		return "ALTER TABLE $table ADD INDEX $index";
+		return "ALTER TABLE $table ADD INDEX $index;";
 	}
 	
 	static public function drop_index($table, $index) {
-		return "ALTER TABLE $table REMOVE INDEX $index";
+		return "ALTER TABLE $table REMOVE INDEX $index;";
 	}
 	
 	static public function select($table, $columns = array(), $where = null, $order = null, $limit = null) {
