@@ -7,7 +7,11 @@ abstract class base_first extends moojon_base_model {
 	}
 	
 	final static public function read_by_id($value, $order = null, $limit = null) {
-		$instance = self::init($class);
+		return self::read_all_by_id($value, $order, $limit)->first;
+	}
+	
+	final static public function read_all_by_id($value, $order = null, $limit = null) {
+		$instance = self::init(get_class());
 		$column = $instance->get_column('id');
 		return self::read("id = :id", $order, $limit, null, array(':id' => $value), array(':id' => $column->get_data_type()));
 	}
