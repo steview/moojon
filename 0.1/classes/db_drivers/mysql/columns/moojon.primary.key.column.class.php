@@ -28,5 +28,9 @@ final class moojon_primary_key extends moojon_base_column {
 	public function __toString() {
 		return $this->name.' '.$this->type.'('.$this->limit.') '.$this->get_null_string().' '.$this->get_default_string().'  '.$this->options;
 	}
+	
+	final function get_data_type() {
+		return moojon_db::PARAM_INT;
+	}
 }
 ?>

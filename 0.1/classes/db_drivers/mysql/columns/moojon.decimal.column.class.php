@@ -13,5 +13,9 @@ final class moojon_decimal_column extends moojon_base_column {
 	final public function __toString() {
 		return $this->name.' DECIMAL('.$this->limit.', '.$this->decimals.') '.$this->get_null_string().' '.$this->get_default_string();
 	}
+	
+	final function get_data_type() {
+		return moojon_db::PARAM_INT;
+	}
 }
 ?>

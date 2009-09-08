@@ -233,69 +233,73 @@ final class moojon_db  extends moojon_base {
 		return $data->setAttribute($attribute, $value);
 	}
 	
-	static public function create_table($table, $data, $options = null, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::create_table($table, $data, $options)), $params);
+	static public function create_table($table, $data, $options = null, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::create_table($table, $data, $options)), $param_values, $param_data_types);
 	}
 	
 	static public function show_tables($where = null) {
 		return moojon_db_driver::show_tables($where);
 	}
 	
-	static public function show_columns($table, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::show_columns($table)), $params);
+	static public function show_columns($table, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::show_columns($table)), $param_values, $param_data_types);
 	}
 	
-	static public function drop_table($table, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::drop_table($table)), $params);
+	static public function drop_table($table, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::drop_table($table)), $param_values, $param_data_types);
 	}
 	
-	static public function alter_table_rename($table, $data, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::alter_table_rename($table, $data)), $params);
+	static public function alter_table_rename($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::alter_table_rename($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function add_column($table, $data, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::add_column($table, $data)), $params);
+	static public function add_column($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::add_column($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function drop_column($table, $data, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::drop_column($table, $data)), $params);
+	static public function drop_column($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::drop_column($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function change_column($table, $data, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::change_column($table, $data)), $params);
+	static public function change_column($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::change_column($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function modify_column($table, $data, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::modify_column($table, $data)), $params);
+	static public function modify_column($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::modify_column($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function add_index($table, $data, $options = null, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::add_index($table, $data)), $params);
+	static public function add_index($table, $data, $options = null, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::add_index($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function drop_index($table, $data, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::drop_index($table, $data)), $params);
+	static public function drop_index($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::drop_index($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function select($table, $data = null, $where = null, $order = null, $limit = null, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::select($table, $data, $where, $order, $limit)), $params);
+	static public function select($table, $data = null, $where = null, $order = null, $limit = null, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::select($table, $data, $where, $order, $limit)), $param_values, $param_data_types);
 	}
 	
-	static public function insert($table, $data = null, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::insert($table, $data)), $params);
+	static public function insert($table, $data = null, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::insert($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function update($table, $data = null, $where = null, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::update($table, $data, $where)), $params);
+	static public function update($table, $data = null, $where = null, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::update($table, $data, $where)), $param_values, $param_data_types);
 	}
 	
-	static public function delete($table, $where = null, $params = array()) {
-		return self::run(self::prepare(moojon_db_driver::delete($table, $where)), $params);
+	static public function delete($table, $where = null, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::delete($table, $where)), $param_values, $param_data_types);
 	}
 	
-	static public function run(PDOStatement $statement, $params = array(), $fetch_style = self::FETCH_ASSOC) {
+	static public function run(PDOStatement $statement, $param_values = array(), $param_data_types = array(), $fetch_style = self::FETCH_ASSOC) {
 		self::log($statement->queryString);
-		$statement->execute($params);
+		foreach ($param_values as $key => $value) {
+			$data_type = (array_key_exists($key, $param_data_types)) ? $param_data_types[$key] : self::PARAM_STR;
+			$statement->bindValue($key, $value, $data_type);
+		}
+		$statement->execute();
 		if ($statement->columnCount()) {
 			return $statement->fetchAll($fetch_style);
 		} else {

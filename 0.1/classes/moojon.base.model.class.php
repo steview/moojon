@@ -9,7 +9,8 @@ abstract class moojon_base_model extends moojon_base {
 	private $errors = array();
 	private $unsaved = false;
 	protected $new_record = false;
-	public $to_string_column;
+	protected $to_string_column = moojon_primary_key::NAME;
+	private $params = array();
 	
 	final public function __construct() {}
 	
@@ -340,6 +341,10 @@ abstract class moojon_base_model extends moojon_base {
 		return $this->new_record;
 	}
 	
+	final public function get_to_string_column() {
+		return $this->to_string_column;
+	}
+	
 	final public function validate($cascade = false) {
 		$valid = true;
 		$errors = array();
@@ -410,7 +415,7 @@ abstract class moojon_base_model extends moojon_base {
 		return $saved;
 	}
 	
-	final static protected function base_read($class, $where, $order, $limit, $accessor) {
+	final static protected function base_read($class, $where, $order, $limit, $accessor, $param_values, $param_data_types) {
 		$class = self::strip_base($class);
 		$instance = self::init($class);
 		$columns = array();
@@ -418,7 +423,7 @@ abstract class moojon_base_model extends moojon_base {
 			$columns[$instance->table.'.'.$column->get_name()] = strtoupper(moojon_inflect::singularize(get_class($instance)).'_'.$column->get_name());
 		}
 		$records = new moojon_model_collection($accessor);
-		foreach(moojon_db::select($instance->table, $columns, $where, $order, $limit) as $row) {
+		foreach(moojon_db::select($instance->table, $columns, $where, $order, $limit, $param_values, $param_data_types) as $row) {
 			$record = self::init($class);
 			foreach($instance->columns as $column) {
 				$column_name = $column->get_name();
@@ -495,11 +500,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	public function __toString() {
-		if (!$this->to_string_column) {
-			$to_string_column = moojon_primary_key::NAME;
-		} else {
-			$to_string_column = $this->to_string_column;
-		}
+		$to_string_column = $this->to_string_column;
 		return $this->$to_string_column;
 	}
 	

@@ -59,5 +59,7 @@ abstract class moojon_base_column extends moojon_base {
 	}
 	
 	abstract public function __toString();
+	
+	abstract public function get_data_type();
 }
 ?>
