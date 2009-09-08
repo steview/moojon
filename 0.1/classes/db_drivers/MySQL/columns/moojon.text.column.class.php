@@ -14,6 +14,10 @@ final class moojon_text_column extends moojon_base_column {
 		} else {
 			return $this->name.' TEXT '.$this->get_null_string();
 		}
+		
+		final function get_data_type() {
+			return moojon_db::PARAM_STR;
+		}
 	}
 }
 ?>
