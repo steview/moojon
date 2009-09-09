@@ -443,7 +443,7 @@ abstract class moojon_base_model extends moojon_base {
 		if (!$data) {
 			$data = array();
 		}
-		$instance = self::init(self::strip_base($class));
+		$instance = self::init($class);
 		$instance->new_record = true;
 		foreach ($instance->get_editable_column_names() as $column_name) {
 			if (array_key_exists($column_name, $data)) {
@@ -517,14 +517,26 @@ abstract class moojon_base_model extends moojon_base {
 		}
 	}
 	
-	final static public function read_by($class, $column_name, $value, $order = null, $limit = null) {
+	final static public function read_by($class, $column_name, $value, $order, $limit) {
 		$column = self::base_get_column($class, $column_name);
-		return self::read("$column_name = :$column_name", $order, $limit, null, array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()));
+		return self::base_read($class, "$column_name = :$column_name", $order, $limit, null, array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()));
 	}
 	
 	final static public function destroy_by($class, $column_name, $value) {
 		$column = self::base_get_column($class, $column_name);
-		self::destroy("$column_name = :$column_name", array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()));
+		self::base_destroy($class, "$column_name = :$column_name", array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()));
+	}
+	
+	final static public function read_or_create_by($class, $column_name, $value, $data) {
+		$column = self::base_get_column($class, $column_name);
+		$collection = self::read_by($class, $column_name, $value, null, null);
+		if ($collection->count) {
+			return $collection->first;
+		} else {
+			$instance = self::base_create($class, $data);
+			$instance->$column_name = $value;
+			return $instance;
+		}
 	}
 }
 ?>
