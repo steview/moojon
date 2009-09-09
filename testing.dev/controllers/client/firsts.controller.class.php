@@ -42,7 +42,7 @@ final class firsts_controller extends moojon_base_controller {
 	}
 	
 	public function destroy() {
-		first::destroy('id = '.moojon_uri::key('id'));
+		first::destroy_by_id(moojon_uri::key('id'));
 		$this->redirect(firsts_uri());
 	}
 }

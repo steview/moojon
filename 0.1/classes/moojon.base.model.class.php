@@ -300,6 +300,11 @@ abstract class moojon_base_model extends moojon_base {
 		return $this->errors;
 	}
 	
+	final static public function base_get_column($class, $column_name) {
+		$instance = self::init($class);
+		return $instance->get_column($column_name);
+	}
+	
 	final public function get_column($column_name) {
 		foreach ($this->get_columns() as $column) {
 			if ($column->get_name() == $column_name) {
@@ -461,16 +466,16 @@ abstract class moojon_base_model extends moojon_base {
 		return $statement->execute($values);
 	}
 	
-	final static protected function base_destroy($class, $where) {
+	final static protected function base_destroy($class, $where, $param_values, $param_data_types) {
 		$instance = self::init($class);
-		foreach ($instance->read($where) as $record) {
+		foreach ($instance->read($where, null, null, null, $param_values, $param_data_types) as $record) {
 			foreach($record->get_relationships() as $relationship) {
 				if (get_class($relationship) == 'moojon_has_many_relationship' || get_class($relationship) == 'moojon_has_many_to_many_relationship') {
 					$relationship->delete();
 				}
 			}
 		}
-		moojon_db::delete($instance->table, $where);
+		moojon_db::delete($instance->table, $where, $param_values, $param_data_types);
 	}
 	
 	final protected function base_delete() {
@@ -510,6 +515,16 @@ abstract class moojon_base_model extends moojon_base {
 			$column_name = $column->get_name();
 			$this->$column_name = null;
 		}
+	}
+	
+	final static public function read_by($class, $column_name, $value, $order = null, $limit = null) {
+		$column = self::base_get_column($class, $column_name);
+		return self::read("$column_name = :$column_name", $order, $limit, null, array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()));
+	}
+	
+	final static public function destroy_by($class, $column_name, $value) {
+		$column = self::base_get_column($class, $column_name);
+		self::destroy("$column_name = :$column_name", array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()));
 	}
 }
 ?>
