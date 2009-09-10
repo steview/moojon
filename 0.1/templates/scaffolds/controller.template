@@ -4,63 +4,46 @@ final class <[plural]>_controller extends moojon_base_controller {
 		$this-><[plural]> = <[singular]>::read();
 	}
 	
+	public function show() {
+		$this-><[singular]> = <[singular]>::read_by_id(moojon_uri::key('id'));
+	}
+	
+	public function _new() {
+		$this->view = 'new';
+		$this-><[singular]> = <[singular]>::create();
+	}
+	
 	public function create() {
-		$this-><[singular]> = <[singular]>::create($_POST['<[singular]>']);
-		if (moojon_server::is_post()) {
-			if ($_POST['submit_button'] == 'Create') {
-				if ($this-><[singular]>->save()) {
-					$this->redirect('<[plural]>');
-				}
-			} elseif ($_POST['submit_button'] == 'Cancel') {
-				$this->redirect('<[plural]>');
-			}
+		$this-><[singular]> = <[singular]>::create(moojon_post::key('<[singular]>'));
+		if ($this-><[singular]>->save()) {
+			$this->redirect(<[singular]>_uri($this-><[singular]>));
+		} else {
+			$this->view = 'new';
 		}
 	}
 	
-	public function read() {
-		$this->read_from_id();
+	public function edit() {
+		$this-><[singular]> = <[singular]>::read_by_id(moojon_uri::key('id'));
 	}
 	
 	public function update() {
-		$this->read_from_id();
-		if (moojon_server::is_post()) {
-			if ($_POST['submit_button'] == 'Update') {
-				$this-><[singular]>->set($_POST['<[singular]>']);
-				if ($this-><[singular]>->save()) {
-					$this->redirect('<[plural]>/read/id/'.$this->get_id());
-				}
-			}
-			if ($_POST['submit_button'] == 'Cancel') {
-				$this->redirect('<[plural]>/read/id/'.$this->get_id());
-			}
+		$columns = moojon_post::key('<[singular]>');
+		$this-><[singular]> = <[singular]>::read_by_id($columns['id']);
+		$this-><[singular]>->set($columns);
+		if ($this-><[singular]>->save()) {
+			$this->redirect(<[singular]>_uri($this-><[singular]>));
+		} else {
+			$this->view = 'edit';
 		}
+	}
+	
+	public function delete() {
+		$this-><[singular]> = <[singular]>::read_by_id(moojon_uri::key('id'));
 	}
 	
 	public function destroy() {
-		if (moojon_server::is_post()) {
-			if ($_POST['submit_button'] == 'Destroy') {
-				<[singular]>::destroy('id = '.$this->get_id());
-				$this->redirect('<[plural]>');
-			} elseif ($_POST['submit_button'] == 'Cancel') {
-				$this->redirect('<[plural]>/read/id/'.$this->get_id());
-			} else {
-				$this->redirect('<[plural]>');
-			}
-		}
-		$this->read_from_id();
-	}
-	
-	private function read_from_id() {
-		$this-><[singular]> = <[singular]>::read('id = '.$this->get_id())->first;
-	}
-	
-	private function get_id() {
-		$<[singular]> = $_POST['<[singular]>'];
-		if ($<[singular]>[moojon_primary_key::NAME]) {
-			return $<[singular]>[moojon_primary_key::NAME];
-		} else {
-			return moojon_uri::get(moojon_primary_key::NAME);
-		}
+		<[singular]>::destroy_by_id(moojon_uri::key('id'));
+		$this->redirect(<[plural]>_uri());
 	}
 }
 ?>

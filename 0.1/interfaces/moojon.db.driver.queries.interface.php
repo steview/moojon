@@ -29,5 +29,15 @@ interface moojon_db_driver_queries {
 	static public function update($table, $columns = array(), $where = null);
 	
 	static public function delete($table, $where = null);
+	
+	static public function get_add_columns($table);
+	
+	static public function get_read_all_bys($table);
+	
+	static public function get_read_bys($table);
+	
+	static public function get_destroy_bys($table);
+	
+	static public function get_read_or_create_bys($table);
 }
 ?>

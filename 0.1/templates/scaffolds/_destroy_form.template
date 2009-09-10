@@ -1,4 +1,0 @@
-<?php
-$destroy_form = moojon_model_ui::destroy_form($<[singular]>, 'Please confirm destruction of '.get_class($<[singular]>));
-echo $destroy_form->render();
-?>

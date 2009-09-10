@@ -113,6 +113,10 @@ final class moojon_generator extends moojon_base {
 		$model_path = moojon_paths::get_project_models_directory()."$model.model.class.php";
 		self::run(moojon_paths::get_moojon_templates_directory().'model.template', $model_path, $swaps, false, false);
 		$swaps['columns'] = moojon_db_driver::get_add_columns($table);
+		$swaps['read_all_bys'] = moojon_db_driver::get_read_all_bys($table);
+		$swaps['read_bys'] = moojon_db_driver::get_read_bys($table);
+		$swaps['destroy_bys'] = moojon_db_driver::get_destroy_bys($table);
+		$swaps['read_or_create_bys'] = moojon_db_driver::get_read_or_create_bys($table);
 		self::run(moojon_paths::get_moojon_templates_directory().'base.model.template', moojon_paths::get_project_base_models_directory()."base.$model.model.class.php", $swaps, true, false);
 	}
 	
@@ -199,28 +203,24 @@ final class moojon_generator extends moojon_base {
 		self::try_define('APP', $app);
 		self::try_define('CONTROLLER', $controller);
 		$swaps = array();
-		$swaps['Plural'] = ucfirst(moojon_inflect::pluralize($model));
 		$swaps['plural'] = moojon_inflect::pluralize($model);
-		$swaps['Singular'] = ucfirst(moojon_inflect::singularize($model));
 		$swaps['singular'] = moojon_inflect::singularize($model);
 		$swaps['Human'] = str_replace('_', ' ', ucfirst(moojon_inflect::singularize($model)));
 		$swaps['human'] = str_replace('_', ' ', moojon_inflect::singularize($model));
 		$swaps['Humans'] = str_replace('_', ' ', ucfirst(moojon_inflect::pluralize($model)));
 		$swaps['humans'] = str_replace('_', ' ', moojon_inflect::pluralize($model));
-		$swaps['app'] = APP;
-		$swaps['controller'] = $controller;
 		$views_path = moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER);
 		self::attempt_mkdir($views_path);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'controller.template', moojon_paths::get_project_controllers_app_directory(APP, CONTROLLER)."$controller.controller.class.php", $swaps, false, true);
-		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'_destroy_form.template', $views_path.'_destroy_form.php', $swaps, false, true);
+		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'_delete_form.template', $views_path.'_delete_form.php', $swaps, false, true);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'_dl.template', $views_path.'_dl.php', $swaps, false, true);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'_form.template', $views_path.'_form.php', $swaps, false, true);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'_table.template', $views_path.'_table.php', $swaps, false, true);
-		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'create.view.template', $views_path.'create.view.php', $swaps, false, true);
-		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'destroy.view.template', $views_path.'destroy.view.php', $swaps, false, true);
+		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'new.view.template', $views_path.'new.view.php', $swaps, false, true);
+		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'delete.view.template', $views_path.'delete.view.php', $swaps, false, true);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'index.view.template', $views_path.'index.view.php', $swaps, false, true);
-		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'read.view.template', $views_path.'read.view.php', $swaps, false, true);
-		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'update.view.template', $views_path.'update.view.php', $swaps, false, true);
+		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'show.view.template', $views_path.'show.view.php', $swaps, false, true);
+		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'edit.view.template', $views_path.'edit.view.php', $swaps, false, true);
 	}
 }
 ?>

@@ -3,6 +3,6 @@
 define('UI', 'CLI');
 define('CLI', 'moojon_cli');
 define('MOOJON_VERSION', '0.1');
-define('MOOJON_PATH', $_SERVER['PWD'].'/'.dirname($_SERVER['SCRIPT_FILENAME']).'/'.MOOJON_VERSION.'/');
+define('MOOJON_PATH', $_SERVER['PWD'].'/'.dirname($_SERVER['PHP_SELF']).'/'.MOOJON_VERSION.'/');
 require_once(MOOJON_PATH.'moojon.php');
 ?>

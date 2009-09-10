@@ -1,10 +1,10 @@
-<h1>Destroy <[human]></h1>
+<h1>Delete <[human]></h1>
 
 <div id="content_main">
 
 <ul>
-	<li><?php echo link_to('Read', 'read/id/'.moojon_uri::get('id'), <[controller]>, <[app]>); ?></li>
-	<li><?php echo link_to('Update', 'update/id/'.moojon_uri::get('id'), <[controller]>, <[app]>); ?></li>
+	<li><?php echo link_to($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
+	<li><?php echo link_to('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
 </ul>
 
 <h2><?php echo $<[singular]>; ?></h2>
