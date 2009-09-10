@@ -89,6 +89,16 @@ final class moojon_rest_route extends moojon_base_route {
 		return false;
 	}
 	
+	public function get_app() {
+		if ($this->app) {
+			return $this->app;
+		} else if (array_key_exists('app', $this->params)) {
+			return $this->params['app'];
+		} else {
+			return null;
+		}
+	}
+	
 	public function get_resource() {
 		return ($this->resource) ? $this->resource : $this->pattern;
 	}

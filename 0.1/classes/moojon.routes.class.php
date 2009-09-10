@@ -69,12 +69,8 @@ final class moojon_routes extends moojon_base {
 	}
 	
 	static public function has_rest_route($resource) {
-		$data = self::get_rest_routes();
-		if (!is_array($data)) {
-			return false;
-		}
-		if (array_key_exists($key, $data)) {
-			if ($data[$key] !== null) {
+		foreach (self::get_rest_routes() as $rest_route) {
+			if ($resource == $rest_route->get_resource()) {
 				return true;
 			}
 		}

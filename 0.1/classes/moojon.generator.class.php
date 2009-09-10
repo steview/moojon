@@ -203,7 +203,10 @@ final class moojon_generator extends moojon_base {
 		self::try_define('APP', $app);
 		self::try_define('CONTROLLER', $controller);
 		if (moojon_routes::has_rest_route($model)) {
-			$route = moojon_routes::has_rest_route($model);
+			$route = moojon_routes::get_rest_route($model);
+			if (APP != $route->get_app()) {
+				throw new moojon_exception("Scaffold app & route app must be the same (".APP.' != '.$route->get_app().")");
+			}
 			$id_property = $route->get_id_property();
 		} else {
 			$id_property = moojon_primary_key::NAME;
@@ -245,8 +248,8 @@ final class moojon_generator extends moojon_base {
 		fclose($read_file_handle);
 		$write_file_handle = fopen($routes_path, 'w');
 		fwrite($write_file_handle, $routes);
-		//fwrite($write_file_handle, "Hello");
 		fclose($write_file_handle);
+		echo "Adding route ($route)\n";
 	}
 }
 ?>

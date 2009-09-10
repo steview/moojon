@@ -5,7 +5,7 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	public function show() {
-		$this-><[singular]> = <[singular]>::read_by_id(moojon_uri::key('id'));
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::key('id'));
 	}
 	
 	public function _new() {
@@ -23,12 +23,12 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	public function edit() {
-		$this-><[singular]> = <[singular]>::read_by_id(moojon_uri::key('id'));
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::key('id'));
 	}
 	
 	public function update() {
 		$columns = moojon_post::key('<[singular]>');
-		$this-><[singular]> = <[singular]>::read_by_id($columns['id']);
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>($columns['id']);
 		$this-><[singular]>->set($columns);
 		if ($this-><[singular]>->save()) {
 			$this->redirect(<[singular]>_uri($this-><[singular]>));
@@ -38,11 +38,11 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	public function delete() {
-		$this-><[singular]> = <[singular]>::read_by_id(moojon_uri::key('id'));
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::key('id'));
 	}
 	
 	public function destroy() {
-		<[singular]>::destroy_by_id(moojon_uri::key('id'));
+		<[singular]>::destroy_by_<[id_property]>(moojon_uri::key('id'));
 		$this->redirect(<[plural]>_uri());
 	}
 }
