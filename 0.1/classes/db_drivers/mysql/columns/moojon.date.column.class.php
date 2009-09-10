@@ -1,6 +1,6 @@
 <?php
 final class moojon_date_column extends moojon_base_column {
-	final public function __construct($name, $null = false, $default = '0000-00-00') {
+	final public function __construct($name, $null = false, $default = null) {
 		$this->name = $name;
 		$this->null = $null;
 		$this->default = $default;

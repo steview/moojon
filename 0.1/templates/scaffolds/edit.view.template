@@ -3,8 +3,8 @@
 <div id="content_main">
 
 <ul>
-	<li><?php echo link_to($first, first_uri($first)); ?></li>
-	<li><?php echo link_to('Delete', delete_first_uri($first)); ?></li>
+	<li><?php echo link_to($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
+	<li><?php echo link_to('Delete', delete_<[singular]>_uri($<[singular]>)); ?></li>
 </ul>
 
 <?php

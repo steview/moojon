@@ -1,17 +1,29 @@
 <?php
 abstract class moojon_base_column extends moojon_base {
 	protected $name;
-	protected $value;
+	protected $value = null;
 	protected $limit;
 	protected $null;
-	protected $default;
+	protected $default = null;
+	protected $unsaved = true;
+	protected $reset_value;
 	
 	final public function get_name() {
 		return $this->name;
 	}
 		
 	final public function set_value($value) {
+		if (!$this->reset_value) {
+			$this->reset_value = $value;
+		} else {
+			$this->unsaved = false;
+		}
 		$this->value = $value;
+	}
+	
+	final public function reset() {
+		$this->reset_value = null;
+		$this->unsaved = true;
 	}
 	
 	final public function get_value() {
@@ -37,6 +49,10 @@ abstract class moojon_base_column extends moojon_base {
 		return $this->value;
 	}
 	
+	final public function get_unsaved() {
+		return $this->unsaved;
+	}
+	
 	final protected function get_null_string() {
 		if ($this->null) {
 			return 'NULL';
@@ -47,7 +63,15 @@ abstract class moojon_base_column extends moojon_base {
 	
 	final protected function get_default_string() {
 		if ($this->default) {
-			return 'DEFAULT '.$this->default;
+			switch ($this->get_data_type()) {
+				case moojon_db::PARAM_STR:
+					$apos = "'";
+					break;
+				default:
+					$apos = '';
+					break;
+			}
+			return "DEFAULT $apos".$this->default.$apos;
 		} else {
 			return '';
 		}

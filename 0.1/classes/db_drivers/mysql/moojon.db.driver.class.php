@@ -227,5 +227,26 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		}
 		return implode("\n\t", $read_or_create_bys);
 	}
+	
+	static public function format_datetime($datetime = null) {
+		if (!$datetime) {
+			$datetime = time();
+		}
+		return date('Y-m-d H:i:s', $datetime);
+	}
+	
+	static public function format_date($date = null) {
+		if (!$date) {
+			$date = time();
+		}
+		return date('Y-m-d', $date);
+	}
+	
+	static public function format_time($time = null) {
+		if (!$time) {
+			$time = time();
+		}
+		return date('H:i:s', $time);
+	}
 }
 ?>

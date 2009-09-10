@@ -1,9 +1,13 @@
 <?php
 abstract class moojon_base_migration extends moojon_base {
 	protected $primary_key;
+	protected $created_on;
+	protected $updated_at;
 	
 	final public function __construct() {
 		$this->primary_key = new moojon_primary_key;
+		$this->created_on = new moojon_datetime_column('created_on', false, null);
+		$this->updated_at = new moojon_datetime_column('updated_at', false, null);
 	}
 		
 	abstract public function up();
@@ -58,14 +62,27 @@ abstract class moojon_base_migration extends moojon_base {
 		return new moojon_timestamp_column($name, $null, $default);
 	}
 	
-	final protected function create_table($name, $columns, $options = null) {
-		if (!is_array($columns)) {
-			$data = array($columns);
-		} else {
-			$data = $columns;
+	final protected function create_table($name, $data, $options = null) {
+		if (!is_array($data)) {
+			$data = array($data);
+		}
+		foreach ($data as $column) {
+			if ($column->get_name() == moojon_primary_key::NAME) {
+				$this->primary_key = null;
+			} else if ($column->get_name() == 'created_on') {
+				$this->created_on = null;
+			} else if ($column->get_name() == 'updated_at') {
+				$this->updated_at = null;
+			}
 		}
 		if ($this->primary_key) {
 			array_unshift($data, $this->primary_key);
+		}
+		if ($this->created_on) {
+			array_push($data, $this->created_on);
+		}
+		if ($this->updated_at) {
+			array_push($data, $this->updated_at);
 		}
 		$data = implode(', ', $data);
 		moojon_db::create_table($name, $data, $options);

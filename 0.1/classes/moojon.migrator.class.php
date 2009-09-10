@@ -36,17 +36,18 @@ final class moojon_migrator extends moojon_base {
 	static private function run_migration($migration_file, $direction) {
 		require_once($migration_file);
 		$migration_class_name = self::get_migration_class_name($migration_file);
-		echo "Running $migration_class_name::$direction()\n";
 		$migration = new $migration_class_name;
 		$migration->$direction();
 		switch ($direction) {
 			case 'up':
-				schema_migration::create(array('version' => $migration_file))->save();
+				$schema_migration = schema_migration::create(array('version' => $migration_file));
+				$schema_migration->save();
 				break;
 			case 'down':
 				schema_migration::destroy("version = '$migration_file'");
 				break;
 		}
+		echo "Running $migration_class_name::$direction()\n";
 	}
 	
 	static private function find_or_create_schema_migrations_table() {

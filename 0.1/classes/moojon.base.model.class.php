@@ -382,21 +382,36 @@ abstract class moojon_base_model extends moojon_base {
 	final public function save($cascade = false) {
 		$saved = true;
 		if ($this->validate($cascade)) {
-			foreach ($this->get_editable_column_names() as $column_name) {
+			if ($this->has_column('created_on')) {
+				$created_on = $this->get_column('created_on');
+				if (!$created_on->get_value()) {
+					$this->created_on = moojon_db_driver::format_datetime();
+				}
+			}
+			if ($this->has_column('updated_at')) {
+				$updated_at = $this->get_column('updated_at');
+				if (!$updated_at->get_unsaved()) {
+					$this->updated_at = moojon_db_driver::format_datetime();
+				}
+			}
+			$column_names = $this->get_editable_column_names();
+			foreach ($column_names as $column_name) {
 				if (method_exists($this, "set_$column_name")) {
 					$this->$column_name = call_user_func_array(array(get_class($this), "set_$column_name"), array($this, $this->get_column($column_name)));
 				}
 			}
 			$data = array();
 			$placeholders = array();
-			foreach ($this->get_editable_column_names() as $column_name) {
+			foreach ($column_names as $column_name) {
 				$data[":$column_name"] = $this->$column_name;
 				$placeholders[$column_name] = ":$column_name";
 			}
 			$id_property = moojon_primary_key::NAME;
 			if ($this->new_record) {
 				moojon_db::insert($this->table, $placeholders, $data);
-				$this->$id_property = moojon_db::last_insert_id($id_property);
+				if ($this->has_column($id_property)) {
+					$this->$id_property = moojon_db::last_insert_id($id_property);
+				}
 				$this->new_record = false;
 			} else {
 				if ($this->unsaved) {
@@ -411,6 +426,9 @@ abstract class moojon_base_model extends moojon_base {
 			$saved = false;
 		}
 		if ($saved) {
+			foreach ($this->get_editable_columns() as $column) {
+				$column->reset();
+			}
 			if ($cascade) {
 				foreach($this->relationships as $relationship) {
 					$relationship->save(true);

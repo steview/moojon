@@ -2,7 +2,6 @@
 final class moojon_migrate_cli extends moojon_base_cli {
 	public function run($arguments) {
 		$command = $this->prompt_until_in(array_shift($arguments), $this->get_commands(), 'Please enter a command?');
-		$this->get_migrations();
 		switch ($command) {
 			case 'roll_back':
 				$arguments = self::check_arguments('moojon_migrate_cli::roll_back()', 1, $arguments);

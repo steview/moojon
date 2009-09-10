@@ -39,5 +39,11 @@ interface moojon_db_driver_queries {
 	static public function get_destroy_bys($table);
 	
 	static public function get_read_or_create_bys($table);
+	
+	static public function format_datetime($datetime = null);
+	
+	static public function format_date($date = null);
+	
+	static public function format_time($time = null);
 }
 ?>

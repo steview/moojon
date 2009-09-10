@@ -14,7 +14,7 @@ final class moojon_primary_key extends moojon_base_column {
 		$this->options = self::OPTIONS;
 	}
 	
-	public function get_foreign_key($table) {
+	static public function get_foreign_key($table) {
 		if (substr($table, 0, 5) == 'base_') {
 			$table = substr($table, 5);
 		}
