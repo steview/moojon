@@ -231,19 +231,21 @@ final class moojon_generator extends moojon_base {
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'edit.view.template', $views_path.'edit.view.php', $swaps, false, true);
 	}
 	
+	
 	static public function add_route($route) {
 		$routes_path = moojon_paths::get_routes_path();
 		$read_file_handle = fopen($routes_path, 'r');
 		$routes = '';
-		while ($line = fgets($file_handle)) {
-			$routes .= "$line\n";
-			if (preg_match("/return\s+array\s+\(/", $line)) {
+		while ($line = fgets($read_file_handle)) {
+			$routes .= "$line";
+			if (preg_match("/return\s+array\s*\(/", $line)) {
 				$routes .= "\t$route\n";
 			}
 		}
 		fclose($read_file_handle);
 		$write_file_handle = fopen($routes_path, 'w');
 		fwrite($write_file_handle, $routes);
+		//fwrite($write_file_handle, "Hello");
 		fclose($write_file_handle);
 	}
 }

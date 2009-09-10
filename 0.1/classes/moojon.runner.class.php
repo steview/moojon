@@ -7,9 +7,9 @@ final class moojon_runner extends moojon_base {
 	}
 	
 	static public function run() {
-		self::get();
 		switch (strtoupper(UI)) {
 			case 'CGI':
+				self::get();
 				moojon_session::get();
 				moojon_uri::get();
 				moojon_config::update(moojon_paths::get_project_app_config_directory(APP));
