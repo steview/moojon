@@ -179,6 +179,10 @@ final class moojon_paths extends moojon_base {
 		return self::get_project_directory().'config/';
 	}
 	
+	static public function get_routes_path() {
+		return self::get_project_config_directory().'/routes.php';
+	}
+	
 	static public function get_project_app_config_directory($app) {
 		return self::get_project_config_directory()."$app/";
 	}

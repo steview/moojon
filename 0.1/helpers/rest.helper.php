@@ -1,5 +1,5 @@
 <?php
-foreach (moojon_routes::get_rest_routes() as $route) {
+foreach (moojon_routes::get_all() as $route) {
 	$collection = $route->get_resource();
 	$member = moojon_inflect::singularize($collection);
 	$id_property = $route->get_id_property();

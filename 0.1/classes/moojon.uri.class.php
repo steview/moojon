@@ -9,7 +9,7 @@ final class moojon_uri extends moojon_base {
 	
 	static public function find($uri) {
 		$data = array();
-		foreach (moojon_routes::get_routes() as $route) {
+		foreach (moojon_routes::get_all() as $route) {
 			if ($data = $route->map_uri($uri)) {
 				break;
 			}

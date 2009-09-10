@@ -189,5 +189,43 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		}
 		return implode("\n\t\t", $add_columns);
 	}
+	
+	static public function get_read_all_bys($table) {
+		$read_all_bys = array();
+		foreach (moojon_db::show_columns($table) as $column) {
+			$name = $column['Field'];
+			$read_all_bys[] = "final static public function read_all_by_$name(\$value, \$order = null, \$limit = null) {return self::read_by(get_class(), '$name', \$value, \$order, \$limit);}";
+		}
+		return implode("\n\t", $read_all_bys);
+	}
+	
+	static public function get_read_bys($table) {
+		$read_bys = array();
+		foreach (moojon_db::show_columns($table) as $column) {
+			$name = $column['Field'];
+			$read_bys[] = "final static public function read_by_$name(\$value, \$order = null, \$limit = null) {return self::read_all_by_$name(\$value, \$order, \$limit)->first;}";
+		}
+		return implode("\n\t", $read_bys);
+	}
+	
+	static public function get_destroy_bys($table) {
+		$destroy_bys = array();
+		foreach (moojon_db::show_columns($table) as $column) {
+			$name = $column['Field'];
+			$destroy_bys[] = "final static public function destroy_by_$name(\$value) {self::destroy_by(get_class(), '$name', \$value);}";
+		}
+		return implode("\n\t", $destroy_bys);
+	}
+	
+	static public function get_read_or_create_bys($table) {
+		$read_or_create_bys = array();
+		foreach (moojon_db::show_columns($table) as $column) {
+			$name = $column['Field'];
+			if ($column['Key'] != 'PRI') {
+				$read_or_create_bys[] = "final static public function read_or_create_by_$name(\$value, \$data = null) {return self::read_or_create_by(get_class(), '$name', \$value, \$data);}";
+			}
+		}
+		return implode("\n\t", $read_or_create_bys);
+	}
 }
 ?>

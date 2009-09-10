@@ -202,6 +202,13 @@ final class moojon_generator extends moojon_base {
 	static public function scaffold($app, $model, $controller) {
 		self::try_define('APP', $app);
 		self::try_define('CONTROLLER', $controller);
+		if (moojon_routes::has_rest_route($model)) {
+			$route = moojon_routes::has_rest_route($model);
+			$id_property = $route->get_id_property();
+		} else {
+			$id_property = moojon_primary_key::NAME;
+			self::add_route("new moojon_rest_route('$model', array('app' => '".APP."')),");
+		}
 		$swaps = array();
 		$swaps['plural'] = moojon_inflect::pluralize($model);
 		$swaps['singular'] = moojon_inflect::singularize($model);
@@ -209,6 +216,7 @@ final class moojon_generator extends moojon_base {
 		$swaps['human'] = str_replace('_', ' ', moojon_inflect::singularize($model));
 		$swaps['Humans'] = str_replace('_', ' ', ucfirst(moojon_inflect::pluralize($model)));
 		$swaps['humans'] = str_replace('_', ' ', moojon_inflect::pluralize($model));
+		$swaps['id_property'] = $id_property;
 		$views_path = moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER);
 		self::attempt_mkdir($views_path);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'controller.template', moojon_paths::get_project_controllers_app_directory(APP, CONTROLLER)."$controller.controller.class.php", $swaps, false, true);
@@ -221,6 +229,22 @@ final class moojon_generator extends moojon_base {
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'index.view.template', $views_path.'index.view.php', $swaps, false, true);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'show.view.template', $views_path.'show.view.php', $swaps, false, true);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'edit.view.template', $views_path.'edit.view.php', $swaps, false, true);
+	}
+	
+	static public function add_route($route) {
+		$routes_path = moojon_paths::get_routes_path();
+		$read_file_handle = fopen($routes_path, 'r');
+		$routes = '';
+		while ($line = fgets($file_handle)) {
+			$routes .= "$line\n";
+			if (preg_match("/return\s+array\s+\(/", $line)) {
+				$routes .= "\t$route\n";
+			}
+		}
+		fclose($read_file_handle);
+		$write_file_handle = fopen($routes_path, 'w');
+		fwrite($write_file_handle, $routes);
+		fclose($write_file_handle);
 	}
 }
 ?>
