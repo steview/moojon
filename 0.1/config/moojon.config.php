@@ -38,7 +38,7 @@ return array(
 	'images_directory' => 'images',
 	'css_directory' => 'css',
 	'js_directory' => 'js',
-	'scaffolds_directory' => 'scaffold',
+	'scaffolds_directory' => 'scaffolds',
 	'script_directory' => 'script',
 	'default_image_ext' => 'gif',
 	'default_helpers' => 'ui, uri, rest',
