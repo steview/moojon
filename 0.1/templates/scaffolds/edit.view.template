@@ -3,8 +3,8 @@
 <div id="content_main">
 
 <ul>
-	<li><?php echo link_to('Read', 'read/id/'.moojon_uri::get('id'), <[controller]>, <[app]>); ?></li>
-	<li><?php echo link_to('Destroy', 'destroy/id/'.moojon_uri::get('id'), <[controller]>, <[app]>); ?></li>
+	<li><?php echo link_to($first, first_uri($first)); ?></li>
+	<li><?php echo link_to('Delete', delete_first_uri($first)); ?></li>
 </ul>
 
 <?php

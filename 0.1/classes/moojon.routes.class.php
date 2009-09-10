@@ -26,7 +26,7 @@ final class moojon_routes extends moojon_base {
 		return $instance->data;
 	}
 	
-	static private function get_all() {
+	static public function get_all() {
 		$instance = self::get();
 		return $instance->data;
 	}

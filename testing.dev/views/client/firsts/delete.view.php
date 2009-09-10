@@ -10,7 +10,7 @@
 <h2><?php echo $first; ?></h2>
 
 <?php
-partial('destroy_form', array('first' => $first));
+partial('delete_form', array('first' => $first));
 ?>
 
 </div><!-- /content_main -->
