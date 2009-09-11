@@ -557,7 +557,7 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final static public function read_by($class, $column_name, $value, $order, $limit) {
 		$column = self::base_get_column($class, $column_name);
-		return self::base_read($class, "$column_name = :$column_name", $order, $limit, null, array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()));
+		return self::base_read($class, "$column_name = :$column_name", $order, $limit, array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()), null);
 	}
 	
 	final static public function destroy_by($class, $column_name, $value) {

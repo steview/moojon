@@ -29,7 +29,7 @@ abstract class base_first extends moojon_base_model {
 	}
 	
 	final static public function read($where = null, $order = null, $limit = null, $param_values = array(), $param_data_types = array(), moojon_base_model $accessor = null) {
-		return self::base_read(get_class(), $where, $order, $limit, $accessor, $param_values, $param_data_types);
+		return self::base_read(get_class(), $where, $order, $limit, $param_values, $param_data_types, $accessor);
 	}
 	
 	final static public function update($data, $where = null, $param_values = array(), $param_data_types = array()) {
