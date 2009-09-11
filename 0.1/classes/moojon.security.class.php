@@ -20,9 +20,7 @@ final class moojon_security extends moojon_base_security {
 				$where = sprintf(moojon_config::key('security_check_condition_string'), $primary_key, $security_token);
 			$log_message = 'Security check';
 		}
-		$security_model = moojon_config::key('security_model');
-		$security_model = new $security_model;
-		$records = $security_model->read($where);
+		$records = forward_static_call(array(moojon_config::key('security_model'), 'read'), array($where));
 		self::log('------------------------------');
 		if (!$records->count) {
 			self::log("$log_message failure, $security_token");

@@ -10,15 +10,35 @@ abstract class moojon_base_model extends moojon_base {
 	private $unsaved = false;
 	protected $new_record = false;
 	protected $to_string_column = moojon_primary_key::NAME;
-	private $params = array();
+	private $param_data_types = array();
 	
 	final public function __construct() {}
 	
 	abstract protected function add_columns();
 	
+	final private function add_param_data_types() {
+		$param_data_types = array();
+		foreach ($this->get_editable_columns() as $column) {
+			$param_data_types[':'.$column->get_name()] = $column->get_data_type();
+		}
+		$this->param_data_types = $param_data_types;
+	}
+	
 	protected function add_relationships() {}
 	
 	protected function add_validations() {}
+	
+	final private function compile_param_values($new_param_values = array()) {
+		$param_values = array();
+		foreach ($this->get_columns() as $column) {
+			$param_values[':'.$column->get_name()] = $column->get_value();
+		}
+		return array_merge($param_values, $new_param_values);
+	}
+	
+	final private function compile_param_data_types($new_param_data_types = array()) {
+		return array_merge($this->param_data_types, $new_param_data_types);
+	}
 	
 	final static public function strip_base($class) {
 		if (substr($class, 0, 5) == 'base_') {
@@ -31,6 +51,7 @@ abstract class moojon_base_model extends moojon_base {
 		$class = self::strip_base($class);
 		$instance = new $class;
 		$instance->add_columns();
+		$instance->add_param_data_types();
 		$instance->add_relationships();
 		$instance->add_validations();
 		$instance->class = $class;
@@ -400,15 +421,15 @@ abstract class moojon_base_model extends moojon_base {
 					$this->$column_name = call_user_func_array(array(get_class($this), "set_$column_name"), array($this, $this->get_column($column_name)));
 				}
 			}
-			$data = array();
+			$param_values = array();
 			$placeholders = array();
 			foreach ($column_names as $column_name) {
-				$data[":$column_name"] = $this->$column_name;
+				$param_values[":$column_name"] = $this->$column_name;
 				$placeholders[$column_name] = ":$column_name";
 			}
 			$id_property = moojon_primary_key::NAME;
 			if ($this->new_record) {
-				moojon_db::insert($this->table, $placeholders, $data);
+				moojon_db::insert($this->table, $placeholders, $param_values, $this->param_data_types);
 				if ($this->has_column($id_property)) {
 					$this->$id_property = moojon_db::last_insert_id($id_property);
 				}
@@ -416,7 +437,7 @@ abstract class moojon_base_model extends moojon_base {
 			} else {
 				if ($this->unsaved) {
 					$data[":$id_property"] = $this->$id_property;
-					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $data);
+					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $param_values, $this->param_data_types);
 				} else {
 					$saved = false;
 				}
@@ -438,7 +459,7 @@ abstract class moojon_base_model extends moojon_base {
 		return $saved;
 	}
 	
-	final static protected function base_read($class, $where, $order, $limit, $accessor, $param_values, $param_data_types) {
+	final static protected function base_read($class, $where, $order, $limit, $param_values, $param_data_types, $accessor) {
 		$class = self::strip_base($class);
 		$instance = self::init($class);
 		$columns = array();
@@ -446,7 +467,7 @@ abstract class moojon_base_model extends moojon_base {
 			$columns[$instance->table.'.'.$column->get_name()] = strtoupper(moojon_inflect::singularize(get_class($instance)).'_'.$column->get_name());
 		}
 		$records = new moojon_model_collection($accessor);
-		foreach(moojon_db::select($instance->table, $columns, $where, $order, $limit, $param_values, $param_data_types) as $row) {
+		foreach(moojon_db::select($instance->table, $columns, $where, $order, $limit, $instance->compile_param_values($param_values), $instance->compile_param_data_types($param_data_types)) as $row) {
 			$record = self::init($class);
 			foreach($instance->columns as $column) {
 				$column_name = $column->get_name();
@@ -485,27 +506,26 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static protected function base_destroy($class, $where, $param_values, $param_data_types) {
-		$instance = self::init($class);
-		foreach ($instance->read($where, null, null, null, $param_values, $param_data_types) as $record) {
+		foreach (forward_static_call_array(array(self::strip_base($class), 'read'), array($where, null, null, $param_values, $param_data_types)) as $record) {
 			foreach($record->get_relationships() as $relationship) {
 				if (get_class($relationship) == 'moojon_has_many_relationship' || get_class($relationship) == 'moojon_has_many_to_many_relationship') {
-					$relationship->delete();
+					$relationship_name = $relationship->get_name();
+					$record->$relationship_name->delete();
 				}
 			}
 		}
 		moojon_db::delete($instance->table, $where, $param_values, $param_data_types);
 	}
 	
-	final protected function base_delete() {
+	final public function delete() {
 		$where = '';
 		$data = array();
-		foreach ($this->get_primary_keys() as $column) {
+		foreach ($this->get_primary_key_columns() as $column) {
 			$where .= $column->get_name().' = :'.$column->get_name().' AND ';
 			$data[':'.$column->get_name()] = $column->get_value();
 		}
 		$where = substr($where, 0, (strlen($where) - 5)).';';
-		$statement = moojon_db::delete($this->table, $where);
-		return $statement->execute($data);
+		moojon_db::delete($this->table, $where, $data, $this->param_data_types);
 	}
 	
 	final public function set($data, $value = null) {
