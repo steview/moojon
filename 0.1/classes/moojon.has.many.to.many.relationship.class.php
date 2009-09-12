@@ -5,7 +5,7 @@ final class moojon_has_many_to_many_relationship extends moojon_base_relationshi
 		$key = $this->key;
 		$foreign_key1 = moojon_primary_key::get_foreign_key($this->foreign_table);
 		$foreign_key2 = moojon_primary_key::get_foreign_key(get_class($accessor));
-		return "$key IN (SELECT $foreign_key1 FROM $foreign_table WHERE $foreign_key2 = ".$accessor->$key.')';
+		return "$key IN (SELECT $foreign_key1 FROM $foreign_table WHERE $foreign_key2 = :key)";
 	}
 	
 	final public function get_class(moojon_base_model $accessor) {

@@ -196,11 +196,13 @@ final class moojon_model_ui extends moojon_base {
 		$name = $attributes->get_name();
 		$relationship = self::find_relationship($attributes, $model);
 		$key = $relationship->get_key();
+		$relationship_name = $relationship->get_name();
+		$relationship = new $relationship_name;
 		$options = array();
 		if ($attributes->get_null()) {
 			$options['Please select...'] = 0;
 		}
-		foreach(forward_static_call(array(get_class($model), 'read')) as $option) {
+		foreach($relationship->read() as $option) {
 			$options[(String)$option] = $option->$key;
 		}
 		return moojon_quick_tags::select_options($options, $model->$name, self::process_attributes($attributes, $model));

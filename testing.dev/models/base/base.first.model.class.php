@@ -8,11 +8,15 @@ abstract class base_first extends moojon_base_model {
 		$this->add_datetime('updated_at', false, null);
 	}
 	
-	final static public function read_all_by_id($value, $order = null, $limit = null) {return self::read_by(get_class(), 'id', $value, $order, $limit);}
+	final static public function read_all_by_id($value, $order = null, $limit = null) {
+		return self::read_by(get_class(), 'id', $value, $order, $limit);
+	}
 	final static public function read_all_by_column1($value, $order = null, $limit = null) {return self::read_by(get_class(), 'column1', $value, $order, $limit);}
 	final static public function read_all_by_created_on($value, $order = null, $limit = null) {return self::read_by(get_class(), 'created_on', $value, $order, $limit);}
 	final static public function read_all_by_updated_at($value, $order = null, $limit = null) {return self::read_by(get_class(), 'updated_at', $value, $order, $limit);}
-	final static public function read_by_id($value, $order = null, $limit = null) {return self::read_all_by_id($value, $order, $limit)->first;}
+	final static public function read_by_id($value, $order = null, $limit = null) {
+		return self::read_all_by_id($value, $order, $limit)->first;
+	}
 	final static public function read_by_column1($value, $order = null, $limit = null) {return self::read_all_by_column1($value, $order, $limit)->first;}
 	final static public function read_by_created_on($value, $order = null, $limit = null) {return self::read_all_by_created_on($value, $order, $limit)->first;}
 	final static public function read_by_updated_at($value, $order = null, $limit = null) {return self::read_all_by_updated_at($value, $order, $limit)->first;}

@@ -7,20 +7,29 @@ final class moojon_security extends moojon_base_security {
 		$primary_key = moojon_primary_key::NAME;
 		$security_identity_key = moojon_config::key('security_identity_key');
 		$security_password_key = moojon_config::key('security_password_key');
+		$security_model_class = moojon_config::key('security_model');
+		$security_model = new $security_model_class;
+		$security_identity_data_type = $security_model->get_column($security_identity_key)->get_data_type();
+		$security_password_data_type = $security_model->get_column($security_password_key)->get_data_type();
 		$log_message = 'Log in attempt';
 		if (!$security_token) {
 			if (moojon_server::is_post() && moojon_request::has('security')) {
 				$security_identity_value = $security[$security_identity_key];
 				$security_password_value = $security[$security_password_key];
-				$where = sprintf(moojon_config::key('security_login_condition_string'), $security_identity_key, $security_identity_value, $security_password_key, $security_password_value);
+				$where = "$security_identity_key = :$security_identity_key AND $security_password_key = :$security_password_key";
+				$param_values = array(":$security_identity_key" => $security_identity_value, ":$security_password_key" => $security_password_value);
+				$param_data_types = array(":$security_identity_key" => $security_identity_data_type, ":$security_password_key" => $security_password_data_type);
 			} else {
 				return false;
 			}
 		} else {
-				$where = sprintf(moojon_config::key('security_check_condition_string'), $primary_key, $security_token);
+			$where = "$primary_key = :$primary_key";
+			$param_values = array(":$primary_key" => $security_token);
+			$column = new moojon_primary_key;
+			$param_data_types = array(":$primary_key" => $column->get_data_type());
 			$log_message = 'Security check';
 		}
-		$records = forward_static_call(array(moojon_config::key('security_model'), 'read'), array($where));
+		$records = $security_model->read($where, null, null, $param_values, $param_data_types);
 		self::log('------------------------------');
 		if (!$records->count) {
 			self::log("$log_message failure, $security_token");

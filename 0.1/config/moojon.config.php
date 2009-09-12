@@ -47,8 +47,6 @@ return array(
 	'index_file' => '/index.php/',
 	'flash_key' => 'flash',
 	'cookie_expiry' => 1209600,
-	'security_login_condition_string' => "%s = '%s' AND %s = '%s'",
-	'security_check_condition_string' => "%s = '%d'",
 	'security_token_key' => 'security_token',
 	'security_key' => 'security',
 	'security_identity_key' => 'email',

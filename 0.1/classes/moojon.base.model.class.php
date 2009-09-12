@@ -467,7 +467,7 @@ abstract class moojon_base_model extends moojon_base {
 			$columns[$instance->table.'.'.$column->get_name()] = strtoupper(moojon_inflect::singularize(get_class($instance)).'_'.$column->get_name());
 		}
 		$records = new moojon_model_collection($accessor);
-		foreach(moojon_db::select($instance->table, $columns, $where, $order, $limit, $instance->compile_param_values($param_values), $instance->compile_param_data_types($param_data_types)) as $row) {
+		foreach(moojon_db::select($instance->table, $columns, $where, $order, $limit, $param_values, $instance->compile_param_data_types($param_data_types)) as $row) {
 			$record = self::init($class);
 			foreach($instance->columns as $column) {
 				$column_name = $column->get_name();
@@ -506,7 +506,8 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static protected function base_destroy($class, $where, $param_values, $param_data_types) {
-		foreach (forward_static_call_array(array(self::strip_base($class), 'read'), array($where, null, null, $param_values, $param_data_types)) as $record) {
+		$instance = self::init(self::strip_base($class));
+		foreach ($instance->read($where, null, null, $param_values, $param_data_types) as $record) {
 			foreach($record->get_relationships() as $relationship) {
 				if (get_class($relationship) == 'moojon_has_many_relationship' || get_class($relationship) == 'moojon_has_many_to_many_relationship') {
 					$relationship_name = $relationship->get_name();
