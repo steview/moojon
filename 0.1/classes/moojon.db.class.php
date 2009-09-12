@@ -294,10 +294,17 @@ final class moojon_db  extends moojon_base {
 	}
 	
 	static public function run(PDOStatement $statement, $param_values = array(), $param_data_types = array(), $fetch_style = self::FETCH_ASSOC) {
+		echo '<br />'.$statement->queryString.'<br />';
+		print_r($param_values);
+		echo '<br />';
+		print_r($param_data_types);
+		echo '<br />';
 		self::log($statement->queryString);
 		foreach ($param_values as $key => $value) {
-			$data_type = (array_key_exists($key, $param_data_types)) ? $param_data_types[$key] : self::PARAM_STR;
-			$statement->bindValue($key, $value, $data_type);
+			if ($value) {
+				$data_type = (array_key_exists($key, $param_data_types)) ? $param_data_types[$key] : self::PARAM_STR;
+				$statement->bindValue($key, $value, $data_type);
+			}
 		}
 		$statement->execute();
 		if ($statement->columnCount()) {

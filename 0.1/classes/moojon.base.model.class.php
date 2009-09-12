@@ -436,7 +436,7 @@ abstract class moojon_base_model extends moojon_base {
 				$this->new_record = false;
 			} else {
 				if ($this->unsaved) {
-					$data[":$id_property"] = $this->$id_property;
+					$param_values[":$id_property"] = $this->$id_property;
 					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $param_values, $this->param_data_types);
 				} else {
 					$saved = false;
