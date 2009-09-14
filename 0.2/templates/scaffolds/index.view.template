@@ -1,0 +1,19 @@
+<h1><[Humans]></h1>
+
+<div id="content_main">
+
+<ul>
+	<li><?php echo link_to('New', new_<[singular]>_uri()); ?></li>
+</ul>
+
+<?php
+partial('table', array('<[plural]>' => $<[plural]>));
+?>
+
+</div><!-- /content_main -->
+
+<div id="content_sub">
+
+
+
+</div><!-- /content_sub -->

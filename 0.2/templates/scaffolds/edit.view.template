@@ -1,0 +1,20 @@
+<h1>Update <[human]></h1>
+
+<div id="content_main">
+
+<ul>
+	<li><?php echo link_to($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
+	<li><?php echo link_to('Delete', delete_<[singular]>_uri($<[singular]>)); ?></li>
+</ul>
+
+<?php
+partial('form', array('<[singular]>' => $<[singular]>));
+?>
+
+</div><!-- /content_main -->
+
+<div id="content_sub">
+
+
+
+</div><!-- /content_sub -->
