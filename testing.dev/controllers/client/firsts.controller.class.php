@@ -16,6 +16,7 @@ final class firsts_controller extends moojon_base_controller {
 	public function create() {
 		$this->first = first::create(moojon_post::key('first'));
 		if ($this->first->save()) {
+			moojon_flash::set('notification', $this->first." created");
 			$this->redirect(first_uri($this->first));
 		} else {
 			$this->view = 'new';
@@ -31,6 +32,7 @@ final class firsts_controller extends moojon_base_controller {
 		$this->first = first::read_by_id($columns['id']);
 		$this->first->set($columns);
 		if ($this->first->save()) {
+			moojon_flash::set('notification', $this->first." updated");
 			$this->redirect(first_uri($this->first));
 		} else {
 			$this->view = 'edit';
@@ -42,7 +44,9 @@ final class firsts_controller extends moojon_base_controller {
 	}
 	
 	public function destroy() {
-		first::destroy_by_id(moojon_uri::key('id'));
+		$first = first::read_by_id(moojon_uri::key('id'));
+		$first->delete();
+		moojon_flash::set('notification', "$first deleted");
 		$this->redirect(firsts_uri());
 	}
 }

@@ -5,7 +5,7 @@ abstract class base_first extends moojon_base_model {
 		$this->add_primary_key();
 		$this->add_string('column1', 255, false, null);
 		$this->add_datetime('created_on', false, null);
-		$this->add_datetime('updated_at', false, null);
+		$this->add_datetime('updated_at', true, null);
 	}
 	
 	final static public function read_all_by_id($value, $order = null, $limit = null) {

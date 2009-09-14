@@ -6,7 +6,7 @@ abstract class base_second extends moojon_base_model {
 		$this->add_string('column1', 255, false, null);
 		$this->add_integer('first_id', 11, false, null);
 		$this->add_datetime('created_on', false, null);
-		$this->add_datetime('updated_at', false, null);
+		$this->add_datetime('updated_at', true, null);
 	}
 	
 	final static public function read_all_by_id($value, $order = null, $limit = null) {return self::read_by(get_class(), 'id', $value, $order, $limit);}

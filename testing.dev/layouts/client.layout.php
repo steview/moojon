@@ -31,10 +31,9 @@
 	<div id="nav">
 	
 		<ul>
-			<li id="nav_home"><a href="/" class="replace" accesskey="1">Home <span></span></a></li>
-			<li id="nav_about"><a href="/.php" class="replace">About us <span></span></a></li>
-			<li id="nav_contact"><a href="/.php" class="replace">Contact us <span></span></a></li>
-			<li id="nav_"><a href="/.php" class="replace"> <span></span></a></li>
+			<li id="nav_home"><a href="/" class="replace" accesskey="1">Index <span></span></a></li>
+			<li id="nav_about"><?php echo link_to('Firsts <span></span>', firsts_uri());?></li>
+			<li id="nav_contact"><?php echo link_to('Seconds <span></span>', seconds_uri())?></li>
 		</ul>
 	
 	</div><!-- /nav -->
