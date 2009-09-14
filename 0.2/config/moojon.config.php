@@ -67,5 +67,10 @@ return array(
 	'exception_app' => 'moojon',
 	'exception_controller' => 'exception',
 	'exception_action' => 'index',
+	'date_format' => 'Y/m/d',
+	'datetime_format' => 'Y/m/d H:i:s',
+	'time_format' => 'H:i:s',
+	'start_year' => 1900,
+	'end_year' => 2100,
 );
 ?>

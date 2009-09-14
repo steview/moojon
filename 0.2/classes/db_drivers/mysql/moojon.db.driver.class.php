@@ -228,25 +228,49 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return implode("\n\t", $read_or_create_bys);
 	}
 	
-	static public function format_datetime($datetime = null) {
-		if (!$datetime) {
-			$datetime = time();
-		}
-		return date('Y-m-d H:i:s', $datetime);
+	static public function get_date_format() {
+		return 'Y-m-d';
+	}
+	
+	static public function get_datetime_format() {
+		return 'Y-m-d H:i:s';
+	}
+	
+	static public function get_time_format() {
+		return 'H:i:s';
 	}
 	
 	static public function format_date($date = null) {
 		if (!$date) {
 			$date = time();
 		}
-		return date('Y-m-d', $date);
+		return date(self::get_date_format(), $date);
+	}
+	
+	static public function format_datetime($datetime = null) {
+		if (!$datetime) {
+			$datetime = time();
+		}
+		return date(self::get_datetime_format(), $datetime);
 	}
 	
 	static public function format_time($time = null) {
 		if (!$time) {
 			$time = time();
 		}
-		return date('H:i:s', $time);
+		return date(self::get_time_format(), $time);
+	}
+	
+	static public function array_to_date_format($array) {
+		return $array['Y'].'-'.$array['m'].'-'.$array['d'];
+	}
+	
+	static public function array_to_datetime_format($array) {
+		return $array['Y'].'-'.$array['m'].'-'.$array['d'].' '.$array['H'].':'.$array['i'].':'.$array['s'];
+	}
+	
+	static public function array_to_time_format($array) {
+		return $array['H'].':'.$array['i'].':'.$array['s'];
 	}
 	
 	static public function get_null() {

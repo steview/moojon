@@ -4,24 +4,8 @@
 
 <div id="content_main">
 	
-	<form action="/index.php/firsts" method="get"><input type="submit" value="Index" /></form><br />
-	<form action="/index.php/firsts/1" method="get"><input type="submit" value="Show" /></form><br />
-	<form action="/index.php/firsts/new" method="get"><input type="submit" value="New" /></form><br />
-	<form action="/index.php/firsts/1/edit" method="get"><input type="submit" value="Edit" /></form><br />
-	<form action="/index.php/firsts/1/delete" method="get"><input type="submit" value="Delete" /></form><br />
-	<form action="/index.php/firsts" method="post">
-		<input type="submit" value="Create" />
-	</form><br />
-	<form action="/index.php/firsts" method="post">
-		<input type="hidden" name="_method" value="put" />
-		<input type="hidden" name="id" value="1" />
-		<input type="submit" value="Update" />
-	</form><br />
-	<form action="/index.php/firsts" method="post">
-		<input type="hidden" name="_method" value="delete" />
-		<input type="hidden" name="id" value="1" />
-		<input type="submit" value="Destroy" />
-	</form><br />
+	<p>Awaiting some usefull content.</p>
+	
 </div><!-- /content_main -->
 
 <div id="content_sub">

@@ -17,9 +17,9 @@ final class moojon_quick_tags extends moojon_base {
 	
 	static public function year_select_options($start = null, $end = null, $attributes = null, $selected = null, $format = null) {
 		if (!$selected) {
-			$selected = date('Y');
+			$selected = time();
 		}
-		return self::select_options(self::year_options($start, $end, $format), $selected, $attributes);
+		return self::select_options(self::year_options($start, $end, $format), date('Y', $selected), $attributes);
 	}
 	
 	static public function year_options($start = null, $end = null, $format = null) {
@@ -46,9 +46,9 @@ final class moojon_quick_tags extends moojon_base {
 	
 	static public function month_select_options($attributes = null, $selected = null, $format = null) {
 		if (!$selected) {
-			$selected = date('n');
+			$selected = time();
 		}
-		return self::select_options(self::month_options($format), $selected, $attributes);
+		return self::select_options(self::month_options($format), date('n', $selected), $attributes);
 	}
 	
 	static public function month_options($format = null) {
@@ -69,9 +69,9 @@ final class moojon_quick_tags extends moojon_base {
 	
 	static public function day_select_options($attributes = null, $selected = null, $format = null) {
 		if (!$selected) {
-			$selected = date('j');
+			$selected = time();
 		}
-		return self::select_options(self::day_options($format), $selected, $attributes);
+		return self::select_options(self::day_options($format), date('j', $selected), $attributes);
 	}
 	
 	static public function day_options($format = null) {
@@ -92,9 +92,9 @@ final class moojon_quick_tags extends moojon_base {
 	
 	static public function hour_select_options($attributes = null, $selected = null, $format = null) {
 		if (!$selected) {
-			$selected = date('G');
+			$selected = time();
 		}
-		return self::select_options(self::hour_options($format), $selected, $attributes);
+		return self::select_options(self::hour_options($format), date('H', $selected), $attributes);
 	}
 	
 	static public function hour_options($format = null) {
@@ -115,9 +115,9 @@ final class moojon_quick_tags extends moojon_base {
 	
 	static public function minute_select_options($attributes = null, $selected = null) {
 		if (!$selected) {
-			$selected = date('i');
+			$selected = time();
 		}
-		return self::select_options(self::minute_options(), $selected, $attributes);
+		return self::select_options(self::minute_options(), date('i', $selected), $attributes);
 	}
 	
 	static public function minute_options() {
@@ -135,9 +135,9 @@ final class moojon_quick_tags extends moojon_base {
 	
 	static public function second_select_options($attributes = null, $selected = null) {
 		if (!$selected) {
-			$selected = date('s');
+			$selected = time();
 		}
-		return self::select_options(self::second_options(), $selected, $attributes);
+		return self::select_options(self::second_options(), date('s', $selected), $attributes);
 	}
 	
 	static public function second_options() {
@@ -153,50 +153,73 @@ final class moojon_quick_tags extends moojon_base {
 		return $seconds;
 	}
 	
-	static public function datetime_selects($attributes = null, $format = null, $selected = null, $start = null, $end = null) {
+	static private function datetime_label($text, $attributes) {
+		$label_attributes = array();
+		$label_attributes['id'] = $attributes['id'].'_label';
+		$label_attributes['for'] = $attributes['id'];
+		return new moojon_label_tag($text, $label_attributes);
+	}
+	
+	static public function datetime_select_options($attributes = null, $format = null, $selected = null, $start = null, $end = null, $label = false) {
 		if (!$format) {
-			$format = 'Y/m/d G:i:s';
+			$format = (moojon_config::has('db_driver')) ? moojon_db_driver::get_datetime_format(): 'Y/m/d H:i:s';
 		}
 		$return = '';
-		for ($i = 0; $i < strlen($format); $i ++) {
+		if (!array_key_exists('name', $attributes)) {
+			$attributes['name'] = 'datetime_select';
+		}
+		if (!array_key_exists('id', $attributes)) {
+			$attributes['id'] = $attributes['name'];
+		}
+		for ($i = 0; $i < (strlen($format) + 1); $i ++) {
+			$select = null;
 			$select_attributes = $attributes;
 			$f = substr($format, $i, 1);
-			$select_attributes['name'] = $attributes['name']."_$f";
+			$select_attributes['name'] = $attributes['name']."[$f]";
 			$select_attributes['id'] = $attributes['id']."_$f";
 			switch ($f) {
 				case 'Y':
 				case 'y':
 					$select = self::year_select_options($start, $end, $select_attributes, $selected, $f);
+					$label_text = 'Year';
 					break;
 				case 'm':
 				case 'n':
 					$select = self::month_select_options($select_attributes, $selected, $f);
+					$label_text = 'Month';
 					break;
 				case 'd':
 				case 'j':
 					$select = self::day_select_options($select_attributes, $selected, $f);
+					$label_text = 'Day';
 					break;
 				case 'G':
 				case 'H':
 					$select = self::hour_select_options($select_attributes, $selected, $f);
+					$label_text = 'Hour';
 					break;
 				case 'i':
 					$select = self::minute_select_options($select_attributes, $selected);
+					$label_text = 'Minute';
 					break;
 				case 's':
 					$select = self::second_select_options($select_attributes, $selected);
-					break;
-				default:
-					$select = $f;
+					$label_text = 'Second';
 					break;
 			}
-			if (method_exists($select, 'render')) {
+			if ($select) {
+				if ($label) {
+					$datetime_label = self::datetime_label("$label_text:", $select_attributes);
+					$return .= $datetime_label->render();
+				}
 				$return .= $select->render();
-			} else {
-				$return .= $select;
 			}
 		}
 		return $return;
+	}
+	
+	static public function datetime_label_select_options($attributes = null, $format = null, $selected = null, $start = null, $end = null) {
+		return self::datetime_select_options($attributes, $format, $selected, $start, $end, true);
 	}
 	
 	static public function select_options($options, $selected = null, $attributes = null) {

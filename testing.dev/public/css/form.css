@@ -27,12 +27,20 @@ textarea{
 }
 	
 select{
-	width:208px;
+	width:auto;
+	margin-right:5px;
 }
 
 label{
 	display:block;
 	margin:0 0 3px;
+}
+
+div.date label,
+div.datetime label,
+div.time label {
+	display:inline;
+	margin-right:5px;
 }
 
 .submit {

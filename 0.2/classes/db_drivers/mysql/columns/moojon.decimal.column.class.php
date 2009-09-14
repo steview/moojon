@@ -2,7 +2,7 @@
 final class moojon_decimal_column extends moojon_base_column {
 	private $decimals;
 	
-	final public function __construct($name, $limit = 10, $decimals = 0, $null = false, $default = 0) {
+	public function __construct($name, $limit = 10, $decimals = 0, $null = false, $default = 0) {
 		$this->name = $name;
 		$this->limit = $limit;
 		$this->decimals = $decimals;
@@ -10,11 +10,11 @@ final class moojon_decimal_column extends moojon_base_column {
 		$this->default = $default;
 	}
 	
-	final public function __toString() {
+	public function __toString() {
 		return $this->name.' DECIMAL('.$this->limit.', '.$this->decimals.') '.$this->get_null_string().' '.$this->get_default_string();
 	}
 	
-	final function get_data_type() {
+	public function get_data_type() {
 		return moojon_db::PARAM_INT;
 	}
 }

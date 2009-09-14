@@ -13,11 +13,16 @@ abstract class moojon_base_column extends moojon_base {
 	}
 		
 	final public function set_value($value) {
+		$value = $this->process_value($value);
 		if (!$this->reset_value) {
 			$this->reset_value = $value;
 		}
 		$this->value = $value;
 		$this->unsaved = true;
+	}
+	
+	protected function process_value($value) {
+		return $value;
 	}
 	
 	final public function reset() {
