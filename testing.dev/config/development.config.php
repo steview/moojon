@@ -1,5 +1,6 @@
 <?php
 return array(
+	'cache_for' => 1,
 	'default_app' => 'client',
 	'default_controller' => 'index',
 	'default_action' => 'index',

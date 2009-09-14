@@ -54,6 +54,7 @@ final class moojon_flash extends moojon_base {
 			$flash[$key] = $value;
 		}
 		moojon_session::set(moojon_config::key('flash_key'), $flash);
+		moojon_cache::disable();
 	}
 	
 	static public function has($key) {

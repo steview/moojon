@@ -288,12 +288,12 @@ final class moojon_files extends moojon_base {
 	}
 	
 	static public function get_file_contents($path) {
-		$file_pointer = fopen($path, 'r');
-		if (!$file_pointer) {
+		$handle = fopen($path, 'r');
+		if (!$handle) {
 			throw new moojon_exception("Unable to open file ($path)");
 		}
-		$content = fread($file_pointer, filesize($path));
-		fclose($file_pointer);
+		$content = fread($handle, filesize($path));
+		fclose($handle);
 		return $content;
 	}
 }

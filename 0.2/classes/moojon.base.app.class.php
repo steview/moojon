@@ -7,11 +7,10 @@ abstract class moojon_base_app extends moojon_base {
 	private $app_name;
 	private $layout;
 	
-	final public function __construct($uri) {
+	final public function __construct($uri, $render = true) {
 		self::require_view_functions();
-		$this->set_location($uri);
 		$this->init();
-		$this->render(true);
+		moojon_cache::process($this, $uri);
 		$this->close();
 	}
 	
@@ -30,18 +29,13 @@ abstract class moojon_base_app extends moojon_base {
 		$this->controller = new $controller_class($this, $this->action_name);
 	}
 	
-	final private function render($echo = false) {
+	final public function render() {
 		$return = $this->controller->render();
 		$layout = $this->get_layout();
 		if ($layout !== false) {
 			$return = str_replace('YIELD', $return, moojon_runner::render(moojon_paths::get_layout_path($layout), get_object_vars($this->controller)));
 		}
-		if ($echo) {
-			echo $return;
-			die();
-		} else {
-			return $return;
-		}
+		return $return;
 	}
 	
 	final public function set_layout($layout) {

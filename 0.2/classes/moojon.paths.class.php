@@ -3,10 +3,6 @@ final class moojon_paths extends moojon_base {
 	
 	private function __construct() {}
 	
-	
-	
-	
-	
 	static public function get_classes_directory() {
 		return self::get_moojon_directory().moojon_config::key('classes_directory').'/';
 	}
@@ -38,10 +34,6 @@ final class moojon_paths extends moojon_base {
 	static public function get_tag_attributes_directory() {
 		return self::get_tags_directory().moojon_config::key('tag_attributes_directory').'/';
 	}
-	
-	
-	
-	
 	
 	static public function get_moojon_directory() {
 		return MOOJON_PATH;
@@ -139,6 +131,10 @@ final class moojon_paths extends moojon_base {
 		return self::get_project_directory().moojon_config::key('models_directory').'/';
 	}
 	
+	static public function get_project_cache_directory() {
+		return self::get_project_directory().moojon_config::key('cache_directory').'/';
+	}
+	
 	static public function get_project_migrations_directory() {
 		return self::get_project_models_directory().moojon_config::key('migrations_directory').'/';
 	}
@@ -214,6 +210,20 @@ final class moojon_paths extends moojon_base {
 	
 	
 	
+	
+	static final public function attempt_mkdir($path, $mode = null) {
+		if (!$mode) {
+			$mode = 0755;
+		}
+		if (!is_dir($path)) {
+			mkdir($path, $mode, true);
+			switch (UI) {
+				case 'CLI':
+					echo "Creating directory ($path)\n";
+					break;
+			}
+		}
+	}
 	
 	static public function get_class_paths() {
 		$paths = array(
