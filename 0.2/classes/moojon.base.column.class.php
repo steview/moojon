@@ -14,6 +14,7 @@ abstract class moojon_base_column extends moojon_base {
 		
 	final public function set_value($value) {
 		$value = $this->process_value($value);
+		$name = $this->name;
 		if (!$this->reset_value) {
 			$this->reset_value = $value;
 		}

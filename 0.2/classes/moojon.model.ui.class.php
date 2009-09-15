@@ -60,10 +60,14 @@ final class moojon_model_ui extends moojon_base {
 	}
 	
 	static public function form(moojon_base_model $model, $column_names = array(), $attributes = array()) {
-		$attributes['method'] = 'post';
+		if (!array_key_exists('method', $attributes)) {
+			$attributes['method'] = 'post';
+		}
 		$model_class = get_class($model);
 		$rest_route = moojon_routes::get_rest_route(moojon_inflect::pluralize($model_class));
-		$attributes['action'] = $rest_route->get_collection_uri($model);
+		if (!array_key_exists('action', $attributes)) {
+			$attributes['action'] = $rest_route->get_collection_uri($model);
+		}
 		$controls = array();
 		if ($model->get_new_record()) {
 			$submit_value = 'Create';
@@ -73,7 +77,9 @@ final class moojon_model_ui extends moojon_base {
 			$submit_value = 'Update';
 			$id = 'update';
 		}
-		$attributes['id'] = $id .= '_'.$model_class.'_form';
+		if (!array_key_exists('id', $attributes)) {
+			$attributes['id'] = $id .= '_'.$model_class.'_form';
+		}
 		foreach ($column_names as $column_name) {
 			$column = $model->get_column($column_name);
 			if (get_class($column) != 'moojon_primary_key') {

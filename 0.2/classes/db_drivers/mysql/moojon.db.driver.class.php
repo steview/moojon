@@ -262,19 +262,27 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function array_to_date_format($array) {
-		return $array['Y'].'-'.$array['m'].'-'.$array['d'];
+		return $array['Y'].'-'.self::pad_number($array['m']).'-'.self::pad_number($array['d']);
 	}
 	
 	static public function array_to_datetime_format($array) {
-		return $array['Y'].'-'.$array['m'].'-'.$array['d'].' '.$array['H'].':'.$array['i'].':'.$array['s'];
+		return self::array_to_date_format($array).' '.self::array_to_time_format($array);
 	}
 	
 	static public function array_to_time_format($array) {
-		return $array['H'].':'.$array['i'].':'.$array['s'];
+		return self::pad_number($array['H']).':'.self::pad_number($array['i']).':'.self::pad_number($array['s']);
 	}
 	
 	static public function get_null() {
 		return 'NULL';
+	}
+	
+	static private function pad_number($number) {
+		if ($number < 10) {
+			return "0$number";
+		} else {
+			return $number;
+		}
 	}
 }
 ?>
