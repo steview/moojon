@@ -1,5 +1,0 @@
-<?php
-final class routing extends moojon_base_routing {
-	static public function add() {}
-}
-?>

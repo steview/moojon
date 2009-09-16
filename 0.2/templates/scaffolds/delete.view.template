@@ -1,22 +1,7 @@
 <h1>Delete <[human]></h1>
-
-<div id="content_main">
-
-<ul>
+<ul id="actions">
 	<li><?php echo link_to($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
 	<li><?php echo link_to('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
 </ul>
-
 <h2><?php echo $<[singular]>; ?></h2>
-
-<?php
-partial('delete_form', array('<[singular]>' => $<[singular]>));
-?>
-
-</div><!-- /content_main -->
-
-<div id="content_sub">
-
-
-
-</div><!-- /content_sub -->
+<?php partial('delete_form', array('<[singular]>' => $<[singular]>)); ?>

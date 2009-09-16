@@ -36,7 +36,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_moojon_directory() {
-		return MOOJON_PATH;
+		return MOOJON_DIRECTORY;
 	}
 	
 	static public function get_moojon_templates_directory() {
@@ -100,7 +100,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_moojon_helpers_directory() {
-		return MOOJON_PATH.moojon_config::key('helpers_directory').'/';
+		return MOOJON_DIRECTORY.moojon_config::key('helpers_directory').'/';
 	}
 	
 	static public function get_moojon_config_directory() {
@@ -114,10 +114,6 @@ final class moojon_paths extends moojon_base {
 	static public function get_moojon_app_environment_config_directory($app, $environment) {
 		return self::get_moojon_config_directory($app)."$environment/";
 	}
-	
-	
-	
-	
 	
 	static public function get_project_directory() {
 		return PROJECT_DIRECTORY;

@@ -1,4 +1,4 @@
 <?php
-$delete_form = moojon_model_ui::delete_form($second, 'Please confirm destruction of '.get_class($second));
+$delete_form = moojon_model_ui::delete_form($second, 'Please confirm deletion of '.get_class($second));
 echo $delete_form->render();
 ?>

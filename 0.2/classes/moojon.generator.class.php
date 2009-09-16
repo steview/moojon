@@ -68,22 +68,22 @@ final class moojon_generator extends moojon_base {
 		self::try_define('APP', $app);
 		self::try_define('CONTROLLER', $controller);
 		self::try_define('ACTION', $action);
-		moojon_paths:attempt_mkdir(PROJECT_DIRECTORY);
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_models_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_base_models_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_migrations_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_layouts_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_controllers_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_controllers_app_directory(APP));
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_apps_directory());
+		moojon_paths::attempt_mkdir(PROJECT_DIRECTORY);
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_models_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_base_models_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_migrations_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_layouts_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_controllers_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_controllers_app_directory(APP));
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_apps_directory());
 		$project_config_directory = moojon_paths::get_project_config_directory();
-		moojon_paths:attempt_mkdir($project_config_directory);
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_helpers_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_public_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_images_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_css_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_js_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_script_directory());
+		moojon_paths::attempt_mkdir($project_config_directory);
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_helpers_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_public_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_images_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_css_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_js_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_script_directory());
 		self::run(moojon_paths::get_moojon_templates_directory().'constants.template', $project_config_directory.'constants.php', array('PWD' => PWD.'/'.dirname(moojon_server::key('SCRIPT_FILENAME')).'/', 'MOOJON_VERSION' => MOOJON_VERSION), true, false);
 		self::run(moojon_paths::get_moojon_templates_directory().'routes.template', $project_config_directory.'routes.php', array('default_app' => APP, 'default_controller' => CONTROLLER, 'default_action' => ACTION), true, false);
 		self::run(moojon_paths::get_moojon_templates_directory().'index.template', moojon_paths::get_public_directory().'index.php', array(), true, false);
@@ -96,8 +96,8 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	static public function model($table) {
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_models_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_base_models_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_models_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_base_models_directory());
 		$model = moojon_inflect::singularize($table);
 		$swaps = array('model' => $model);
 		$model_path = moojon_paths::get_project_models_directory()."$model.model.class.php";
@@ -111,13 +111,13 @@ final class moojon_generator extends moojon_base {
 	}
 	
 	static public function helper($helper) {
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_helpers_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_helpers_directory());
 		self::run(moojon_paths::get_moojon_templates_directory().'helper.template', moojon_paths::get_project_helpers_directory()."$helper.helper.php", array(), false, true);
 	}
 	
 	static public function models() {
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_models_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_base_models_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_models_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_base_models_directory());
 		foreach (moojon_db::show_tables() as $table) {
 			self::model($table);
 		}
@@ -125,8 +125,8 @@ final class moojon_generator extends moojon_base {
 	
 	static public function migration($migration) {
 		$filename = date('YmdHis').".$migration.migration.class.php";
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_models_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_migrations_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_models_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_migrations_directory());
 		self::run(moojon_paths::get_moojon_templates_directory().'migration.template', moojon_paths::get_project_migrations_directory()."$filename", array('migration' => $migration), false, true);
 	}
 	
@@ -134,9 +134,9 @@ final class moojon_generator extends moojon_base {
 		self::try_define('APP', $app);
 		self::try_define('CONTROLLER', $controller);
 		self::try_define('ACTION', $action);
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_apps_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_apps_directory());
 		$project_app_config_directory = moojon_paths::get_project_app_config_directory(APP);
-		moojon_paths:attempt_mkdir($project_app_config_directory);
+		moojon_paths::attempt_mkdir($project_app_config_directory);
 		self::run(moojon_paths::get_moojon_templates_directory().'app.template', moojon_paths::get_project_apps_directory().APP.'.app.class.php', array('app' => APP), false, true);
 		self::run(moojon_paths::get_moojon_templates_directory().'project.config.template', moojon_paths::get_project_config_directory().'development.config.php', array('default_app' => APP, 'default_controller' => CONTROLLER, 'default_action' => ACTION), true, false);
 		self::run(moojon_paths::get_moojon_templates_directory().'project.config.template', moojon_paths::get_project_config_directory().'testing.config.php', array('default_app' => APP, 'default_controller' => CONTROLLER, 'default_action' => ACTION), true, false);
@@ -155,7 +155,7 @@ final class moojon_generator extends moojon_base {
 		if (!$controller) {
 			$controller = moojon_config::key('default_controller');
 		}
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_controllers_app_directory(APP));
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_controllers_app_directory(APP));
 		self::run(moojon_paths::get_moojon_templates_directory().'controller.template', moojon_paths::get_project_controllers_app_directory(APP)."$controller.controller.class.php", array('controller' => $controller), false, true);
 		if ($action) {
 			self::view(APP, $controller, $action);
@@ -171,21 +171,21 @@ final class moojon_generator extends moojon_base {
 		if (!$view) {
 			$view = moojon_config::key('default_action');
 		}
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_views_directory());
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_views_app_directory(APP));
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER));
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_views_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_views_app_directory(APP));
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER));
 		self::run(moojon_paths::get_moojon_templates_directory().'view.template', moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER)."$view.view.php", array(), false, true);
 	}
 	
 	static public function partial($app, $controller, $partial) {
 		self::try_define('APP', $app);
 		self::try_define('CONTROLLER', $controller);
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER));
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER));
 		self::run(moojon_paths::get_moojon_templates_directory().'partial.template', moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER).'_'.$partial.'.php', array(), false, true);
 	}
 	
 	static public function layout($layout) {
-		moojon_paths:attempt_mkdir(moojon_paths::get_project_layouts_directory());
+		moojon_paths::attempt_mkdir(moojon_paths::get_project_layouts_directory());
 		self::run(moojon_paths::get_moojon_templates_directory().'layout.template', moojon_paths::get_project_layouts_directory()."$layout.layout.php", array(), false, true);
 	}
 	
@@ -211,7 +211,7 @@ final class moojon_generator extends moojon_base {
 		$swaps['humans'] = str_replace('_', ' ', moojon_inflect::pluralize($model));
 		$swaps['id_property'] = $id_property;
 		$views_path = moojon_paths::get_project_views_app_controller_directory(APP, CONTROLLER);
-		moojon_paths:attempt_mkdir($views_path);
+		moojon_paths::attempt_mkdir($views_path);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'controller.template', moojon_paths::get_project_controllers_app_directory(APP, CONTROLLER)."$controller.controller.class.php", $swaps, false, true);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'_delete_form.template', $views_path.'_delete_form.php', $swaps, false, true);
 		self::run(moojon_paths::get_moojon_templates_scaffolds_directory().'_dl.template', $views_path.'_dl.php', $swaps, false, true);

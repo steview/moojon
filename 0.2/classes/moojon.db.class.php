@@ -322,5 +322,13 @@ final class moojon_db  extends moojon_base {
 			return array();
 		}
 	}
+	
+	static public function get_schema_version() {
+		if (in_array('schema_migrations', self::show_tables(''))) {
+			return schema_migration::read(null, 'version DESC')->first->version;
+		} else {
+			return 0;
+		}
+	}
 }
 ?>

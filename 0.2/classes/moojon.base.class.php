@@ -82,7 +82,7 @@ abstract class moojon_base {
 	
 	final static protected function require_view_functions() {
 		if (defined('PROJECT_DIRECTORY')) {
-			include_once(MOOJON_PATH.'/functions/moojon.view.functions.php');
+			include_once(MOOJON_DIRECTORY.'/functions/moojon.view.functions.php');
 			foreach (helpers() as $helper) {
 				helper($helper);
 			}

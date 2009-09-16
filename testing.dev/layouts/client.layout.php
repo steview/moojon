@@ -4,62 +4,26 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Page name - Site name</title>
 	<meta name="description" content="***************************" />
-	<meta name="keywords" content="**insert keywords**" />
 	<meta http-equiv="Content-Language" content="en-gb" />
-	<meta name="author" content="http://www.kyanmedia.com" />
 	<link href="/favicon.ico" rel="shortcut icon" />
-	<link href="/css/core.css" rel="stylesheet" type="text/css" media="screen, projection" />
-	<link href="/css/layout.css" rel="stylesheet" type="text/css" media="screen, projection" />
-	<link href="/css/form.css" rel="stylesheet" type="text/css" media="screen, projection" />
-	<link href="/css/print.css" rel="stylesheet" type="text/css" media="print" />
+	<link href="/css/moojon.css" rel="stylesheet" type="text/css" media="screen, projection" />
 	<script type="text/javascript" src="/js/project.js"></script>
 </head>
-<body id="body_" class="js-disabled"> 
-
-<ul id="skiplinks">
-	<li><a accesskey="s" href="#content_main">Skip to main content</a></li>
-</ul>
-
+<body id="body_" class="js-disabled">
 <div id="container">
-
-	<div id="header">
-	
-		<a href="/" id="logo" title="View the homepage"><img src="/images/logo.gif" alt="My new site" width="" height="" /></a>
-		
-	</div><!-- /header -->
-	
-	<div id="nav">
-	
-		<ul>
-			<li id="nav_home"><a href="/" class="replace" accesskey="1">Index <span></span></a></li>
-			<li id="nav_about"><?php echo link_to('Firsts <span></span>', firsts_uri());?></li>
-			<li id="nav_contact"><?php echo link_to('Seconds <span></span>', seconds_uri())?></li>
-		</ul>
-	
-	</div><!-- /nav -->
-	
+	<div id="header"><img src="/images/logo.png" alt="Moojon logo" width="250" height="70" /></div>
+	<ul id="nav">
+		<li><?php echo link_to('Index', '/'); ?></li>
+		<li><?php echo link_to('Firsts', firsts_uri()); ?></li>
+		<li><?php echo link_to('Seconds', seconds_uri()); ?></li>
+	</ul>
 	<div id="content">
-		
-		<?php if (moojon_flash::has('notification')) { ?>
-			<p><?php echo moojon_flash::get('notification'); ?></p>
-		<?php } ?>
-		
-		YIELD
-		
-	</div><!-- /content -->
-	
-	<div id="footer">
-	
-		<ul>
-			<li>© <?php echo date("Y") ?> domain.com</li>
-			<li><a href="/terms.php" accesskey="8">Terms &amp; Conditions</a></li>
-			<li><a href="/privacy.php">Privacy Policy</a></li>
-			<li id="kyan"><a href="http://www.kyanmedia.com/" target="_blank">Made by Kyanmedia</a></li>
-		</ul>
-		
-	</div><!-- /footer -->
-
-</div><!-- /container -->
-
+	<?php if (moojon_flash::has('notification')) { ?>
+		<p class="flash"><?php echo moojon_flash::get('notification'); ?></p>
+	<?php } ?>
+	YIELD
+	</div>
+	<div id="footer"></div>
+</div>
 </body>
 </html>

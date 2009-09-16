@@ -1,20 +1,6 @@
 <h1><?php echo $<[singular]>; ?></h1>
-
-<div id="content_main">
-
-<ul>
+<ul id="actions">
 	<li><?php echo link_to('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
 	<li><?php echo link_to('Delete', delete_<[singular]>_uri($<[singular]>)); ?></li>
 </ul>
-
-<?php
-partial('dl', array('<[singular]>' => $<[singular]>));
-?>
-
-</div><!-- /content_main -->
-
-<div id="content_sub">
-
-
-
-</div><!-- /content_sub -->
+<?php partial('dl', array('<[singular]>' => $<[singular]>)); ?>

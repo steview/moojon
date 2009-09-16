@@ -109,7 +109,7 @@ final class moojon_rest_route extends moojon_base_route {
 	
 	static public function get_collection_uri(moojon_base_model $model) {
 		$route = moojon_routes::get_rest_route(moojon_inflect::pluralize(get_class($model)));
-		return moojon_config::key('index_file').$route->resource.'/';
+		return moojon_config::key('index_file').$route->get_resource().'/';
 	}
 	
 	static public function get_member_uri(moojon_base_model $model) {
