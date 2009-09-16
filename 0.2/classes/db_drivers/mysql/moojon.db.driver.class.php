@@ -1,5 +1,10 @@
 <?php
 final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_driver_queries {
+	const NULL = 'NULL';
+	const DATE_FORMAT = 'Y-m-d';
+	const DATETIME_FORMAT = 'Y-m-d H:i:s';
+	const TIME_FORMAT = 'H:i:s';
+	
 	static public function create_table($table, $columns = array(), $options = null) {
 		if (is_array($columns)) {
 			$columns = implode(', ', $columns);
@@ -106,6 +111,10 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return "DELETE FROM $table $where;";
 	}
 	
+	static public function get_null() {
+		return self::NULL;
+	}
+	
 	static public function get_add_columns($table) {
 		$add_columns = array();
 		foreach (moojon_db::show_columns($table) as $column) {
@@ -176,7 +185,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 					case 'TEXT':
 					case 'MEDIUMTEXT':
 					case 'LONGTEXT':
-						$add_column .= "text($name);";
+						$add_column .= "text('$name');";
 						break;
 					case 'ENUM':
 					case 'SET':
@@ -188,6 +197,79 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 			$add_columns[] = $add_column;
 		}
 		return implode("\n\t\t", $add_columns);
+	}
+	
+	static final public function get_default_string(moojon_base_column $column) {
+		if ($column->get_default()) {
+			switch ($column->get_data_type()) {
+				case moojon_db::PARAM_STR:
+					$apos = "'";
+					break;
+				default:
+					$apos = '';
+					break;
+			}
+			return "DEFAULT $apos".$column->get_default().$apos;
+		} else {
+			return '';
+		}
+	}
+	
+	static final public function get_null_string(moojon_base_column $column) {
+		if ($column->get_null()) {
+			return 'NULL';
+		} else {
+			return 'NOT NULL';
+		}
+	}
+	
+	static final public function get_value_query_format(moojon_base_column $column) {
+		$column_class = get_class($column);
+		$column_value = $column->get_value();
+		if ($column_class == 'moojon_date_column' || $column_class == 'moojon_datetime_column' || $column_class == 'moojon_time_column') {
+			if (!is_array($column_value)) {
+				$column_value = date_parse($column_value, moojon_config::key('datetime_format'));
+			}
+			switch ($column_class) {
+				case 'moojon_date_column':
+					if (!array_key_exists('Y', $column_value) && array_key_exists('year', $column_value)) {
+						$column_value['Y'] = $column_value['year'];
+					}
+					if (!array_key_exists('m', $column_value) && array_key_exists('month', $column_value)) {
+						$column_value['m'] = $column_value['month'];
+					}
+					if (!array_key_exists('d', $column_value) && array_key_exists('day', $column_value)) {
+						$column_value['d'] = $column_value['day'];
+					}
+					if (!array_key_exists('H', $column_value) && array_key_exists('hour', $column_value)) {
+						$column_value['H'] = $column_value['hour'];
+					}
+					if (!array_key_exists('i', $column_value) && array_key_exists('minute', $column_value)) {
+						$column_value['i'] = $column_value['minute'];
+					}
+					if (!array_key_exists('s', $column_value) && array_key_exists('second', $column_value)) {
+						$column_value['s'] = $column_value['second'];
+					}
+					return self::pad_number($column_value['Y']).'-'.self::pad_number($column_value['m']).'-'.self::pad_number($column_value['d']);
+					break;
+				case 'moojon_datetime_column':
+					return  self::pad_number($column_value['Y']).'-'.self::pad_number($column_value['m']).'-'.self::pad_number($column_value['d']).' '.self::pad_number($column_value['H']).':'.self::pad_number($column_value['i']).':'.self::pad_number($column_value['s']);
+					break;
+				case 'moojon_time_column':
+					return self::pad_number($column_value['H']).':'.self::pad_number($column_value['i']).':'.self::pad_number($column_value['s']);
+					break;
+			}
+		} else {
+			return $column_value;
+		}
+	}
+	
+	static private function pad_number($number) {
+		if ($number < 10) {
+			return "0$number";
+		} else {
+			return $number;
+		}
 	}
 	
 	static public function get_read_all_bys($table) {
@@ -226,63 +308,6 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 			}
 		}
 		return implode("\n\t", $read_or_create_bys);
-	}
-	
-	static public function get_date_format() {
-		return 'Y-m-d';
-	}
-	
-	static public function get_datetime_format() {
-		return 'Y-m-d H:i:s';
-	}
-	
-	static public function get_time_format() {
-		return 'H:i:s';
-	}
-	
-	static public function format_date($date = null) {
-		if (!$date) {
-			$date = time();
-		}
-		return date(self::get_date_format(), $date);
-	}
-	
-	static public function format_datetime($datetime = null) {
-		if (!$datetime) {
-			$datetime = time();
-		}
-		return date(self::get_datetime_format(), $datetime);
-	}
-	
-	static public function format_time($time = null) {
-		if (!$time) {
-			$time = time();
-		}
-		return date(self::get_time_format(), $time);
-	}
-	
-	static public function array_to_date_format($array) {
-		return $array['Y'].'-'.self::pad_number($array['m']).'-'.self::pad_number($array['d']);
-	}
-	
-	static public function array_to_datetime_format($array) {
-		return self::array_to_date_format($array).' '.self::array_to_time_format($array);
-	}
-	
-	static public function array_to_time_format($array) {
-		return self::pad_number($array['H']).':'.self::pad_number($array['i']).':'.self::pad_number($array['s']);
-	}
-	
-	static public function get_null() {
-		return 'NULL';
-	}
-	
-	static private function pad_number($number) {
-		if ($number < 10) {
-			return "0$number";
-		} else {
-			return $number;
-		}
 	}
 }
 ?>

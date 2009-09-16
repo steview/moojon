@@ -1,5 +1,6 @@
 <?php
 final class moojon_primary_key extends moojon_base_column {
+	protected $data_type = moojon_db::PARAM_INT;
 	const NAME = 'id';
 	const LIMIT = 11;
 	const NULL = 'NOT NULL';
@@ -15,10 +16,7 @@ final class moojon_primary_key extends moojon_base_column {
 	}
 	
 	static public function get_foreign_key($table) {
-		if (substr($table, 0, 5) == 'base_') {
-			$table = substr($table, 5);
-		}
-		return moojon_inflect::singularize($table).'_'.self::NAME;
+		return moojon_inflect::singularize(self::strip_base($table)).'_'.self::NAME;
 	}
 	
 	static public function get_table($foreign_key) {
@@ -26,11 +24,7 @@ final class moojon_primary_key extends moojon_base_column {
 	}
 	
 	public function __toString() {
-		return $this->name.' '.$this->type.'('.$this->limit.') '.$this->get_null_string().' '.$this->get_default_string().'  '.$this->options;
-	}
-	
-	public function get_data_type() {
-		return moojon_db::PARAM_INT;
+		return $this->name.' '.$this->type.'('.$this->limit.') '.moojon_db_driver::get_null_string($this).' '.moojon_db_driver::get_default_string($this).'  '.$this->options;
 	}
 }
 ?>

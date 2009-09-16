@@ -13,17 +13,12 @@ abstract class moojon_base_column extends moojon_base {
 	}
 		
 	final public function set_value($value) {
-		$value = $this->process_value($value);
 		$name = $this->name;
 		if (!$this->reset_value) {
 			$this->reset_value = $value;
 		}
 		$this->value = $value;
 		$this->unsaved = true;
-	}
-	
-	protected function process_value($value) {
-		return $value;
 	}
 	
 	final public function reset() {
@@ -35,11 +30,12 @@ abstract class moojon_base_column extends moojon_base {
 		return $this->value;
 	}
 	
-	final public function get_query_value() {
+	final public function get_value_query_format() {
 		if ($this->value === null) {
 			return moojon_db_driver::get_null();
+		} else {
+			return moojon_db_driver::get_value_query_format($this);
 		}
-		return $this->value;
 	}
 	
 	final public function get_limit() {
@@ -58,30 +54,6 @@ abstract class moojon_base_column extends moojon_base {
 		return $this->unsaved;
 	}
 	
-	final protected function get_null_string() {
-		if ($this->null) {
-			return 'NULL';
-		} else {
-			return 'NOT NULL';
-		}
-	}
-	
-	final protected function get_default_string() {
-		if ($this->default) {
-			switch ($this->get_data_type()) {
-				case moojon_db::PARAM_STR:
-					$apos = "'";
-					break;
-				default:
-					$apos = '';
-					break;
-			}
-			return "DEFAULT $apos".$this->default.$apos;
-		} else {
-			return '';
-		}
-	}
-	
 	final public function get_add_column() {
 		$string = (string)$this;
 		return $string;
@@ -89,6 +61,12 @@ abstract class moojon_base_column extends moojon_base {
 	
 	abstract public function __toString();
 	
-	abstract public function get_data_type();
+	final public function get_data_type() {
+		if ($this->value === null) {
+			return moojon_db::PARAM_NULL;
+		} else {
+			return $this->data_type;
+		}
+	}
 }
 ?>

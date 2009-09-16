@@ -1,26 +1,31 @@
 <?php
-abstract class base_first extends moojon_base_model {
+abstract class base_post extends moojon_base_model {
 	
 	protected function add_columns() {
 		$this->add_primary_key();
-		$this->add_string('column1', 255, false, null);
+		$this->add_string('title', 255, false, null);
+		$this->add_text('body');
 		$this->add_datetime('created_on', false, null);
 		$this->add_datetime('updated_at', true, null);
 	}
 	
 	final static public function read_all_by_id($value, $order = null, $limit = null) {return self::read_by(get_class(), 'id', $value, $order, $limit);}
-	final static public function read_all_by_column1($value, $order = null, $limit = null) {return self::read_by(get_class(), 'column1', $value, $order, $limit);}
+	final static public function read_all_by_title($value, $order = null, $limit = null) {return self::read_by(get_class(), 'title', $value, $order, $limit);}
+	final static public function read_all_by_body($value, $order = null, $limit = null) {return self::read_by(get_class(), 'body', $value, $order, $limit);}
 	final static public function read_all_by_created_on($value, $order = null, $limit = null) {return self::read_by(get_class(), 'created_on', $value, $order, $limit);}
 	final static public function read_all_by_updated_at($value, $order = null, $limit = null) {return self::read_by(get_class(), 'updated_at', $value, $order, $limit);}
 	final static public function read_by_id($value, $order = null, $limit = null) {return self::read_all_by_id($value, $order, $limit)->first;}
-	final static public function read_by_column1($value, $order = null, $limit = null) {return self::read_all_by_column1($value, $order, $limit)->first;}
+	final static public function read_by_title($value, $order = null, $limit = null) {return self::read_all_by_title($value, $order, $limit)->first;}
+	final static public function read_by_body($value, $order = null, $limit = null) {return self::read_all_by_body($value, $order, $limit)->first;}
 	final static public function read_by_created_on($value, $order = null, $limit = null) {return self::read_all_by_created_on($value, $order, $limit)->first;}
 	final static public function read_by_updated_at($value, $order = null, $limit = null) {return self::read_all_by_updated_at($value, $order, $limit)->first;}
 	final static public function destroy_by_id($value) {self::destroy_by(get_class(), 'id', $value);}
-	final static public function destroy_by_column1($value) {self::destroy_by(get_class(), 'column1', $value);}
+	final static public function destroy_by_title($value) {self::destroy_by(get_class(), 'title', $value);}
+	final static public function destroy_by_body($value) {self::destroy_by(get_class(), 'body', $value);}
 	final static public function destroy_by_created_on($value) {self::destroy_by(get_class(), 'created_on', $value);}
 	final static public function destroy_by_updated_at($value) {self::destroy_by(get_class(), 'updated_at', $value);}
-	final static public function read_or_create_by_column1($value, $data = null) {return self::read_or_create_by(get_class(), 'column1', $value, $data);}
+	final static public function read_or_create_by_title($value, $data = null) {return self::read_or_create_by(get_class(), 'title', $value, $data);}
+	final static public function read_or_create_by_body($value, $data = null) {return self::read_or_create_by(get_class(), 'body', $value, $data);}
 	final static public function read_or_create_by_created_on($value, $data = null) {return self::read_or_create_by(get_class(), 'created_on', $value, $data);}
 	final static public function read_or_create_by_updated_at($value, $data = null) {return self::read_or_create_by(get_class(), 'updated_at', $value, $data);}
 	

@@ -24,6 +24,13 @@ abstract class moojon_base {
 		fclose($handle);
 	}
 	
+	final static public function strip_base($class) {
+		if (substr($class, 0, 5) == 'base_') {
+			$class = substr($class, 5);
+		}
+		return $class;
+	}
+	
 	final static public function try_define($name, $value) {
 		if (!defined($name)) {
 			define($name, $value);
@@ -104,6 +111,13 @@ abstract class moojon_base {
 				break;
 		}
 		
+	}
+	
+	final static public function get_datetime_format($datetime, $format = null) {
+		if (!$format) {
+			$format = moojon_config::key('datetime_format');
+		}
+		return date($format, strtotime($datetime));
 	}
 }
 ?>

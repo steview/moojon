@@ -162,7 +162,7 @@ final class moojon_quick_tags extends moojon_base {
 	
 	static public function datetime_select_options($attributes = null, $format = null, $selected = null, $start = null, $end = null, $label = false) {
 		if (!$format) {
-			$format = (moojon_config::has('db_driver')) ? moojon_db_driver::get_datetime_format(): 'Y/m/d H:i:s';
+			$format = moojon_config::key('datetime_format');
 		}
 		$return = '';
 		if (!array_key_exists('name', $attributes)) {

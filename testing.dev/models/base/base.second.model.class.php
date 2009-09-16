@@ -29,20 +29,9 @@ abstract class base_second extends moojon_base_model {
 	final static public function read_or_create_by_created_on($value, $data = null) {return self::read_or_create_by(get_class(), 'created_on', $value, $data);}
 	final static public function read_or_create_by_updated_at($value, $data = null) {return self::read_or_create_by(get_class(), 'updated_at', $value, $data);}
 	
-	final static public function create($data = null, $param_values = array(), $param_data_types = array()) {
-		return self::base_create(get_class(), $data, $param_values, $param_data_types);
-	}
-	
-	final static public function read($where = null, $order = null, $limit = null, $param_values = array(), $param_data_types = array(), moojon_base_model $accessor = null) {
-		return self::base_read(get_class(), $where, $order, $limit, $param_values, $param_data_types, $accessor);
-	}
-	
-	final static public function update($data, $where = null, $param_values = array(), $param_data_types = array()) {
-		return self::base_update(get_class(), $data, $where, $param_values, $param_data_types);
-	}
-	
-	final static public function destroy($where = null, $param_values = array(), $param_data_types = array()) {
-		return self::base_destroy(get_class(), $where, $param_values, $param_data_types);
-	}
+	final static public function create($data = null, $param_values = array(), $param_data_types = array()) {return self::base_create(get_class(), $data, $param_values, $param_data_types);}	
+	final static public function read($where = null, $order = null, $limit = null, $param_values = array(), $param_data_types = array(), moojon_base_model $accessor = null) {return self::base_read(get_class(), $where, $order, $limit, $param_values, $param_data_types, $accessor);}	
+	final static public function update($data, $where = null, $param_values = array(), $param_data_types = array()) {return self::base_update(get_class(), $data, $where, $param_values, $param_data_types);}	
+	final static public function destroy($where = null, $param_values = array(), $param_data_types = array()) {return self::base_destroy(get_class(), $where, $param_values, $param_data_types);}
 }
 ?>

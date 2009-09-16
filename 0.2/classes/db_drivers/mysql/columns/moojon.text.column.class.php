@@ -1,5 +1,6 @@
 <?php
 final class moojon_text_column extends moojon_base_column {
+	protected $data_type = moojon_db::PARAM_STR;
 	private $binary;
 	
 	public function __construct($name, $null = false, $binary = false) {
@@ -10,13 +11,9 @@ final class moojon_text_column extends moojon_base_column {
 	
 	public function __toString() {
 		if ($this->binary) {
-			return $this->name.' TEXT BINARY '.$this->get_null_string();
+			return $this->name.' TEXT BINARY '.moojon_db_driver::get_null_string($this);
 		} else {
-			return $this->name.' TEXT '.$this->get_null_string();
-		}
-		
-	public function get_data_type() {
-			return moojon_db::PARAM_STR;
+			return $this->name.' TEXT '.moojon_db_driver::get_null_string($this);
 		}
 	}
 }

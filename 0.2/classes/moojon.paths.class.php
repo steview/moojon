@@ -328,7 +328,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_base_model_path($model) {
-		return self::get_path(self::get_base_model_paths(), 'base.'.moojon_base_model::strip_base($model).'.model.class.php');
+		return self::get_path(self::get_base_model_paths(), 'base.'.self::strip_base($model).'.model.class.php');
 	}
 	
 	static public function get_column_path($column) {

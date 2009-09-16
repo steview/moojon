@@ -7,8 +7,7 @@ abstract class moojon_base_model extends moojon_base {
 	private $relationships = array();
 	private $validations = array();
 	private $errors = array();
-	private $unsaved = false;
-	protected $new_record = false;
+	private $new_record = false;
 	protected $to_string_column = moojon_primary_key::NAME;
 	
 	final public function __construct() {}
@@ -24,7 +23,7 @@ abstract class moojon_base_model extends moojon_base {
 		foreach ($this->get_editable_columns() as $column) {
 			$column_name = ':'.$column->get_name();
 			if ($column->get_unsaved() && !in_array($column_name, $exception_param_values)) {
-				$param_values[$column_name] = $column->get_query_value();
+				$param_values[$column_name] = $column->get_value_query_format();
 			}
 		}
 		return array_merge($param_values, $new_param_values);
@@ -39,13 +38,6 @@ abstract class moojon_base_model extends moojon_base {
 			}
 		}
 		return array_merge($param_data_types, $new_param_data_types);
-	}
-	
-	final static public function strip_base($class) {
-		if (substr($class, 0, 5) == 'base_') {
-			$class = substr($class, 5);
-		}
-		return $class;
 	}
 	
 	final static protected function init($class) {
@@ -67,7 +59,6 @@ abstract class moojon_base_model extends moojon_base {
 			} else {
 				$this->columns[$key]->set_value($value);
 			}
-			$this->unsaved = true;
 		} else {
 			throw new moojon_exception("$key doesn't exist");
 		}
@@ -418,30 +409,28 @@ abstract class moojon_base_model extends moojon_base {
 				}
 			}
 			$id_property = moojon_primary_key::NAME;
+			$param_data_types = $this->compile_param_data_types(array(), $exception_param_data_types);
 			if ($this->new_record) {
-				moojon_db::insert($this->table, $placeholders, $this->compile_param_values(array(), $exception_param_values), $this->compile_param_data_types(array(), $exception_param_data_types));
+				moojon_db::insert($this->table, $placeholders, $this->compile_param_values(array(), $exception_param_values), $param_data_types);
 				if ($this->has_column($id_property)) {
 					$this->$id_property = moojon_db::last_insert_id($id_property);
 				}
 				$this->new_record = false;
 			} else {
-				if ($this->unsaved) {
-					if ($this->has_column('updated_at') && $this->get_column('updated_at')->get_unsaved()) {
-						$this->get_column('updated_at')->set_value(moojon_db_driver::format_datetime());
+				if ($this->get_unsaved()) {
+					if ($this->has_column('updated_at') && !$this->get_column('updated_at')->get_unsaved()) {
+						$this->get_column('updated_at')->set_value(date(moojon_config::key('datetime_format')));
 					}
-					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $this->compile_param_values(array(":$id_property" => $this->$id_property), $exception_param_values), $this->compile_param_data_types(array(), $exception_param_data_types));
+					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $this->compile_param_values(array(":$id_property" => $this->$id_property), $exception_param_values), $param_data_types);
 				} else {
 					$saved = false;
 				}
 			}
-			$this->unsaved = (!$saved);
 		} else {
 			$saved = false;
 		}
 		if ($saved) {
-			foreach ($this->get_editable_columns() as $column) {
-				$column->reset();
-			}
+			$this->reset();
 			if ($cascade) {
 				foreach($this->relationships as $relationship) {
 					$relationship->save(true);
@@ -488,7 +477,7 @@ abstract class moojon_base_model extends moojon_base {
 			}
 		}
 		if ($instance->has_column('created_on') && !$instance->get_column('created_on')->get_unsaved()) {
-			$instance->get_column('created_on')->set_value(moojon_db_driver::format_datetime());
+			$instance->get_column('created_on')->set_value(date(moojon_config::key('datetime_format')));
 		}
 		return $instance;
 	}
@@ -540,9 +529,8 @@ abstract class moojon_base_model extends moojon_base {
 		if (!is_array($data)) {
 			$data = array($data => $value);
 		}
-		$column_names = $this->get_editable_column_names();
 		foreach ($data as $key => $value) {
-			if (in_array($key, $column_names)) {
+			if (in_array($key, $this->get_editable_column_names())) {
 				$this->$key = $value;
 			}
 		}
@@ -550,6 +538,22 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final public function get($key) {
 		return $this->$key;
+	}
+	
+	final public function get_unsaved() {
+		$unsaved = false;
+		foreach ($this->get_editable_columns() as $column) {
+			if ($column->get_unsaved()) {
+				$unsaved = true;
+			}
+		}
+		return $unsaved;
+	}
+	
+	final public function reset() {
+		foreach ($this->get_editable_columns() as $column) {
+			$column->reset();
+		}
 	}
 	
 	public function __toString() {

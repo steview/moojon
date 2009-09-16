@@ -17,30 +17,6 @@ final class moojon_model_ui extends moojon_base {
 		return array('id' => $column->get_name(), 'name' => get_class($model).'['.$column->get_name().']');
 	}
 	
-	static public function find_datetime_format(moojon_base_column $column, moojon_base_model $model) {
-		$method = 'get_'.$column->get_name().'_format';
-		$type = str_replace('moojon_', '', str_replace('_column', '', get_class($column))).'_format';
-		if (method_exists($model, $method)) {
-			return $model->$method();
-		} else if (moojon_config::has('db_driver')) {
-			switch ($type) {
-				case 'date':
-					return moojon_db_driver::get_date_format();
-					break;
-				case 'datetime':
-					return moojon_db_driver::get_datetime_format();
-					break;
-				case 'time':
-					return moojon_db_driver::get_time_format();
-					break;
-			}
-		} else if (moojon_config::has($type)) {
-			return moojon_config::key($type);
-		} else {
-			return 'Y/m/d H:i:s';
-		}
-	}
-	
 	static public function find_start_year(moojon_base_column $column, moojon_base_model $model) {
 		$method = 'get_'.$column->get_name().'_start_year';
 		if (method_exists($model, $method)) {
@@ -157,7 +133,7 @@ final class moojon_model_ui extends moojon_base {
 							$name = $relationship->get_name();
 							$content = self::model_tag($model->$name);
 						}
-						$tds[] = new moojon_td_tag($content, array('id' => $model_class.'_'.$column_name.'_'.$model->$primary_key.'_td'));
+						$tds[] = new moojon_td_tag(self::format_content($column, $content), array('id' => $model_class.'_'.$column_name.'_'.$model->$primary_key.'_td'));
 					}
 				}
 				$tds[] = new moojon_td_tag(self::model_edit_tag($model, array('class' => 'edit', 'id' => $model_class.'_edit_'.$model->$primary_key.'_a')));
@@ -280,13 +256,13 @@ final class moojon_model_ui extends moojon_base {
 	static public function date_tag(moojon_base_column $column, moojon_base_model $model) {
 		$attributes = self::process_attributes($column, $model);
 		$attributes['class'] = 'date';
-		return new moojon_div_tag(moojon_quick_tags::datetime_label_select_options($attributes, self::find_datetime_format($column, $model), strtotime($column->get_value()), self::find_start_year($column, $model), self::find_end_year($column, $model)), array('class' => 'date', 'id' => $attributes['name'].'_div'));
+		return new moojon_div_tag(moojon_quick_tags::datetime_label_select_options($attributes, moojon_config::key('date_format'), strtotime($column->get_value()), self::find_start_year($column, $model), self::find_end_year($column, $model)), array('class' => 'date', 'id' => $attributes['name'].'_div'));
 	}
 	
 	static public function datetime_tag(moojon_base_column $column, moojon_base_model $model) {
 		$attributes = self::process_attributes($column, $model);
 		$attributes['class'] = 'datetime';
-		return new moojon_div_tag(moojon_quick_tags::datetime_label_select_options($attributes, self::find_datetime_format($column, $model), strtotime($column->get_value()), self::find_start_year($column, $model), self::find_end_year($column, $model)), array('class' => 'datetime', 'id' => $attributes['name'].'_div'));
+		return new moojon_div_tag(moojon_quick_tags::datetime_label_select_options($attributes, moojon_config::key('datetime_format'), strtotime($column->get_value()), self::find_start_year($column, $model), self::find_end_year($column, $model)), array('class' => 'datetime', 'id' => $attributes['name'].'_div'));
 	}
 	
 	static public function decimal_tag(moojon_base_column $column, moojon_base_model $model) {
@@ -335,7 +311,7 @@ final class moojon_model_ui extends moojon_base {
 	static public function time_tag(moojon_base_column $column, moojon_base_model $model) {
 		$attributes = self::process_attributes($column, $model);
 		$attributes['class'] = 'time';
-		return new moojon_div_tag(moojon_quick_tags::datetime_label_select_options($attributes, self::find_datetime_format($column, $model), strtotime($column->get_value())), array('class' => 'time', 'id' => $attributes['name'].'_div'));
+		return new moojon_div_tag(moojon_quick_tags::datetime_label_select_options($attributes, moojon_config::key('time_format'), strtotime($column->get_value())), array('class' => 'time', 'id' => $attributes['name'].'_div'));
 	}
 	
 	static public function timestamp_tag(moojon_base_column $column, moojon_base_model $model, $start = null, $end = null) {
@@ -369,8 +345,26 @@ final class moojon_model_ui extends moojon_base {
 		if (!$column_name) {
 			$column_name = str_replace(' ', '_', strtolower($column_name));
 		}
+		$content = self::format_content($column, $content);
 		$attributes['id'] = $column_name.'_dd';
 		return new moojon_dd_tag($content, $attributes);
+	}
+	
+	static public function format_content(moojon_base_column $column, $content) {
+		switch(get_class($column)) {
+			case 'moojon_date_column':
+				return self::get_datetime_format($content, moojon_config::key('date_format'));
+				break;
+			case 'moojon_datetime_column':
+				return self::get_datetime_format($content, moojon_config::key('datetime_format'));
+				break;
+			case 'moojon_time_column':
+				return self::get_datetime_format($content, moojon_config::key('time_format'));
+				break;
+			default:
+				return $content;
+		}
+		return $content;
 	}
 }
 ?>

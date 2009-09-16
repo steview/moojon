@@ -72,5 +72,8 @@ return array(
 	'time_format' => 'H:i:s',
 	'start_year' => 1900,
 	'end_year' => 2100,
+	'datetime_format' => 'd/m/Y H:i:s',
+	'date_format' => 'd/m/Y',
+	'time_format' => 'H:i:s',
 );
 ?>
