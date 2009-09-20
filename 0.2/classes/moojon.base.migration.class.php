@@ -84,7 +84,6 @@ abstract class moojon_base_migration extends moojon_base {
 		if ($this->updated_at) {
 			array_push($data, $this->updated_at);
 		}
-		$data = implode(', ', $data);
 		moojon_db::create_table($name, $data, $options);
 	}
 	

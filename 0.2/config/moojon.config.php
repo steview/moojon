@@ -75,5 +75,8 @@ return array(
 	'datetime_format' => 'd/m/Y H:i:s',
 	'date_format' => 'd/m/Y',
 	'time_format' => 'H:i:s',
+	'validation_error_message' => 'Some errors occurred. Please correct the errors and re-submit:',
+	'no_records_message' => 'No records.',
+	'confirm_deletion_message' => 'Please confirm deletion of record.',
 );
 ?>

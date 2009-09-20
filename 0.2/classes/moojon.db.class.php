@@ -310,7 +310,7 @@ final class moojon_db  extends moojon_base {
 		}
 		self::log($log);
 		foreach ($param_values as $key => $value) {
-			if ($value) {
+			if ($value !== null) {
 				$data_type = (array_key_exists($key, $param_data_types)) ? $param_data_types[$key] : self::PARAM_STR;
 				$statement->bindValue($key, $value, $data_type);
 			}

@@ -5,6 +5,10 @@ abstract class base_schema_migration extends moojon_base_model {
 		$this->add_string('version');
 	}
 	
+	final static public function get_column_names($exceptions = array()) {return self::base_get_column_names(get_class(), $exceptions);}
+	final static public function get_editable_column_names($exceptions = array()) {return self::base_get_editable_column_names(get_class(), $exceptions);}
+	final static public function get_primary_key_column_names($exceptions = array()) {return self::base_get_primary_key_column_names(get_class(), $exceptions);}
+	
 	final static public function read_all_by_version($value, $order = null, $limit = null) {return self::read_by(get_class(), 'id', $value, $order, $limit);}
 	final static public function read_by_version($value, $order = null, $limit = null) {return self::read_all_by_id($value, $order, $limit)->first;}
 	final static public function destroy_by_version($value) {self::destroy_by(get_class(), 'id', $value);}

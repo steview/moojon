@@ -1,5 +1,6 @@
 <?php
 abstract class moojon_base_column extends moojon_base {
+	protected $data_type = moojon_db::PARAM_STR;
 	protected $name;
 	protected $value = null;
 	protected $limit;
@@ -13,12 +14,16 @@ abstract class moojon_base_column extends moojon_base {
 	}
 		
 	final public function set_value($value) {
-		$name = $this->name;
 		if (!$this->reset_value) {
 			$this->reset_value = $value;
 		}
-		$this->value = $value;
-		$this->unsaved = true;
+		if ($this->value !== $value) {
+			$this->value = $value;
+			$this->unsaved = true;
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	final public function reset() {
@@ -58,8 +63,6 @@ abstract class moojon_base_column extends moojon_base {
 		$string = (string)$this;
 		return $string;
 	}
-	
-	abstract public function __toString();
 	
 	final public function get_data_type() {
 		if ($this->value === null) {

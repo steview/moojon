@@ -2,4 +2,4 @@
 <ul id="actions">
 	<li><?php echo link_to('New', new_post_uri()); ?></li>
 </ul>
-<?php partial('table', array('posts' => $posts)); ?>
+<?php echo table_for($posts); ?>

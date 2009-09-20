@@ -57,6 +57,21 @@ dt, dd{
 	margin:0 0 10px;
 }
 
+dl.errors{
+	background-color:#FFC;
+	border:1px #900 solid;
+	padding:10px 10px 0;
+}
+
+dl.errors dt{
+	color:#900;
+}
+
+dl.errors dd label{
+	color:#900;
+	font-weight:normal;
+}
+
 p{
 	margin:0 0 10px;
 }

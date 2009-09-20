@@ -12,34 +12,6 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final public function __construct() {}
 	
-	abstract protected function add_columns();
-	
-	protected function add_relationships() {}
-	
-	protected function add_validations() {}
-	
-	final private function compile_param_values($new_param_values = array(), $exception_param_values = array()) {
-		$param_values = array();
-		foreach ($this->get_editable_columns() as $column) {
-			$column_name = ':'.$column->get_name();
-			if ($column->get_unsaved() && !in_array($column_name, $exception_param_values)) {
-				$param_values[$column_name] = $column->get_value_query_format();
-			}
-		}
-		return array_merge($param_values, $new_param_values);
-	}
-	
-	final private function compile_param_data_types($new_param_data_types = array(), $exception_param_data_types = array()) {
-		$param_data_types = array();
-		foreach ($this->get_columns() as $column) {
-			$column_name = ':'.$column->get_name();
-			if (!in_array($column_name, $exception_param_data_types)) {
-				$param_data_types[$column_name] = $column->get_data_type();
-			}
-		}
-		return array_merge($param_data_types, $new_param_data_types);
-	}
-	
 	final static protected function init($class) {
 		$class = self::strip_base($class);
 		$instance = new $class;
@@ -50,6 +22,12 @@ abstract class moojon_base_model extends moojon_base {
 		$instance->table = moojon_inflect::pluralize($class);
 		return $instance;
 	}
+	
+	abstract protected function add_columns();
+	
+	protected function add_relationships() {}
+	
+	protected function add_validations() {}
 	
 	final public function __set($key, $value) {
 		if ($this->has_column($key)) {
@@ -201,8 +179,8 @@ abstract class moojon_base_model extends moojon_base {
 		$this->add_validation($name, new moojon_email_validation($message, $required));
 	}
 	
-	final protected function validate_url($name, $message, $required = true) {
-		$this->add_validation($name, new moojon_url_validation($message, $required));
+	final protected function validate_uri($name, $message, $required = true) {
+		$this->add_validation($name, new moojon_uri_validation($message, $required));
 	}
 	
 	final protected function validate_date($name, $message, $required = true) {
@@ -217,8 +195,8 @@ abstract class moojon_base_model extends moojon_base {
 		$this->add_validation($name, new moojon_digits_validation($message, $required));
 	}
 	
-	final protected function validate_creditcard($name, $message, $card_type, $required = true) {
-		$this->add_validation($name, new moojon_creditcard_validation($message, $card_type, $required));
+	final protected function validate_creditcard($name, $message, $card_types, $required = true) {
+		$this->add_validation($name, new moojon_creditcard_validation($message, $card_types, $required));
 	}
 	
 	final protected function validate_accept($name, $message, $exts, $required = true) {
@@ -309,17 +287,12 @@ abstract class moojon_base_model extends moojon_base {
 		return $this->table;
 	}
 	
-	final public function get_columns() {
-		return $this->columns;
-	}
-	
 	final public function get_errors() {
 		return $this->errors;
 	}
 	
-	final static public function base_get_column($class, $column_name) {
-		$instance = self::init($class);
-		return $instance->get_column($column_name);
+	final public function has_errors() {
+		return (count($this->errors) > 0);
 	}
 	
 	final public function get_column($column_name) {
@@ -331,32 +304,99 @@ abstract class moojon_base_model extends moojon_base {
 		throw new moojon_exception("Invalid column ($column_name)");
 	}
 	
-	final public function get_editable_columns() {
-		$columns = array();
-		foreach ($this->columns as $column) {
-			if (get_class($column) != 'moojon_primary_key') {
-				$columns[] = $column;
-			}
-		}
-		return $columns;
-	}
-	
-	final public function get_editable_column_names() {
-		$columns = array();
+	final public function get_editable_column($column_name) {
 		foreach ($this->get_editable_columns() as $column) {
-			$columns[] = $column->get_name();
-		}
-		return $columns;
-	}
-	
-	final public function get_primary_key_columns() {
-		$columns = array();
-		foreach ($this->columns as $column) {
-			if (get_class($column) == 'moojon_primary_key') {
-				$columns[] = $column;
+			if ($column->get_name() == $column_name) {
+				return $column;
 			}
 		}
-		return $columns;
+		throw new moojon_exception("Invalid editable column ($column_name)");
+	}
+	
+	final public function get_primary_key_column($column_name) {
+		foreach ($this->get_primary_key_columns() as $column) {
+			if ($column->get_name() == $column_name) {
+				return $column;
+			}
+		}
+		throw new moojon_exception("Invalid primary key column ($column_name)");
+	}
+	
+	final public function get_columns($exceptions = array()) {
+		$return = array();
+		foreach ($this->columns as $column) {
+			if (!in_array($column->get_name(), $exceptions)) {
+				$return[] = $column;
+			}
+		}
+		return $return;
+	}
+	
+	final protected function get_editable_columns($exceptions = array()) {
+		$return = array();
+		foreach ($this->get_columns($exceptions) as $column) {
+			if (get_class($column) != 'moojon_primary_key') {
+				$return[] = $column;
+			}
+		}
+		return $return;
+	}
+	
+	final protected function get_primary_key_columns($exceptions = array()) {
+		$return = array();
+		foreach ($this->get_columns($exceptions) as $column) {
+			if (get_class($column) == 'moojon_primary_key') {
+				$return[] = $column;
+			}
+		}
+		return $return;
+	}
+	
+	final static protected function base_get_column_names($class, $exceptions = array()) {
+		$return = array();
+		$instance = self::init($class);
+		foreach ($instance->get_columns($exceptions) as $column) {
+			$return[] = $column->get_name();
+		}
+		return $return;
+	}
+	
+	final static protected function base_get_editable_column_names($class, $exceptions = array()) {
+		$return = array();
+		$instance = self::init($class);
+		foreach ($instance->get_editable_columns($exceptions) as $column) {
+			$return[] = $column->get_name();
+		}
+		return $return;
+	}
+	
+	final static protected function base_get_primary_key_column_names($class, $exceptions = array()) {
+		$return = array();
+		$instance = self::init($class);
+		foreach ($instance->get_primary_key_columns($exceptions) as $column) {
+			$return[] = $column->get_name();
+		}
+		return $return;
+	}
+	
+	final private function compile_param_values($new_param_values = array(), $exception_param_values = array()) {
+		$param_values = array();
+		foreach ($this->get_editable_columns($exception_param_values) as $column) {
+			$column_name = ':'.$column->get_name();
+			if ($column->get_unsaved()) {
+				$param_values[$column_name] = $column->get_value_query_format();
+			}
+		}
+		return array_merge($param_values, $new_param_values);
+	}
+	
+	final private function compile_param_data_types($new_param_data_types = array(), $exception_param_data_types = array()) {
+		$param_data_types = array();
+		foreach ($this->get_columns($exception_param_data_types) as $column) {
+			$column_name = ':'.$column->get_name();
+			$param_data_types[$column_name] = $column->get_data_type();
+		}
+		return array_merge($param_data_types, $new_param_data_types);
 	}
 	
 	final public function get_new_record() {
@@ -397,37 +437,37 @@ abstract class moojon_base_model extends moojon_base {
 	}
 		
 	final public function save($cascade = false) {
-		$saved = true;
+		$saved = false;
 		if ($this->validate($cascade)) {
-			$exception_param_values = array();
-			$exception_param_data_types = array();
 			$placeholders = array();
 			foreach ($this->get_editable_columns() as $column) {
 				$column_name = $column->get_name();
-				if ($column->get_unsaved() && !in_array(":$column_name", $exception_param_values)) {
+				if ($column->get_unsaved()) {
 					$placeholders[$column_name] = ":$column_name";
 				}
 			}
 			$id_property = moojon_primary_key::NAME;
-			$param_data_types = $this->compile_param_data_types(array(), $exception_param_data_types);
 			if ($this->new_record) {
-				moojon_db::insert($this->table, $placeholders, $this->compile_param_values(array(), $exception_param_values), $param_data_types);
+				moojon_db::insert($this->table, $placeholders, $this->compile_param_values(), $this->compile_param_data_types());
+				//Awaiting query collection class that will check insert
 				if ($this->has_column($id_property)) {
 					$this->$id_property = moojon_db::last_insert_id($id_property);
 				}
 				$this->new_record = false;
+				$saved = true;
+				////////////////////////////////////////////////////////
 			} else {
 				if ($this->get_unsaved()) {
 					if ($this->has_column('updated_at') && !$this->get_column('updated_at')->get_unsaved()) {
 						$this->get_column('updated_at')->set_value(date(moojon_config::key('datetime_format')));
 					}
-					$statement = moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $this->compile_param_values(array(":$id_property" => $this->$id_property), $exception_param_values), $param_data_types);
-				} else {
-					$saved = false;
+					moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $this->compile_param_values(array(":$id_property" => $this->$id_property)), $this->compile_param_data_types());
+					//Awaiting query collection class that will check update
+					$this->new_record = false;
+					$saved = true;
+					////////////////////////////////////////////////////////
 				}
 			}
-		} else {
-			$saved = false;
 		}
 		if ($saved) {
 			$this->reset();
@@ -451,15 +491,13 @@ abstract class moojon_base_model extends moojon_base {
 			$placeholders["$table.$column_name"] = strtoupper($class.'_'.$column_name);
 		}
 		$return = new moojon_model_collection($accessor);
-		foreach(moojon_db::select($table, $placeholders, $where, $order, $limit, 
-			$instance->compile_param_values($param_values), 
-			$instance->compile_param_data_types($param_data_types)) as $row) {
+		foreach(moojon_db::select($table, $placeholders, $where, $order, $limit, $instance->compile_param_values($param_values), $instance->compile_param_data_types($param_data_types)) as $row) {
 			$record = self::init($class);
 			foreach($instance->columns as $column) {
 				$column_name = $column->get_name();
 				$record->$column_name = $row[strtoupper($class.'_'.$column_name)];
-				$column->reset();
 			}
+			$record->reset();
 			$return[] = $record;
 		}
 		return $return;
@@ -545,6 +583,7 @@ abstract class moojon_base_model extends moojon_base {
 		foreach ($this->get_editable_columns() as $column) {
 			if ($column->get_unsaved()) {
 				$unsaved = true;
+				break;
 			}
 		}
 		return $unsaved;
@@ -570,17 +609,20 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static public function read_by($class, $column_name, $value, $order, $limit) {
-		$column = self::base_get_column($class, $column_name);
+		$instance = self::init($class);
+		$column = $instance->get_column($column_name);
 		return self::base_read($class, "$column_name = :$column_name", $order, $limit, array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()), null);
 	}
 	
 	final static public function destroy_by($class, $column_name, $value) {
-		$column = self::base_get_column($class, $column_name);
+		$instance = self::init($class);
+		$column = $instance->get_column($column_name);
 		self::base_destroy($class, "$column_name = :$column_name", array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()));
 	}
 	
 	final static public function read_or_create_by($class, $column_name, $value, $data) {
-		$column = self::base_get_column($class, $column_name);
+		$instance = self::init($class);
+		$column = $instance->get_column($column_name);
 		$collection = self::read_by($class, $column_name, $value, null, null);
 		if ($collection->count) {
 			return $collection->first;

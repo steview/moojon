@@ -53,7 +53,7 @@ final class moojon_model_collection extends ArrayObject {
 		if ($this->relationship) {
 			$foreign_class_name = moojon_inflect::singularize($this->relationship->get_foreign_table());
 			$foreign_class = new $foreign_class_name;
-			$records = $foreign_class->read($this->relationship->get_where($this->accessor), null, null, $this->relationship->get_param_values($this->accessor), $this->relationship->get_param_data_types($this->accessor), $this->accessor);
+			$records = $foreign_class->read(moojon_db_driver::get_relationship_where($this->relationship, $this->accessor),  null, null, moojon_db_driver::get_relationship_param_values($this->relationship, $this->accessor), moojon_db_driver::get_relationship_param_data_types($this->relationship, $this->accessor), $this->accessor);
 			switch (get_class($this->relationship)) {
 				case 'moojon_has_one_relationship':
 					return $records->first;

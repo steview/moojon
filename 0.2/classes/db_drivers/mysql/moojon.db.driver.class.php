@@ -6,10 +6,56 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	const TIME_FORMAT = 'H:i:s';
 	
 	static public function create_table($table, $columns = array(), $options = null) {
-		if (is_array($columns)) {
-			$columns = implode(', ', $columns);
+		if (!is_array($columns)) {
+			$columns = array($columns);
 		}
-		$query = "CREATE TABLE $table($columns)";
+		$columns_string = '';
+		foreach ($columns as $column) {
+			switch (get_class($column)) {
+				case 'moojon_binary_column':
+					$columns_string .= '`'.$column->get_name().'` BINARY('.$column->get_limit().') '.moojon_db_driver::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_boolean_column':
+					$columns_string .= '`'.$column->get_name().'` TINYINT(1) '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_date_column':
+					$columns_string .= '`'.$column->get_name().'` DATE '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_datetime_column':
+					$columns_string .= '`'.$column->get_name().'` DATETIME '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_decimal_column':
+					$columns_string .= '`'.$column->get_name().'` DECIMAL('.$column->get_limit().', '.$column->get_decimals().') '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_float_column':
+					$columns_string .= '`'.$column->get_name().'` FLOAT('.$column->get_limit().', '.$column->get_decimals().') '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_integer_column':
+					$columns_string .= '`'.$column->get_name().'` INTEGER('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_primary_key':
+					$columns_string .= '`'.$column->get_name().'` INTEGER('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column).' '.$column->get_options().', ';
+					break;
+				case 'moojon_string_column':
+					$columns_string .= '`'.$column->get_name().'` VARCHAR('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_text_column':
+					$binary_string = (!$column->get_binary()) ? '' : 'BINARY ';
+					$columns_string .= '`'.$column->get_name()."` TEXT $binary_string".self::get_null_string($column).', ';
+					break;
+				case 'moojon_time_column':
+					$columns_string .= '`'.$column->get_name().'` TIME '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				case 'moojon_timestamp_column':
+					$columns_string .= '`'.$column->get_name().'` TIMESTAMP '.self::get_null_string($column).' '.self::get_default_string($column).', ';
+					break;
+				default;
+					throw new moojon_exception('create_table can only accept columns of moojon_base_column ('.get_class($column).' found).');
+					break;
+			}
+		}
+		$columns_string = substr($columns_string, 0, (strlen($columns_string) - 2));
+		$query = "CREATE TABLE `$table`($columns_string)";
 		if ($options) {
 			$query .= " $options";
 		}
@@ -29,39 +75,39 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function show_columns($table) {
-		return "SHOW COLUMNS FROM $table;";
+		return "SHOW COLUMNS FROM `$table`;";
 	}
 	
 	static public function drop_table($table) {
-		return "DROP TABLE $table;";
+		return "DROP TABLE `$table`;";
 	}
 	
 	static public function rename_table($table, $new_name) {
-		return "ALTER TABLE $table RENAME TO $new_name;";
+		return "ALTER TABLE `$table` RENAME TO `$new_name`;";
 	}
 	
 	static public function add_column($table, $column) {
-		return "ALTER TABLE $table ADD COLUMN $column;";
+		return "ALTER TABLE `$table` ADD COLUMN `$column`;";
 	}
 	
 	static public function drop_column($table, $column) {
-		return "ALTER TABLE $table DROP COLUMN $column;";
+		return "ALTER TABLE `$table` DROP COLUMN `$column`;";
 	}
 	
 	static public function change_column($table, $column) {
-		return "ALTER TABLE $table CHANGE COLUMN $column;";
+		return "ALTER TABLE `$table` CHANGE COLUMN `$column`;";
 	}
 	
 	static public function modify_column($table, $column) {
-		return "ALTER TABLE $table MODIFY COLUMN $column;";
+		return "ALTER TABLE `$table` MODIFY COLUMN `$column`;";
 	}
 	
 	static public function add_index($table, $index) {
-		return "ALTER TABLE $table ADD INDEX $index;";
+		return "ALTER TABLE `$table` ADD INDEX `$index`;";
 	}
 	
 	static public function drop_index($table, $index) {
-		return "ALTER TABLE $table REMOVE INDEX $index;";
+		return "ALTER TABLE `$table` REMOVE INDEX `$index`;";
 	}
 	
 	static public function select($table, $columns = array(), $where = null, $order = null, $limit = null) {
@@ -72,9 +118,12 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		if (is_array($columns)) {
 			foreach(array_keys($columns) as $key) {
 				if (!is_string($key)) {
-					$columns_string .= ', '.$columns[$key];
+					$column = '`'.str_replace('.', '`.`', $columns[$key]).'`';
+					$columns_string .= ", $column";
 				} else {
-					$columns_string .= ", $key AS ".$columns[$key];
+					$column = $columns[$key];
+					$key = '`'.str_replace('.', '`.`', $key).'`';
+					$columns_string .= ", $key AS $column";
 				}
 			}
 			$columns_string = substr($columns_string, 2);
@@ -84,7 +133,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 				$columns = '*';
 			}
 		}
-		return "SELECT $columns FROM $table $where $order $limit;";
+		return "SELECT $columns FROM `$table` $where $order $limit;";
 	}
 	
 	static public function insert($table, $columns = array(), $symbol = false) {
@@ -92,23 +141,23 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		foreach($columns as $value) {
 			$values .= ", $value";
 		}
-		$columns = implode(', ', array_keys($columns));
+		$columns = implode('`, `', array_keys($columns));
 		$values = ' VALUES('.substr($values, 2).')';
-		return "INSERT INTO $table ($columns)$values;";
+		return "INSERT INTO `$table` (`$columns`)$values;";
 	}
 	
 	static public function update($table, $columns = array(), $where = null) {
 		$where = self::require_prefix($where, ' WHERE ');
 		$values = '';
 		foreach($columns as $key => $value) {
-			$values .= ", $key = $value";
+			$values .= ", `$key` = $value";
 		}
-		return "UPDATE $table SET ".substr($values, 2)."$where;";
+		return "UPDATE `$table` SET ".substr($values, 2)."$where;";
 	}
 	
 	static public function delete($table, $where = null) {
 		$where = self::require_prefix($where, 'WHERE ');
-		return "DELETE FROM $table $where;";
+		return "DELETE FROM `$table` $where;";
 	}
 	
 	static public function get_null() {
@@ -157,7 +206,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 					case 'FLOAT':
 					case 'DECIMAL':
 					case 'NUMERIC':
-						$add_column .= "decimals('$name', $limit, 10, $null, $default);";
+						$add_column .= "decimal('$name', $limit, 10, $null, $default);";
 						break;
 					case 'CHAR':
 					case 'VARCHAR':
@@ -224,51 +273,20 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static final public function get_value_query_format(moojon_base_column $column) {
-		$column_class = get_class($column);
 		$column_value = $column->get_value();
-		if ($column_class == 'moojon_date_column' || $column_class == 'moojon_datetime_column' || $column_class == 'moojon_time_column') {
-			if (!is_array($column_value)) {
-				$column_value = date_parse($column_value, moojon_config::key('datetime_format'));
-			}
-			switch ($column_class) {
-				case 'moojon_date_column':
-					if (!array_key_exists('Y', $column_value) && array_key_exists('year', $column_value)) {
-						$column_value['Y'] = $column_value['year'];
-					}
-					if (!array_key_exists('m', $column_value) && array_key_exists('month', $column_value)) {
-						$column_value['m'] = $column_value['month'];
-					}
-					if (!array_key_exists('d', $column_value) && array_key_exists('day', $column_value)) {
-						$column_value['d'] = $column_value['day'];
-					}
-					if (!array_key_exists('H', $column_value) && array_key_exists('hour', $column_value)) {
-						$column_value['H'] = $column_value['hour'];
-					}
-					if (!array_key_exists('i', $column_value) && array_key_exists('minute', $column_value)) {
-						$column_value['i'] = $column_value['minute'];
-					}
-					if (!array_key_exists('s', $column_value) && array_key_exists('second', $column_value)) {
-						$column_value['s'] = $column_value['second'];
-					}
-					return self::pad_number($column_value['Y']).'-'.self::pad_number($column_value['m']).'-'.self::pad_number($column_value['d']);
-					break;
-				case 'moojon_datetime_column':
-					return  self::pad_number($column_value['Y']).'-'.self::pad_number($column_value['m']).'-'.self::pad_number($column_value['d']).' '.self::pad_number($column_value['H']).':'.self::pad_number($column_value['i']).':'.self::pad_number($column_value['s']);
-					break;
-				case 'moojon_time_column':
-					return self::pad_number($column_value['H']).':'.self::pad_number($column_value['i']).':'.self::pad_number($column_value['s']);
-					break;
-			}
-		} else {
-			return $column_value;
-		}
-	}
-	
-	static private function pad_number($number) {
-		if ($number < 10) {
-			return "0$number";
-		} else {
-			return $number;
+		switch (get_class($column)) {
+			case 'moojon_date_column':
+				return self::get_datetime_format($column_value, self::DATE_FORMAT);
+				break;
+			case 'moojon_datetime_column':
+				return self::get_datetime_format($column_value, self::DATETIME_FORMAT);
+				break;
+			case 'moojon_time_column':
+				return self::get_datetime_format($column_value, self::TIME_FORMAT);
+				break;
+			default:
+				return $column_value;
+				break;
 		}
 	}
 	
@@ -308,6 +326,54 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 			}
 		}
 		return implode("\n\t", $read_or_create_bys);
+	}
+	
+	static public function get_relationship_where(moojon_base_relationship $relationship, moojon_base_model $accessor) {
+		$key = $relationship->get_key();
+		switch (get_class($relationship)) {
+			case 'moojon_has_one_relationship':
+			case 'moojon_has_many_relationship':
+				$foreign_table = $relationship->get_foreign_table();
+				$foreign_key = moojon_primary_key::get_foreign_key($foreign_table);
+				return "$foreign_table.$key = :$foreign_key";
+				break;
+			case 'moojon_has_many_to_many_relationship':
+				$foreign_table = moojon_inflect::pluralize($relationship->get_class($accessor));
+				$foreign_key1 = moojon_primary_key::get_foreign_key($relationship->get_foreign_table());
+				$foreign_key2 = moojon_primary_key::get_foreign_key(get_class($accessor));
+				return "`$key` IN (SELECT `$foreign_key1` FROM `$foreign_table` WHERE `$foreign_key2` = :key)";
+				break;
+		}
+	}
+	
+	static public function get_relationship_param_values(moojon_base_relationship $relationship, moojon_base_model $accessor) {
+		switch (get_class($relationship)) {
+			case 'moojon_has_one_relationship':
+				$foreign_key = moojon_primary_key::get_foreign_key($relationship->get_foreign_table());
+				return array(":$foreign_key" => $accessor->$foreign_key);
+				break;
+			case 'moojon_has_many_to_many_relationship':
+			case 'moojon_has_many_relationship':
+				$key = $relationship->get_key();
+				return array(":$key" => $accessor->$key);
+				break;
+		}
+	}
+	
+	static public function get_relationship_param_data_types(moojon_base_relationship $relationship, moojon_base_model $accessor) {
+		switch (get_class($relationship)) {
+			case 'moojon_has_one_relationship':
+				$foreign_key = moojon_primary_key::get_foreign_key($relationship->get_foreign_table());
+				$column = $accessor->get_column($foreign_key);
+				return array(":$foreign_key" => $column->get_data_type());
+				break;
+			case 'moojon_has_many_relationship':
+			case 'moojon_has_many_to_many_relationship':
+				$key = $relationship->get_key();
+				$column = $accessor->get_column($key);
+				return array(":$key" => $column->get_data_type());
+				break;
+		}
 	}
 }
 ?>

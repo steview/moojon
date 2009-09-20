@@ -1,6 +1,5 @@
 <?php
 final class moojon_paths extends moojon_base {
-	
 	private function __construct() {}
 	
 	static public function get_classes_directory() {
@@ -20,7 +19,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_columns_directory() {
-		return self::get_db_driver_directory().moojon_config::key('columns_directory').'/';
+		return self::get_classes_directory().moojon_config::key('columns_directory').'/';
 	}
 	
 	static public function get_validations_directory() {
@@ -202,10 +201,6 @@ final class moojon_paths extends moojon_base {
 	static public function get_js_directory() {
 		return self::get_public_directory().moojon_config::key('js_directory').'/';
 	}
-	
-	
-	
-	
 	
 	static final public function attempt_mkdir($path, $mode = null) {
 		if (!$mode) {

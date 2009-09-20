@@ -4,4 +4,4 @@
 	<li><?php echo link_to('Edit', edit_post_uri($post)); ?></li>
 </ul>
 <h2><?php echo $post; ?></h2>
-<?php partial('delete_form', array('post' => $post)); ?>
+<?php echo delete_form_for($post); ?>

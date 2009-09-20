@@ -12,6 +12,14 @@ abstract class moojon_base_relationship extends moojon_base {
 		$this->key = $key;
 	}
 	
+	final public function get_class(moojon_base_model $accessor) {
+		$classes = array();
+		$classes[] = moojon_inflect::singularize($this->foreign_table);
+		$classes[] = get_class($accessor);
+		sort($classes);
+		return $classes[0].'_'.$classes[1];
+	}
+	
 	final public function get_name() {
 		return $this->name;
 	}
@@ -26,19 +34,6 @@ abstract class moojon_base_relationship extends moojon_base {
 	
 	final public function get_key() {
 		return $this->key;
-	}
-	
-	abstract public function get_where(moojon_base_model $accessor);
-	
-	public function get_param_values(moojon_base_model $accessor) {
-		$key = $this->key;
-		return array(":$key" => $accessor->$key);
-	}
-	
-	public function get_param_data_types(moojon_base_model $accessor) {
-		$key = $this->key;
-		$column = $accessor->get_column($key);
-		return array(":$key" => $column->get_data_type());
 	}
 }
 ?>

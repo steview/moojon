@@ -4,10 +4,9 @@ final class moojon_routes extends moojon_base {
 	private $data = array();
 	
 	protected function __construct() {
-		$routes_path = moojon_paths::get_routes_path();
-		foreach (require_once($routes_path) as $route) {
+		foreach (require_once(moojon_paths::get_routes_path()) as $route) {
 			if (is_subclass_of($route, 'moojon_base_route')) {
-				$this->data[$route->get_pattern()] = $route;
+				$this->data[$route->get_resource()] = $route;
 			} else {
 				throw new moojon_exception("Only moojon_base_route derived objects may be included in $routes_path (".get_class($route).' found)');
 			}

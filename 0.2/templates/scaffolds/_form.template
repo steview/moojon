@@ -1,4 +1,1 @@
-<?php
-$form = moojon_model_ui::form($<[singular]>, $<[singular]>->get_editable_column_names());
-echo $form->render();
-?>
+<?php echo form_for($<[singular]>); ?>

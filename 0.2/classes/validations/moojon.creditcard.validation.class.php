@@ -1,11 +1,14 @@
 <?php
 final class moojon_creditcard_validation extends moojon_base_validation {
 	
-	private $card_type;
+	private $card_types;
 	
-	public function __construct($message, $card_type, $required = true) {
+	public function __construct($message, $card_types, $required = true) {
 		$this->set_message($message);
-		$this->card_type = $card_type;
+		if (!is_array($card_types)) {
+			$card_types = array($card_types);
+		}
+		$this->card_types = $card_type;
 		$this->required = $required;
 	}
 	
@@ -81,8 +84,8 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 		}
 		$length_valid = false;
 		$lengths = split(',', $cards[$this->card_type]['length']);
-		for ($j = 0; $j < sizeof($lengths); $j ++) {
-			if (strlen($card_number) == $lengths[$j]) {
+		for ($i = 0; $i < sizeof($lengths); $i ++) {
+			if (strlen($card_number) == $lengths[$i]) {
 				$length_valid = true;
 				break;
 			}

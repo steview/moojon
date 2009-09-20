@@ -1,6 +1,7 @@
-<h1><?php echo $<[singular]>; ?></h1>
+<h1><[Human]></h1>
 <ul id="actions">
 	<li><?php echo link_to('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
 	<li><?php echo link_to('Delete', delete_<[singular]>_uri($<[singular]>)); ?></li>
 </ul>
-<?php partial('dl', array('<[singular]>' => $<[singular]>)); ?>
+<h2><?php echo $<[singular]>; ?></h2>
+<?php echo dl_for($<[singular]>); ?>

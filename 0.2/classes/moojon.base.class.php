@@ -113,11 +113,54 @@ abstract class moojon_base {
 		
 	}
 	
+	final static public function get_time($datetime, $format = null) {
+		if (is_array($datetime)) {
+			if (!array_key_exists('Y', $datetime) && array_key_exists('year', $datetime)) {
+				$datetime['Y'] = $datetime['year'];
+			}
+			if (!array_key_exists('m', $datetime) && array_key_exists('month', $datetime)) {
+				$datetime['m'] = $datetime['month'];
+			}
+			if (!array_key_exists('d', $datetime) && array_key_exists('day', $datetime)) {
+				$datetime['d'] = $datetime['day'];
+			}
+			if (!array_key_exists('H', $datetime) && array_key_exists('hour', $datetime)) {
+				$datetime['H'] = $datetime['hour'];
+			}
+			if (!array_key_exists('i', $datetime) && array_key_exists('minute', $datetime)) {
+				$datetime['i'] = $datetime['minute'];
+			}
+			if (!array_key_exists('s', $datetime) && array_key_exists('second', $datetime)) {
+				$datetime['s'] = $datetime['second'];
+			}
+			$string = '';
+			for ($i = 0; $i < strlen($format); $i ++) {
+				$f = substr($format, $i, 1);
+				if (array_key_exists($f, $datetime)) {
+					$string .= $datetime[$f];
+				} else {
+					$string .= $f;
+				}
+			}
+		} else {
+			$string = $datetime;
+		}
+		return strtotime($string);
+	}
+	
 	final static public function get_datetime_format($datetime, $format = null) {
 		if (!$format) {
 			$format = moojon_config::key('datetime_format');
 		}
-		return date($format, strtotime($datetime));
+		return date($format, self::get_time($datetime, $format));
+	}
+	
+	final static public function get_rest_route_resources() {
+		$rest_route_resources = array();
+		foreach (moojon_routes::get_rest_routes() as $rest_route) {
+			$rest_route_resources[] = $rest_route->get_resource();
+		}
+		return $rest_route_resources;
 	}
 }
 ?>

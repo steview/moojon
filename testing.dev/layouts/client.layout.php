@@ -14,8 +14,11 @@
 	<div id="header"><img src="/images/logo.png" alt="Moojon logo" width="250" height="70" /></div>
 	<ul id="nav">
 		<li><?php echo link_to('Index', '/'); ?></li>
-		<li><?php echo link_to('Firsts', firsts_uri()); ?></li>
-		<li><?php echo link_to('Seconds', seconds_uri()); ?></li>
+		<li><?php echo link_to('Users', users_uri()); ?></li>
+		<li><?php echo link_to('Cars', cars_uri()); ?></li>
+		<li><?php echo link_to('Car users', car_users_uri()); ?></li>
+		<li><?php echo link_to('Posts', posts_uri()); ?></li>
+		<li><?php echo link_to('Comments', comments_uri()); ?></li>
 	</ul>
 	<div id="content">
 	<?php if (moojon_flash::has('notification')) { ?>

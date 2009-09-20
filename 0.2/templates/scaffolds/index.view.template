@@ -2,4 +2,4 @@
 <ul id="actions">
 	<li><?php echo link_to('New', new_<[singular]>_uri()); ?></li>
 </ul>
-<?php partial('table', array('<[plural]>' => $<[plural]>)); ?>
+<?php echo table_for($<[plural]>); ?>

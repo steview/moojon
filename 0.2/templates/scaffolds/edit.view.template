@@ -1,4 +1,4 @@
-<h1>Update <[human]></h1>
+<h1>Edit <[human]></h1>
 <ul id="actions">
 	<li><?php echo link_to($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
 	<li><?php echo link_to('Delete', delete_<[singular]>_uri($<[singular]>)); ?></li>

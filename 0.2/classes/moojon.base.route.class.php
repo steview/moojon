@@ -20,6 +20,10 @@ abstract class moojon_base_route extends moojon_base {
 		return $this->pattern;
 	}
 	
+	public function get_resource() {
+		return $this->get_pattern();
+	}
+	
 	abstract public function map_uri($uri);
 	
 	final protected function match_count($uri) {

@@ -106,7 +106,12 @@ abstract class moojon_base_tag extends moojon_base {
 				}
 			}
 		} else {
-			throw new moojon_exception("No such attribute or child ($key)");
+			foreach ($this->children as $child) {
+				if ($child->has_child($key)) {
+					return $child->get_child($key);
+				}
+			}
+			throw new moojon_exception("*No such attribute or child ($key)");
 		}
 	}
 	
@@ -185,6 +190,10 @@ abstract class moojon_base_tag extends moojon_base {
 			}
 		}
 		$this->children = $remaining_children;
+	}
+	
+	final public function __toString() {
+		return $this->render();
 	}
 }
 ?>

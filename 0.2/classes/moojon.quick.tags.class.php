@@ -176,7 +176,11 @@ final class moojon_quick_tags extends moojon_base {
 			$select_attributes = $attributes;
 			$f = substr($format, $i, 1);
 			$select_attributes['name'] = $attributes['name']."[$f]";
-			$select_attributes['id'] = $attributes['id']."_$f";
+			if ($i) {
+				$select_attributes['id'] = $attributes['id']."_$f";
+			} else {
+				$select_attributes['id'] = $attributes['id'];
+			}
 			switch ($f) {
 				case 'Y':
 				case 'y':
