@@ -1,5 +1,0 @@
-<?php
-define('ENVIRONMENT', 'development');
-define('MOOJON_VERSION', '<[MOOJON_VERSION]>');
-define('MOOJON_PATH', '<[PWD]>'.MOOJON_VERSION.'/');
-?>

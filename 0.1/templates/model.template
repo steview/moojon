@@ -1,3 +1,0 @@
-<?php
-final class <[model]> extends base_<[model]> {}
-?>

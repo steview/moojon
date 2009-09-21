@@ -294,33 +294,7 @@ final class moojon_db  extends moojon_base {
 	}
 	
 	static public function run(PDOStatement $statement, $param_values = array(), $param_data_types = array(), $fetch_style = self::FETCH_ASSOC) {
-		$log = $statement->queryString;
-		if (ENVIRONMENT == 'development') {
-			$values = 'Param values(';
-			foreach ($param_values as $key => $value) {
-				$values .= "$key = $value, ";
-			}
-			$values = substr($values, 0, -2).')';
-			$data_types = 'Param data types(';
-			foreach ($param_data_types as $key => $value) {
-				$data_types .= "$key = $value, ";
-			}
-			$data_types = substr($data_types, 0, -2).')';
-			$log .= "\n$values\n$data_types";
-		}
-		self::log($log);
-		foreach ($param_values as $key => $value) {
-			if ($value !== null) {
-				$data_type = (array_key_exists($key, $param_data_types)) ? $param_data_types[$key] : self::PARAM_STR;
-				$statement->bindValue($key, $value, $data_type);
-			}
-		}
-		$statement->execute();
-		if ($statement->columnCount()) {
-			return $statement->fetchAll($fetch_style);
-		} else {
-			return array();
-		}
+		return new moojon_query_result($statement, $param_values, $param_data_types, $fetch_style);
 	}
 	
 	static public function get_schema_version() {

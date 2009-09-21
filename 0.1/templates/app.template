@@ -1,5 +1,0 @@
-<?php
-final class <[app]>_app extends moojon_base_app {
-	
-}
-?>
