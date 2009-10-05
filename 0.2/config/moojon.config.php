@@ -30,6 +30,8 @@ return array(
 	'views_directory' => 'views',
 	'layouts_directory' => 'layouts',
 	'templates_directory' => 'templates',
+	'library_directory' => 'library',
+	'pluggins_directory' => 'pluggins',
 	'models_directory' => 'models',
 	'cache_directory' => 'cache',
 	'helpers_directory' => 'helpers',

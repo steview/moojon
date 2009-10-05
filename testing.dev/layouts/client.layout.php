@@ -7,6 +7,7 @@
 	<meta http-equiv="Content-Language" content="en-gb" />
 	<link href="/favicon.ico" rel="shortcut icon" />
 	<link href="/css/moojon.css" rel="stylesheet" type="text/css" media="screen, projection" />
+	<script type="text/javascript" src="/js/jquery.js"></script>
 	<script type="text/javascript" src="/js/project.js"></script>
 </head>
 <body id="body_" class="js-disabled">

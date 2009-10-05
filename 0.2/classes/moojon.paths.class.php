@@ -118,6 +118,14 @@ final class moojon_paths extends moojon_base {
 		return PROJECT_DIRECTORY;
 	}
 	
+	static public function get_project_library_directory() {
+		return self::get_project_directory().moojon_config::key('library_directory').'/';
+	}
+	
+	static public function get_project_pluggins_directory() {
+		return self::get_project_directory().moojon_config::key('pluggins_directory').'/';
+	}
+	
 	static public function get_project_base_models_directory() {
 		return self::get_project_models_directory().moojon_config::key('base_models_directory').'/';
 	}
@@ -178,10 +186,6 @@ final class moojon_paths extends moojon_base {
 		return self::get_project_config_directory()."$app/";
 	}
 	
-	
-	
-	
-	
 	static public function get_script_directory() {
 		return self::get_project_directory().moojon_config::key('script_directory').'/';
 	}
@@ -217,20 +221,33 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_class_paths() {
-		$paths = array(
-			self::get_classes_directory()
-		);
-		if (moojon_config::has('db_driver')) {
-			$paths[] = self::get_db_driver_directory();
-			$paths[] = self::get_columns_directory();
-		}
-		$paths[] = self::get_validations_directory();
-		$paths[] = self::get_tags_directory();
-		$paths[] = self::get_tag_attributes_directory();
+		$paths = array();
 		if (defined('PROJECT_DIRECTORY')) {
+			$library_directory = self::get_project_library_directory();
+			if (is_dir($library_directory)) {
+				foreach (moojon_files::directory_directories($library_directory, false, true) as $directory) {
+					$paths[] = $directory;
+					$paths = array_merge($paths, moojon_files::directory_directories($directory, true, true));
+				}
+			}
+			$pluggins_directory = self::get_project_pluggins_directory();
+			if (is_dir($pluggins_directory)) {
+				foreach (moojon_files::directory_directories($pluggins_directory, false, true) as $directory) {
+					$paths[] = $directory;
+					$paths = array_merge($paths, moojon_files::directory_directories($directory, true, true));
+				}
+			}
+			if (moojon_config::has('db_driver')) {
+				$paths[] = self::get_db_driver_directory();
+				$paths[] = self::get_columns_directory();
+			}
 			$paths[] = self::get_project_migrations_directory();
 			$paths[] = self::get_moojon_migrations_directory();
 		}
+		$paths[] = self::get_classes_directory();
+		$paths[] = self::get_validations_directory();
+		$paths[] = self::get_tags_directory();
+		$paths[] = self::get_tag_attributes_directory();
 		return $paths;
 	}
 	

@@ -84,29 +84,6 @@ p.flash{
 	padding:10px;
 }
 
-a{
-	font-weight:bold;
-	text-decoration:none;
-}
-
-a:visited{
-	color:#060;
-}
-
-a:link{
-	color:#093;
-}
-
-a:hover{
-	color:#0C3;
-	text-decoration:underline;
-}
-
-a:active{
-	color:#0F3;
-	text-decoration:underline;
-}
-
 table{
 	width:100%;
 }

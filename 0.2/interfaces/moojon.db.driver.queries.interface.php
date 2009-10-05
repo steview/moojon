@@ -6,13 +6,13 @@ interface moojon_db_driver_queries {
 	
 	static public function show_columns($table);
 	
-	static public function drop_table($table);
+	static public function remove_table($table);
 	
 	static public function rename_table($table, $new_name);
 	
 	static public function add_column($table, $column);
 	
-	static public function drop_column($table, $column);
+	static public function remove_column($table, $column);
 	
 	static public function change_column($table, $column);
 	
@@ -20,7 +20,7 @@ interface moojon_db_driver_queries {
 	
 	static public function add_index($table, $index);
 	
-	static public function drop_index($table, $index);
+	static public function remove_index($table, $index);
 	
 	static public function select($table, $columns = array(), $where = null, $order = null, $limit = null);
 	

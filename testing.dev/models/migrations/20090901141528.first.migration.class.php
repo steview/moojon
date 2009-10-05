@@ -34,11 +34,11 @@ final class first_migration extends moojon_base_migration {
 	}
 	
 	public function down() {
-		$this->drop_table('users');
-		$this->drop_table('cars');
-		$this->drop_table('car_users');
-		$this->drop_table('posts');
-		$this->drop_table('comments');
+		$this->remove_table('users');
+		$this->remove_table('cars');
+		$this->remove_table('car_users');
+		$this->remove_table('posts');
+		$this->remove_table('comments');
 	}
 }
 ?>

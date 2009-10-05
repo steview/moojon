@@ -245,8 +245,8 @@ final class moojon_db  extends moojon_base {
 		return self::run(self::prepare(moojon_db_driver::show_columns($table)), $param_values, $param_data_types);
 	}
 	
-	static public function drop_table($table, $param_values = array(), $param_data_types = array()) {
-		return self::run(self::prepare(moojon_db_driver::drop_table($table)), $param_values, $param_data_types);
+	static public function remove_table($table, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::remove_table($table)), $param_values, $param_data_types);
 	}
 	
 	static public function alter_table_rename($table, $data, $param_values = array(), $param_data_types = array()) {
@@ -257,8 +257,8 @@ final class moojon_db  extends moojon_base {
 		return self::run(self::prepare(moojon_db_driver::add_column($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function drop_column($table, $data, $param_values = array(), $param_data_types = array()) {
-		return self::run(self::prepare(moojon_db_driver::drop_column($table, $data)), $param_values, $param_data_types);
+	static public function remove_column($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::remove_column($table, $data)), $param_values, $param_data_types);
 	}
 	
 	static public function change_column($table, $data, $param_values = array(), $param_data_types = array()) {
@@ -273,8 +273,8 @@ final class moojon_db  extends moojon_base {
 		return self::run(self::prepare(moojon_db_driver::add_index($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function drop_index($table, $data, $param_values = array(), $param_data_types = array()) {
-		return self::run(self::prepare(moojon_db_driver::drop_index($table, $data)), $param_values, $param_data_types);
+	static public function remove_index($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::remove_index($table, $data)), $param_values, $param_data_types);
 	}
 	
 	static public function select($table, $data = null, $where = null, $order = null, $limit = null, $param_values = array(), $param_data_types = array()) {

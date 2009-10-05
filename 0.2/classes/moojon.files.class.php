@@ -123,13 +123,19 @@ final class moojon_files extends moojon_base {
 		return $directories;
 	}
 	
-	static public function directory_directories($path) {
+	static public function directory_directories($path, $recursive = false, $include_path = true) {
 		$directories = array();
 		if (is_dir($path)) {
 			if ($directory_handler = opendir($path)) {
 				while (!(($directory = readdir($directory_handler)) === false)) {
 					if (is_dir("$path$directory") && !self::parent_or_current($directory) && !self::mac_poo($directory)) {
-						$directories[] = "$directory";
+						if ($recursive) {
+							$directories = array_merge($directories, self::directory_directories("$path$directory", true, $include_path));
+						}
+						if ($include_path) {
+							$directory = "$path$directory";
+						}
+						$directories[] = "$directory/";
 					}
 				}
 			}

@@ -25,32 +25,21 @@ final class moojon_exception extends Exception {
 	}
 	
 	public function __toString() {
-		$div = new moojon_div_tag(new moojon_h1_tag($this->getMessage()), array('id' => 'exception_report'));
-		$report = "\n".$this->getMessage()."\n\n";
-		$ol = new moojon_ol_tag();
-		$counter = 0;
-		foreach($this->get_trace() as $call) {
-			$string = '';
-			if (array_key_exists('file', $call) && array_key_exists('line', $call)) {
-				$counter ++;
-				$string = $call['file'].' on line '.$call['line'].' ('.$this->get_line($call['file'], $call['line']).')';
-				$report .= "\033[0m $counter. ".$this->get_line($call['file'], $call['line'])." \033[31m".$call['file'].' on line '.$call['line']."\n";
-			}
-			$ol->add_child(new moojon_li_tag($string));
-		}
-		$div->add_child($ol);
-		$ol = new moojon_ol_tag();
-		$counter = 0;
-		foreach($this->getTrace() as $call) {
-			$string = '';
-			if (array_key_exists('file', $call) && array_key_exists('line', $call)) {
-				$counter ++;
-				$string = $call['file'].' on line '.$call['line'].' ('.$this->get_line($call['file'], $call['line']).')';
-				$report .= "\033[0m $counter. ".$this->get_line($call['file'], $call['line'])." \033[31m".$call['file'].' on line '.$call['line']."\n";
-			}
-			$ol->add_child(new moojon_li_tag($string));
-		}
-		$div->add_child($ol);
+		
+		$trace = $this->getTrace();
+		$exception = $trace[0]['args'][0];
+		$div = new moojon_div_tag(
+			new moojon_h1_tag(
+				$this->getMessage(), 
+				array(
+					'id' => 'exception_report_h1', 
+					//'title' => $this->get_line($exception->getFile(), $exception->getLine())
+				)
+			), 
+			array('id' => 'exception_report')
+		);
+		$report = "\n".$this->getMessage()."\n\n".$this->get_trace_report($this->getTrace());
+		$div->add_child($this->get_trace_ol());
 		switch (UI) {
 			case 'CGI':
 				return $div->render();
@@ -59,6 +48,36 @@ final class moojon_exception extends Exception {
 				return "$report\033[0m";
 				break;
 		}
+		echo '+';
+	}
+	
+	private function get_trace_ol() {
+		$ol = new moojon_ol_tag();
+		$trace = $this->getTrace();
+		$counter = 0;
+		foreach ($trace[0]['args'][0]->getTrace() as $call) {
+			$counter ++;
+			$ol->add_child(
+				new moojon_li_tag(
+					array(
+						new moojon_h2_tag($call['file'].' line: '.$call['line'], array('class' => 'line', 'id' => "call$counter", 'title' => $this->get_line($call['file'], $call['line']))),
+						new moojon_div_tag($this->return_source($call['file'], $call['line']), array('class' => 'call', 'id' => "call$counter".'source'))
+					)
+				)
+			);
+		}
+		return $ol;
+	}
+	
+	private function get_trace_report($trace = array()) {
+		$report = '';
+		$trace = $this->getTrace();
+		$counter = 0;
+		foreach ($trace[0]['args'][0]->getTrace() as $call) {
+			$counter ++;
+			$report .= "\033[0m $counter. ".$this->get_line($call['file'], $call['line'])." \033[31m".$call['file'].' on line '.$call['line']."\n";
+		}
+		return $report;
 	}
 	
 	static public function new_line() {
@@ -72,6 +91,36 @@ final class moojon_exception extends Exception {
 		}
 	}
 	
+	static private function return_source($path, $line_number) {
+		$file_handle = fopen($path, 'r');
+		$ol = new moojon_ol_tag();
+		$counter = 0;
+		while ($line = fgets($file_handle)) {
+			$counter ++;
+			$start = false;
+			$end = false;
+			if (substr($line, 0, 2) != '<?' && substr($line, 0, 5) != '<?php') {
+				$line = "<?php$line";
+				$start = true;
+			}
+			if (substr($line, -2) != '?>') {
+				$line = "$line?>";
+				$end = true;
+			}
+			$line = highlight_string($line, true);
+			if ($end) {
+				$line = substr($line, 0, strrpos($line, '?&gt;')).substr($line, (strrpos($line, '?&gt;') + 5));
+			}
+			if ($start) {
+				$line = substr($line, 0, strpos($line, '&lt;?php')).substr($line, (strpos($line, '&lt;?php') + 8));
+			}
+			$attributes = ($counter == $line_number) ? array('style' => 'background-color:#FFC;') : array();
+			$ol->add_child(new moojon_li_tag($line, $attributes));
+		}
+		fclose($file_handle);
+		return $ol->render();
+	}
+	
 	static private function get_line($path, $line) {
 		$file_handle = fopen($path, 'r');
 		for ($i = 1; $i < $line; $i ++) {
@@ -80,10 +129,6 @@ final class moojon_exception extends Exception {
 		$return = trim(fgets($file_handle));
 		fclose($file_handle);
 		return $return;
-	}
-	
-	public function get_trace() {
-		return debug_backtrace();
 	}
 }
 ?>

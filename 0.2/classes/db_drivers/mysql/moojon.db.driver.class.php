@@ -78,7 +78,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return "SHOW COLUMNS FROM `$table`;";
 	}
 	
-	static public function drop_table($table) {
+	static public function remove_table($table) {
 		return "DROP TABLE `$table`;";
 	}
 	
@@ -90,7 +90,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return "ALTER TABLE `$table` ADD COLUMN `$column`;";
 	}
 	
-	static public function drop_column($table, $column) {
+	static public function remove_column($table, $column) {
 		return "ALTER TABLE `$table` DROP COLUMN `$column`;";
 	}
 	
@@ -106,7 +106,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return "ALTER TABLE `$table` ADD INDEX `$index`;";
 	}
 	
-	static public function drop_index($table, $index) {
+	static public function remove_index($table, $index) {
 		return "ALTER TABLE `$table` REMOVE INDEX `$index`;";
 	}
 	

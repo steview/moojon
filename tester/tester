@@ -1,0 +1,19 @@
+#!/Applications/MAMP/bin/php5/bin/php
+<?php
+require_once('growl.php');
+define('UI', 'TEST');
+define('PROJECT_DIRECTORY', '/Users/stevenwake/Moojon/tester/');
+require_once('config/constants.php');
+require_once(MOOJON_DIRECTORY.'/moojon.php');
+require_once('base.test.suite.class.php');
+require_once('tester.class.php');
+/*if (file_exists('notification')) {
+	unlink('notification');
+}
+while (1) {*/
+	$tester = new tester(PROJECT_DIRECTORY.'test_suites/');
+	/*sleep(5);
+	unset($tester);
+	sleep(5);
+}*/
+?>

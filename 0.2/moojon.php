@@ -2,6 +2,7 @@
 require_once(MOOJON_DIRECTORY.'/classes/moojon.base.class.php');
 require_once(MOOJON_DIRECTORY.'/classes/moojon.exception.class.php');
 require_once(MOOJON_DIRECTORY.'/classes/moojon.config.class.php');
+require_once(MOOJON_DIRECTORY.'/classes/moojon.files.class.php');
 require_once(MOOJON_DIRECTORY.'/classes/moojon.paths.class.php');
 require_once(MOOJON_DIRECTORY.'/classes/moojon.base.cli.class.php');
 require_once(MOOJON_DIRECTORY.'/classes/moojon.cli.class.php');

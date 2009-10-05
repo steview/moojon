@@ -108,7 +108,7 @@ class Net_Growl extends PEAR {
             $nameEnc .= pack('n', strlen($name)).$name;
             ++$nameCnt;
         }
-        $data = pack('c2nc2', GROWL_PROTOCOL_VERSION, GROWL_TYPE_REGISTRATION, strlen($appName), $nameCnt, defaultCnt);
+        $data = pack('c2nc2', GROWL_PROTOCOL_VERSION, GROWL_TYPE_REGISTRATION, strlen($appName), $nameCnt, $defaultCnt);
         $data .= $appName.$nameEnc.$defaultEnc;
         if (!empty($password)) {
             $checksum = pack('H32', md5($data.$password));

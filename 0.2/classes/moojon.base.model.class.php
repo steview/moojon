@@ -448,24 +448,22 @@ abstract class moojon_base_model extends moojon_base {
 			}
 			$id_property = moojon_primary_key::NAME;
 			if ($this->new_record) {
-				moojon_db::insert($this->table, $placeholders, $this->compile_param_values(), $this->compile_param_data_types());
-				//Awaiting query collection class that will check insert
-				if ($this->has_column($id_property)) {
-					$this->$id_property = moojon_db::last_insert_id($id_property);
+				if (moojon_db::insert($this->table, $placeholders, $this->compile_param_values(), $this->compile_param_data_types())) {
+					if ($this->has_column($id_property)) {
+						$this->$id_property = moojon_db::last_insert_id($id_property);
+					}
+					$this->new_record = false;
+					$saved = true;
 				}
-				$this->new_record = false;
-				$saved = true;
-				////////////////////////////////////////////////////////
 			} else {
 				if ($this->get_unsaved()) {
 					if ($this->has_column('updated_at') && !$this->get_column('updated_at')->get_unsaved()) {
 						$this->get_column('updated_at')->set_value(date(moojon_config::key('datetime_format')));
 					}
-					moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $this->compile_param_values(array(":$id_property" => $this->$id_property)), $this->compile_param_data_types());
-					//Awaiting query collection class that will check update
-					$this->new_record = false;
-					$saved = true;
-					////////////////////////////////////////////////////////
+					if (moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $this->compile_param_values(array(":$id_property" => $this->$id_property)), $this->compile_param_data_types())) {
+						$this->new_record = false;
+						$saved = true;
+					}
 				}
 			}
 		}
