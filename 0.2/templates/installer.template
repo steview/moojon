@@ -1,7 +1,0 @@
-<?php
-final class <[pluggin]>_installer extends moojon_base_installer {
-	protected function install() {}
-	
-	protected function uninstall() {}
-}
-?>

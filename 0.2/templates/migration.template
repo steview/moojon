@@ -1,7 +1,0 @@
-<?php
-final class <[migration]>_migration extends moojon_base_migration {
-	public function up() {}
-	
-	public function down() {}
-}
-?>
