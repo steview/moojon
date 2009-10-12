@@ -1,0 +1,8 @@
+#!/Applications/MAMP/bin/php5/bin/php
+<?php
+define('UI', 'CLI');
+define('CLI', 'moojon_cli');
+define('MOOJON_VERSION', '0.2');
+define('MOOJON_DIRECTORY', $_SERVER['PWD'].'/'.dirname($_SERVER['PHP_SELF']).'/');
+require_once(MOOJON_DIRECTORY.'moojon.php');
+?>

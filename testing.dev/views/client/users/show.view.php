@@ -4,4 +4,7 @@
 	<li><?php echo link_to('Delete', delete_user_uri($user)); ?></li>
 </ul>
 <h2><?php echo $user; ?></h2>
-<?php echo dl_for($user); ?>
+<?php
+echo dl_for($user);
+print_r($user);
+?>

@@ -1,0 +1,53 @@
+<?php
+final class <[plural]>_controller extends moojon_base_controller {
+	public function index() {
+		$this-><[plural]> = <[singular]>::read();
+	}
+	
+	public function show() {
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::key('id'));
+	}
+	
+	public function _new() {
+		$this->view = 'new';
+		$this-><[singular]> = <[singular]>::create();
+	}
+	
+	public function create() {
+		$this-><[singular]> = <[singular]>::create(moojon_post::key('<[singular]>'));
+		if ($this-><[singular]>->save()) {
+			moojon_flash::set('notification', $this-><[singular]>." created");
+			$this->redirect(<[singular]>_uri($this-><[singular]>));
+		} else {
+			$this->view = 'new';
+		}
+	}
+	
+	public function edit() {
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::key('id'));
+	}
+	
+	public function update() {
+		$columns = moojon_post::key('<[singular]>');
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>($columns['id']);
+		$this-><[singular]>->set($columns);
+		if ($this-><[singular]>->save()) {
+			moojon_flash::set('notification', $this-><[singular]>." updated");
+			$this->redirect(<[singular]>_uri($this-><[singular]>));
+		} else {
+			$this->view = 'edit';
+		}
+	}
+	
+	public function delete() {
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::key('id'));
+	}
+	
+	public function destroy() {
+		$<[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::key('id'));
+		$<[singular]>->delete();
+		moojon_flash::set('notification', "$<[singular]> deleted");
+		$this->redirect(<[plural]>_uri());
+	}
+}
+?>

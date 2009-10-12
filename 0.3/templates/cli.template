@@ -1,0 +1,7 @@
+#!/Applications/MAMP/bin/php5/bin/php
+<?php
+define('UI', 'CLI');
+define('CLI', '<[cli_class]>');
+require_once(dirname(__FILE__).'/../config/constants.php');
+require_once(MOOJON_DIRECTORY.'moojon.php');
+?>

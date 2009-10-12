@@ -1,0 +1,7 @@
+<h1>Delete <[human]></h1>
+<ul id="actions">
+	<li><?php echo link_to($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
+	<li><?php echo link_to('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
+</ul>
+<h2><?php echo $<[singular]>; ?></h2>
+<?php echo delete_form_for($<[singular]>); ?>

@@ -1,0 +1,6 @@
+<?php
+define('ENVIRONMENT', 'development');
+define('MOOJON_VERSION', '<[MOOJON_VERSION]>');
+define('MOOJON_DIRECTORY', '<[PWD]>../'.MOOJON_VERSION.'/');
+define('PROJECT_DIRECTORY', '<[PROJECT_DIRECTORY]>');
+?>
