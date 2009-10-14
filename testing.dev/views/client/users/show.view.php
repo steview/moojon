@@ -6,5 +6,5 @@
 <h2><?php echo $user; ?></h2>
 <?php
 echo dl_for($user);
-print_r($user);
+echo relationship_tables($user);
 ?>

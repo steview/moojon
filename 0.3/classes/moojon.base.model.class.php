@@ -73,8 +73,24 @@ abstract class moojon_base_model extends moojon_base {
 		return false;
 	}
 	
+	final public function has_relationships() {
+		return (count($this->relationships) > 0);
+	}
+	
 	final public function has_relationship($key) {
 		return array_key_exists($key, $this->relationships);
+	}
+	
+	final public function has_has_one_relationship($key) {
+		return array_key_exists($key, $this->get_has_one_relationships());
+	}
+	
+	final public function has_has_many_relationship($key) {
+		return array_key_exists($key, $this->get_has_many_relationships());
+	}
+	
+	final public function has_has_many_to_many_relationship($key) {
+		return array_key_exists($key, $this->get_has_many_to_many_relationships());
 	}
 	
 	final private function get_relationship_type($key) {
@@ -91,6 +107,28 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final public function get_relationships() {
 		return $this->relationships;
+	}
+	
+	final private function get_relationships_of_type($type) {
+		$return = array();
+		foreach ($this->relationships as $key => $value) {
+			if (get_class($value) == $type) {
+				$return[$key] = $value;
+			}
+		}
+		return $return;
+	}
+	
+	final public function get_has_one_relationships() {
+		return $this->get_relationships_of_type('moojon_has_one_relationship');
+	}
+	
+	final public function get_has_many_relationships() {
+		return $this->get_relationships_of_type('moojon_has_many_relationship');
+	}
+	
+	final public function get_has_many_to_many_relationships() {
+		return $this->get_relationships_of_type('moojon_has_many_to_many_relationship');
 	}
 	
 	final protected function add_relationship($relationship_type, $name, $foreign_table, $foreign_key, $key) {
@@ -332,7 +370,7 @@ abstract class moojon_base_model extends moojon_base {
 		return $return;
 	}
 	
-	final protected function get_editable_columns($exceptions = array()) {
+	final public function get_editable_columns($exceptions = array()) {
 		$return = array();
 		foreach ($this->get_columns($exceptions) as $column) {
 			if (get_class($column) != 'moojon_primary_key') {
@@ -342,7 +380,7 @@ abstract class moojon_base_model extends moojon_base {
 		return $return;
 	}
 	
-	final protected function get_primary_key_columns($exceptions = array()) {
+	final public function get_primary_key_columns($exceptions = array()) {
 		$return = array();
 		foreach ($this->get_columns($exceptions) as $column) {
 			if (get_class($column) == 'moojon_primary_key') {
