@@ -1,13 +1,13 @@
 <?php
 final class security_controller extends moojon_base_controller {
 	public function login() {
-		$this->security_identity_label = moojon_config::key('security_identity_label');
-		$this->security_password_label = moojon_config::key('security_password_label');
-		$this->security_remember_label = moojon_config::key('security_remember_label');
-		$this->security_identity_key = moojon_config::key('security_identity_key');
-		$this->security_password_key = moojon_config::key('security_password_key');
-		$this->security_remember_key = moojon_config::key('security_remember_key');
-		$this->security_key = moojon_config::key('security_key');
+		$this->security_identity_label = moojon_config::get('security_identity_label');
+		$this->security_password_label = moojon_config::get('security_password_label');
+		$this->security_remember_label = moojon_config::get('security_remember_label');
+		$this->security_identity_key = moojon_config::get('security_identity_key');
+		$this->security_password_key = moojon_config::get('security_password_key');
+		$this->security_remember_key = moojon_config::get('security_remember_key');
+		$this->security_key = moojon_config::get('security_key');
 		$security = '';
 		$security = $_REQUEST[$this->security_key];
 		if (is_array($security) && moojon_server::is_post()) {
@@ -18,10 +18,10 @@ final class security_controller extends moojon_base_controller {
 				$this->security_remember_value = ' checked="'.$this->security_remember_value.'"';
 			}
 			if (!moojon_authentication::authenticate()) {
-				$this->security_failure_message = sprintf(moojon_config::key('security_failure_message'), strtolower($this->security_identity_label), strtolower($this->security_password_label));
+				$this->security_failure_message = sprintf(moojon_config::get('security_failure_message'), strtolower($this->security_identity_label), strtolower($this->security_password_label));
 			} else {
 				moojon_flash::set('notification', 'You have been logged in');
-				$this->forward(moojon_config::key('security_action'), moojon_config::key('security_controller'), APP);
+				$this->forward(moojon_config::get('security_action'), moojon_config::get('security_controller'), APP);
 			}
 		}
 	}
@@ -29,7 +29,7 @@ final class security_controller extends moojon_base_controller {
 	public function logout() {
 		moojon_authentication::destroy();
 		moojon_flash::set('notification', 'You have been logged out');
-		$this->forward(moojon_config::key('security_action'), moojon_config::key('security_controller'), APP);
+		$this->forward(moojon_config::get('security_action'), moojon_config::get('security_controller'), APP);
 	}
 }
 ?>

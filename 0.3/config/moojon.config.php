@@ -1,6 +1,7 @@
 <?php
 return array(
 	'timezone' => 'Europe/London',
+	'put_path' => 'php://input',
 	'scheme' => 'http',
 	'charset' => 'UTF-8',
 	'mail_subject' => 'No subject',
@@ -42,15 +43,17 @@ return array(
 	'images_directory' => 'images',
 	'css_directory' => 'css',
 	'js_directory' => 'js',
+	'uploads_directory' => 'uploads',
 	'scaffolds_directory' => 'scaffolds',
 	'script_directory' => 'script',
-	'default_image_ext' => 'gif',
+	'default_image_ext' => 'png',
 	'default_helpers' => 'ui, uri, rest',
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/',
 	'flash_key' => 'flash',
 	'cookie_expiry' => 1209600,
+	
 	'security_token_key' => 'security_token',
 	'security_key' => 'security',
 	'security_identity_key' => 'email',
@@ -69,6 +72,7 @@ return array(
 	'exception_app' => 'moojon',
 	'exception_controller' => 'exception',
 	'exception_action' => 'index',
+	
 	'date_format' => 'Y/m/d',
 	'datetime_format' => 'Y/m/d H:i:s',
 	'time_format' => 'H:i:s',
@@ -80,5 +84,7 @@ return array(
 	'validation_error_message' => 'Some errors occurred. Please correct the errors and re-submit:',
 	'no_records_message' => 'No records.',
 	'confirm_deletion_message' => 'Please confirm deletion of record.',
+	'mime_type_column' => 'mime_type',
+	'mime_type_database_path' => '/usr/share/misc/magic',
 );
 ?>

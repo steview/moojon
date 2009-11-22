@@ -33,12 +33,13 @@ abstract class moojon_base_model extends moojon_base {
 		if ($this->has_column($key)) {
 			$set_method = "set_$key";
 			if (method_exists($this, $set_method)) {
-				$this->$set_method($value);
-			} else {
-				$this->columns[$key]->set_value($value);
+				if ($this->get_unsaved()) {
+					$value = $this->$set_method($value);
+				}
 			}
+			$this->columns[$key]->set_value($value);
 		} else {
-			throw new moojon_exception("$key doesn't exist");
+			throw new moojon_exception(get_class($this)." doesn't contain column ($key)");
 		}
 	}
 	
@@ -245,7 +246,7 @@ abstract class moojon_base_model extends moojon_base {
 		$this->add_validation($name, new moojon_equal_to_validation($message, $value, $required));
 	}
 	
-	final private function has_column($key) {
+	final public function has_column($key) {
 		return array_key_exists($key, $this->columns);
 	}
 	
@@ -360,6 +361,15 @@ abstract class moojon_base_model extends moojon_base {
 		throw new moojon_exception("Invalid primary key column ($column_name)");
 	}
 	
+	final public function get_file_column($column_name) {
+		foreach ($this->get_file_columns() as $column) {
+			if ($column->get_name() == $column_name) {
+				return $column;
+			}
+		}
+		throw new moojon_exception("Invalid file column ($column_name)");
+	}
+	
 	final public function get_columns($exceptions = array()) {
 		$return = array();
 		foreach ($this->columns as $column) {
@@ -390,6 +400,16 @@ abstract class moojon_base_model extends moojon_base {
 		return $return;
 	}
 	
+	final public function get_file_columns($exceptions = array()) {
+		$return = array();
+		foreach ($this->get_columns($exceptions) as $column) {
+			if (get_class($column) == 'moojon_string_column' && $column->is_file()) {
+				$return[] = $column;
+			}
+		}
+		return $return;
+	}
+	
 	final static protected function base_get_column_names($class, $exceptions = array()) {
 		$return = array();
 		$instance = self::init($class);
@@ -412,6 +432,15 @@ abstract class moojon_base_model extends moojon_base {
 		$return = array();
 		$instance = self::init($class);
 		foreach ($instance->get_primary_key_columns($exceptions) as $column) {
+			$return[] = $column->get_name();
+		}
+		return $return;
+	}
+	
+	final static protected function base_get_file_column_names($class, $exceptions = array()) {
+		$return = array();
+		$instance = self::init($class);
+		foreach ($instance->get_file_columns($exceptions) as $column) {
 			$return[] = $column->get_name();
 		}
 		return $return;
@@ -496,7 +525,7 @@ abstract class moojon_base_model extends moojon_base {
 			} else {
 				if ($this->get_unsaved()) {
 					if ($this->has_column('updated_at') && !$this->get_column('updated_at')->get_unsaved()) {
-						$this->get_column('updated_at')->set_value(date(moojon_config::key('datetime_format')));
+						$this->get_column('updated_at')->set_value(date(moojon_config::get('datetime_format')));
 					}
 					if (moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $this->compile_param_values(array(":$id_property" => $this->$id_property)), $this->compile_param_data_types())) {
 						$this->new_record = false;
@@ -506,6 +535,7 @@ abstract class moojon_base_model extends moojon_base {
 			}
 		}
 		if ($saved) {
+			$this->set_reset_values();
 			$this->reset();
 			if ($cascade) {
 				foreach($this->relationships as $relationship) {
@@ -532,8 +562,8 @@ abstract class moojon_base_model extends moojon_base {
 			foreach($instance->columns as $column) {
 				$column_name = $column->get_name();
 				$record->$column_name = $row[strtoupper($class.'_'.$column_name)];
+				$record->reset();
 			}
-			$record->reset();
 			$return[] = $record;
 		}
 		return $return;
@@ -551,7 +581,7 @@ abstract class moojon_base_model extends moojon_base {
 			}
 		}
 		if ($instance->has_column('created_on') && !$instance->get_column('created_on')->get_unsaved()) {
-			$instance->get_column('created_on')->set_value(date(moojon_config::key('datetime_format')));
+			$instance->get_column('created_on')->set_value(date(moojon_config::get('datetime_format')));
 		}
 		return $instance;
 	}
@@ -582,7 +612,7 @@ abstract class moojon_base_model extends moojon_base {
 		moojon_db::delete($instance->table, $where, $param_values, $param_data_types);
 	}
 	
-	final public function delete() {
+	final public function delete($cascade = true) {
 		$where = '';
 		$param_values = array();
 		foreach ($this->get_primary_key_columns() as $column) {
@@ -590,13 +620,15 @@ abstract class moojon_base_model extends moojon_base {
 			$where .= "$column_name = :$column_name AND ";
 			$param_values[":$column_name"] = $column->get_value();
 		}
-		foreach($this->get_relationships() as $relationship) {
-			if (get_class($relationship) == 'moojon_has_many_relationship' || get_class($relationship) == 'moojon_has_many_to_many_relationship') {
-				$relationship_name = $relationship->get_name();
-				$this->$relationship_name->delete();
+		moojon_db::delete($this->table, substr($where, 0, (strlen($where) - 5)), $param_values, $this->compile_param_data_types());
+		if ($cascade) {
+			foreach($this->get_relationships() as $relationship) {
+				if (get_class($relationship) == 'moojon_has_many_relationship' || get_class($relationship) == 'moojon_has_many_to_many_relationship') {
+					$relationship_name = $relationship->get_name();
+					$this->$relationship_name->delete($cascade);
+				}
 			}
 		}
-		moojon_db::delete($this->table, substr($where, 0, (strlen($where) - 5)), $param_values, $this->compile_param_data_types());
 	}
 	
 	final public function set($data, $value = null) {
@@ -628,6 +660,12 @@ abstract class moojon_base_model extends moojon_base {
 	final public function reset() {
 		foreach ($this->get_editable_columns() as $column) {
 			$column->reset();
+		}
+	}
+	
+	final public function set_reset_values() {
+		foreach ($this->get_editable_columns() as $column) {
+			$column->set_reset_value();
 		}
 	}
 	

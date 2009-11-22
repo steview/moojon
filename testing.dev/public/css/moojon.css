@@ -175,3 +175,15 @@ select, textarea, input{
 	margin:10px 0;
 	padding:20px;
 }
+
+table.generated img{
+	width:50px;
+}
+
+dl.generated img{
+	width:75px;
+}
+
+form.generated img{
+	width:75px;
+}

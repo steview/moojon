@@ -2,6 +2,6 @@
 <?php
 define('UI', 'CLI');
 define('CLI', 'moojon_pluggin_cli');
-require_once(dirname(__FILE__).'/../config/constants.php');
+require_once(dirname(dirname(__FILE__)).'/config/constants.php');
 require_once(MOOJON_DIRECTORY.'moojon.php');
 ?>

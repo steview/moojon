@@ -64,7 +64,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	
 	static public function show_tables($where = null) {
 		$return = array();
-		$table_name_column = 'Tables_in_'.moojon_config::key('db_dbname');
+		$table_name_column = 'Tables_in_'.moojon_config::get('db_dbname');
 		if ($where === null) {
 			$where = " WHERE $table_name_column != 'schema_migrations'";
 		}
@@ -329,13 +329,17 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function get_relationship_where(moojon_base_relationship $relationship, moojon_base_model $accessor) {
+		$foreign_table = $relationship->get_foreign_table();
+		$foreign_key = $relationship->get_foreign_key();
+		$table = moojon_inflect::pluralize($relationship->get_name());
 		$key = $relationship->get_key();
 		switch (get_class($relationship)) {
 			case 'moojon_has_one_relationship':
-			case 'moojon_has_many_relationship':
-				$foreign_table = $relationship->get_foreign_table();
-				$foreign_key = moojon_primary_key::get_foreign_key($foreign_table);
 				return "$foreign_table.$key = :$foreign_key";
+				//return "$foreign_table.$key = :$foreign_key";
+				break;
+			case 'moojon_has_many_relationship':
+				return "$foreign_table.$key = :$key";
 				break;
 			case 'moojon_has_many_to_many_relationship':
 				$foreign_table = moojon_inflect::pluralize($relationship->get_class($accessor));

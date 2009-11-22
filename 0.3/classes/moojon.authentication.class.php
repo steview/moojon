@@ -37,7 +37,7 @@ final class moojon_authentication extends moojon_base {
 	}
 	
 	static private function get_security() {
-		$security_class = moojon_config::key('security_class');
+		$security_class = moojon_config::get('security_class');
 		$security = new $security_class;
 		if (!is_subclass_of($security, 'moojon_base_security')) {
 			throw new moojon_exception('Invalid security class ('.get_class($security).')');

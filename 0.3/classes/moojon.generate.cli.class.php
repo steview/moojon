@@ -24,8 +24,8 @@ final class moojon_generate_cli extends moojon_base_cli {
 			case 'app':
 				$arguments = self::check_arguments('moojon_generate_cli::app()', 3, $arguments);
 				$app = $this->prompt_until($arguments[0], 'Please enter an app name');
-				$controller = $this->prompt_until($arguments[1], 'Please enter an app name', moojon_config::key('default_controller'));
-				$action = $this->prompt_until($arguments[2], 'Please enter an action name', moojon_config::key('default_action'));
+				$controller = $this->prompt_until($arguments[1], 'Please enter an app name', moojon_config::get('default_controller'));
+				$action = $this->prompt_until($arguments[2], 'Please enter an action name', moojon_config::get('default_action'));
 				moojon_generator::app($app, $controller, $action);
 				break;
 			case 'controller':

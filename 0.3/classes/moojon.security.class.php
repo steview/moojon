@@ -2,12 +2,12 @@
 final class moojon_security extends moojon_base_security {
 	static public function authenticate() {
 		$security_token = self::get_security_token();
-		$security_token_key = moojon_config::key('security_token_key');
-		$security = $_REQUEST[moojon_config::key('security_key')];
+		$security_token_key = moojon_config::get('security_token_key');
+		$security = $_REQUEST[moojon_config::get('security_key')];
 		$primary_key = moojon_primary_key::NAME;
-		$security_identity_key = moojon_config::key('security_identity_key');
-		$security_password_key = moojon_config::key('security_password_key');
-		$security_model_class = moojon_config::key('security_model');
+		$security_identity_key = moojon_config::get('security_identity_key');
+		$security_password_key = moojon_config::get('security_password_key');
+		$security_model_class = moojon_config::get('security_model');
 		$security_model = new $security_model_class;
 		$security_identity_data_type = $security_model->get_column($security_identity_key)->get_data_type();
 		$security_password_data_type = $security_model->get_column($security_password_key)->get_data_type();
@@ -36,7 +36,7 @@ final class moojon_security extends moojon_base_security {
 			self::destroy();
 			return false;
 		} else {
-			$security_remember_key = moojon_config::key('security_remember_key');
+			$security_remember_key = moojon_config::get('security_remember_key');
 			$security_token = $records->first->$primary_key;
 			if (is_array($security) && moojon_server::is_post()) {
 				if (array_key_exists($security_remember_key, $security)) {
@@ -55,11 +55,11 @@ final class moojon_security extends moojon_base_security {
 	static public function destroy() {
 		$security_token = self::get_security_token();
 		self::log("logout: $security_token");
-		$security_token_key = moojon_config::key('security_token_key');
+		$security_token_key = moojon_config::get('security_token_key');
 		moojon_session::set($security_token_key, null);
 		moojon_cookie::set($security_token_key, null);
-		$_REQUEST[moojon_config::key('security_identity_key')] = null;
-		$_REQUEST[moojon_config::key('security_password_key')] = null;
+		$_REQUEST[moojon_config::get('security_identity_key')] = null;
+		$_REQUEST[moojon_config::get('security_password_key')] = null;
 	}
 }
 ?>

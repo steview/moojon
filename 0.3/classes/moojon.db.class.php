@@ -74,12 +74,12 @@ final class moojon_db  extends moojon_base {
 	private $data;
 	
 	private function __construct() {
-		$db_driver = moojon_config::key('db_driver');
+		$db_driver = moojon_config::get('db_driver');
 		if (substr($db_driver, -1) == ':') {
 			$db_driver = substr($db_driver, -1);
 		}
 		if (moojon_config::has('db_dsn')) {
-			$db_dsn = moojon_config::key('db_dsn');
+			$db_dsn = moojon_config::get('db_dsn');
 		} else {
 			$keys = array();
 			switch($db_driver) {
@@ -144,14 +144,14 @@ final class moojon_db  extends moojon_base {
 			$db_dsn = '';
 			foreach ($keys as $key => $value) {
 				if (moojon_config::has($value)) {
-					$db_dsn .= "$key=".moojon_config::key($value).';';
+					$db_dsn .= "$key=".moojon_config::get($value).';';
 				}
 			}
 			$db_dsn = substr($db_dsn, 0, (strlen($db_dsn) - 1));
 		}
-		$db_username = moojon_config::key_or_null('db_username');
-		$db_password = moojon_config::key_or_null('db_password');
-		$db_driver_options = moojon_config::key_or_null('db_driver_options');
+		$db_username = moojon_config::get_or_null('db_username');
+		$db_password = moojon_config::get_or_null('db_password');
+		$db_driver_options = moojon_config::get_or_null('db_driver_options');
 		$this->data = new PDO("$db_driver:$db_dsn", $db_username, $db_password, $db_driver_options);
 		$this->data->setAttribute(self::ATTR_ERRMODE, self::ERRMODE_EXCEPTION);
 	}

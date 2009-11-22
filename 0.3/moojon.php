@@ -1,12 +1,8 @@
 <?php
 require_once(MOOJON_DIRECTORY.'/classes/moojon.base.class.php');
-require_once(MOOJON_DIRECTORY.'/classes/moojon.exception.class.php');
-require_once(MOOJON_DIRECTORY.'/classes/moojon.config.class.php');
-require_once(MOOJON_DIRECTORY.'/classes/moojon.files.class.php');
-require_once(MOOJON_DIRECTORY.'/classes/moojon.paths.class.php');
-require_once(MOOJON_DIRECTORY.'/classes/moojon.base.cli.class.php');
-require_once(MOOJON_DIRECTORY.'/classes/moojon.cli.class.php');
+require_once(MOOJON_DIRECTORY.'/classes/moojon.singleton.class.php');
+require_once(MOOJON_DIRECTORY.'/classes/moojon.singleton.immutable.collection.class.php');
+require_once(MOOJON_DIRECTORY.'/classes/moojon.singleton.mutable.collection.class.php');
 require_once(MOOJON_DIRECTORY.'/classes/moojon.runner.class.php');
-require_once(MOOJON_DIRECTORY.'/functions/moojon.core.functions.php');
-moojon_runner::run();
+moojon_runner::fetch();
 ?>

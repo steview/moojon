@@ -13,6 +13,7 @@ function __autoload($class) {
 	if (!$class_path) {
 		$class_path = moojon_paths::get_column_path($class);
 	}
+	moojon_base::log("$class: $class_path");
 	if ($class_path) {
 		require_once($class_path);
 	} else {
@@ -27,7 +28,7 @@ function exception_handler(Exception $exception) {
 		$line = ($exception->getLine()) ? $exception->getLine() : -1;
 		$exception = new moojon_exception($message, 0, 0, $file, $line);
 	}
-	$exception_handler_class = moojon_config::key('exception_handler_class');
+	$exception_handler_class = moojon_config::get('exception_handler_class');
 	new $exception_handler_class($exception);
 }
 set_exception_handler('exception_handler');
@@ -35,7 +36,4 @@ function exception_error_handler($code, $message, $file, $line) {
 	exception_handler(new moojon_exception($message, $code, 0, $file, $line));
 }
 set_error_handler('exception_error_handler');
-if (moojon_config::has('timezone')) {
-	date_default_timezone_set(moojon_config::key('timezone'));
-}
 ?>

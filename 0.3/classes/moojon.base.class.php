@@ -150,7 +150,7 @@ abstract class moojon_base {
 	
 	final static public function get_datetime_format($datetime, $format = null) {
 		if (!$format) {
-			$format = moojon_config::key('datetime_format');
+			$format = moojon_config::get('datetime_format');
 		}
 		return date($format, self::get_time($datetime, $format));
 	}
@@ -158,7 +158,7 @@ abstract class moojon_base {
 	final static public function get_rest_route_resources() {
 		$rest_route_resources = array();
 		foreach (moojon_routes::get_rest_routes() as $rest_route) {
-			$rest_route_resources[] = $rest_route->get_resource();
+			$rest_route_resources[] = $rest_route->get_pattern();
 		}
 		return $rest_route_resources;
 	}

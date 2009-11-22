@@ -3,6 +3,7 @@ final class moojon_exception extends Exception {
 	static private $instance;
 	
 	public function __construct($message = null, $code = null, $severity = null, $file = null, $line = null) {
+		die("<h1>$message ($file: $line)</h1>");
 		if (!$code) {
 			$code = 0;
 		}
@@ -10,6 +11,7 @@ final class moojon_exception extends Exception {
 		$this->severity = $severity;
 		$this->file = $file;
 		$this->line = $line;
+		moojon_base::log("Exception: message: $message, code: $code, severity: $severity, file: $file, line: $line");
 		self::$instance = $this;
 	}
 	
@@ -39,7 +41,7 @@ final class moojon_exception extends Exception {
 			array('id' => 'exception_report')
 		);
 		$report = "\n".$this->getMessage()."\n\n".$this->get_trace_report($this->getTrace());
-		$div->add_child($this->get_trace_ol());
+		//$div->add_child($this->get_trace_ol());
 		switch (UI) {
 			case 'CGI':
 				return $div->render();
@@ -48,7 +50,6 @@ final class moojon_exception extends Exception {
 				return "$report\033[0m";
 				break;
 		}
-		echo '+';
 	}
 	
 	private function get_trace_ol() {
@@ -56,15 +57,10 @@ final class moojon_exception extends Exception {
 		$trace = $this->getTrace();
 		$counter = 0;
 		foreach ($trace[0]['args'][0]->getTrace() as $call) {
-			$counter ++;
-			$ol->add_child(
-				new moojon_li_tag(
-					array(
-						new moojon_h2_tag($call['file'].' line: '.$call['line'], array('class' => 'line', 'id' => "call$counter", 'title' => $this->get_line($call['file'], $call['line']))),
-						new moojon_div_tag($this->return_source($call['file'], $call['line']), array('class' => 'call', 'id' => "call$counter".'source'))
-					)
-				)
-			);
+			if (array_key_exists('file', $call) && array_key_exists('file', $call)) {
+				$counter ++;
+				$ol->add_child(new moojon_li_tag(array(new moojon_h2_tag($call['file'].' line: '.$call['line'], array('class' => 'line', 'id' => "call$counter", 'title' => $this->get_line($call['file'], $call['line']))), new moojon_div_tag($this->return_source($call['file'], $call['line']), array('class' => 'call', 'id' => "call$counter".'source')))));
+			}
 		}
 		return $ol;
 	}
@@ -74,8 +70,10 @@ final class moojon_exception extends Exception {
 		$trace = $this->getTrace();
 		$counter = 0;
 		foreach ($trace[0]['args'][0]->getTrace() as $call) {
-			$counter ++;
-			$report .= "\033[0m $counter. ".$this->get_line($call['file'], $call['line'])." \033[31m".$call['file'].' on line '.$call['line']."\n";
+			if (array_key_exists('file', $call) && array_key_exists('file', $call)) {
+				$counter ++;
+				$report .= "\033[0m $counter. ".$this->get_line($call['file'], $call['line'])." \033[31m".$call['file'].' on line '.$call['line']."\n";
+			}
 		}
 		return $report;
 	}

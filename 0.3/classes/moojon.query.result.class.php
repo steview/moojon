@@ -9,10 +9,14 @@ final class moojon_query_result extends ArrayObject {
 		$log = $statement->queryString;
 		if (ENVIRONMENT == 'development') {
 			$values = 'Param values(';
+			$parsed_query = $log;
 			foreach ($param_values as $key => $value) {
 				$values .= "$key = $value, ";
+				$apos = (array_key_exists($key, $param_data_types) && $param_data_types[$key] == moojon_db::PARAM_STR) ? "'" :  '';
+				$parsed_query = str_replace($key, "$apos$value$apos", $parsed_query);
 			}
-			if (count($values)) {
+			$parsed_query = "Parsed query: $parsed_query";
+			if (count($param_values)) {
 				$values = substr($values, 0, -2);
 			}
 			$values .= ')';
@@ -24,7 +28,7 @@ final class moojon_query_result extends ArrayObject {
 				$data_types = substr($data_types, 0, -2);
 			}
 			$data_types .= ')';
-			$log .= "\n$values\n$data_types";
+			$log .= "\n\n$parsed_query\n\n$values\n\n$data_types";
 		}
 		moojon_base::log($log);
 		foreach ($param_values as $key => $value) {

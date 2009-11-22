@@ -4,7 +4,8 @@ final class first_migration extends moojon_base_migration {
 		$this->create_table('users', array(
 			$this->add_string('name'),
 			$this->add_string('email'),
-			$this->add_binary('password'),
+			$this->add_string('password'),
+			$this->add_string('salt', 32),
 			$this->add_date('date_column'),
 			$this->add_time('time_column'),
 			$this->add_float('float_column'),

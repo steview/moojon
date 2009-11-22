@@ -1,40 +1,15 @@
 <?php
-final class moojon_post extends moojon_base {
-	static private $instance;
-	private $data = array();
-	
-	private function __construct() {
-		$this->data = $_POST;
-	}
-	
-	static public function get() {
-		if (!self::$instance) {
-			self::$instance = new moojon_post();
-		}
-		return self::$instance;
-	}
-	
-	static private function get_data() {
-		$instance = self::get();
-		return $instance->data;
-	}
-	
-	static public function has($key) {
-		$data = self::get_data();
-		if (!is_array($data)) {
-			return false;
-		}
-		if (array_key_exists($key, $data)) {
-			if ($data[$key] !== null) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	static public function set($key, $value = null) {
-		$instance = self::get();
-		$instance->data[$key] = $value;
+final class moojon_post extends moojon_singleton_mutable_collection {
+	static protected $instance;
+	static protected function factory($class) {if (!self::$instance) {self::$instance = new $class;}return self::$instance;}
+	static public function fetch() {return self::factory(get_class());}
+	static public function get_data($data = null) {if ($data) {return $data;}$instance = self::fetch();return $instance->data;}
+	static public function has($key, $data = null) {$data = self::get_data($data);if (!is_array($data)) {return false;}if (array_key_exists($key, $data) && $data[$key] !== null) {return true;}return false;}
+	static public function get($key, $data = null) {$data = self::get_data($data);if (self::has($key, $data)) {return $data[$key];} else {throw new moojon_exception("Key does not exists ($key) in ".get_class());}}
+	static public function get_or_null($key, $data = null) {$data = self::get_data($data);return (array_key_exists($key, $data)) ? $data[$key] : null;}
+	static public function set($key, $value = null, $data = null) {$data = self::get_data($data);$data[$key] = $value;self::post_set($key, $value, $data);}
+	static public function clear() {$instance = self::fetch();$instance->data = null;self::post_clear();}
+	static protected function post_set($key, $value = null, $data = null) {
 		if ($value !== null) {
 			$_POST[$key] = $value;
 		} else {
@@ -42,34 +17,10 @@ final class moojon_post extends moojon_base {
 			unset($_POST[$key]);
 		}
 	}
+	static public function post_clear() {$_POST = array();}
 	
-	static public function clear() {
-		$data = self::get_data();
-		if (is_array($data)) {
-			foreach($data as $key => $value) {
-				self::set($key, $value);
-			}
-		} else {
-			$instance = self::get();
-			$instance->data = array();
-		}
-	}
-	
-	static public function key($key) {
-		$data = self::get_data();
-		if (is_array($data)) {
-			if (array_key_exists($key, $data)) {
-				return $data[$key];
-			} else {
-				throw new moojon_exception("Key does not exists ($key)");
-			}
-		} else {
-			throw new moojon_exception("Key does not exists ($key)");
-		}
-	}
-	
-	static public function key_or_null($key) {
-		return (self::has($key)) ? self::key($key) : null;
+	protected function __construct() {
+		$this->data = $_POST;
 	}
 }
 ?>

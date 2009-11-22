@@ -31,6 +31,11 @@ abstract class moojon_base_column extends moojon_base {
 		$this->unsaved = false;
 	}
 	
+	final public function set_reset_value() {
+		$this->reset_value = $this->value;
+		$this->unsaved = false;
+	}
+	
 	final public function get_value() {
 		return $this->value;
 	}

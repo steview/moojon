@@ -1,28 +1,36 @@
 <?php
-final class moojon_runner extends moojon_base {
-	static private $instance;
+final class moojon_runner extends moojon_singleton {
+	static protected $instance;
+	static protected function factory($class) {if (!self::$instance) {self::$instance = new $class;}return self::$instance;}
+	static public function fetch() {return self::factory(get_class());}
 	
-	private function __construct() {
-		self::require_view_functions();
-	}
-	
-	static public function run() {
+	protected function __construct() {
+		require_once(MOOJON_DIRECTORY.'/classes/moojon.exception.class.php');
+		require_once(MOOJON_DIRECTORY.'/classes/moojon.config.class.php');
+		require_once(MOOJON_DIRECTORY.'/classes/moojon.files.class.php');
+		require_once(MOOJON_DIRECTORY.'/classes/moojon.paths.class.php');
+		require_once(MOOJON_DIRECTORY.'/classes/moojon.base.cli.class.php');
+		require_once(MOOJON_DIRECTORY.'/classes/moojon.cli.class.php');
+		require_once(MOOJON_DIRECTORY.'/functions/moojon.core.functions.php');
 		switch (strtoupper(UI)) {
 			case 'CGI':
-				self::get();
-				moojon_session::get();
-				moojon_uri::get();
+				moojon_uri::fetch();
+				$uri = moojon_uri::get_uri();
 				moojon_config::update(moojon_paths::get_project_app_config_directory(APP));
-				require_once(moojon_paths::get_app_path(APP));
-				$app_class = self::get_app_class(APP);
-				new $app_class(moojon_uri::get_uri());
+				$path = moojon_paths::get_cache_path($uri);
+				if (moojon_cache::get_enabled() && moojon_cache::expired($uri)) {
+					moojon_session::fetch();
+					self::require_view_functions();
+					require_once(moojon_paths::get_app_path(APP));
+					$app_class = self::get_app_class(APP);
+					$app = new $app_class($uri);
+					moojon_files::put_file_contents($path, $app->render());
+				}
+				echo moojon_files::get_file_contents($path);
 				break;
 			case 'CLI':
 				$cli_class = CLI;
 				new $cli_class;
-				break;
-			case 'TEST':
-				
 				break;
 			default:
 				throw new moojon_exception('Invalid UI ('.UI.')');
@@ -30,19 +38,11 @@ final class moojon_runner extends moojon_base {
 		}
 	}
 	
-	static public function get() {
-		if (!self::$instance) {
-			self::$instance = new moojon_runner();
-		}
-		return self::$instance;
-	}
-	
-	static public function render($path, $variables = array()) {
-		if (!file_exists($path)) {
-			throw new moojon_exception("Render path not found ($path)");
-		}
-		foreach ($variables as $key => $value) {
-			$$key = $value;
+	static public function render($path, moojon_base $object = null) {
+		if ($object) {
+			foreach (get_object_vars($object) as $key => $value) {
+				$$key = $value;
+			}
 		}
 		ob_start();
 		require_once($path);

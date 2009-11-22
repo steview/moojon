@@ -58,12 +58,12 @@ final class moojon_rest_route extends moojon_base_route {
 				break;
 			case 'put':
 				$return['action'] = 'update';
-				$columns = moojon_post::key(moojon_inflect::singularize($this->resource));
+				$columns = moojon_post::get(moojon_inflect::singularize($this->resource));
 				$return[$this->id_property] = $columns[$this->id_property];
 				break;
 			case 'delete':
 				$return['action'] = 'destroy';
-				$columns = moojon_post::key(moojon_inflect::singularize($this->resource));
+				$columns = moojon_post::get(moojon_inflect::singularize($this->resource));
 				$return[$this->id_property] = $columns[$this->id_property];
 				break;
 			default:
@@ -107,29 +107,33 @@ final class moojon_rest_route extends moojon_base_route {
 		return $this->id_property;
 	}
 	
+	static private function get_collection_rest_route(moojon_base_model $model) {
+		return moojon_routes::get_rest_route(moojon_inflect::pluralize(get_class($model)));
+	}
+	
 	static public function get_collection_uri(moojon_base_model $model) {
-		$route = moojon_routes::get_rest_route(moojon_inflect::pluralize(get_class($model)));
-		return moojon_config::key('index_file').$route->get_resource().'/';
+		$route = self::get_collection_rest_route($model);
+		return moojon_config::get('index_file').$route->get_pattern().'/';
 	}
 	
 	static public function get_member_uri(moojon_base_model $model) {
-		$route = moojon_routes::get_rest_route(moojon_inflect::pluralize(get_class($model)));
+		$route = self::get_collection_rest_route($model);
 		$id_property = $route->id_property;
 		return self::get_collection_uri($model).$model->$id_property.'/';
 	}
 	
 	static public function get_new_member_uri(moojon_base_model $model) {
-		$route = moojon_routes::get_rest_route(moojon_inflect::pluralize(get_class($model)));
+		$route = self::get_collection_rest_route($model);
 		return $route->get_member_uri($model).'new/';
 	}
 	
 	static public function get_edit_member_uri(moojon_base_model $model) {
-		$route = moojon_routes::get_rest_route(moojon_inflect::pluralize(get_class($model)));
+		$route = self::get_collection_rest_route($model);
 		return $route->get_member_uri($model).'edit/';
 	}
 	
 	static public function get_delete_member_uri(moojon_base_model $model) {
-		$route = moojon_routes::get_rest_route(moojon_inflect::pluralize(get_class($model)));
+		$route = self::get_collection_rest_route($model);
 		return $route->get_member_uri($model).'delete/';
 	}
 }

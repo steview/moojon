@@ -12,7 +12,7 @@
 	<dd><?php echo PROJECT_DIRECTORY; ?></dd>
 	<?php if (moojon_config::has('db_driver')) { ?>
 		<dt>Database driver:</dt>
-		<dd><?php echo moojon_config::key('db_driver'); ?></dd>
+		<dd><?php echo moojon_config::get('db_driver'); ?></dd>
 		<dt>Schema version:</dt>
 		<dd><?php echo moojon_db::get_schema_version(); ?></dd>
 	<?php } ?>

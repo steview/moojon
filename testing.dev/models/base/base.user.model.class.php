@@ -5,7 +5,8 @@ abstract class base_user extends moojon_base_model {
 		$this->add_primary_key();
 		$this->add_string('name', 255, false, null);
 		$this->add_string('email', 255, false, null);
-		$this->add_binary('password', 255, false, null);
+		$this->add_string('password', 255, false, null);
+		$this->add_string('salt', 32, false, null);
 		$this->add_date('date_column', false, null);
 		$this->add_time('time_column', false, null);
 		$this->add_decimal('float_column', 10,0, 10, false, null);
@@ -19,6 +20,7 @@ abstract class base_user extends moojon_base_model {
 	final static public function read_all_by_name($value, $order = null, $limit = null) {return self::read_by(get_class(), 'name', $value, $order, $limit);}
 	final static public function read_all_by_email($value, $order = null, $limit = null) {return self::read_by(get_class(), 'email', $value, $order, $limit);}
 	final static public function read_all_by_password($value, $order = null, $limit = null) {return self::read_by(get_class(), 'password', $value, $order, $limit);}
+	final static public function read_all_by_salt($value, $order = null, $limit = null) {return self::read_by(get_class(), 'salt', $value, $order, $limit);}
 	final static public function read_all_by_date_column($value, $order = null, $limit = null) {return self::read_by(get_class(), 'date_column', $value, $order, $limit);}
 	final static public function read_all_by_time_column($value, $order = null, $limit = null) {return self::read_by(get_class(), 'time_column', $value, $order, $limit);}
 	final static public function read_all_by_float_column($value, $order = null, $limit = null) {return self::read_by(get_class(), 'float_column', $value, $order, $limit);}
@@ -30,6 +32,7 @@ abstract class base_user extends moojon_base_model {
 	final static public function read_by_name($value, $order = null, $limit = null) {return self::read_all_by_name($value, $order, $limit)->first;}
 	final static public function read_by_email($value, $order = null, $limit = null) {return self::read_all_by_email($value, $order, $limit)->first;}
 	final static public function read_by_password($value, $order = null, $limit = null) {return self::read_all_by_password($value, $order, $limit)->first;}
+	final static public function read_by_salt($value, $order = null, $limit = null) {return self::read_all_by_salt($value, $order, $limit)->first;}
 	final static public function read_by_date_column($value, $order = null, $limit = null) {return self::read_all_by_date_column($value, $order, $limit)->first;}
 	final static public function read_by_time_column($value, $order = null, $limit = null) {return self::read_all_by_time_column($value, $order, $limit)->first;}
 	final static public function read_by_float_column($value, $order = null, $limit = null) {return self::read_all_by_float_column($value, $order, $limit)->first;}
@@ -41,6 +44,7 @@ abstract class base_user extends moojon_base_model {
 	final static public function destroy_by_name($value) {self::destroy_by(get_class(), 'name', $value);}
 	final static public function destroy_by_email($value) {self::destroy_by(get_class(), 'email', $value);}
 	final static public function destroy_by_password($value) {self::destroy_by(get_class(), 'password', $value);}
+	final static public function destroy_by_salt($value) {self::destroy_by(get_class(), 'salt', $value);}
 	final static public function destroy_by_date_column($value) {self::destroy_by(get_class(), 'date_column', $value);}
 	final static public function destroy_by_time_column($value) {self::destroy_by(get_class(), 'time_column', $value);}
 	final static public function destroy_by_float_column($value) {self::destroy_by(get_class(), 'float_column', $value);}
@@ -51,6 +55,7 @@ abstract class base_user extends moojon_base_model {
 	final static public function read_or_create_by_name($value, $data = null) {return self::read_or_create_by(get_class(), 'name', $value, $data);}
 	final static public function read_or_create_by_email($value, $data = null) {return self::read_or_create_by(get_class(), 'email', $value, $data);}
 	final static public function read_or_create_by_password($value, $data = null) {return self::read_or_create_by(get_class(), 'password', $value, $data);}
+	final static public function read_or_create_by_salt($value, $data = null) {return self::read_or_create_by(get_class(), 'salt', $value, $data);}
 	final static public function read_or_create_by_date_column($value, $data = null) {return self::read_or_create_by(get_class(), 'date_column', $value, $data);}
 	final static public function read_or_create_by_time_column($value, $data = null) {return self::read_or_create_by(get_class(), 'time_column', $value, $data);}
 	final static public function read_or_create_by_float_column($value, $data = null) {return self::read_or_create_by(get_class(), 'float_column', $value, $data);}
@@ -62,6 +67,7 @@ abstract class base_user extends moojon_base_model {
 	final static public function get_column_names($exceptions = array()) {return self::base_get_column_names(get_class(), $exceptions);}
 	final static public function get_editable_column_names($exceptions = array()) {return self::base_get_editable_column_names(get_class(), $exceptions);}
 	final static public function get_primary_key_column_names($exceptions = array()) {return self::base_get_primary_key_column_names(get_class(), $exceptions);}
+	final static public function get_file_column_names($exceptions = array()) {return self::base_get_file_column_names(get_class(), $exceptions);}
 	
 	final static public function create($data = null, $param_values = array(), $param_data_types = array()) {return self::base_create(get_class(), $data, $param_values, $param_data_types);}
 	final static public function read($where = null, $order = null, $limit = null, $param_values = array(), $param_data_types = array(), moojon_base_model $accessor = null) {return self::base_read(get_class(), $where, $order, $limit, $param_values, $param_data_types, $accessor);}

@@ -1,87 +1,45 @@
 <?php
-final class moojon_cache extends moojon_base {
-	static private $instance;
-	private $data;
-	private $cache = true;
+final class moojon_cache extends moojon_singleton {
+	static protected $instance;
+	static protected function factory($class) {if (!self::$instance) {self::$instance = new $class;}return self::$instance;}
+	static public function fetch() {return self::factory(get_class());}
 	
-	private function __construct() {
-		$this->data = moojon_paths::get_project_cache_directory();
-	}
+	private $enabled = true;
 	
-	static public function get() {
-		if (!self::$instance) {
-			self::$instance = new moojon_cache();
+	protected function __construct() {}
+	
+	static public function expired($path, $absolute = false, $cache_for = null) {
+		if (!$cache_for) {
+			$cache_for = moojon_config::get('cache_for');
 		}
-		return self::$instance;
+		if (!$absolute) {
+			$path = moojon_paths::get_cache_path($path);
+		}
+		if (file_exists($path)) {
+			if (time() > (filectime($path) + $cache_for)) {
+				moojon_files::unlink($path);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
 	}
 	
-	static private function get_data() {
-		$instance = self::get();
-		return $instance->data;
+	static public function get_enabled() {
+		$instance = self::fetch();
+		return $instance->enabled;
 	}
 	
 	static public function enable() {
-		$instance = self::get();
-		$instance->cache = true;
+		$instance = self::fetch();
+		$instance->enabled = true;
 	}
 	
 	static public function disable() {
-		$instance = self::get();
-		$instance->cache = false;
-	}
-	
-	static public function get_cache() {
-		if (!moojon_config::key('cache_for')) {
-			return false;
-		}
-		$instance = self::get();
-		return $instance->cache;
-	}
-	
-	static private function create_cache(moojon_base_app $app, $uri) {
-		$data = self::get_data();
-		$cache_file_path = "$data/$uri/cache";
-		if (file_exists($cache_file_path) && (time() > (filectime($cache_file_path) + moojon_config::key('cache_for')))) {
-			self::remove($uri);
-		}
-		if (!file_exists($cache_file_path)) {
-			$app->set_location($uri);
-			$render = $app->render();
-			if (!self::get_cache()) {
-				echo $render;
-				return false;
-			} else {
-				moojon_paths::attempt_mkdir("$data/$uri");
-				if (!$handle = fopen($cache_file_path, 'w')) {
-					fclose($handle);
-					throw new moojon_exception("Unable to open / create cache file ($cache_file_path)");
-				}
-				if (!fwrite($handle, $render)) {
-					fclose($handle);
-					throw new moojon_exception("Unable to write to cache file ($cache_file_path)");
-				}
-				self::log("Creating cache ($cache_file_path)");
-				fclose($handle);
-			}
-		}
-		return $cache_file_path;
-	}
-	
-	static public function clear() {
-		exec('rm -rf '.moojon_config::get_project_cache_directory());
-	}
-	
-	static public function remove($uri) {
-		$data = self::get_data();
-		$cache_file_path = "$data/$uri/cache";
-		unlink($cache_file_path);
-		self::log("Clearing cache ($cache_file_path)");
-	}
-	
-	static public function process(moojon_base_app $app, $uri) {
-		if ($cache_file_path = self::create_cache($app, $uri)) {
-			echo moojon_files::get_file_contents($cache_file_path);
-		}
+		$instance = self::fetch();
+		$instance->enabled = false;
 	}
 }
 ?>

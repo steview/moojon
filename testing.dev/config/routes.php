@@ -1,5 +1,6 @@
 <?php
 return array(
+	//new moojon_route('test', array('controller' => 'posts', 'app' => 'client', 'action' => 'test')),
 	new moojon_rest_route('cars', array('app' => 'client')),
 	new moojon_rest_route('car_users', array('app' => 'client')),
 	new moojon_rest_route('comments', array('app' => 'client')),

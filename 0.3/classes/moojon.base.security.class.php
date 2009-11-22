@@ -5,12 +5,12 @@ abstract class moojon_base_security extends moojon_base {
 	
 	final static protected function get_security_token($key = null) {
 		if (!$key) {
-			$key = moojon_config::key('security_token_key');
+			$key = moojon_config::get('security_token_key');
 		}
 		if (moojon_cookie::has($key)) {
-			return moojon_cookie::key($key);
+			return moojon_cookie::get($key);
 		} elseif (moojon_session::has($key)) {
-			return moojon_session::key($key);
+			return moojon_session::get($key);
 		} else {
 			return false;
 		}

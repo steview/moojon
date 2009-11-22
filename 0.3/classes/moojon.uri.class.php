@@ -1,15 +1,23 @@
 <?php
-final class moojon_uri extends moojon_base {
-	static private $instance;
-	private $data = array();
+final class moojon_uri extends moojon_singleton_immutable_collection {
+	static protected $instance;
+	static protected function factory($class) {if (!self::$instance) {self::$instance = new $class;}return self::$instance;}
+	static public function fetch() {return self::factory(get_class());}
+	static public function get_data($data = null) {if ($data) {return $data;}$instance = self::fetch();return $instance->data;}
+	static public function has($key, $data = null) {$data = self::get_data($data);if (!is_array($data)) {return false;}if (array_key_exists($key, $data) && $data[$key] !== null) {return true;}return false;}
+	static public function get($key, $data = null) {$data = self::get_data($data);if (self::has($key, $data)) {return $data[$key];} else {throw new moojon_exception("Key does not exists ($key) in ".get_class());}}
+	static public function get_or_null($key, $data = null) {$data = self::get_data($data);return (array_key_exists($key, $data)) ? $data[$key] : null;}
 	
-	private function __construct() {
-		$this->set_data(self::find(self::get_uri()));
+	protected function __construct() {
+		$this->data = self::find(self::get_uri());
+		self::try_define('APP', $this->data['app']);
+		self::try_define('CONTROLLER', $this->data['controller']);
+		self::try_define('ACTION', $this->data['action']);
 	}
 	
 	static public function find($uri) {
 		$data = array();
-		foreach (moojon_routes::get_all() as $route) {
+		foreach (moojon_routes::get_data() as $route) {
 			if ($data = $route->map_uri($uri)) {
 				break;
 			}
@@ -22,35 +30,6 @@ final class moojon_uri extends moojon_base {
 		}
 	}
 	
-	static public function get() {
-		if (!self::$instance) {
-			self::$instance = new moojon_uri();
-		}
-		return self::$instance;
-	}
-	
-	private function set_data($data) {
-		self::try_define('APP', $data['app']);
-		self::try_define('CONTROLLER', $data['controller']);
-		self::try_define('ACTION', $data['action']);
-		$this->data = $data;
-	}
-	
-	static private function get_data() {
-		$instance = self::get();
-		return $instance->data;
-	}
-	
-	static public function has($key) {
-		$data = self::get_data();
-		return array_key_exists($key, $data);
-	}
-	
-	static public function key($key) {
-		$data = self::get_data();
-		return $data[$key];
-	}
-	
 	static public function get_uri() {
 		if (array_key_exists('REQUEST_URI', $_SERVER)) {
 			$uri = $_SERVER['REQUEST_URI'];
@@ -60,7 +39,7 @@ final class moojon_uri extends moojon_base {
 		if (substr($uri, 0, (strlen($uri) - 1)) != '/') {
 			$uri .= '/';
 		}
-		$uri = str_replace(moojon_config::key('index_file'), '', $uri);
+		$uri = str_replace(moojon_config::get('index_file'), '', $uri);
 		if (substr($uri, (strlen($uri) - 1)) == '/') {
 			$uri = substr($uri, 0, (strlen($uri) - 1));
 		}

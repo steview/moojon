@@ -156,9 +156,9 @@ final class moojon_model_collection extends ArrayObject {
 		}
 	}
 	
-	public function delete() {
+	public function delete($cascade = true) {
 		foreach ($this as $record) {
-			$record->delete();
+			$record->delete($cascade);
 		}
 	}
 	

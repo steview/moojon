@@ -1,16 +1,17 @@
 <?php
 abstract class moojon_base_app extends moojon_base {
-	
 	private $controller;
 	private $action_name;
 	private $controller_name;
 	private $app_name;
 	private $layout;
 	
-	final public function __construct($uri, $render = true) {
-		self::require_view_functions();
+	final public function __construct($uri = null) {
 		$this->init();
-		moojon_cache::process($this, $uri);
+		self::require_view_functions();
+		if ($uri) {
+			$this->set_location($uri);
+		}
 		$this->close();
 	}
 	
@@ -20,7 +21,7 @@ abstract class moojon_base_app extends moojon_base {
 		$this->controller_name = $data['controller'];
 		$this->action_name = $data['action'];
 		if (self::get_app_class($this->app_name) != get_class($this)) {
-			$location = moojon_config::key('index_file').$uri;
+			$location = moojon_config::get('index_file').$uri;
 			header("Location: $location");
 			die();
 		}
@@ -30,10 +31,10 @@ abstract class moojon_base_app extends moojon_base {
 	}
 	
 	final public function render() {
-		$return = $this->controller->render();
+		$return = moojon_runner::render(moojon_paths::get_view_path(self::get_app_name($this), self::get_controller_name($this->controller), $this->controller->get_view()), $this->controller);
 		$layout = $this->get_layout();
 		if ($layout !== false) {
-			$return = str_replace('YIELD', $return, moojon_runner::render(moojon_paths::get_layout_path($layout), get_object_vars($this->controller)));
+			$return = str_replace('YIELD', $return, moojon_runner::render(moojon_paths::get_layout_path($layout), $this->controller));
 		}
 		return $return;
 	}
@@ -48,11 +49,7 @@ abstract class moojon_base_app extends moojon_base {
 		} elseif ($this->layout != null) {
 			return $this->layout;
 		} else {
-			if (array_key_exists('X-Requested-With', $_SERVER) && $_SERVER['X-Requested-With'] == 'XMLHttpRequest') {
-				return false;
-			} else {
-				return self::get_app_name($this);
-			}
+			return (moojon_server::is_ajax()) ? false : self::get_app_name($this);
 		}
 	}
 	
