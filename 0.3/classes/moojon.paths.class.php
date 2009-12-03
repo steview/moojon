@@ -265,13 +265,19 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_column_upload_paths(moojon_base_model $model, $paths = array(), $exceptions = array()) {
 		$return = array();
+		$columns = moojon_files::get(get_class($model));
 		foreach ($model->get_file_column_names($exceptions) as $column_name) {
-			if (array_key_exists($column_name, $paths)) {
-				$value = $paths[$column_name];
-			} else {
-				$value = self::get_column_upload_path($model, $column_name);
+			if (moojon_files::has($column_name, $columns) && $model->$column_name) {
+				$column = moojon_files::get($column_name, $columns);
+				if (array_key_exists($column_name, $paths)) {
+					$value = $paths[$column_name];
+				} else {
+					$value = self::get_column_upload_path($model, $column_name);
+				}
+				if ($column->get_error() == UPLOAD_ERR_OK) {
+					$return[$column_name] = $value;
+				}
 			}
-			$return[$column_name] = $value;
 		}
 		return $return;
 	}
@@ -432,6 +438,24 @@ final class moojon_paths extends moojon_base {
 
 	static public function get_cache_path($uri) {
 		return self::get_project_cache_directory()."$uri/cache";
+	}
+	
+	static public function get_image_path($path) {
+		if (is_file(self::get_images_directory().$path)) {
+			return self::get_images_directory().$path;
+		} else if (is_file(self::get_public_directory().$path)) {
+			return self::get_public_directory().$path;
+		} else {
+			return $path;
+		}
+	}
+	
+	static public function get_public_image_path($path) {
+		if (is_file(self::get_public_images_directory().$path)) {
+			return self::get_public_images_directory().$path;
+		} else {
+			return "$path";
+		}
 	}
 }
 ?>

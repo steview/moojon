@@ -6,7 +6,8 @@ final class moojon_query_result extends ArrayObject {
 	
 	public function __construct(PDOStatement $statement, $param_values = array(), $param_data_types = array(), $fetch_style = moojon_db::FETCH_ASSOC) {
 		$this->iterator = $this->getIterator();
-		$log = $statement->queryString;
+		$query_string = $statement->queryString;
+		$log = $query_string;
 		if (ENVIRONMENT == 'development') {
 			$values = 'Param values(';
 			$parsed_query = $log;
@@ -34,7 +35,9 @@ final class moojon_query_result extends ArrayObject {
 		foreach ($param_values as $key => $value) {
 			if ($value !== null) {
 				$data_type = (array_key_exists($key, $param_data_types)) ? $param_data_types[$key] : self::PARAM_STR;
-				$statement->bindValue($key, $value, $data_type);
+				if (strpos($query_string, $key) !== false) {
+					$statement->bindValue($key, $value, $data_type);
+				}
 			}
 		}
 		$this->affected = $statement->execute();

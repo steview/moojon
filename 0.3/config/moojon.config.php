@@ -47,13 +47,14 @@ return array(
 	'scaffolds_directory' => 'scaffolds',
 	'script_directory' => 'script',
 	'default_image_ext' => 'png',
-	'default_helpers' => 'ui, uri, rest',
+	'default_helpers' => 'tag, model.tag, rest',
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
 	'index_file' => '/index.php/',
 	'flash_key' => 'flash',
+	'method_key' => '_method',
+	'redirection_key' => '_redirection',
 	'cookie_expiry' => 1209600,
-	
 	'security_token_key' => 'security_token',
 	'security_key' => 'security',
 	'security_identity_key' => 'email',
@@ -72,7 +73,6 @@ return array(
 	'exception_app' => 'moojon',
 	'exception_controller' => 'exception',
 	'exception_action' => 'index',
-	
 	'date_format' => 'Y/m/d',
 	'datetime_format' => 'Y/m/d H:i:s',
 	'time_format' => 'H:i:s',
@@ -86,5 +86,10 @@ return array(
 	'confirm_deletion_message' => 'Please confirm deletion of record.',
 	'mime_type_column' => 'mime_type',
 	'mime_type_database_path' => '/usr/share/misc/magic',
+	'paginator_page_symbol_name' => 'page',
+	'paginator_limit_symbol_name' => 'limit',
+	'paginator_all_symbol_name' => 'all',
+	'paginator_limit' => 10,
+	'paginator_max_items' => 10,
 );
 ?>

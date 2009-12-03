@@ -1,5 +1,5 @@
 <h1>New <[human]></h1>
 <ul id="actions">
-	<li><?php echo link_to('<[Humans]>', <[plural]>_uri()); ?></li>
+	<li><?php echo a_tag('<[Humans]>', <[plural]>_uri()); ?></li>
 </ul>
 <?php partial('form', array('<[singular]>' => $<[singular]>)); ?>

@@ -8,26 +8,25 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 	static public function get($key, $data = null) {$data = self::get_data($data);if (self::has($key, $data)) {return $data[$key];} else {throw new moojon_exception("Key does not exists ($key) in ".get_class());}}
 	static public function get_or_null($key, $data = null) {$data = self::get_data($data);return (array_key_exists($key, $data)) ? $data[$key] : null;}
 	
+	protected $route;
+	
 	protected function __construct() {
-		$this->data = self::find(self::get_uri());
-		self::try_define('APP', $this->data['app']);
-		self::try_define('CONTROLLER', $this->data['controller']);
-		self::try_define('ACTION', $this->data['action']);
+		$uri = self::clean_uri(self::get_uri());
+		if ($route = moojon_routes::map($uri)) {
+			$this->route = $route;
+			$this->data = $this->route->get_params();
+			self::try_define('APP', $this->data['app']);
+			self::try_define('CONTROLLER', $this->data['controller']);
+			self::try_define('ACTION', $this->data['action']);
+		} else {
+			throw new moojon_exception('404');
+			die();
+		}
 	}
 	
-	static public function find($uri) {
-		$data = array();
-		foreach (moojon_routes::get_data() as $route) {
-			if ($data = $route->map_uri($uri)) {
-				break;
-			}
-		}
-		if (!$data) {
-			throw new moojon_exception('404');
-			return;
-		} else {
-			return $data;
-		}
+	static public function get_route() {
+		$instance = self::fetch();
+		return $instance->route;
 	}
 	
 	static public function get_uri() {
@@ -36,12 +35,22 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 		} else {
 			$uri = $_SERVER['PATH_INFO'];
 		}
+		return self::clean_uri($uri);
+	}
+	
+	static public function clean_uri($uri) {
 		if (substr($uri, 0, (strlen($uri) - 1)) != '/') {
 			$uri .= '/';
 		}
 		$uri = str_replace(moojon_config::get('index_file'), '', $uri);
 		if (substr($uri, (strlen($uri) - 1)) == '/') {
 			$uri = substr($uri, 0, (strlen($uri) - 1));
+		}
+		if (substr($uri, -1) == '/') {
+			$uri = substr($uri, 0, (strlen($uri) - 1));
+		}
+		if (strpos($uri, '?')) {
+			$uri = substr($uri, 0, strpos($uri, '?'));
 		}
 		if (!$uri) {
 			$uri = '/';

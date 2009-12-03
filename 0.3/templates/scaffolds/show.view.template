@@ -1,7 +1,7 @@
 <h1><[Human]></h1>
 <ul id="actions">
-	<li><?php echo link_to('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
-	<li><?php echo link_to('Delete', delete_<[singular]>_uri($<[singular]>)); ?></li>
+	<li><?php echo a_tag('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
+	<li><?php echo a_tag('Delete', delete_<[singular]>_uri($<[singular]>)); ?></li>
 </ul>
 <h2><?php echo $<[singular]>; ?></h2>
 <?php

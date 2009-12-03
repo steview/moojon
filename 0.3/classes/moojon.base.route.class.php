@@ -1,77 +1,44 @@
 <?php
 abstract class moojon_base_route extends moojon_base {
 	protected $pattern;
-	protected $params;
+	protected $patterns;
+	protected $params = array();
 	
 	final public function __construct($pattern, $params = array()) {
-		if (!is_string($pattern)) {
-			throw new moojon_exception('Pattern passed to a moojon_base_route must be a string ('.get_class($pattern).' passed )');
-		} else {
-			$this->pattern = $pattern;
-		}
-		if (!is_array($params)) {
-			throw new moojon_exception('Params passed to a moojon_base_route must be an array ('.get_class($params).' passed )');
-		} else {
-			$this->params = $params;
-		}
+		$this->pattern = $pattern;
+		$this->patterns = explode('/', $this->pattern);
+		$this->params = $params;
+		$this->init();
 	}
+	
+	abstract protected function init();
 	
 	final public function get_pattern() {
 		return $this->pattern;
 	}
 	
-	public function get_resource() {
-		return $this->get_pattern();
-	}
+	abstract public function map($uri, $validate = true);
 	
-	abstract public function map_uri($uri);
-	
-	final protected function match_count($uri) {
-		return (count(explode('/', $uri)) == count(explode('/', $this->pattern)));
-	}
-	
-	final protected function get_symbol_name($symbol) {
-		return substr($symbol, 1);
-	}
-	
-	final protected function get_symbol_values($uri) {
-		$pattern = explode('/', $this->pattern);
-		$uri = explode('/', $uri);
-		$return = array();
-		for ($i = 0; $i < count($pattern); $i ++) {
-			if ($this->is_symbol($pattern[$i])) {
-				$return[$this->get_symbol_name($pattern[$i])] = $uri[$i];
-			}
-		}
-		return $return;
-	}
-	
-	final protected function contains_no_symbols($subject) {
-		foreach ($subject as $element) {
-			if ($this->is_symbol($element)) {
+	final static protected function validate_matches($matches, $validate = true) {
+		if ($validate) {
+			if (!array_key_exists('app', $matches) || !array_key_exists('controller', $matches) || !array_key_exists('action', $matches)) {
 				return false;
 			}
-			return true;
+			if ($path = moojon_paths::get_app_path($matches['app'])) {
+				require_once($path);
+			} else {
+				return false;
+			}
+			if ($path = moojon_paths::get_controller_path($matches['app'], $matches['controller'])) {
+				require_once($path);
+			} else {
+				return false;
+			}
+			if (!method_exists(self::get_controller_class($matches['controller']), $matches['action']) && !moojon_paths::get_view_path($matches['app'], $matches['controller'], $matches['action'])) {
+				return false;
+			}
 		}
-	}
-	
-	final protected function match_app($app) {
-		return moojon_paths::get_app_path($app);
-	}
-	
-	final protected function match_controller($app, $controller) {
-		return moojon_paths::get_controller_path($app, $controller);
-	}
-	
-	final protected function validate_sections($data) {
-		if (!array_key_exists('app', $data) || !array_key_exists('controller', $data) || !array_key_exists('action', $data)) {
-			return false;
-		}
-		require_once(moojon_paths::get_controller_path($data['app'], $data['controller']));
-		if (!method_exists(self::get_controller_class($data['controller']), $data['action']) && !moojon_paths::get_view_path($data['app'], $data['controller'], $data['action'])) {
-			return false;
-		}
-		return $data;
+		return true;
 	}
 }
 ?>

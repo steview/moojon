@@ -10,17 +10,22 @@ abstract class moojon_base_model extends moojon_base {
 	private $new_record = false;
 	protected $to_string_column = moojon_primary_key::NAME;
 	
-	final public function __construct() {}
+	final public function __construct($data = array()) {
+		$this->add_columns();
+		$this->add_relationships();
+		$this->add_validations();
+		$this->class = get_class();
+		$this->table = moojon_inflect::pluralize($this->class);
+		$this->new_record = true;
+		if ($this->has_column('created_on') && !$this->get_column('created_on')->get_unsaved()) {
+			$this->get_column('created_on')->set_value(date(moojon_config::get('datetime_format')));
+		}
+		$this->set($data);
+	}
 	
 	final static protected function init($class) {
 		$class = self::strip_base($class);
-		$instance = new $class;
-		$instance->add_columns();
-		$instance->add_relationships();
-		$instance->add_validations();
-		$instance->class = $class;
-		$instance->table = moojon_inflect::pluralize($class);
-		return $instance;
+		return new $class;
 	}
 	
 	abstract protected function add_columns();
@@ -104,6 +109,15 @@ abstract class moojon_base_model extends moojon_base {
 		} else {
 			throw new moojon_exception("no such relationship ($key)");
 		}
+	}
+	
+	final static protected function base_get_relationship_names($class) {
+		$return = array();
+		$instance = self::init($class);
+		foreach ($instance->get_relationships() as $relationship) {
+			$return[] = $relationship->get_name();
+		}
+		return $return;
 	}
 	
 	final public function get_relationships() {
@@ -574,20 +588,11 @@ abstract class moojon_base_model extends moojon_base {
 			$data = array();
 		}
 		$instance = self::init($class);
-		$instance->new_record = true;
-		foreach ($instance->get_editable_column_names() as $column_name) {
-			if (array_key_exists($column_name, $data)) {
-				$instance->$column_name = $data[$column_name];
-			}
-		}
-		if ($instance->has_column('created_on') && !$instance->get_column('created_on')->get_unsaved()) {
-			$instance->get_column('created_on')->set_value(date(moojon_config::get('datetime_format')));
-		}
 		return $instance;
 	}
 	
 	final static protected function base_update($class, $data, $where) {
-		$instance = self::init(self::strip_base($class));
+		$instance = self::init($class);
 		$id_property = moojon_primary_key::NAME;
 		$placeholders = array();
 		$values = array();
@@ -600,7 +605,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static protected function base_destroy($class, $where, $param_values, $param_data_types) {
-		$instance = self::init(self::strip_base($class));
+		$instance = self::init($class);
 		foreach ($instance->read($where, null, null, $param_values, $param_data_types) as $record) {
 			foreach($record->get_relationships() as $relationship) {
 				if (get_class($relationship) == 'moojon_has_many_relationship' || get_class($relationship) == 'moojon_has_many_to_many_relationship') {

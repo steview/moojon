@@ -24,7 +24,7 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 	}
 	
 	static public function method() {
-		return (moojon_post::has('_method')) ? moojon_post::get('_method') : self::get('REQUEST_METHOD');
+		return (moojon_post::has(moojon_config::get('method_key'))) ? moojon_post::get(moojon_config::get('method_key')) : self::get_or_null('REQUEST_METHOD');
 	}
 	
 	static public function is_get() {
@@ -45,6 +45,18 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 
 	static public function is_ajax() {
 		return (array_key_exists('X-Requested-With', $_SERVER) && $_SERVER['X-Requested-With'] == 'XMLHttpRequest');
+	}
+
+	static public function redirection($fallback = null) {
+		if ($return = moojon_request::get_or_null(moojon_config::get('redirection_key'))) {
+			return $return;
+		} else if ($return = $fallback) {
+			return $return;
+		} else if ($return = self::get_or_null('HTTP_REFERER')) {
+			return $return;
+		} else {
+			return '#';
+		}
 	}
 }
 ?>

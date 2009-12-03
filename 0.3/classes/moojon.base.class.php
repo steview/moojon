@@ -83,8 +83,28 @@ abstract class moojon_base {
 		}
 	}
 	
-	final protected function is_symbol($subject) {
+	final static public function is_symbol($subject) {
 		return (substr($subject, 0, 1) == ':');
+	}
+	
+	final static public function get_symbol($subject) {
+		return (self::is_symbol($subject)) ? $subject : ":$subject";
+	}
+	
+	final static public function get_symbol_name($subject) {
+		return (self::is_symbol($subject)) ? substr($subject, 1) : $subject;
+	}
+	
+	final static public function parse_symbol($subject, $symbol, $value) {
+		return str_replace(self::get_symbol($symbol), $value, $subject);
+	}
+	
+	final static public function parse_symbols($subject, $symbols = array()) {
+		$return = $subject;
+		foreach ($symbols as $key => $value) {
+			$return = self::parse_symbol($return, $key, $value);
+		}
+		return $return;
 	}
 	
 	final static protected function require_view_functions() {

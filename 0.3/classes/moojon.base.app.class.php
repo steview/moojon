@@ -16,7 +16,8 @@ abstract class moojon_base_app extends moojon_base {
 	}
 	
 	final public function set_location($uri) {
-		$data = moojon_uri::find($uri);
+		$route_match = moojon_routes::map($uri);
+		$data = $route_match->get_params();
 		$this->app_name = $data['app'];
 		$this->controller_name = $data['controller'];
 		$this->action_name = $data['action'];

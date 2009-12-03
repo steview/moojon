@@ -3,10 +3,15 @@ final class moojon_exception extends Exception {
 	static private $instance;
 	
 	public function __construct($message = null, $code = null, $severity = null, $file = null, $line = null) {
-		die("<h1>$message ($file: $line)</h1>");
 		if (!$code) {
 			$code = 0;
 		}
+		echo("<h1>$message ($file: $line)</h1>");
+		foreach ($this->getTrace() as $call) {
+			print_r($call);
+			echo '<br /><br />';
+		}
+		die();
 		parent::__construct($message, $code);
 		$this->severity = $severity;
 		$this->file = $file;
@@ -27,7 +32,6 @@ final class moojon_exception extends Exception {
 	}
 	
 	public function __toString() {
-		
 		$trace = $this->getTrace();
 		$exception = $trace[0]['args'][0];
 		$div = new moojon_div_tag(
