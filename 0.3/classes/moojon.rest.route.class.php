@@ -43,10 +43,14 @@ final class moojon_rest_route extends moojon_base_route {
 			$pattern .= '/'.$route->get_pattern();
 			$params = array_merge($this->params, $route->get_params());
 		}
+		$params['resources'] = $this->resource;
 		return $this->match_route($pattern, $params, $validate);
 	}
 	
 	private function map_collection_routes($uris = array()) {
+		if (count($uris) && $uris[0] == 'index') {
+			array_shift($uris);
+		}
 		$uri = implode('/', $uris);
 		$params = $this->params;
 		$pattern = '';
@@ -54,7 +58,7 @@ final class moojon_rest_route extends moojon_base_route {
 			if ($route = (array_key_exists('collection_routes', $this->params)) ? moojon_routes::map($uri, $this->params['collection_routes'], false) : false) {
 				$pattern = $route->get_pattern();
 				$params = array_merge($params, $route->get_params());
-			} else if (!$uri || $uri == 'index') {
+			} else if (!$uri) {
 				$params['action'] = 'index';
 				$pattern = 'index';
 			} else if ($uri == 'new') {
@@ -70,36 +74,43 @@ final class moojon_rest_route extends moojon_base_route {
 		$uri = implode('/', $uris);
 		$id_property = $this->id_property;
 		$params = array_merge($this->params, array($id_property => $id));
+		$relationship_routes = $this->get_relationship_routes();
+		$params['relationship_routes'] = $relationship_routes;
 		$pattern = '';
-		$routes = array_merge((array_key_exists('member_routes', $this->params)) ? $this->params['member_routes'] : array(), $this->get_relationship_routes());
-		switch ($this->method) {
-			case 'get':
-				if ($routes && $route = moojon_routes::map($uri, $routes, false)) {
-					$new_params = $route->get_params();
-					if (array_key_exists('resource', $new_params) && $new_params['resource'] != $params['resource']) {
-						$foreign_key = moojon_primary_key::get_foreign_key($this->resource);
-						$id_property = $foreign_key;
-						$params[$foreign_key] = $id;
+		$routes = array_merge((array_key_exists('member_routes', $this->params)) ? $this->params['member_routes'] : array(), $relationship_routes);
+		if ($routes && $route = moojon_routes::map($uri, $routes, false)) {
+			$new_params = $route->get_params();
+			if (array_key_exists('resource', $new_params) && $new_params['resource'] != $params['resource']) {
+				$foreign_key = moojon_primary_key::get_foreign_key($this->resource);
+				$id_property = $foreign_key;
+				$params[$foreign_key] = $id;
+			}
+			$pattern = ":$id_property/".$route->get_pattern();
+			$params = array_merge($params, $new_params);
+		} else {
+			switch ($this->method) {
+				case 'get':
+					if (!$uri) {
+						$pattern = ":$id_property/";
+						$params['action'] = 'show';
+					} else if ($uri == 'edit' || $uri == 'delete' || $uri == 'show') {
+						$pattern = ":$id_property/$uri";
+						$params['action'] = $uri;
 					}
-					$pattern = ":$id_property/".$route->get_pattern();
-					$params = array_merge($params, $new_params);
-				} else if (!$uri) {
-					$pattern = ":$id_property/show";
-					$params['action'] = 'show';
-				} else if ($uri == 'edit' || $uri == 'delete' || $uri == 'show') {
-					$pattern = ":$id_property/$uri";
-					$params['action'] = $uri;
-				}
-				break;
-			case 'post':
-				$pattern = 'create';
-				break;
-			case 'put':
-				$pattern = 'update';
-				break;
-			case 'delete':
-				$pattern = 'destroy';
-				break;
+					break;
+				case 'post':
+					$pattern = 'create';
+					$params['action'] = $pattern;
+					break;
+				case 'put':
+					$pattern = 'update';
+					$params['action'] = $pattern;
+					break;
+				case 'delete':
+					$pattern = 'destroy';
+						$params['action'] = $pattern;
+					break;
+			}
 		}
 		return $this->match_route($pattern, $params, false);
 	}
@@ -120,7 +131,12 @@ final class moojon_rest_route extends moojon_base_route {
 			$model = new $model_class;
 			foreach ($model->get_relationships() as $relationship) {
 				$foreign_table = $relationship->get_foreign_table();
-				$relationship_routes[] = new moojon_rest_route($foreign_table, array_merge($this->params, array('controller' => $foreign_table)));
+				if (moojon_routes::has_rest_route($foreign_table)) {
+					$relationship_route = moojon_routes::get_rest_route($foreign_table);
+				} else {
+					$relationship_route = new moojon_rest_route($foreign_table, array_merge($this->params, array('controller' => $foreign_table)));
+				}
+				$relationship_routes[] = $relationship_route;
 			}
 		}
 		return $relationship_routes;
@@ -140,34 +156,19 @@ final class moojon_rest_route extends moojon_base_route {
 		return $this->id_property;
 	}
 	
+	public function get_resource() {
+		return $this->resource;
+	}
+	
 	static private function get_collection_rest_route($model) {
 		$resource = (is_subclass_of($model, 'moojon_base_model')) ? moojon_inflect::pluralize(get_class($model)) : $model;
 		return moojon_routes::get_rest_route($resource);
 	}
 	
-	static public function get_relationship_collection_uri(moojon_base_model $model, $relationship_name) {
-		$relationship = $model->get_relationship($relationship_name);
-		$foreign_table = $relationship->get_foreign_table();
-		$key_column = $relationship->get_key();
-		$key = $model->$key_column;
-		$return = self::get_member_uri($model)."$foreign_table/";
-		if (get_class($relationship) == 'moojon_has_one_relationship') {
-			$foreign_key_column = $relationship->get_foreign_key();
-			$foreign_key = $model->$foreign_key_column;
-			$return .= "$foreign_key/";
-		}
-		return $return;
-	}
-	
-	static public function get_relationship_new_member_uri(moojon_base_model $model, $relationship_name) {
-		$relationship = $model->get_relationship($relationship_name);
-		$foreign_table = $relationship->get_foreign_table();
-		return self::get_member_uri($model)."$foreign_table/new/";
-	}
-	
 	static public function get_collection_uri(moojon_base_model $model) {
 		$route = self::get_collection_rest_route($model);
-		return moojon_config::get('index_file').$route->get_pattern().'/';
+		$parent_resource = (moojon_uri::get_or_null('resource') == $route->get_resource()) ? '' : moojon_uri::get_uri().'/';
+		return moojon_config::get('index_file').$parent_resource.$route->get_pattern().'/';
 	}
 	
 	static public function get_member_uri(moojon_base_model $model) {
@@ -177,18 +178,15 @@ final class moojon_rest_route extends moojon_base_route {
 	}
 	
 	static public function get_new_member_uri(moojon_base_model $model) {
-		$route = self::get_collection_rest_route($model);
-		return $route->get_member_uri($model).'new/';
+		return self::get_collection_uri($model).'new/';
 	}
 	
 	static public function get_edit_member_uri(moojon_base_model $model) {
-		$route = self::get_collection_rest_route($model);
-		return $route->get_member_uri($model).'edit/';
+		return self::get_member_uri($model).'edit/';
 	}
 	
 	static public function get_delete_member_uri(moojon_base_model $model) {
-		$route = self::get_collection_rest_route($model);
-		return $route->get_member_uri($model).'delete/';
+		return self::get_member_uri($model).'delete/';
 	}
 }
 ?>

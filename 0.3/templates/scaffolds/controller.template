@@ -5,16 +5,16 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	public function show() {
-		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::get('id'));
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_request::get('id'));
 	}
 	
 	public function _new() {
 		$this->view = 'new';
-		$this-><[singular]> = <[singular]>::create();
+		$this-><[singular]> = new <[singular]>;
 	}
 	
 	public function create() {
-		$this-><[singular]> = <[singular]>::create(moojon_post::get('<[singular]>'));
+		$this-><[singular]> = new <[singular]>(moojon_request::get('<[singular]>'));
 		if ($this-><[singular]>->save()) {
 			moojon_flash::set('notification', $this-><[singular]>." created");
 			$this->redirect(<[singular]>_uri($this-><[singular]>));
@@ -24,11 +24,11 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	public function edit() {
-		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::get('id'));
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_request::get('id'));
 	}
 	
 	public function update() {
-		$columns = moojon_post::get('<[singular]>');
+		$columns = moojon_request::get('<[singular]>');
 		$this-><[singular]> = <[singular]>::read_by_<[id_property]>($columns['id']);
 		$this-><[singular]>->set($columns);
 		if ($this-><[singular]>->save()) {
@@ -40,11 +40,12 @@ final class <[plural]>_controller extends moojon_base_controller {
 	}
 	
 	public function delete() {
-		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::get('id'));
+		$this-><[singular]> = <[singular]>::read_by_<[id_property]>(moojon_request::get('id'));
 	}
 	
 	public function destroy() {
-		$<[singular]> = <[singular]>::read_by_<[id_property]>(moojon_uri::get('id'));
+		$columns = moojon_request::get('<[singular]>');
+		$<[singular]> = <[singular]>::read_by_<[id_property]>($columns['id']);
 		$<[singular]>->delete();
 		moojon_flash::set('notification', "$<[singular]> deleted");
 		$this->redirect(<[plural]>_uri());

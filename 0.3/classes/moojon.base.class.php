@@ -116,7 +116,7 @@ abstract class moojon_base {
 		}
 	}
 	
-	final static protected function dump_array(Array $array) {
+	final static public function dump_array(Array $array) {
 		switch (strtoupper(UI)) {
 			case 'CGI':
 				foreach ($array as $key => $value) {

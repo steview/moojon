@@ -8,13 +8,13 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 	static public function get($key, $data = null) {$data = self::get_data($data);if (self::has($key, $data)) {return $data[$key];} else {throw new moojon_exception("Key does not exists ($key) in ".get_class());}}
 	static public function get_or_null($key, $data = null) {$data = self::get_data($data);return (array_key_exists($key, $data)) ? $data[$key] : null;}
 	
-	protected $route;
+	protected $match;
 	
 	protected function __construct() {
 		$uri = self::clean_uri(self::get_uri());
-		if ($route = moojon_routes::map($uri)) {
-			$this->route = $route;
-			$this->data = $this->route->get_params();
+		if ($match = moojon_routes::map($uri)) {
+			$this->match = $match;
+			$this->data = $this->match->get_params();
 			self::try_define('APP', $this->data['app']);
 			self::try_define('CONTROLLER', $this->data['controller']);
 			self::try_define('ACTION', $this->data['action']);
@@ -24,9 +24,19 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 		}
 	}
 	
-	static public function get_route() {
+	static public function get_match() {
 		$instance = self::fetch();
-		return $instance->route;
+		return $instance->match;
+	}
+	
+	static public function get_match_pattern() {
+		$instance = self::fetch();
+		return $instance->match->get_pattern();
+	}
+	
+	static public function get_match_params() {
+		$instance = self::fetch();
+		return $instance->match->get_params();
 	}
 	
 	static public function get_uri() {
@@ -39,6 +49,9 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 	}
 	
 	static public function clean_uri($uri) {
+		while (strpos($uri, '//')) {
+			$uri = str_replace('//', '/', $uri);
+		}
 		if (substr($uri, 0, (strlen($uri) - 1)) != '/') {
 			$uri .= '/';
 		}

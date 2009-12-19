@@ -34,6 +34,9 @@ final class moojon_request extends moojon_singleton_mutable_collection {
 				$data[$key] = $value;
 			}
 		}
+		foreach (moojon_uri::get_data() as $key => $value) {
+			$data[$key] = $value;
+		}
 		$this->data = $data;
 	}
 }

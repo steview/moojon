@@ -1,7 +1,10 @@
 <h1>Delete <[human]></h1>
-<ul id="actions">
+<ul class="actions">
 	<li><?php echo a_tag($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
 	<li><?php echo a_tag('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
 </ul>
-<h2><?php echo $<[singular]>; ?></h2>
-<?php echo delete_form_for($<[singular]>); ?>
+<div class="hrule"></div>
+<div id="content_main">
+	<h2><?php echo $<[singular]>; ?></h2>
+	<?php echo delete_form_for($<[singular]>); ?>
+</div>

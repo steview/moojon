@@ -1,6 +1,9 @@
 <h1>Edit <[human]></h1>
-<ul id="actions">
+<ul class="actions">
 	<li><?php echo a_tag($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
 	<li><?php echo a_tag('Delete', delete_<[singular]>_uri($<[singular]>)); ?></li>
 </ul>
-<?php partial('form', array('<[singular]>' => $<[singular]>)); ?>
+<div class="hrule"></div>
+<div id="content_main">
+	<?php partial('form', array('<[singular]>' => $<[singular]>)); ?>
+</div>

@@ -265,7 +265,7 @@ final class moojon_paths extends moojon_base {
 	
 	static public function get_column_upload_paths(moojon_base_model $model, $paths = array(), $exceptions = array()) {
 		$return = array();
-		$columns = moojon_files::get(get_class($model));
+		$columns = moojon_request::get(get_class($model));
 		foreach ($model->get_file_column_names($exceptions) as $column_name) {
 			if (moojon_files::has($column_name, $columns) && $model->$column_name) {
 				$column = moojon_files::get($column_name, $columns);

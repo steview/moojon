@@ -160,6 +160,10 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return "DELETE FROM `$table` $where;";
 	}
 	
+	static public function limit($start, $limit) {
+		return "$start, $limit";
+	}
+	
 	static public function get_null() {
 		return self::NULL;
 	}
@@ -336,7 +340,6 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		switch (get_class($relationship)) {
 			case 'moojon_has_one_relationship':
 				return "$foreign_table.$key = :$foreign_key";
-				//return "$foreign_table.$key = :$foreign_key";
 				break;
 			case 'moojon_has_many_relationship':
 				return "$foreign_table.$key = :$key";
@@ -353,7 +356,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	static public function get_relationship_param_values(moojon_base_relationship $relationship, moojon_base_model $accessor) {
 		switch (get_class($relationship)) {
 			case 'moojon_has_one_relationship':
-				$foreign_key = moojon_primary_key::get_foreign_key($relationship->get_foreign_table());
+				$foreign_key = $relationship->get_foreign_key();
 				return array(":$foreign_key" => $accessor->$foreign_key);
 				break;
 			case 'moojon_has_many_to_many_relationship':
@@ -367,7 +370,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	static public function get_relationship_param_data_types(moojon_base_relationship $relationship, moojon_base_model $accessor) {
 		switch (get_class($relationship)) {
 			case 'moojon_has_one_relationship':
-				$foreign_key = moojon_primary_key::get_foreign_key($relationship->get_foreign_table());
+				$foreign_key = $relationship->get_foreign_key();
 				$column = $accessor->get_column($foreign_key);
 				return array(":$foreign_key" => $column->get_data_type());
 				break;

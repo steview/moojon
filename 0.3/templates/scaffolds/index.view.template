@@ -1,5 +1,8 @@
 <h1><[Humans]></h1>
-<ul id="actions">
+<ul class="actions">
 	<li><?php echo a_tag('New', new_<[singular]>_uri()); ?></li>
 </ul>
-<?php echo table_for($<[plural]>); ?>
+<div class="hrule"></div>
+<div id="content_main">
+	<?php echo table_for($<[plural]>); ?>
+</div>

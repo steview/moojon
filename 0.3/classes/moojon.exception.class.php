@@ -6,17 +6,21 @@ final class moojon_exception extends Exception {
 		if (!$code) {
 			$code = 0;
 		}
+		$code = ($code) ? $code : 0;
+		$severity = ($severity) ? $severity : 0;
+		$backtrace = debug_backtrace();
+		$file = ($file) ? $file : $backtrace[0]['file'];
+		$line = ($line) ? $line : $backtrace[0]['line'];
+		moojon_base::log("Exception: message: $message, code: $code, severity: $severity, file: $file, line: $line");
 		echo("<h1>$message ($file: $line)</h1>");
 		foreach ($this->getTrace() as $call) {
 			print_r($call);
 			echo '<br /><br />';
 		}
-		die();
 		parent::__construct($message, $code);
 		$this->severity = $severity;
 		$this->file = $file;
 		$this->line = $line;
-		moojon_base::log("Exception: message: $message, code: $code, severity: $severity, file: $file, line: $line");
 		self::$instance = $this;
 	}
 	

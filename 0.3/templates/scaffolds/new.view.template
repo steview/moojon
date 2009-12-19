@@ -1,5 +1,8 @@
 <h1>New <[human]></h1>
-<ul id="actions">
+<ul class="actions">
 	<li><?php echo a_tag('<[Humans]>', <[plural]>_uri()); ?></li>
 </ul>
-<?php partial('form', array('<[singular]>' => $<[singular]>)); ?>
+<div class="hrule"></div>
+<div id="content_main">
+	<?php partial('form', array('<[singular]>' => $<[singular]>)); ?>
+</div>

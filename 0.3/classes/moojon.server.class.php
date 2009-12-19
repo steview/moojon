@@ -48,15 +48,18 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 	}
 
 	static public function redirection($fallback = null) {
-		if ($return = moojon_request::get_or_null(moojon_config::get('redirection_key'))) {
-			return $return;
-		} else if ($return = $fallback) {
-			return $return;
-		} else if ($return = self::get_or_null('HTTP_REFERER')) {
-			return $return;
+		$redirection = moojon_request::get_or_null(moojon_config::get('redirection_key'));
+		$referer = self::get_or_null('HTTP_REFERER');
+		if ($redirection) {
+			$return = $redirection;
+		} else if ($fallback) {
+			$return = $fallback;
+		} else if ($referer) {
+			$return = $referer;
 		} else {
-			return '#';
+			$return = '#';
 		}
+		return $return;
 	}
 }
 ?>

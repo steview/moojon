@@ -5,6 +5,7 @@ abstract class moojon_base_model extends moojon_base {
 	protected $class;
 	protected $columns = array();
 	private $relationships = array();
+	private $relationship_data = array();
 	private $validations = array();
 	private $errors = array();
 	private $new_record = false;
@@ -13,14 +14,14 @@ abstract class moojon_base_model extends moojon_base {
 	final public function __construct($data = array()) {
 		$this->add_columns();
 		$this->add_relationships();
+		$this->set($data);
 		$this->add_validations();
-		$this->class = get_class();
+		$this->class = get_class($this);
 		$this->table = moojon_inflect::pluralize($this->class);
 		$this->new_record = true;
 		if ($this->has_column('created_on') && !$this->get_column('created_on')->get_unsaved()) {
 			$this->get_column('created_on')->set_value(date(moojon_config::get('datetime_format')));
 		}
-		$this->set($data);
 	}
 	
 	final static protected function init($class) {
@@ -50,11 +51,12 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final public function __get($key) {
 		if ($this->has_relationship($key)) {
-			if (is_subclass_of($this->relationships[$key], 'moojon_base_relationship')) {
+			if (!array_key_exists($key, $this->relationship_data)) {
 				$records = new moojon_model_collection($this, $key);
-				$this->relationships[$key] = $records->get($this);
+				$this->relationship_data[$key] = new moojon_model_collection($this, $key);
 			}
-			return $this->relationships[$key];
+			$records = $this->relationship_data[$key];
+			return $records->get();
 		} else {
 			if ($this->has_column($key)) {
 				return $this->columns[$key]->get_value();
@@ -111,11 +113,15 @@ abstract class moojon_base_model extends moojon_base {
 		}
 	}
 	
-	final static protected function base_get_relationship_names($class) {
+	final static protected function base_get_relationship_names($class, $exceptions = array()) {
 		$return = array();
 		$instance = self::init($class);
-		foreach ($instance->get_relationships() as $relationship) {
-			$return[] = $relationship->get_name();
+		$relationships = $instance->get_relationships();
+		foreach ($relationships as $relationship) {
+			$relationship_name = $relationship->get_name();
+			if (!in_array($relationship_name, $relationships)) {
+				$return[] = $relationship_name;
+			}
 		}
 		return $return;
 	}
@@ -146,24 +152,57 @@ abstract class moojon_base_model extends moojon_base {
 		return $this->get_relationships_of_type('moojon_has_many_to_many_relationship');
 	}
 	
+	final public function get_relationship_by_column($key) {
+		foreach ($this->relationships as $relationship) {
+			if ($relationship->get_foreign_key() == $key) {
+				return $relationship;
+			}
+		}
+		throw new moojon_exception("No relationship with foreign_key ($key)");
+	}
+	
+	final public function is_relationship_column($key) {
+		foreach ($this->relationships as $relationship) {
+			if ($relationship->get_foreign_key() == $key) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	final public function is_relationship_of_type_column($key, $type) {
+		foreach ($this->get_relationships_of_type($type) as $relationship) {
+			if ($relationship->get_foreign_key() == $key) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	final public function is_has_one_relationship_column($key) {
+		return $this->is_relationship_of_type_column($key, 'moojon_has_one_relationship');
+	}
+	
+	final public function is_has_many_relationship_column($key) {
+		return $this->is_relationship_of_type_column($key, 'moojon_has_many_relationship');
+	}
+	
+	final public function is_has_many_to_many_relationship_column($key) {
+		return $this->is_relationship_of_type_column($key, 'moojon_has_many_to_many_relationship');
+	}
+	
 	final protected function add_relationship($relationship_type, $name, $foreign_table, $foreign_key, $key) {
 		if ($this->has_property($name)) {
 			throw new moojon_exception("Duplicate property when adding relationship ($name)");
 		}
-		if (!$foreign_table) {
-			$foreign_table = moojon_inflect::pluralize($name);
-		}
-		$foreign_table = self::strip_base($foreign_table);
-		if (!$foreign_key) {
-			$foreign_key = moojon_primary_key::get_foreign_key($foreign_table);
-		}
-		if (!$key) {
-			$key = moojon_primary_key::NAME;
-		}
+		$key = ($key) ? $key : moojon_primary_key::NAME;
 		if (!$this->has_column($key)) {
 			throw new moojon_exception("no such column to use as key for relationship ($key)");
 		}
-		$this->relationships[$name] = new $relationship_type($name, $foreign_table, $foreign_key, $key);
+		$foreign_table = ($foreign_table) ? $foreign_table : moojon_inflect::pluralize($name);
+		$foreign_table = self::strip_base($foreign_table);
+		$foreign_key = ($foreign_key) ? $foreign_key : moojon_primary_key::get_foreign_key($foreign_table);
+		$this->relationships[$name] = new $relationship_type($name, $foreign_table, $foreign_key, $key, $this->get_column($key));
 	}
 	
 	final public function has_validation($key) {
@@ -560,7 +599,7 @@ abstract class moojon_base_model extends moojon_base {
 		return $saved;
 	}
 	
-	final static protected function base_read($class, $where, $order, $limit, $param_values, $param_data_types, $accessor) {
+	final static protected function base_read($class, $where, $order, $limit, $param_values, $param_data_types, $accessor, $key) {
 		$class = self::strip_base($class);
 		$table = moojon_inflect::pluralize($class);
 		$instance = self::init($class);
@@ -570,7 +609,7 @@ abstract class moojon_base_model extends moojon_base {
 			$column_name = $column->get_name();
 			$placeholders["$table.$column_name"] = strtoupper($class.'_'.$column_name);
 		}
-		$return = new moojon_model_collection($accessor);
+		$return = new moojon_model_collection($accessor, $key);
 		foreach(moojon_db::select($table, $placeholders, $where, $order, $limit, $instance->compile_param_values($param_values), $instance->compile_param_data_types($param_data_types)) as $row) {
 			$record = self::init($class);
 			foreach($instance->columns as $column) {
@@ -578,6 +617,7 @@ abstract class moojon_base_model extends moojon_base {
 				$record->$column_name = $row[strtoupper($class.'_'.$column_name)];
 				$record->reset();
 			}
+			$record->new_record = false;
 			$return[] = $record;
 		}
 		return $return;
@@ -690,7 +730,7 @@ abstract class moojon_base_model extends moojon_base {
 	final static public function read_by($class, $column_name, $value, $order, $limit) {
 		$instance = self::init($class);
 		$column = $instance->get_column($column_name);
-		return self::base_read($class, "$column_name = :$column_name", $order, $limit, array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()), null);
+		return self::base_read($class, "$column_name = :$column_name", $order, $limit, array(":$column_name" => $value), array(":$column_name" => $column->get_data_type()), null, null);
 	}
 	
 	final static public function destroy_by($class, $column_name, $value) {

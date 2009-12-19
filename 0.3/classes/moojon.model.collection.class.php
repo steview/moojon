@@ -8,9 +8,9 @@ final class moojon_model_collection extends ArrayObject {
 	
 	public function __construct(moojon_base_model $accessor = null, $key = null) {
 		$this->accessor = $accessor;
+		$this->key = $key;
 		if ($accessor && $key) {
 			$this->relationship = $this->accessor->get_relationship($key);
-			$this->key = $key;
 		}
 		$this->iterator = $this->getIterator();
 	}
@@ -51,9 +51,12 @@ final class moojon_model_collection extends ArrayObject {
 	
 	public function get() {
 		if ($this->relationship) {
-			$foreign_class_name = moojon_inflect::singularize($this->relationship->get_foreign_table());
+			$foreign_class_name = $this->relationship->get_class();
 			$foreign_class = new $foreign_class_name;
-			$records = $foreign_class->read(moojon_db_driver::get_relationship_where($this->relationship, $this->accessor),  null, null, moojon_db_driver::get_relationship_param_values($this->relationship, $this->accessor), moojon_db_driver::get_relationship_param_data_types($this->relationship, $this->accessor), $this->accessor);
+			$key = $this->key;
+			echo "<h1>***$key***</h1>";
+			$records = $foreign_class->read(moojon_db_driver::get_relationship_where($this->relationship, $this->accessor),  null, null, moojon_db_driver::get_relationship_param_values($this->relationship, $this->accessor), moojon_db_driver::get_relationship_param_data_types($this->relationship, $this->accessor), $this->accessor, $this->key);
+			$column = $this->relationship->get_column();
 			switch (get_class($this->relationship)) {
 				case 'moojon_has_one_relationship':
 					return $records->first;
@@ -78,12 +81,10 @@ final class moojon_model_collection extends ArrayObject {
 		return $this->relationship;
 	}
 	
-	public function filter($value, $property = null) {
-		$collection = new moojon_model_collection($this->accessor, $this->key);
-		if (!$property) {
-			$property = moojon_primary_key::NAME;
-		}
-		foreach ($this as $record) {
+	public function filter($property, $value) {
+		$key = $this->key;
+		$collection = new moojon_model_collection($this->accessor, $key);
+		foreach ($this->accessor->$key as $record) {
 			if ($record->$property == $value) {
 				$collection[] = $record;
 			}

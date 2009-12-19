@@ -127,6 +127,10 @@ abstract class moojon_base_tag extends moojon_base {
 		}
 	}
 	
+	final public function clear_children() {
+		$this->children = array();
+	}
+	
 	final public function add_child($child) {
 		$this->children[] = $child;
 	}

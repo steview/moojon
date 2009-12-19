@@ -11,8 +11,7 @@ final class moojon_string_column extends moojon_base_column {
 	}
 	
 	public function is_file() {
-		if ((strpos($this->name, 'file') !== false && !$this->not_special) || (strpos($this->name, 'email') !== false && !$this->not_special)) {
-		//if (strpos($this->name, 'name') !== false && !$this->not_special) {
+		if (strpos($this->name, 'file') !== false && !$this->not_special) {
 			return true;
 		} else {
 			return false;
