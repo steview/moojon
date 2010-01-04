@@ -413,7 +413,7 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 		$children = array(
 			new moojon_thead_tag(new moojon_tr_tag($ths)),
 			new moojon_tbody_tag($trs), 
-			new moojon_tfoot_tag(new moojon_tr_tag(new moojon_td_tag(null, array('colspan' => count($ths)))))
+			new moojon_tfoot_tag(new moojon_tr_tag(new moojon_td_tag(paginator_ul_for(count($model->read())), array('colspan' => count($ths)))))
 		);
 		$child = new moojon_table_tag($children);
 		foreach ($attributes as $key => $value) {
@@ -442,7 +442,7 @@ function relationship_tables(moojon_base_model $model) {
 					$foreign_key = moojon_primary_key::get_foreign_key($model->get_table());
 					$key = $value->get_key();
 					$key_column = $model->get_column($key);
-					$div->add_child(table_for($relationship->read("$foreign_key = :$key", null, paginator::create_limit(), array(":$key" => $key_column->get_value()), array(":$key" => $key_column->get_data_type()), $model), $relationship->get_editable_column_names(array($foreign_key))));
+					$div->add_child(table_for($relationship->read("$foreign_key = :$key", null, null, array(":$key" => $key_column->get_value()), array(":$key" => $key_column->get_data_type()), $model), $relationship->get_editable_column_names(array($foreign_key))));
 					break;
 			}
 		}
