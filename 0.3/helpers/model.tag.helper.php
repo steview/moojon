@@ -413,7 +413,7 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 		$children = array(
 			new moojon_thead_tag(new moojon_tr_tag($ths)),
 			new moojon_tbody_tag($trs), 
-			new moojon_tfoot_tag(new moojon_tr_tag(new moojon_td_tag(paginator_ul_for(count($model->read())), array('colspan' => count($ths)))))
+			new moojon_tfoot_tag(new moojon_tr_tag(new moojon_td_tag(null, array('colspan' => count($ths)))))
 		);
 		$child = new moojon_table_tag($children);
 		foreach ($attributes as $key => $value) {
