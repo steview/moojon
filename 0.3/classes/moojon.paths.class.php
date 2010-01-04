@@ -254,7 +254,7 @@ final class moojon_paths extends moojon_base {
 			return "$root/$return";
 		} else {
 			$return = self::get_column_upload_directory($model, $column_name, $public).$return;
-			moojon_files::attempt_mkdir(dirname($return));
+			//moojon_files::attempt_mkdir(dirname($return));
 			return $return;
 		}
 	}
