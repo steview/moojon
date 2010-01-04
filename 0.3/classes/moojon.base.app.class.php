@@ -32,6 +32,12 @@ abstract class moojon_base_app extends moojon_base {
 	}
 	
 	final public function render() {
+		$vars = get_object_vars($this->controller);
+		foreach (get_object_vars($this) as $key => $value) {
+			if (!array_key_exists($key, $vars)) {
+				$this->controller->$key = $value;
+			}
+		}
 		$return = moojon_runner::render(moojon_paths::get_view_path(self::get_app_name($this), self::get_controller_name($this->controller), $this->controller->get_view()), $this->controller);
 		$layout = $this->get_layout();
 		if ($layout !== false) {

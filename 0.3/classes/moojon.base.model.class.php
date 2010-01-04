@@ -52,11 +52,10 @@ abstract class moojon_base_model extends moojon_base {
 	final public function __get($key) {
 		if ($this->has_relationship($key)) {
 			if (!array_key_exists($key, $this->relationship_data)) {
-				$records = new moojon_model_collection($this, $key);
-				$this->relationship_data[$key] = new moojon_model_collection($this, $key);
+				$records = new moojon_model_collection($this, $this->get_relationship($key));
+				$this->relationship_data[$key] = $records->get();
 			}
-			$records = $this->relationship_data[$key];
-			return $records->get();
+			return $this->relationship_data[$key];
 		} else {
 			if ($this->has_column($key)) {
 				return $this->columns[$key]->get_value();
@@ -609,7 +608,7 @@ abstract class moojon_base_model extends moojon_base {
 			$column_name = $column->get_name();
 			$placeholders["$table.$column_name"] = strtoupper($class.'_'.$column_name);
 		}
-		$return = new moojon_model_collection($accessor, $key);
+		$return = new moojon_model_collection($accessor);
 		foreach(moojon_db::select($table, $placeholders, $where, $order, $limit, $instance->compile_param_values($param_values), $instance->compile_param_data_types($param_data_types)) as $row) {
 			$record = self::init($class);
 			foreach($instance->columns as $column) {

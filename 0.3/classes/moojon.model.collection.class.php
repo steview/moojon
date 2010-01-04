@@ -2,16 +2,12 @@
 final class moojon_model_collection extends ArrayObject {
 	private $accessor;
 	private $relationship;
-	private $key;
 	private $iterator;
 	private $errors = array();
 	
-	public function __construct(moojon_base_model $accessor = null, $key = null) {
+	public function __construct(moojon_base_model $accessor = null, moojon_base_relationship $relationship = null) {
 		$this->accessor = $accessor;
-		$this->key = $key;
-		if ($accessor && $key) {
-			$this->relationship = $this->accessor->get_relationship($key);
-		}
+		$this->relationship = $relationship;
 		$this->iterator = $this->getIterator();
 	}
 	
@@ -53,10 +49,7 @@ final class moojon_model_collection extends ArrayObject {
 		if ($this->relationship) {
 			$foreign_class_name = $this->relationship->get_class();
 			$foreign_class = new $foreign_class_name;
-			$key = $this->key;
-			echo "<h1>***$key***</h1>";
-			$records = $foreign_class->read(moojon_db_driver::get_relationship_where($this->relationship, $this->accessor),  null, null, moojon_db_driver::get_relationship_param_values($this->relationship, $this->accessor), moojon_db_driver::get_relationship_param_data_types($this->relationship, $this->accessor), $this->accessor, $this->key);
-			$column = $this->relationship->get_column();
+			$records = $foreign_class->read(moojon_db_driver::get_relationship_where($this->relationship, $this->accessor),  null, null, moojon_db_driver::get_relationship_param_values($this->relationship, $this->accessor), moojon_db_driver::get_relationship_param_data_types($this->relationship, $this->accessor), $this->accessor, $this->relationship->get_name());
 			switch (get_class($this->relationship)) {
 				case 'moojon_has_one_relationship':
 					return $records->first;
@@ -83,8 +76,8 @@ final class moojon_model_collection extends ArrayObject {
 	
 	public function filter($property, $value) {
 		$key = $this->key;
-		$collection = new moojon_model_collection($this->accessor, $key);
-		foreach ($this->accessor->$key as $record) {
+		$collection = new moojon_model_collection($this->accessor, $this->relationship);
+		foreach ($this->get() as $record) {
 			if ($record->$property == $value) {
 				$collection[] = $record;
 			}
