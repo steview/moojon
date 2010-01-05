@@ -14,7 +14,7 @@ interface moojon_db_driver_queries {
 	
 	static public function remove_column($table, $column);
 	
-	static public function change_column($table, $column);
+	static public function rename_column($table, $column);
 	
 	static public function modify_column($table, $column);
 	

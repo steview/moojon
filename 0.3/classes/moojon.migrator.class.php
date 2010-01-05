@@ -40,7 +40,7 @@ final class moojon_migrator extends moojon_base {
 		$migration->$direction();
 		switch ($direction) {
 			case 'up':
-				$schema_migration = schema_migration::create(array('version' => $migration_file));
+				$schema_migration = new schema_migration(array('version' => $migration_file));
 				$schema_migration->save();
 				break;
 			case 'down':

@@ -249,8 +249,8 @@ final class moojon_db  extends moojon_base {
 		return self::run(self::prepare(moojon_db_driver::remove_table($table)), $param_values, $param_data_types);
 	}
 	
-	static public function alter_table_rename($table, $data, $param_values = array(), $param_data_types = array()) {
-		return self::run(self::prepare(moojon_db_driver::alter_table_rename($table, $data)), $param_values, $param_data_types);
+	static public function rename_table($table, $data, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::rename_table($table, $data)), $param_values, $param_data_types);
 	}
 	
 	static public function add_column($table, $data, $param_values = array(), $param_data_types = array()) {

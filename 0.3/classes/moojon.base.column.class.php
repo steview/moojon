@@ -64,11 +64,6 @@ abstract class moojon_base_column extends moojon_base {
 		return $this->unsaved;
 	}
 	
-	final public function get_add_column() {
-		$string = (string)$this;
-		return $string;
-	}
-	
 	final public function get_data_type() {
 		if ($this->value === null) {
 			return moojon_db::PARAM_NULL;

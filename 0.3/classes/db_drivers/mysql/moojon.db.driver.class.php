@@ -5,56 +5,60 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	const DATETIME_FORMAT = 'Y-m-d H:i:s';
 	const TIME_FORMAT = 'H:i:s';
 	
+	static private function get_add_column_string(moojon_base_column $column) {
+		switch (get_class($column)) {
+			case 'moojon_binary_column':
+				return '`'.$column->get_name().'` BINARY('.$column->get_limit().') '.moojon_db_driver::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_boolean_column':
+				return '`'.$column->get_name().'` TINYINT(1) '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_date_column':
+				return '`'.$column->get_name().'` DATE '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_datetime_column':
+				return '`'.$column->get_name().'` DATETIME '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_decimal_column':
+				return '`'.$column->get_name().'` DECIMAL('.$column->get_limit().', '.$column->get_decimals().') '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_float_column':
+				return '`'.$column->get_name().'` FLOAT('.$column->get_limit().', '.$column->get_decimals().') '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_integer_column':
+				return '`'.$column->get_name().'` INTEGER('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_primary_key':
+				return '`'.$column->get_name().'` INTEGER('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column).' '.$column->get_options();
+				break;
+			case 'moojon_string_column':
+				return '`'.$column->get_name().'` VARCHAR('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_text_column':
+				$binary_string = (!$column->get_binary()) ? '' : 'BINARY ';
+				return '`'.$column->get_name()."` TEXT $binary_string".self::get_null_string($column);
+				break;
+			case 'moojon_time_column':
+				return '`'.$column->get_name().'` TIME '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			case 'moojon_timestamp_column':
+				return '`'.$column->get_name().'` TIMESTAMP '.self::get_null_string($column).' '.self::get_default_string($column);
+				break;
+			default;
+				throw new moojon_exception('create_table can only accept columns of moojon_base_column ('.get_class($column).' found).');
+				break;
+		}
+	}
+	
 	static public function create_table($table, $columns = array(), $options = null) {
 		if (!is_array($columns)) {
 			$columns = array($columns);
 		}
-		$columns_string = '';
+		$columns_strings = array();
 		foreach ($columns as $column) {
-			switch (get_class($column)) {
-				case 'moojon_binary_column':
-					$columns_string .= '`'.$column->get_name().'` BINARY('.$column->get_limit().') '.moojon_db_driver::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_boolean_column':
-					$columns_string .= '`'.$column->get_name().'` TINYINT(1) '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_date_column':
-					$columns_string .= '`'.$column->get_name().'` DATE '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_datetime_column':
-					$columns_string .= '`'.$column->get_name().'` DATETIME '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_decimal_column':
-					$columns_string .= '`'.$column->get_name().'` DECIMAL('.$column->get_limit().', '.$column->get_decimals().') '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_float_column':
-					$columns_string .= '`'.$column->get_name().'` FLOAT('.$column->get_limit().', '.$column->get_decimals().') '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_integer_column':
-					$columns_string .= '`'.$column->get_name().'` INTEGER('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_primary_key':
-					$columns_string .= '`'.$column->get_name().'` INTEGER('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column).' '.$column->get_options().', ';
-					break;
-				case 'moojon_string_column':
-					$columns_string .= '`'.$column->get_name().'` VARCHAR('.$column->get_limit().') '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_text_column':
-					$binary_string = (!$column->get_binary()) ? '' : 'BINARY ';
-					$columns_string .= '`'.$column->get_name()."` TEXT $binary_string".self::get_null_string($column).', ';
-					break;
-				case 'moojon_time_column':
-					$columns_string .= '`'.$column->get_name().'` TIME '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				case 'moojon_timestamp_column':
-					$columns_string .= '`'.$column->get_name().'` TIMESTAMP '.self::get_null_string($column).' '.self::get_default_string($column).', ';
-					break;
-				default;
-					throw new moojon_exception('create_table can only accept columns of moojon_base_column ('.get_class($column).' found).');
-					break;
-			}
+			$columns_strings[] = self::get_add_column_string($column);
 		}
-		$columns_string = substr($columns_string, 0, (strlen($columns_string) - 2));
+		$columns_string = implode(', ', $columns_strings);
 		$query = "CREATE TABLE `$table`($columns_string)";
 		if ($options) {
 			$query .= " $options";
@@ -87,19 +91,21 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function add_column($table, $column) {
-		return "ALTER TABLE `$table` ADD COLUMN `$column`;";
+		$column_string = self::get_add_column_string($column);
+		return "ALTER TABLE `$table` ADD COLUMN $column_string;";
 	}
 	
 	static public function remove_column($table, $column) {
-		return "ALTER TABLE `$table` DROP COLUMN `$column`;";
+		return "ALTER TABLE `$table` DROP COLUMN $column;";
 	}
 	
-	static public function change_column($table, $column) {
-		return "ALTER TABLE `$table` CHANGE COLUMN `$column`;";
+	static public function rename_column($table, $column) {
+		return "ALTER TABLE `$table` CHANGE COLUMN $column;";
 	}
 	
 	static public function modify_column($table, $column) {
-		return "ALTER TABLE `$table` MODIFY COLUMN `$column`;";
+		$column_string = self::get_add_column_string($column);
+		return "ALTER TABLE `$table` MODIFY COLUMN $column;";
 	}
 	
 	static public function add_index($table, $index) {
