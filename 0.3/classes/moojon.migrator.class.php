@@ -10,7 +10,7 @@ final class moojon_migrator extends moojon_base {
 		}
 		$migration_files = moojon_files::directory_files(moojon_paths::get_project_migrations_directory());
 		foreach ($migration_files as $migration_file) {
-			if (!in_array($migration_file, $migrations)) {
+			if (!in_array(basename($migration_file), $migrations)) {
 				self::run_migration($migration_file, 'up');
 			}
 		}
@@ -18,7 +18,7 @@ final class moojon_migrator extends moojon_base {
 	
 	static public function roll_back($migration_file, $all = false) {
 		self::find_or_create_schema_migrations_table();
-		if (schema_migration::read("version = '$migration_file'")->count && !$all) {
+		if (schema_migration::read("version = '".basename($migration_file)."'")->count && !$all) {
 			throw new moojon_exception("No such migration ($migration_file)");
 		}
 		foreach (schema_migration::read(null, 'version DESC') as $migration) {
@@ -44,7 +44,7 @@ final class moojon_migrator extends moojon_base {
 				$schema_migration->save();
 				break;
 			case 'down':
-				schema_migration::destroy("version = '$migration_file'");
+				schema_migration::destroy("version = '".basename($migration_file)."'");
 				break;
 		}
 		echo "Running $migration_class_name::$direction()\n";
