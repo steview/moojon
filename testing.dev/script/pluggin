@@ -1,4 +1,4 @@
-#!/Applications/MAMP/bin/php5/bin/php
+#!/usr/bin/php -q
 <?php
 define('UI', 'CLI');
 define('CLI', 'moojon_pluggin_cli');
