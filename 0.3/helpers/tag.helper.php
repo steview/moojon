@@ -23,6 +23,14 @@ function img_tag($src, $alt = '', $width = null, $height = null, $attributes = a
 	return new moojon_img_tag($attributes);
 }
 
+function li_tag($content, $attributes = array()) {
+	return new moojon_li_tag($content, $attributes);
+}
+
+function p_tag($content, $attributes = array()) {
+	return new moojon_p_tag($content, $attributes);
+}
+
 function cancel_button($value = 'Cancel', $attributes = array()) {
 	if (moojon_server::has('HTTP_REFERER')) {
 		$attributes = try_set_attribute($attributes, 'class', 'cancel');
@@ -82,6 +90,7 @@ function month_select_options($attributes = null, $selected = null, $format = nu
 	if (!$selected) {
 		$selected = time();
 	}
+	echo "**".date('n', $selected)."**<br />";
 	return select_options(month_options($format), date('n', $selected), $attributes);
 }
 

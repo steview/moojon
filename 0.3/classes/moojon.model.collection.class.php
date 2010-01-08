@@ -65,7 +65,7 @@ final class moojon_model_collection extends ArrayObject {
 			    $this->iterator->next();
 				return $return;
 			} else {
-				return false;
+				return $this;
 			}
 		}
 	}
@@ -75,9 +75,9 @@ final class moojon_model_collection extends ArrayObject {
 	}
 	
 	public function filter($property, $value) {
-		$key = $this->key;
 		$collection = new moojon_model_collection($this->accessor, $this->relationship);
-		foreach ($this->get() as $record) {
+		$records = $this->get();
+		foreach ($records as $record) {
 			if ($record->$property == $value) {
 				$collection[] = $record;
 			}

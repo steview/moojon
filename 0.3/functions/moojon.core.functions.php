@@ -36,4 +36,5 @@ function exception_error_handler($code, $message, $file, $line) {
 	exception_handler(new moojon_exception($message, $code, 0, $file, $line));
 }
 set_error_handler('exception_error_handler');
+date_default_timezone_set('Europe/London');
 ?>
