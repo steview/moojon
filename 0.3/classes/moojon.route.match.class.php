@@ -15,5 +15,13 @@ final class moojon_route_match extends moojon_base {
 	public function get_params() {
 		return $this->params;
 	}
+	
+	public function get($key) {
+		if (array_key_exists($key, $this->params)) {
+			return $this->params[$key];
+		} else {
+			throw new moojon_exception("Invalid key ($key)");
+		}
+	}
 }
 ?>

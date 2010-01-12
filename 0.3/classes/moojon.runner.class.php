@@ -19,15 +19,13 @@ final class moojon_runner extends moojon_singleton {
 				moojon_uri::fetch();
 				$uri = moojon_uri::get_uri();
 				moojon_config::update(moojon_paths::get_project_app_config_directory(APP));
-				$path = moojon_paths::get_cache_path($uri);
+				/*$path = moojon_paths::get_cache_path($uri);
+				$from_cache = false;
 				if (moojon_cache::get_enabled() && moojon_cache::expired($uri)) {
-					self::require_view_functions();
-					require_once(moojon_paths::get_app_path(APP));
-					$app_class = self::get_app_class(APP);
-					$app = new $app_class($uri);
-					moojon_files::put_file_contents($path, $app->render());
-				}
-				echo moojon_files::get_file_contents($path);
+					moojon_files::put_file_contents($path, self::render_app());
+				}*/
+				//echo ($from_cache) ? moojon_files::get_file_contents($path) : self::render_app();
+				echo self::render_app();
 				break;
 			case 'CLI':
 				$cli_class = CLI;
@@ -37,6 +35,14 @@ final class moojon_runner extends moojon_singleton {
 				throw new moojon_exception('Invalid UI ('.UI.')');
 				break;
 		}
+	}
+	
+	static private function render_app() {
+		self::require_view_functions();
+		require_once(moojon_paths::get_app_path(APP));
+		$app_class = self::get_app_class(APP);
+		$app = new $app_class(moojon_uri::get_uri());
+		return $app->render();
 	}
 	
 	static public function render($path, moojon_base $object = null) {

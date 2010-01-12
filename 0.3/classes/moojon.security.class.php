@@ -3,7 +3,6 @@ final class moojon_security extends moojon_base_security {
 	static public function authenticate() {
 		$security_token = self::get_security_token();
 		$security_token_key = moojon_config::get('security_token_key');
-		$security = $_REQUEST[moojon_config::get('security_key')];
 		$primary_key = moojon_primary_key::NAME;
 		$security_identity_key = moojon_config::get('security_identity_key');
 		$security_password_key = moojon_config::get('security_password_key');
@@ -11,12 +10,14 @@ final class moojon_security extends moojon_base_security {
 		$security_model = new $security_model_class;
 		$security_identity_data_type = $security_model->get_column($security_identity_key)->get_data_type();
 		$security_password_data_type = $security_model->get_column($security_password_key)->get_data_type();
+		$security_key = moojon_config::get('security_key');
 		$log_message = 'Log in attempt';
 		if (!$security_token) {
-			if (moojon_server::is_post() && moojon_request::has('security')) {
+			if (moojon_server::is_post() && moojon_request::has($security_key)) {
+				$security = moojon_request::get($security_key);
 				$security_identity_value = $security[$security_identity_key];
 				$security_password_value = $security[$security_password_key];
-				$where = "$security_identity_key = :$security_identity_key AND $security_password_key = :$security_password_key";
+				$where = "`$security_identity_key` = :$security_identity_key AND `$security_password_key` = CONCAT(salt, SHA1(CONCAT(salt, :$security_password_key)))";
 				$param_values = array(":$security_identity_key" => $security_identity_value, ":$security_password_key" => $security_password_value);
 				$param_data_types = array(":$security_identity_key" => $security_identity_data_type, ":$security_password_key" => $security_password_data_type);
 			} else {
@@ -38,7 +39,8 @@ final class moojon_security extends moojon_base_security {
 		} else {
 			$security_remember_key = moojon_config::get('security_remember_key');
 			$security_token = $records->first->$primary_key;
-			if (is_array($security) && moojon_server::is_post()) {
+			if (moojon_server::is_post() && moojon_request::has($security_key)) {
+				$security = moojon_request::get($security_key);
 				if (array_key_exists($security_remember_key, $security)) {
 					if (strlen($security[$security_remember_key])) {
 						moojon_cookie::set($security_token_key, $security_token);
@@ -58,8 +60,8 @@ final class moojon_security extends moojon_base_security {
 		$security_token_key = moojon_config::get('security_token_key');
 		moojon_session::set($security_token_key, null);
 		moojon_cookie::set($security_token_key, null);
-		$_REQUEST[moojon_config::get('security_identity_key')] = null;
-		$_REQUEST[moojon_config::get('security_password_key')] = null;
+		moojon_request::set(moojon_config::get('security_identity_key'), null);
+		moojon_request::set(moojon_config::get('security_password_key'), null);
 	}
 }
 ?>

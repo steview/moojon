@@ -26,12 +26,27 @@ abstract class moojon_base_app extends moojon_base {
 			header("Location: $location");
 			die();
 		}
+		$this->set_controller();
+	}
+	
+	final private function set_controller() {
 		require_once(moojon_paths::get_controller_path($this->app_name, $this->controller_name));
 		$controller_class = self::get_controller_class($this->controller_name);
 		$this->controller = new $controller_class($this, $this->action_name);
 	}
 	
+	final public function set_action_name($action_name) {
+		$this->action_name = $action_name;
+	}
+	
+	final public function set_controller_name($controller_name) {
+		$this->controller_name = $controller_name;
+	}
+	
 	final public function render() {
+		if (!$this->controller) {
+			$this->set_controller();
+		}
 		$vars = get_object_vars($this->controller);
 		foreach (get_object_vars($this) as $key => $value) {
 			if (!array_key_exists($key, $vars)) {

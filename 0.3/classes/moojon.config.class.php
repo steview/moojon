@@ -20,9 +20,13 @@ final class moojon_config extends moojon_singleton_immutable_collection {
 	}
 	
 	static public function update($directory) {
+		$instance = self::fetch();
+		$instance->data = array_merge($instance->data, self::read($directory));
+	}
+	
+	static public function read($directory) {
+		$data = array();
 		if (is_dir($directory)) {
-			$instance = self::fetch();
-			$data = $instance->data;
 			foreach (moojon_files::directory_files($directory, true) as $file) {
 				if (moojon_files::has_suffix($file, 'config')) {
 					$array = require_once($file);
@@ -34,10 +38,8 @@ final class moojon_config extends moojon_singleton_immutable_collection {
 					}
 				}
 			}
-			$instance->data = $data;
-		} else {
-			throw new moojon_exception("Not a directory ($directory)");
 		}
+		return $data;
 	}
 }
 ?>

@@ -13,7 +13,6 @@ function __autoload($class) {
 	if (!$class_path) {
 		$class_path = moojon_paths::get_column_path($class);
 	}
-	moojon_base::log("$class: $class_path");
 	if ($class_path) {
 		require_once($class_path);
 	} else {

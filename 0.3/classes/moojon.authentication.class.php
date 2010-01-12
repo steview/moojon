@@ -1,37 +1,33 @@
 <?php
-final class moojon_authentication extends moojon_base {
-	static private $instance;
+final class moojon_authentication extends moojon_singleton {
+	static protected $instance;
+	static protected function factory($class) {if (!self::$instance) {self::$instance = new $class;}return self::$instance;}
+	static public function fetch() {return self::factory(get_class());}
+	
 	private $profile = false;
 	
-	private function __construct() {
+	protected function __construct() {
 		$security = $this->get_security();
 		$this->profile = $security->authenticate();
 	}
 	
-	static private function get() {
-		if (!self::$instance) {
-			self::$instance = new moojon_authentication();
-		}
-		return self::$instance;
-	}
-	
 	static private function set_profile($profile) {
-		$instance = self::get();
+		$instance = self::fetch();
 		$instance->profile = $profile;
 	}
 	
 	static private function get_profile() {
-		$instance = self::get();
+		$instance = self::fetch();
 		return $instance->profile;
 	}
 	
 	static public function authenticate() {
-		$instance = self::get();
+		$instance = self::fetch();
 		return $instance->get_profile();
 	}
 	
 	static public function destroy() {
-		$instance = self::get();
+		$instance = self::fetch();
 		$instance->get_security()->destroy();
 		self::$instance = null;
 	}

@@ -8,20 +8,33 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 	static public function get($key, $data = null) {$data = self::get_data($data);if (self::has($key, $data)) {return $data[$key];} else {throw new moojon_exception("Key does not exists ($key) in ".get_class());}}
 	static public function get_or_null($key, $data = null) {$data = self::get_data($data);return (array_key_exists($key, $data)) ? $data[$key] : null;}
 	
-	protected $match;
+	private $match;
+	private $uri;
 	
 	protected function __construct() {
-		$uri = self::clean_uri(self::get_uri());
-		if ($match = moojon_routes::map($uri)) {
+		$uri = (array_key_exists('REQUEST_URI', $_SERVER)) ? $_SERVER['REQUEST_URI'] : $_SERVER['PATH_INFO'];
+		$this->uri = self::clean_uri($uri);
+		if ($match = moojon_routes::map($this->uri)) {
+			$config = moojon_config::read(moojon_paths::get_project_app_config_directory($match->get('app')));
+			if (array_key_exists('secure', $config) && $config['secure'] === true && !moojon_security::authenticate()) {
+				self::log('please login');
+				moojon_cache::disable();
+				$match = new moojon_route_match(':app/:controller/:action', array_merge($match->get_params(), array('app' => moojon_config::get('security_app'), 'controller' => moojon_config::get('security_controller'), 'action' => moojon_config::get('security_action'))));
+				$this->uri = moojon_config::get('security_app').'/'.moojon_config::get('security_controller').'/'.moojon_config::get('security_action');
+			}
 			$this->match = $match;
 			$this->data = $this->match->get_params();
 			self::try_define('APP', $this->data['app']);
 			self::try_define('CONTROLLER', $this->data['controller']);
 			self::try_define('ACTION', $this->data['action']);
 		} else {
-			throw new moojon_exception('404');
-			die();
+			self::_404();
 		}
+	}
+	
+	static public function _404() {
+		throw new moojon_exception('404');
+		die();
 	}
 	
 	static public function get_match() {
@@ -40,12 +53,8 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 	}
 	
 	static public function get_uri() {
-		if (array_key_exists('REQUEST_URI', $_SERVER)) {
-			$uri = $_SERVER['REQUEST_URI'];
-		} else {
-			$uri = $_SERVER['PATH_INFO'];
-		}
-		return self::clean_uri($uri);
+		$instance = self::fetch();
+		return $instance->uri;
 	}
 	
 	static public function clean_uri($uri) {

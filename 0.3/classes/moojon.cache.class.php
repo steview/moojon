@@ -17,7 +17,7 @@ final class moojon_cache extends moojon_singleton {
 		}
 		if (file_exists($path)) {
 			if (time() > (filectime($path) + $cache_for)) {
-				moojon_files::unlink($path);
+				//moojon_files::unlink($path);
 				return true;
 			} else {
 				return false;
