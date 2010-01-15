@@ -24,6 +24,7 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 			$this->match = $match;
 			$this->data = $this->match->get_params();
 			foreach ($this->data as $key => $value) {
+				echo "$key: $value<br />";
 				moojon_request::set($key, $value);
 			}
 			self::try_define('APP', $this->data['app']);
