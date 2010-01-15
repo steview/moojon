@@ -382,6 +382,17 @@ abstract class moojon_base_model extends moojon_base {
 		return $this->errors;
 	}
 	
+	final public function has_error($key) {
+		return array_key_exists($key, $this->errors);
+	}
+	
+	final public function get_error($key) {
+		if ($this->has_error($key)) {
+			return $this->errors[$key];
+		}
+		throw new moojon_exception("Invalid error ($key)");
+	}
+	
 	final public function has_errors() {
 		return (count($this->errors) > 0);
 	}
