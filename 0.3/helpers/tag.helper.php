@@ -10,6 +10,10 @@ function title_text($column_name) {
 	return ucfirst(str_replace('_', ' ', moojon_primary_key::get_table($column_name)));
 }
 
+function attribute_array_name($array_name, $element_name) {
+	return $array_name."[$element_name]";
+}
+
 function a_tag($content, $href, $attributes = array()) {
 	$attributes['href'] = $href;
 	return new moojon_a_tag($content, $attributes);
@@ -23,12 +27,102 @@ function img_tag($src, $alt = '', $width = null, $height = null, $attributes = a
 	return new moojon_img_tag($attributes);
 }
 
-function li_tag($content, $attributes = array()) {
+function li_tag($content = null, $attributes = array()) {
 	return new moojon_li_tag($content, $attributes);
 }
 
-function p_tag($content, $attributes = array()) {
+function div_tag($content = null, $attributes = array()) {
+	return new moojon_div_tag($content, $attributes);
+}
+
+function p_tag($content = null, $attributes = array()) {
 	return new moojon_p_tag($content, $attributes);
+}
+
+function form_tag($content = null, $attributes = array()) {
+	return new moojon_form_tag($content, $attributes);
+}
+
+function fieldset_tag($content = null, $attributes = array()) {
+	return new moojon_fieldset_tag($content, $attributes);
+}
+
+function label_tag($content = null, $attributes = array()) {
+	return new moojon_label_tag($content, $attributes);
+}
+
+function input_tag($attributes = array()) {
+	return new moojon_input_tag($attributes);
+}
+
+function input_tag_type($type, $attributes = array()) {
+	$attributes = try_set_attribute($attributes, 'type', $type);
+	$attributes = try_set_attribute($attributes, 'class', $type);
+	return input_tag($attributes);
+}
+
+function text_input_tag($attributes = array()) {
+	return input_tag_type('text', $attributes);
+}
+
+function password_input_tag($attributes = array()) {
+	return input_tag_type('password', $attributes);
+}
+
+function checkbox_input_tag($attributes = array()) {
+	return input_tag_type('checkbox', $attributes);
+}
+
+function hidden_input_tag($attributes = array()) {
+	return input_tag_type('hidden', $attributes);
+}
+
+function submit_input_tag($attributes = array()) {
+	return input_tag_type('submit', $attributes);
+}
+
+function login_form($authenticated = false) {
+	if (!$authenticated) {
+		$security_identity_label = moojon_config::get('security_identity_label');
+		$security_password_label = moojon_config::get('security_password_label');
+		$security_remember_label = moojon_config::get('security_remember_label');
+		$security_key = moojon_config::get('security_key');
+		$security_identity_key = moojon_config::get('security_identity_key');
+		$security_password_key = moojon_config::get('security_password_key');
+		$security_remember_key = moojon_config::get('security_remember_key');
+		if (moojon_server::is_post() && moojon_request::has($security_key)) {
+			moojon_flash::set('error', "Invalid $security_identity_key / $security_password_key combination");
+			$security = moojon_request::get($security_key);
+			$security_identity_value = $security[$security_identity_key];
+			$security_password_value = $security[$security_password_key];
+			$security_remember_value = $security[$security_remember_key];
+		} else {
+			$security_remember_value = null;
+			$security_identity_value = null;
+			$security_password_value = null;
+			$security_checked_value = null;
+		}
+		$child = form_tag(null, array('action' => '#', 'method' => 'post'));
+		$fieldset = fieldset_tag();
+		$fieldset->add_child(label_tag($security_identity_label, array('for' => $security_identity_key)));
+		$fieldset->add_child(text_input_tag(array('id' => $security_identity_key, 'name' => attribute_array_name($security_key, $security_identity_key), 'value' => $security_identity_value)));
+		$fieldset->add_child(label_tag($security_password_label, array('for' => $security_password_key)));
+		$fieldset->add_child(password_input_tag(array('id' => $security_password_key, 'name' => attribute_array_name($security_key, $security_password_key),  'value' => $security_password_value)));
+		$div = div_tag(null, array('class' => 'checkbox'));
+		$div->add_child(hidden_input_tag(array('name' => attribute_array_name($security_key, $security_remember_key),  'value' => 0)));
+		$remember_attributes = array('name' => attribute_array_name($security_key, $security_remember_key),  'value' => 1, 'id' => $security_remember_key);
+		if ($security_remember_value) {
+			$remember_attributes['checked'] = 'checked';
+		}
+		$div->add_child(checkbox_input_tag($remember_attributes));
+		$div->add_child(label_tag($security_remember_label, array('for' => $security_remember_key)));
+		$fieldset->add_child($div);
+		$child->add_child($fieldset);
+		$child->add_child(submit_input_tag(array('name' => attribute_array_name($security_key, 'submit'), 'value' => 'Login')));
+	} else {
+		$child = p_tag('You are logged in.');
+	}
+	return div_tag($child, array('id' => 'login_div', 'class' => 'generated'));
 }
 
 function cancel_button($value = 'Cancel', $attributes = array()) {

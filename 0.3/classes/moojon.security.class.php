@@ -11,10 +11,10 @@ final class moojon_security extends moojon_base_security {
 		$security_identity_data_type = $security_model->get_column($security_identity_key)->get_data_type();
 		$security_password_data_type = $security_model->get_column($security_password_key)->get_data_type();
 		$security_key = moojon_config::get('security_key');
-		$log_message = 'Log in attempt';
+		$login_attempt = self::login_attempt($security_key);
 		if (!$security_token) {
-			if (moojon_server::is_post() && moojon_request::has($security_key)) {
-				$security = moojon_request::get($security_key);
+			if ($login_attempt) {
+				$security = moojon_post::get($security_key);
 				$security_identity_value = $security[$security_identity_key];
 				$security_password_value = $security[$security_password_key];
 				$where = "`$security_identity_key` = :$security_identity_key AND `$security_password_key` = CONCAT(salt, SHA1(CONCAT(salt, :$security_password_key)))";
@@ -28,35 +28,33 @@ final class moojon_security extends moojon_base_security {
 			$param_values = array(":$primary_key" => $security_token);
 			$column = new moojon_primary_key;
 			$param_data_types = array(":$primary_key" => $column->get_data_type());
-			$log_message = 'Security check';
 		}
 		$records = $security_model->read($where, null, null, $param_values, $param_data_types);
-		self::log('------------------------------');
 		if (!$records->count) {
-			self::log("$log_message failure, $security_token");
 			self::destroy();
 			return false;
 		} else {
 			$security_remember_key = moojon_config::get('security_remember_key');
 			$security_token = $records->first->$primary_key;
-			if (moojon_server::is_post() && moojon_request::has($security_key)) {
-				$security = moojon_request::get($security_key);
+			if ($login_attempt) {
+				$security = moojon_post::get($security_key);
 				if (array_key_exists($security_remember_key, $security)) {
 					if (strlen($security[$security_remember_key])) {
 						moojon_cookie::set($security_token_key, $security_token);
-						self::log("$log_message, creating cookie: ".$security_token);
 					}
 				}
 			}
 			moojon_session::set($security_token_key, $security_token);
-			self::log("$log_message, creating session: ".$security_token);
 			return $records->first;
 		}
 	}
 	
+	static public function login_attempt($security_key) {
+		return (moojon_server::is_post() && moojon_post::has($security_key));
+	}
+	
 	static public function destroy() {
 		$security_token = self::get_security_token();
-		self::log("logout: $security_token");
 		$security_token_key = moojon_config::get('security_token_key');
 		moojon_session::set($security_token_key, null);
 		moojon_cookie::set($security_token_key, null);

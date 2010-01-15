@@ -27,8 +27,7 @@ abstract class moojon_base_controller extends moojon_base {
 	}
 	
 	final protected function redirect($uri) {
-		header("Location: $uri");
-		die();
+		$this->app->redirect($uri);
 	}
 	
 	protected function init() {}

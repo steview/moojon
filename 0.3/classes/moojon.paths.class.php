@@ -102,18 +102,6 @@ final class moojon_paths extends moojon_base {
 		return MOOJON_DIRECTORY.moojon_config::get('helpers_directory').'/';
 	}
 	
-	static public function get_moojon_config_directory() {
-		return self::get_moojon_directory().'config/';
-	}
-	
-	static public function get_moojon_app_config_directory($app, $environment) {
-		return self::get_moojon_config_directory()."$app/";
-	}
-	
-	static public function get_moojon_app_environment_config_directory($app, $environment) {
-		return self::get_moojon_config_directory($app)."$environment/";
-	}
-	
 	static public function get_project_directory() {
 		return PROJECT_DIRECTORY;
 	}
@@ -174,16 +162,32 @@ final class moojon_paths extends moojon_base {
 		return self::get_project_directory().moojon_config::get('helpers_directory').'/';
 	}
 	
+	
+	
 	static public function get_project_config_directory() {
 		return self::get_project_directory().'config/';
 	}
 	
-	static public function get_routes_path() {
-		return self::get_project_config_directory().'/routes.php';
+	static public function get_project_config_environment_directory($environment) {
+		return self::get_project_config_directory()."$environment/";
 	}
 	
-	static public function get_project_app_config_directory($app) {
-		return self::get_project_config_directory()."$app/";
+	static public function get_project_config_environment_app_directory($environment, $app) {
+		return self::get_project_config_environment_directory($environment)."$app/";
+	}
+	
+	static public function get_moojon_config_directory() {
+		return self::get_moojon_directory().'config/';
+	}
+	
+	static public function get_moojon_config_app_directory($app) {
+		return self::get_moojon_config_directory()."$app/";
+	}
+	
+	
+	
+	static public function get_routes_path() {
+		return self::get_project_config_directory().'/routes.php';
 	}
 	
 	static public function get_script_directory() {
@@ -254,7 +258,6 @@ final class moojon_paths extends moojon_base {
 			return "$root/$return";
 		} else {
 			$return = self::get_column_upload_directory($model, $column_name, $public).$return;
-			//moojon_files::attempt_mkdir(dirname($return));
 			return $return;
 		}
 	}

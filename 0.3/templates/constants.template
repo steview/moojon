@@ -1,5 +1,7 @@
 <?php
 define('ENVIRONMENT', 'development');
+//define('ENVIRONMENT', 'production');
+//define('ENVIRONMENT', 'testing');
 define('MOOJON_VERSION', '<[MOOJON_VERSION]>');
 define('MOOJON_DIRECTORY', '<[MOOJON_DIRECTORY]>/'.MOOJON_VERSION.'/');
 define('PROJECT_DIRECTORY', dirname(dirname(__FILE__)).'/');

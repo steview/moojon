@@ -16,6 +16,7 @@ abstract class moojon_base_app extends moojon_base {
 	}
 	
 	final public function set_location($uri) {
+		$uri = moojon_uri::clean_uri($uri);
 		$route_match = moojon_routes::map($uri);
 		$data = $route_match->get_params();
 		$this->app_name = $data['app'];
@@ -23,10 +24,14 @@ abstract class moojon_base_app extends moojon_base {
 		$this->action_name = $data['action'];
 		if (self::get_app_class($this->app_name) != get_class($this)) {
 			$location = moojon_config::get('index_file').$uri;
-			header("Location: $location");
-			die();
+			$this->redirect($location);
 		}
 		$this->set_controller();
+	}
+	
+	final public function redirect($uri) {
+		header("Location: $uri");
+		die();
 	}
 	
 	final private function set_controller() {

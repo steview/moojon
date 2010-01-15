@@ -31,7 +31,6 @@ final class moojon_query_result extends ArrayObject {
 			$data_types .= ')';
 			$log .= "\n\n$parsed_query\n\n$values\n\n$data_types";
 		}
-		//moojon_base::log($log);
 		foreach ($param_values as $key => $value) {
 			if ($value !== null) {
 				$data_type = (array_key_exists($key, $param_data_types)) ? $param_data_types[$key] : self::PARAM_STR;
@@ -41,7 +40,6 @@ final class moojon_query_result extends ArrayObject {
 			}
 		}
 		$this->affected = $statement->execute();
-		moojon_base::log('Affected rows: '.$this->affected);
 		$this->non_query = ($statement->columnCount() > 0);
 		if ($this->non_query) {
 			foreach ($statement->fetchAll($fetch_style) as $record) {

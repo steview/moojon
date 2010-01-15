@@ -15,15 +15,17 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 		$uri = (array_key_exists('REQUEST_URI', $_SERVER)) ? $_SERVER['REQUEST_URI'] : $_SERVER['PATH_INFO'];
 		$this->uri = self::clean_uri($uri);
 		if ($match = moojon_routes::map($this->uri)) {
-			$config = moojon_config::read(moojon_paths::get_project_app_config_directory($match->get('app')));
+			$config = array_merge(moojon_config::get_data(), moojon_config::read(moojon_paths::get_project_config_environment_app_directory(ENVIRONMENT, $match->get('app'))));
 			if (array_key_exists('secure', $config) && $config['secure'] === true && !moojon_security::authenticate()) {
-				self::log('please login');
 				moojon_cache::disable();
-				$match = new moojon_route_match(':app/:controller/:action', array_merge($match->get_params(), array('app' => moojon_config::get('security_app'), 'controller' => moojon_config::get('security_controller'), 'action' => moojon_config::get('security_action'))));
-				$this->uri = moojon_config::get('security_app').'/'.moojon_config::get('security_controller').'/'.moojon_config::get('security_action');
+				$match = new moojon_route_match(':app/:controller/:action', array_merge($match->get_params(), array('app' => $config['security_app'], 'controller' => $config['security_controller'], 'action' => $config['security_action'])));
+				$this->uri = $config['security_app'].'/'.$config['security_controller'].'/'.$config['security_action'];
 			}
 			$this->match = $match;
 			$this->data = $this->match->get_params();
+			foreach ($this->data as $key => $value) {
+				moojon_request::set($key, $value);
+			}
 			self::try_define('APP', $this->data['app']);
 			self::try_define('CONTROLLER', $this->data['controller']);
 			self::try_define('ACTION', $this->data['action']);
@@ -64,7 +66,13 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 		if (substr($uri, 0, (strlen($uri) - 1)) != '/') {
 			$uri .= '/';
 		}
-		$uri = str_replace(moojon_config::get('index_file'), '', $uri);
+		$index_file = moojon_config::get('index_file');
+		if (substr($uri, 0, strlen($index_file)) == $index_file) {
+			$uri = substr($uri, strlen($index_file));
+		}
+		while (substr($uri, 0, 1) == '/') {
+			$uri = substr($uri, 1);
+		}
 		if (substr($uri, (strlen($uri) - 1)) == '/') {
 			$uri = substr($uri, 0, (strlen($uri) - 1));
 		}

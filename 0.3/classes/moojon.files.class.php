@@ -310,12 +310,10 @@ final class moojon_files extends moojon_singleton_mutable_collection {
 		} else {
 			rmdir($path);
 		}
-		self::log("Rmdiring directory ($path)");
 	}
 	
 	static public function unlink($path) {
 		unlink($path);
-		self::log("Unlinking file ($path)");
 	}
 	
 	static public function get_file_contents($path) {
@@ -338,7 +336,6 @@ final class moojon_files extends moojon_singleton_mutable_collection {
 			}
 			throw new moojon_exception("Unable to put file contents ($path)");
 		}
-		self::log("Putting file contents ($path)");
 	}
 	
 	static public function get_mime_content_type($path) {

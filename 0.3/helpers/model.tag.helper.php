@@ -69,7 +69,7 @@ function process_attributes(moojon_base_model $model, moojon_base_column $column
 }
 
 function model_control_name(moojon_base_model $model, $column_name) {
-	return get_class($model)."[$column_name]";
+	return attribute_array_name(get_class($model), $column_name);
 }
 
 function find_start_year(moojon_base_model $model, moojon_base_column $column) {

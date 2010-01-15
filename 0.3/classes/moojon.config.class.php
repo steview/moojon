@@ -8,11 +8,13 @@ final class moojon_config extends moojon_singleton_immutable_collection {
 	static public function get($key, $data = null) {$data = self::get_data($data);if (self::has($key, $data)) {return $data[$key];} else {throw new moojon_exception("Key does not exists ($key) in ".get_class());}}
 	static public function get_or_null($key, $data = null) {$data = self::get_data($data);return (array_key_exists($key, $data)) ? $data[$key] : null;}
 	
+	protected $data_archive = array();
+	
 	protected function __construct() {
 		$this->data = require_once(MOOJON_DIRECTORY.'config/moojon.config.php');
-		$environment_config = moojon_paths::get_project_config_directory().ENVIRONMENT.'.config.php';
-		if (defined('PROJECT_DIRECTORY') && is_file($environment_config)) {
-			foreach (require_once($environment_config) as $key => $value) {
+		$project_config_environment = moojon_paths::get_project_config_environment_directory(ENVIRONMENT).'project.config.php';
+		if (defined('PROJECT_DIRECTORY') && is_file($project_config_environment)) {
+			foreach (require_once($project_config_environment) as $key => $value) {
 				$this->data[$key] = $value;
 			}
 		}
@@ -26,13 +28,16 @@ final class moojon_config extends moojon_singleton_immutable_collection {
 	
 	static public function read($directory) {
 		$data = array();
+		$instance = self::fetch();
 		if (is_dir($directory)) {
 			foreach (moojon_files::directory_files($directory, true) as $file) {
 				if (moojon_files::has_suffix($file, 'config')) {
-					$array = require_once($file);
+					if (!array_key_exists($file, $instance->data_archive)) {
+						$instance->data_archive[$file] = require_once($file);
+					}
+					$array = $instance->data_archive[$file];
 					if (is_array($array)) {
 						foreach ($array as $key => $value) {
-							self::log("$key: $value");
 							$data[$key] = $value;
 						}
 					}

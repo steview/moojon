@@ -26,8 +26,6 @@ function partial($partial, $variables = array()) {
 			$$key = $value;
 		}
 		require_once($partial_path);
-		//die(file_exists($partial_path));
-		//moojon_runner::render($partial_path, $variables);
 	} else {
 		throw new moojon_exception("Unknown partial ($partial)");
 	}

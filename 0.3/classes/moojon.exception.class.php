@@ -11,7 +11,6 @@ final class moojon_exception extends Exception {
 		$backtrace = debug_backtrace();
 		$file = ($file) ? $file : $backtrace[0]['file'];
 		$line = ($line) ? $line : $backtrace[0]['line'];
-		moojon_base::log("Exception: message: $message, code: $code, severity: $severity, file: $file, line: $line");
 		echo("<h1>$message ($file: $line)</h1>");
 		foreach ($this->getTrace() as $call) {
 			print_r($call);
@@ -43,13 +42,13 @@ final class moojon_exception extends Exception {
 				$this->getMessage(), 
 				array(
 					'id' => 'exception_report_h1', 
-					//'title' => $this->get_line($exception->getFile(), $exception->getLine())
+					'title' => $this->get_line($exception->getFile(), $exception->getLine())
 				)
 			), 
 			array('id' => 'exception_report')
 		);
 		$report = "\n".$this->getMessage()."\n\n".$this->get_trace_report($this->getTrace());
-		//$div->add_child($this->get_trace_ol());
+		$div->add_child($this->get_trace_ol());
 		switch (UI) {
 			case 'CGI':
 				return $div->render();
