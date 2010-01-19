@@ -55,7 +55,6 @@ return array(
 	'method_key' => '_method',
 	'redirection_key' => '_redirection',
 	'cookie_expiry' => 1209600,
-	
 	'security_token_key' => 'security_token',
 	'security_key' => 'security',
 	'security_identity_key' => 'email',
@@ -70,18 +69,15 @@ return array(
 	'security_app' => 'moojon',
 	'security_controller' => 'security',
 	'security_action' => 'login',
-	
 	'exception_handler_class' => 'moojon_exception_handler',
 	'exception_app' => 'moojon',
 	'exception_controller' => 'exception',
 	'exception_action' => 'index',
-	
 	'date_format' => 'Y/m/d',
 	'datetime_format' => 'Y/m/d H:i:s',
 	'time_format' => 'H:i:s',
 	'start_year' => 1900,
 	'end_year' => 2100,
-	
 	'validation_error_message' => 'Some errors occurred. Please correct the errors and re-submit:',
 	'no_records_message' => 'No records.',
 	'confirm_deletion_message' => 'Please confirm deletion of record.',

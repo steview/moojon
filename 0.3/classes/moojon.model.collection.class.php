@@ -3,12 +3,13 @@ final class moojon_model_collection extends ArrayObject {
 	private $accessor;
 	private $relationship;
 	private $iterator;
-	private $errors = array();
+	private $validator;
 	
 	public function __construct(moojon_base_model $accessor = null, moojon_base_relationship $relationship = null) {
 		$this->accessor = $accessor;
 		$this->relationship = $relationship;
 		$this->iterator = $this->getIterator();
+		$this->validator = new moojon_validator;
 	}
 	
 	public function __get($key) {
@@ -85,8 +86,8 @@ final class moojon_model_collection extends ArrayObject {
 		return $collection;
 	}
 	
-	public function get_errors() {
-		return $this->errors;
+	public function get_validator_messages() {
+		return $this->validator->get_messages();
 	}
 	
 	public function get_type() {
@@ -129,6 +130,14 @@ final class moojon_model_collection extends ArrayObject {
 				break;
 		}
 		$this[] = $model;
+	}
+	
+	public function read_column($column_name) {
+		$return = array();
+		foreach ($this as $record) {
+			$return[] = $record->$column_name;
+		}
+		return $return;
 	}
 	
 	public function remove(moojon_base_model $model) {

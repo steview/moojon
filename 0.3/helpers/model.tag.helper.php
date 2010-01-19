@@ -63,13 +63,15 @@ function find_has_one_relationship(moojon_base_model $model, $column_name) {
 	}
 }
 
-function process_attributes(moojon_base_model $model, moojon_base_column $column) {
+function try_set_name_and_id_attributes($attributes, moojon_base_model $model, moojon_base_column $column) {
 	$column_name = $column->get_name();
-	return array('id' => $column_name, 'name' => model_control_name($model, $column_name));
+	$attributes = try_set_attribute($attributes, 'name', model_control_name($model, $column_name));
+	return try_set_attribute($attributes, 'id', $column_name);
 }
 
-function model_control_name(moojon_base_model $model, $column_name) {
-	return attribute_array_name(get_class($model), $column_name);
+function model_control_name($model, $column_name) {
+	$model = (is_object($model)) ? get_class($model) : $model;
+	return attribute_array_name($model, $column_name);
 }
 
 function find_start_year(moojon_base_model $model, moojon_base_column $column) {
@@ -167,9 +169,9 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 	}
 	$controls[] = primary_key_tag($model, $model->get_column(get_primary_key_id_property($model)));
 	$children = array();
-	if ($model->has_errors()) {
+	if ($model->has_validator_messages()) {
 		$d_tags = array(new moojon_dt_tag($error_message, array('id' => $form_id.'_errors_dt')));
-		foreach ($model->get_errors() as $key => $value) {
+		foreach ($model->get_validator_messages() as $key => $value) {
 			$d_tags[] = new moojon_dd_tag(new moojon_label_tag($value, array('id' => $key.'_error_label', 'class' => 'column_error_label', 'for' => $key)), array('id' => $key.'_error_dd', 'class' => 'column_error_dd'));
 		}
 		$children[] = new moojon_dl_tag($d_tags, array('id' => $form_id.'_errors', 'class' => 'errors'));
@@ -233,108 +235,6 @@ function dl_for(moojon_base_model $model, $column_names = array(), $attributes =
 	}
 	return new moojon_dl_tag($dt_dd_tags, $attributes);
 }
-
-/*final class paginator {
-	const NEVER = 0;
-	const AUTO = 1;
-	const ALWAYS = 2;
-	
-	const MID_START = '(';
-	const MID_END = ')';
-	
-	var private $pattern;
-	var private $page_symbol_name;
-	var private $limit_symbol_name;
-	var private $page;
-	var private $limit;
-	
-	var private $max_items;
-	var private $previous_next;
-	var private $start_end;
-	
-	var private $mid_count
-	
-	public function __construct($pattern = null, $max_items = null, $previous_next = null, $start_end = null) {
-		if (!$pattern) {
-			$pattern = moojon_uri::get_match_pattern();
-			$pattern = (substr($pattern, -1) != '/') ? "$match_pattern/" : $pattern;
-			$pattern = (substr($pattern, 0, 1) != '/') ? "/$match_pattern" : $pattern;
-			$pattern = moojon_config::get('index_file').$pattern;
-			if (!array_key_exists($page_symbol_name, $params)) {
-				$pattern .= $this->page_symbol_name.'/:'.$this->page_symbol_name.'/';
-			}
-		}
-		$this->pattern = $pattern;
-		$this->max_items = ($max_items) ? $max_items : moojon_config::get('paginator_max_items');
-		$this->previous_next = ($previous_next) ? $previous_next : self::AUTO;
-		$this->start_end = ($start_end) ? $start_end : self::AUTO;
-	}
-	
-	page 1
-	[1] 2, 3, 4, ..., 50, ..., 97, 98, 99, >, >|
-	
-	page 2
-	1, [2], 3, 4, 5, ..., 50..., 98, 99, >, >|
-	
-	page 3
-	1, 2, [3], 4, 5, 6, ..., 50, ..., 99, >, >|
-	
-	page 4
-	|<, 2, 3, [4], 5, 6, 7, ..., 50, ..., 99, >, >|
-	
-	page 5
-	|<, <, 2, 3, 4, [5], 6, 7, 8, 9, ..., 99, >, >|
-	
-	page 6
-	|<, <, ..., 3, 4, 5, [6], 7, 8, 9, ..., 99, >, >|
-	
-	page 7
-	|<, <, ..., 4, 5, 6, [7], 8, 9, 10, ..., 99, >, >|
-	
-	page 25
-	|<, <, ..., 22, 23, 24, [25], 26, 27, 28, ..., 99, >, >|
-	
-	page 50
-	|<, <, ..., 47, 48, 49, [50], 51, 52, 53, ..., 99, >, >|
-	
-	page 97
-	94, 95, 96, [97], 98, 99, 100
-	
-	page 98
-	|<, <, 2, ..., 50, ..., 95, 96, 97, [98], 99, 100
-	
-	page 99
-	|<, <, 2, ..., 50, ..., 96, 97, 98, [99], 100
-	
-	page 100
-	|<, <, 1, 2, 3, ..., 50, ..., 97, 98, 99, [100]
-	
-	public function paginator_item_data() {
-		$return = array();
-		foreach ($data as $key => $value) {
-			
-		}
-		return $return;
-	}
-	
-	private function get_page_symbol_name() {
-		return ($this->page_symbol_name) ? $this->page_symbol_name : moojon_config::get('paginator_page_symbol_name');
-	}
-	
-	private function get_limit_symbol_name() {
-		return ($this->limit_symbol_name) ? $this->limit_symbol_name : moojon_config::get('paginator_limit_symbol_name');
-	}
-	
-	private function get_page() {
-		$page_symbol_name = $this->get_page_symbol_name();
-		return (moojon_uri::has($page_symbol_name)) ? (moojon_uri::get($page_symbol_name) < 1) ? 1 : (int)moojon_uri::get($page_symbol_name) : 1;
-	}
-	
-	private function get_limit() {
-		$limit_symbol_name = $this->get_limit_symbol_name();
-		return (moojon_uri::has($limit_symbol_name)) ? moojon_uri::get($limit_symbol_name) : moojon_config::get('paginator_limit');
-	}
-}*/
 
 function paginator_ul_for($records, $page_symbol_name = null, $limit_symbol_name = null, $attributes = array()) {
 	$limit_symbol_name = ($limit_symbol_name) ? $limit_symbol_name : moojon_config::get('paginator_limit_symbol_name');
@@ -510,11 +410,11 @@ function control(moojon_base_model $model, $column_name) {
 	return $return;
 }
 
-function has_one_tag(moojon_base_model $model, moojon_base_column $column) {
+function has_one_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
 	$return = null;
 	$name = $column->get_name();
 	if ($value = moojon_request::get_or_null($name)) {
-		$attributes = process_attributes($model, $column);
+		$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 		$attributes['value'] = $value;
 		$attributes['type'] = 'hidden';
 		$return = new moojon_div_tag(array(new moojon_input_tag($attributes), redirection_tag(moojon_server::redirection())));
@@ -532,17 +432,17 @@ function has_one_tag(moojon_base_model $model, moojon_base_column $column) {
 			$options[(String)$option] = $option->$key;
 		}
 		$selected = ($model->$name) ? $model->$name : moojon_uri::get_or_null($foreign_key);
-		$return = select_options($options, $selected, process_attributes($model, $column));
+		$return = select_options($options, $selected, try_set_name_and_id_attributes($attributes, $model, $column));
 	}
 	return $return;
 }
 
-function binary_tag(moojon_base_model $model, moojon_base_column $column) {
-	return string_tag($model, $column);
+function binary_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	return string_tag($model, $column, $attributes);
 }
 
-function boolean_tag(moojon_base_model $model, moojon_base_column $column) {
-	$attributes = process_attributes($model, $column);
+function boolean_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['type'] = 'checkbox';
 	$attributes['value'] = '1';
 	if ($column->get_value()) {
@@ -551,39 +451,40 @@ function boolean_tag(moojon_base_model $model, moojon_base_column $column) {
 	return new moojon_div_tag(array(new moojon_input_tag(array('type' => 'hidden', 'value' => 0, 'name' => $attributes['name'])), new moojon_input_tag($attributes)), array('class' => 'boolean', 'id' => $attributes['id'].'_div'));
 }
 
-function date_tag(moojon_base_model $model, moojon_base_column $column) {
-	$attributes = process_attributes($model, $column);
+function date_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['class'] = 'date';
 	return datetime_label_select_options($attributes, moojon_config::get('date_format'), moojon_base::get_time($column->get_value()), find_start_year($model, $column), find_end_year($model, $column));
 }
 
-function datetime_tag(moojon_base_model $model, moojon_base_column $column) {
-	$attributes = process_attributes($model, $column);
+function datetime_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['class'] = 'datetime';
 	return datetime_label_select_options($attributes, moojon_config::get('datetime_format'), moojon_base::get_time($column->get_value()), find_start_year($model, $column), find_end_year($model, $column));
 }
 
-function decimal_tag(moojon_base_model $model, moojon_base_column $column) {
-	return string_tag($model, $column);
+function decimal_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	return string_tag($model, $column, $attributes);
 }
 
-function float_tag(moojon_base_model $model, moojon_base_column $column) {
-	return string_tag($model, $column);
+function float_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	return string_tag($model, $column, $attributes);
 }
 
-function integer_tag(moojon_base_model $model, moojon_base_column $column) {
-	return string_tag($model, $column);
+function integer_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	return string_tag($model, $column, $attributes);
 }
 
-function primary_key_tag(moojon_base_model $model, moojon_base_column $column) {
-	$attributes = process_attributes($model, $column);
+function primary_key_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['value'] = $column->get_value();
 	$attributes['type'] = 'hidden';
+	$attributes['class'] = 'hidden';
 	return new moojon_input_tag($attributes);
 }
 
-function string_tag(moojon_base_model $model, moojon_base_column $column) {
-	$attributes = process_attributes($model, $column);
+function string_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['maxlength'] = $column->get_limit();
 	$attributes['value'] = $column->get_value();
 	$attributes['type'] = 'text';
@@ -591,29 +492,29 @@ function string_tag(moojon_base_model $model, moojon_base_column $column) {
 	return new moojon_input_tag($attributes);
 }
 
-function text_tag(moojon_base_model $model, moojon_base_column $column) {
-	$attributes = process_attributes($model, $column);
+function text_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['cols'] = 40;
 	$attributes['rows'] = 6;
 	$attributes['class'] = 'textarea';
 	return new moojon_textarea_tag($column->get_value(), $attributes);
 }
 
-function time_tag(moojon_base_model $model, moojon_base_column $column) {
-	$attributes = process_attributes($model, $column);
+function time_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['class'] = 'time';
 	return datetime_label_select_options($attributes, moojon_config::get('time_format'), moojon_base::get_time($column->get_value()));
 }
 
-function timestamp_tag(moojon_base_model $model, moojon_base_column $column) {
-	return datetime_tag($column, $model, $start, $end);
+function timestamp_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
+	return datetime_tag($column, $model, $attributes);
 }
 
-function password_tag(moojon_base_model $model, moojon_base_column $column) {
+function password_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
 	$column_name = $column->get_name();
 	$return = new moojon_div_tag;
 	$return->add_child(new moojon_label_tag(title_text($column_name).':', array('for' => $column_name)));
-	$attributes = process_attributes($model, $column);
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['value'] = $column->get_value();
 	$attributes['type'] = 'password';
 	$attributes['class'] = 'password';
@@ -625,13 +526,13 @@ function password_tag(moojon_base_model $model, moojon_base_column $column) {
 	return $return;
 }
 
-function file_tag(moojon_base_model $model, moojon_base_column $column) {
+function file_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
 	$column_name = $column->get_name();
 	$value = $column->get_value();
 	$return = new moojon_div_tag;
 	$return->add_child(new moojon_input_tag(array('type' => 'hidden', 'name' => model_control_name($model, $column_name), 'value' => $value)));
 	$return->add_child(new moojon_label_tag(title_text($column_name).':', array('for' => $column_name)));
-	$attributes = process_attributes($model, $column);
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['type'] = 'file';
 	$attributes['class'] = 'file';
 	$return->add_child(new moojon_input_tag($attributes));

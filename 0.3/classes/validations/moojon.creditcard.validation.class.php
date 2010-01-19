@@ -1,23 +1,13 @@
 <?php
 final class moojon_creditcard_validation extends moojon_base_validation {
 	
-	private $card_types;
-	
-	public function __construct($message, $card_types, $required = true) {
-		$this->set_message($message);
-		if (!is_array($card_types)) {
-			$card_types = array($card_types);
-		}
-		$this->card_types = $card_type;
-		$this->required = $required;
+	public function get_data_keys() {
+		return array('data', 'card_type');
 	}
 	
-	public function get_card_type() {
-		return $this->card_type;
-	}
-	
-	public function valid(moojon_base_model $model, moojon_base_column $column) {
-		$card_number = $column->get_value();
+	public function valid($data) {
+		$card_number = $data['data'];
+		$card_type = $data['card_type'];
 		$cards = array(
 			array('type' => 'American Express', 'length' => '15', 'prefixes' => '34,37', 'checkdigit' => true),
 			array('type' => 'Diners Club Carte Blanche', 'length' => '14', 'prefixes' => '300,301,302,303,304,305', 'checkdigit' => true),
@@ -32,14 +22,14 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 			array('type' => 'Visa', 'length' => '13,16', 'prefixes' => '4', 'checkdigit' => true),
 			array('type' => 'Visa Electron', 'length' => '16', 'prefixes' => '417500,4917,4913,4508,4844', 'checkdigit' => true)
 		);
-		$this->card_type = -1;
+		$card_type = -1;
 		for ($i = 0; $i < sizeof($cards); $i ++) {
-			if (strtolower($this->card_type) == strtolower($cards[$i]['name'])) {
-				$this->card_type = $i;
+			if (strtolower($card_type) == strtolower($cards[$i]['name'])) {
+				$card_type = $i;
 				break;
 			}
 		}
-		if ($this->card_type == -1) {
+		if ($card_type == -1) {
 			return false;
 		}
 		if (!strlen($card_number)) {
@@ -49,7 +39,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 		if (!eregi('^[0-9]{13,19}$', $card_number)) {
 			return false;
 		}
-		if ($cards[$this->card_type]['checkdigit']) {
+		if ($cards[$card_type]['checkdigit']) {
 			$checksum = 0;
 			$mychar = '';
 			$j = 1;
@@ -70,7 +60,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 				return false;
 			}
 		}
-		$prefix = split(',', $cards[$this->card_type]['prefixes']);
+		$prefix = split(',', $cards[$card_type]['prefixes']);
 		$prefix_valid = false;
 		for ($i = 0; $i < sizeof($prefix); $i ++) {
 			$exp = '^'.$prefix[$i];
@@ -83,7 +73,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 			return false;
 		}
 		$length_valid = false;
-		$lengths = split(',', $cards[$this->card_type]['length']);
+		$lengths = split(',', $cards[$card_type]['length']);
 		for ($i = 0; $i < sizeof($lengths); $i ++) {
 			if (strlen($card_number) == $lengths[$i]) {
 				$length_valid = true;

@@ -3,18 +3,16 @@ final class moojon_accept_validation extends moojon_base_validation {
 	
 	private $exts;
 	
-	public function __construct($message, $exts, $required = true) {
-		$this->set_message($message);
+	public function __construct($exts, $key, $message, $required = true) {
+		if (!is_array($exts)) {
+			$exts = explode('|', $exts);
+		}
 		$this->exts = $exts;
-		$this->required = $required;
+		parent::__construct($key, $message, $required);
 	}
 	
-	public function get_exts() {
-		return $this->exts;
-	}
-	
-	public function valid(moojon_base_model $model, moojon_base_column $column) {
-		return in_array(moojon_files::get_ext(basename($column->get_value())), $this->exts);
+	public function valid($data) {
+		return in_array(moojon_files::get_ext(basename($data['data'])), $this->exts);
 	}
 }
 ?>

@@ -44,9 +44,13 @@ final class moojon_security extends moojon_base_security {
 					}
 				}
 			}
-			moojon_session::set($security_token_key, $security_token);
+			self::create_security_token($security_token);
 			return $records->first;
 		}
+	}
+	
+	static public function create_security_token($security_token) {
+		moojon_session::set(moojon_config::get('security_token_key'), $security_token);
 	}
 	
 	static public function login_attempt($security_key) {

@@ -3,18 +3,13 @@ final class moojon_max_validation extends moojon_base_validation {
 	
 	private $max;
 	
-	public function __construct($message, $max, $required = true) {
-		$this->set_message($message);
+	public function __construct($max, $key, $message, $required = true) {
 		$this->max = $max;
-		$this->required = $required;
+		parent::__construct($key, $message, $required);
 	}
 	
-	public function get_max() {
-		return $this->max;
-	}
-	
-	public function valid(moojon_base_model $model, moojon_base_column $column) {
-		$value = (integer)$column->get_value();
+	public function valid($data) {
+		$value = $data['data'];
 		if ($value > $this->max) {
 			return false;
 		} else {

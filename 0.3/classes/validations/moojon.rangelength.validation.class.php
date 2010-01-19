@@ -4,23 +4,15 @@ final class moojon_rangelength_validation extends moojon_base_validation {
 	private $minlength;
 	private $maxlength;
 	
-	public function __construct($message, $minlength, $maxlength, $required = true) {
-		$this->set_message($message);
+	public function __construct($minlength, $maxlength, $key, $message, $required = true) {
 		$this->minlength = $minlength;
 		$this->maxlength = $maxlength;
-		$this->required = $required;
+		parent::__construct($key, $message, $required);
 	}
 	
-	public function get_minlength() {
-		return $this->minlength;
-	}
-	
-	public function get_maxlength() {
-		return $this->maxlength;
-	}
-	
-	public function valid(moojon_base_model $model, moojon_base_column $column) {
-		if (strlen($column->get_value()) < $this->minlength || strlen($column->get_value()) > $this->maxlength) {
+	public function valid($data) {
+		$value = (string)$data['data'];
+		if (strlen($value) < $this->minlength || strlen($value) > $this->maxlength) {
 			return false;
 		} else {
 			return true;

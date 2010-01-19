@@ -6,8 +6,7 @@ abstract class moojon_base_model extends moojon_base {
 	protected $columns = array();
 	private $relationships = array();
 	private $relationship_data = array();
-	private $validations = array();
-	private $errors = array();
+	private $validator;
 	private $new_record = false;
 	protected $to_string_column = moojon_primary_key::NAME;
 	
@@ -15,6 +14,7 @@ abstract class moojon_base_model extends moojon_base {
 		$this->add_columns();
 		$this->add_relationships();
 		$this->set($data);
+		$this->validator = new moojon_validator;
 		$this->add_validations();
 		$this->class = get_class($this);
 		$this->table = moojon_inflect::pluralize($this->class);
@@ -204,98 +204,72 @@ abstract class moojon_base_model extends moojon_base {
 		$this->relationships[$name] = new $relationship_type($name, $foreign_table, $foreign_key, $key, $this->get_column($key));
 	}
 	
-	final public function has_validation($key) {
-		return array_key_exists($key, $this->validations);
+	final protected function add_validation(moojon_base_validation $validation) {
+		$this->validator->add_validation($validation);
 	}
 	
-	final private function get_validation_type($key) {
-		return get_class($this->get_validation($key));
+	final protected function validate_accept($exts, $key, $message, $required = true) {
+		$this->add_validation(new moojon_accept_validation($exts, $key, $message, $required));
 	}
 	
-	final public function get_validation($key) {
-		if  ($this->has_validation($key)) {
-			return $this->validations[$key];
-		} else {
-			throw new moojon_exception("no such validation ($key)");
-		}
+	final protected function validate_creditcard($key, $message, $required = true) {
+		$this->add_validation(new moojon_creditcard_validation($key, $message, $required));
 	}
 	
-	final public function get_validations() {
-		return $this->validations;
+	final protected function validate_date($key, $message, $required = true) {
+		$this->add_validation(new moojon_date_validation($key, $message, $required));
 	}
 	
-	final protected function add_validation($name, moojon_base_validation $validation) {
-		if (array_key_exists($name, $this->validations)) {
-			$validations = $this->validations[$name];
-		} else {
-			$validations = array();
-		}
-		$validations[] = $validation;
-		$this->validations[$name] = $validations;
+	final protected function validate_digits($key, $message, $required = true) {
+		$this->add_validation(new moojon_digits_validation($key, $message, $required));
 	}
 	
-	final protected function validate_required($name, $message) {
-		$this->add_validation($name, new moojon_required_validation($message));
+	final protected function validate_email($key, $message, $required = true) {
+		$this->add_validation(new moojon_email_validation($key, $message, $required));
 	}
 	
-	final protected function validate_unique($name, $message, $required = true) {
-		$this->add_validation($name, new moojon_unique_validation($message, $this, $required));
+	final protected function validate_equal_to($key, $message, $required = true) {
+		$this->add_validation(new moojon_equal_to_validation($key, $message, $required));
 	}
 	
-	final protected function validate_min($name, $message, $min, $required = true) {
-		$this->add_validation($name, new moojon_min_validation($message, $min, $required));
+	final protected function validate_max($max, $key, $message, $required = true) {
+		$this->add_validation(new moojon_max_validation($max, $key, $message, $required));
 	}
 	
-	final protected function validate_max($name, $message, $max, $required = true) {
-		$this->add_validation($name, new moojon_max_validation($message, $max, $required));
+	final protected function validate_maxlength($maxlength, $key, $message, $required = true) {
+		$this->add_validation(new moojon_maxlength_validation($maxlength, $key, $message, $required));
 	}
 	
-	final protected function validate_range($name, $message, $min, $max, $required = true) {
-		$this->add_validation($name, new moojon_range_validation($message, $min, $max, $required));
+	final protected function validate_min($min, $key, $message, $required = true) {
+		$this->add_validation(new moojon_min_validation($min, $key, $message, $required));
 	}
 	
-	final protected function validate_minlength($name, $message, $minlength, $required = true) {
-		$this->add_validation($name, new moojon_minlength_validation($message, $minlength, $required));
+	final protected function validate_minlength($minlength, $key, $message, $required = true) {
+		$this->add_validation(new moojon_minlength_validation($minlength, $key, $message, $required));
 	}
 	
-	final protected function validate_maxlength($name, $message, $maxlength, $required = true) {
-		$this->add_validation($name, new moojon_maxlength_validation($message, $maxlength, $required));
+	final protected function validate_number($key, $message, $required = true) {
+		$this->add_validation(new moojon_number_validation($key, $message, $required));
 	}
 	
-	final protected function validate_rangelength($name, $message, $minlength, $maxlength, $required = true) {
-		$this->add_validation($name, new moojon_rangelength_validation($message, $minlength, $maxlength, $required));
+	final protected function validate_range($min, $max, $key, $message, $required = true) {
+		$this->add_validation(new moojon_range_validation($min, $max, $key, $message, $required));
 	}
 	
-	final protected function validate_email($name, $message, $required = true) {
-		$this->add_validation($name, new moojon_email_validation($message, $required));
+	final protected function validate_rangelength($minlength, $maxlength, $key, $message, $required = true) {
+		$this->add_validation(new moojon_rangelength_validation($minlength, $maxlength, $key, $message, $required));
 	}
 	
-	final protected function validate_uri($name, $message, $required = true) {
-		$this->add_validation($name, new moojon_uri_validation($message, $required));
+	final protected function validate_required($key, $message) {
+		$this->add_validation(new moojon_required_validation($key, $message));
 	}
 	
-	final protected function validate_date($name, $message, $required = true) {
-		$this->add_validation($name, new moojon_date_validation($message, $required));
+	final protected function validate_unique($key, $message, $required = true) {
+		$this->add_validation(new moojon_unique_validation($key, $message, $required));
 	}
 	
-	final protected function validate_number($name, $message, $required = true) {
-		$this->add_validation($name, new moojon_number_validation($message, $required));
-	}
-	
-	final protected function validate_digits($name, $message, $required = true) {
-		$this->add_validation($name, new moojon_digits_validation($message, $required));
-	}
-	
-	final protected function validate_creditcard($name, $message, $card_types, $required = true) {
-		$this->add_validation($name, new moojon_creditcard_validation($message, $card_types, $required));
-	}
-	
-	final protected function validate_accept($name, $message, $exts, $required = true) {
-		$this->add_validation($name, new moojon_accept_validation($message, $exts, $required));
-	}
-	
-	final protected function validate_equal_to($name, $message, $value, $required = true) {
-		$this->add_validation($name, new moojon_equal_to_validation($message, $value, $required));
+	final protected function validate_uri($key, $message, $required = true) {
+		$this->add_validation(new moojon_uri_validation($key, $message, $required));
 	}
 	
 	final public function has_column($key) {
@@ -378,23 +352,26 @@ abstract class moojon_base_model extends moojon_base {
 		return $this->table;
 	}
 	
-	final public function get_errors() {
-		return $this->errors;
+	final public function get_validator_messages() {
+		return $this->validator->get_messages();
 	}
 	
-	final public function has_error($key) {
-		return array_key_exists($key, $this->errors);
+	final public function has_validator_messages() {
+		return (count($this->validator->get_messages()) > 0);
 	}
 	
-	final public function get_error($key) {
-		if ($this->has_error($key)) {
-			return $this->errors[$key];
+	final public function get_validations($key) {
+		$return = array();
+		foreach ($this->validator->get_validations() as $validation) {
+			if ($validation->get_key() == $key) {
+				$return[] = $validation;
+			}
 		}
-		throw new moojon_exception("Invalid error ($key)");
+		return $return;
 	}
 	
-	final public function has_errors() {
-		return (count($this->errors) > 0);
+	final public function get_validator() {
+		return $this->validator;
 	}
 	
 	final public function get_column($column_name) {
@@ -537,38 +514,59 @@ abstract class moojon_base_model extends moojon_base {
 		return $this->to_string_column;
 	}
 	
-	final public function validate($cascade = false) {
-		$valid = true;
-		$errors = array();
-		foreach ($this->get_editable_columns() as $column) {
-			if ($this->has_validation($column->get_name())) {
-				foreach ($this->validations[$column->get_name()] as $validation) {
-					if (!$validation->validate($this, $column)) {
-						$errors[$column->get_name()] = $validation->get_message();
-						$valid = false;
-						break;
-					}
-				}
+	final public function get_validation_data_keys($keys) {
+		$return = array();
+		foreach ($this->get_editable_column_names() as $column_name) {
+			$data_keys = array();
+			foreach ($this->get_validations($column_name) as $validation) {
+				$data_keys = array_merge($data_keys, $validation->get_data_keys());
+			}
+			$return[$column_name] = $data_keys;
+		}
+		foreach ($return as $key => $value) {
+			if (array_key_exists($key, $keys)) {
+				$return[$key] = array_merge($return[$key], $keys[$key]);
 			}
 		}
-		if ($cascade) {
-			foreach ($this->relationships as $relationship) {
-				$validation = $relationship->validate(true);
-				if (!$validation) {
-					foreach ($relationship->get_errors() as $error) {
-						$errors[] = $error;
+		return $return;
+	}
+	
+	final public function get_validation_data($columns, $data) {
+		$return = array();
+		foreach ($columns as $column_name => $data_keys) {
+			$validation_data = array();
+			foreach ($data_keys as $data_key) {
+				if ($data_key == 'data') {
+					$validation_data['data'] = $this->$column_name;
+				} elseif ($data_key == 'data_set') {
+					$data_set = array();
+					if ($this->new_record) {
+						foreach ($this->read("$column_name = :$column_name", null, null, $this->compile_param_values(), $this->compile_param_data_types()) as $record) {
+							$data_set[] = $record->$column_name;
+						}
 					}
-					$valid = false;
+					$validation_data['data_set'] = $data_set;
 				}
 			}
+			$return[$column_name] = $validation_data;
 		}
-		$this->errors = $errors;
-		return $valid;
+		foreach ($return as $key => $value) {
+			if (array_key_exists($key, $data)) {
+				$return[$key] = array_merge($return[$key], $data[$key]);
+			}
+		}
+		return $return;
+	}
+	
+	final public function validate($keys = array(), $data = array()) {
+		$keys = ($keys) ? $keys : $this->get_editable_column_names();
+		$data = $this->get_validation_data($this->get_validation_data_keys($keys), $data);
+		return $this->validator->validate($keys, $data);
 	}
 		
-	final public function save($cascade = false) {
+	final public function save($cascade = false, $keys = array(), $data = array()) {
 		$saved = false;
-		if ($this->validate($cascade)) {
+		if ($this->validate($keys, $data)) {
 			$placeholders = array();
 			foreach ($this->get_editable_columns() as $column) {
 				$column_name = $column->get_name();
@@ -598,8 +596,8 @@ abstract class moojon_base_model extends moojon_base {
 			}
 		}
 		if ($saved) {
-			$this->set_reset_values();
-			$this->reset();
+			//$this->set_reset_values();
+			//$this->reset();
 			if ($cascade) {
 				foreach($this->relationships as $relationship) {
 					$relationship->save(true);

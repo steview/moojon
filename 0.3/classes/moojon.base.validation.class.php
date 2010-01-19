@@ -1,46 +1,44 @@
 <?php
 abstract class moojon_base_validation extends moojon_base {
 	
+	private $key;
 	private $message;
-	private $model;
-	protected $required;
+	private $required;
 	
-	final public function set_model(moojon_base_model $model) {
-		$this->model = $model;
-	}
-	
-	final public function get_model() {
-		return $this->model;
-	}
-	
-	final public function set_message($message) {
+	public function __construct($key, $message, $required = true) {
+		$this->key = $key;
 		$this->message = $message;
+		$this->required = $required;
+	}
+	
+	final public function get_key() {
+		return $this->key;
+	}
+	
+	public function get_data_keys() {
+		return array('data');
 	}
 	
 	final public function get_message() {
 		return $this->message;
 	}
 	
-	final public function get_required() {
-		return $this->required;
-	}
-	
-	final public function validate(moojon_base_model $model, moojon_base_column $column) {
+	final public function validate($data) {
 		if ($this->required) {
-			if (strlen($column->get_value())) {
-				return $this->valid($model, $column);
+			if ($data) {
+				return $this->valid($data);
 			} else {
 				return false;
 			}
 		} else {
-			if (!strlen($column->get_value())) {
+			if (!$data) {
 				return true;
 			} else {
-				return $this->valid($model, $column);
+				return $this->valid($data);
 			}
 		}
 	}
 	
-	abstract public function valid(moojon_base_model $model, moojon_base_column $column);
+	abstract public function valid($data);
 }
 ?>
