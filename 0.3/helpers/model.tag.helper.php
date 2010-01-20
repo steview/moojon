@@ -177,7 +177,8 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 		$children[] = new moojon_dl_tag($d_tags, array('id' => $form_id.'_errors', 'class' => 'errors'));
 	}
 	$children[] = new moojon_fieldset_tag($controls, array('id' => $form_id.'_controls', 'class' => 'controls'));
-	$children[] = actions_ul(array(submit_tag($submit_value), cancel_button()));
+	//$children[] = actions_ul(array(submit_tag($submit_value), cancel_button()));
+	$children[] = actions_ul(array(submit_tag($submit_value)));
 	return new moojon_form_tag($children, $attributes);
 }
 

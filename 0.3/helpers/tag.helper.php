@@ -102,7 +102,7 @@ function login_form($authenticated = false) {
 			$security_password_value = null;
 			$security_checked_value = null;
 		}
-		$child = form_tag(null, array('action' => '#', 'method' => 'post'));
+		$child = form_tag(null, array('action' => '#', 'method' => 'post', 'class' => 'generated'));
 		$fieldset = fieldset_tag();
 		$fieldset->add_child(label_tag($security_identity_label, array('for' => $security_identity_key)));
 		$fieldset->add_child(text_input_tag(array('id' => $security_identity_key, 'name' => attribute_array_name($security_key, $security_identity_key), 'value' => $security_identity_value)));
