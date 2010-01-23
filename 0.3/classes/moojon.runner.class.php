@@ -14,7 +14,7 @@ final class moojon_runner extends moojon_singleton {
 		require_once(MOOJON_DIRECTORY.'/functions/moojon.core.functions.php');
 		switch (strtoupper(UI)) {
 			case 'CGI':
-				ini_set('memory_limit', '256M');
+				ini_set('memory_limit', '64M');
 				//moojon_session::fetch();
 				//die('<>');
 				moojon_uri::fetch();
