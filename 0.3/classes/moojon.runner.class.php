@@ -18,6 +18,7 @@ final class moojon_runner extends moojon_singleton {
 				moojon_session::fetch();
 				moojon_uri::fetch();
 				$uri = moojon_uri::get_uri();
+				die('<>');
 				moojon_config::update(moojon_paths::get_project_config_environment_app_directory(ENVIRONMENT, APP));
 				/*$path = moojon_paths::get_cache_path($uri);
 				$from_cache = false;
