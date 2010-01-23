@@ -10,7 +10,7 @@ final class moojon_range_validation extends moojon_base_validation {
 		parent::__construct($key, $message, $required);
 	}
 	
-	public function valid($data) {
+	static public function valid($data) {
 		if ($data['data'] < $this->min || $data['data'] > $this->max) {
 			return false;
 		} else {

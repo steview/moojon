@@ -8,7 +8,7 @@ final class moojon_maxlength_validation extends moojon_base_validation {
 		parent::__construct($key, $message, $required);
 	}
 	
-	public function valid($data) {
+	static public function valid($data) {
 		if (strlen((string)$data['data']) > $this->maxlength) {
 			return false;
 		} else {

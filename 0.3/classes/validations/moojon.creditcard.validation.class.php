@@ -5,7 +5,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 		return array('data', 'card_type');
 	}
 	
-	public function valid($data) {
+	static public function valid($data) {
 		$card_number = $data['data'];
 		$card_type = $data['card_type'];
 		$cards = array(

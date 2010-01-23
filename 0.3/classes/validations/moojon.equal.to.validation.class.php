@@ -5,7 +5,7 @@ final class moojon_equal_to_validation extends moojon_base_validation {
 		return array('data', 'equal_to');
 	}
 	
-	public function valid($data) {
+	static public function valid($data) {
 		return ($data['data'] == $data['equal_to']);
 	}
 }

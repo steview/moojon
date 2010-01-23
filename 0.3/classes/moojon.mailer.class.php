@@ -30,21 +30,19 @@ final class moojon_mailer extends moojon_base {
 		$this->from = $this->name.' <'.$this->email.'>';
 	}
 	
-	private function render_view($action, $controller) {
-		$app_class = self::get_app_class(APP);
-		$return = new $app_class($action, $controller);;
-		return $return->render(false);
+	static private function render_view($route) {
+		return moojon_runner::render_app($route);
 	}
 	
-	static public function from_html_view($action, $controller) {
-		$instance = new moojon_mailer();
-		$instance->set_html(self::render_view($action, $controller));
+	static public function from_html_view($route) {
+		$instance = new moojon_mailer;
+		$instance->set_html(self::render_view($route));
 		return $instance;
 	}
 	
-	static public function from_text_view($action, $controller, $app) {
-		$instance = new moojon_mailer();
-		$instance->set_text(self::render_view($action, $controller, $app));
+	static public function from_text_view($route) {
+		$instance = new moojon_mailer;
+		$instance->set_text(self::render_view($route));
 		return $instance;
 	}
 	

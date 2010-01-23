@@ -39,6 +39,6 @@ abstract class moojon_base_validation extends moojon_base {
 		}
 	}
 	
-	abstract public function valid($data);
+	static public function valid($data) {}
 }
 ?>

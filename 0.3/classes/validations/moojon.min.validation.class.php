@@ -8,7 +8,7 @@ final class moojon_min_validation extends moojon_base_validation {
 		parent::__construct($key, $message, $required);
 	}
 	
-	public function valid($data) {
+	static public function valid($data) {
 		$value = $data['data'];
 		if ($value < $this->min) {
 			return false;

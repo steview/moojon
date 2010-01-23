@@ -11,7 +11,7 @@ final class moojon_accept_validation extends moojon_base_validation {
 		parent::__construct($key, $message, $required);
 	}
 	
-	public function valid($data) {
+	static public function valid($data) {
 		return in_array(moojon_files::get_ext(basename($data['data'])), $this->exts);
 	}
 }

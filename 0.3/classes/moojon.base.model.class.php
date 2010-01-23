@@ -19,9 +19,6 @@ abstract class moojon_base_model extends moojon_base {
 		$this->class = get_class($this);
 		$this->table = moojon_inflect::pluralize($this->class);
 		$this->new_record = true;
-		if ($this->has_column('created_on') && !$this->get_column('created_on')->get_unsaved()) {
-			$this->get_column('created_on')->set_value(date(moojon_config::get('datetime_format')));
-		}
 	}
 	
 	final static protected function init($class) {
@@ -576,6 +573,10 @@ abstract class moojon_base_model extends moojon_base {
 			}
 			$id_property = moojon_primary_key::NAME;
 			if ($this->new_record) {
+				if ($this->has_column('created_on') && !$this->get_column('created_on')->get_unsaved()) {
+					$this->get_column('created_on')->set_value(date(moojon_config::get('datetime_format')));
+					$placeholders['created_on'] = ':created_on';
+				}
 				if (moojon_db::insert($this->table, $placeholders, $this->compile_param_values(), $this->compile_param_data_types())) {
 					if ($this->has_column($id_property)) {
 						$this->$id_property = moojon_db::last_insert_id($id_property);
@@ -584,11 +585,20 @@ abstract class moojon_base_model extends moojon_base {
 					$saved = true;
 				}
 			} else {
+				$additional_param_values = array();
+				if ($this->has_column($id_property)) {
+					$additional_param_values[$id_property] = $this->$id_property;
+					$where = "$id_property = :$id_property";
+				} else {
+					throw new moojon_exception('No id primary key available for update');
+				}
 				if ($this->get_unsaved()) {
 					if ($this->has_column('updated_at') && !$this->get_column('updated_at')->get_unsaved()) {
 						$this->get_column('updated_at')->set_value(date(moojon_config::get('datetime_format')));
+						$placeholders['updated_at'] = ':updated_at';
+						$additional_param_values['updated_at'] = $this->updated_at;
 					}
-					if (moojon_db::update($this->table, $placeholders, "$id_property = :$id_property", $this->compile_param_values(array(":$id_property" => $this->$id_property)), $this->compile_param_data_types())) {
+					if (moojon_db::update($this->table, $placeholders, $where, $this->compile_param_values($additional_param_values), $this->compile_param_data_types())) {
 						$this->new_record = false;
 						$saved = true;
 					}
@@ -596,8 +606,8 @@ abstract class moojon_base_model extends moojon_base {
 			}
 		}
 		if ($saved) {
-			//$this->set_reset_values();
-			//$this->reset();
+			$this->set_reset_values();
+			$this->reset();
 			if ($cascade) {
 				foreach($this->relationships as $relationship) {
 					$relationship->save(true);

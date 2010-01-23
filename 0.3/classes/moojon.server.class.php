@@ -20,7 +20,48 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 	static public function post_clear() {$_SERVER = array();}
 	
 	protected function __construct() {
+		if (array_key_exists('SERVER_PROTOCOL', $_SERVER)) {
+			$_SERVER['SCHEME'] = self::process_scheme($_SERVER['SERVER_PROTOCOL']);
+		}
+		if (array_key_exists('SCHEME', $_SERVER) && array_key_exists('HTTP_HOST', $_SERVER)) {
+			$_SERVER['SCHEME_HTTP_HOST'] = $_SERVER['SCHEME'].$_SERVER['HTTP_HOST'].moojon_config::get('index_file');
+		}
+		if (array_key_exists('PATH_INFO', $_SERVER) && substr($_SERVER['PATH_INFO'], 0, 1) == '/') {
+			$_SERVER['PATH_INFO'] = substr($_SERVER['PATH_INFO'], 1);
+		}
+		if (array_key_exists('SCHEME_HTTP_HOST', $_SERVER) && array_key_exists('PATH_INFO', $_SERVER)) {
+			$_SERVER['FULL_ADDRESS'] = $_SERVER['SCHEME_HTTP_HOST'].$_SERVER['PATH_INFO'];
+		}
 		$this->data = $_SERVER;
+	}
+	
+	static public function process_uri($uri) {
+		if (!is_array($uri)) {
+			$uri_segments = parse_url($uri);
+		}
+		if (!array_key_exists('host', $uri_segments)) {
+			$uri_segments['host'] = self::get('HTTP_HOST');
+			$uri_segments['port'] = '';
+		}
+		if (array_key_exists('port', $uri_segments) && $uri_segments['port']) {
+			$uri_segments['port'] = ':'.$uri_segments['port'];
+		}
+		if (!array_key_exists('scheme', $uri_segments)) {
+			$uri_segments['scheme'] = moojon_server::get('SCHEME');
+		} else {
+			$uri_segments['scheme'] = self::get('SCHEME');
+		}
+		if (!array_key_exists('path', $uri_segments)) {
+			$uri_segments['path'] = '';
+		}
+		if (array_key_exists('path', $uri_segments) && substr($uri_segments['path'], 0, 1) == '/') {
+			$uri_segments['path'] = substr($uri_segments['path'], 1);
+		}
+		return $uri_segments['scheme'].$uri_segments['host'].$uri_segments['port'].'/'.$uri_segments['path'];
+	}
+	
+	static public function process_scheme($scheme) {
+		return strtolower(substr($scheme, 0, strpos($scheme, '/'))).'://';
 	}
 	
 	static public function method() {

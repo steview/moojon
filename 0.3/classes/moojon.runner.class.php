@@ -14,7 +14,7 @@ final class moojon_runner extends moojon_singleton {
 		require_once(MOOJON_DIRECTORY.'/functions/moojon.core.functions.php');
 		switch (strtoupper(UI)) {
 			case 'CGI':
-				ini_set("memory_limit","256M");
+				ini_set('memory_limit', '256M');
 				moojon_session::fetch();
 				moojon_uri::fetch();
 				$uri = moojon_uri::get_uri();
@@ -25,7 +25,7 @@ final class moojon_runner extends moojon_singleton {
 					moojon_files::put_file_contents($path, self::render_app());
 				}*/
 				//echo ($from_cache) ? moojon_files::get_file_contents($path) : self::render_app();
-				echo self::render_app();
+				echo self::render_app($uri);
 				break;
 			case 'CLI':
 				$cli_class = CLI;
@@ -37,11 +37,18 @@ final class moojon_runner extends moojon_singleton {
 		}
 	}
 	
-	static private function render_app() {
+	static public function render_app($uri) {
+		$uri = moojon_uri::clean_uri($uri);
+		$route_match = moojon_routes::map($uri);
+		$data = $route_match->get_params();
+		foreach ($data as $key => $value) {
+			moojon_request::set($key, $value);
+		}
+		$app = $data['app'];
 		self::require_view_functions();
-		require_once(moojon_paths::get_app_path(APP));
-		$app_class = self::get_app_class(APP);
-		$app = new $app_class(moojon_uri::get_uri());
+		require_once(moojon_paths::get_app_path($app));
+		$app_class = self::get_app_class($app);
+		$app = new $app_class($uri);
 		return $app->render();
 	}
 	

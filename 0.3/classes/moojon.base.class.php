@@ -175,6 +175,10 @@ abstract class moojon_base {
 		return date($format, self::get_time($datetime, $format));
 	}
 	
+	final static public function get_time_from_date($datetime, $format = null) {
+		
+	}
+	
 	final static public function get_rest_route_resources() {
 		$rest_route_resources = array();
 		foreach (moojon_routes::get_rest_routes() as $rest_route) {
