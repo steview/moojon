@@ -10,7 +10,7 @@ final class moojon_rangelength_validation extends moojon_base_validation {
 		parent::__construct($key, $message, $required);
 	}
 	
-	static public function valid($data) {
+	public function valid($data) {
 		$value = (string)$data['data'];
 		if (strlen($value) < $this->minlength || strlen($value) > $this->maxlength) {
 			return false;

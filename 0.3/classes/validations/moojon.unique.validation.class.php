@@ -5,7 +5,7 @@ final class moojon_unique_validation extends moojon_base_validation {
 		return array('data', 'data_set');
 	}
 	
-	static public function valid($data) {
+	public function valid($data) {
 		return (!in_array($data['data'], $data['data_set']));
 	}
 }

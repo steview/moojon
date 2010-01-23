@@ -8,7 +8,7 @@ final class moojon_max_validation extends moojon_base_validation {
 		parent::__construct($key, $message, $required);
 	}
 	
-	static public function valid($data) {
+	public function valid($data) {
 		$value = $data['data'];
 		if ($value > $this->max) {
 			return false;

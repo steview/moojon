@@ -194,7 +194,7 @@ function delete_form_for(moojon_base_model $model, $attributes = array(), $messa
 	$controls[] = primary_key_tag($model, $model->get_column(get_primary_key_id_property($model)));
 	$controls[] = method_tag('delete');
 	$controls[] = redirection_tag(moojon_server::redirection());
-	$controls[] = actions_ul(array(submit_tag('Delete'), cancel_button()));
+	$controls[] = actions_ul(array(submit_tag('Delete')));
 	return new moojon_form_tag($controls, $attributes);
 }
 

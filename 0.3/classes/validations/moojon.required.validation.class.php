@@ -5,7 +5,7 @@ final class moojon_required_validation extends moojon_base_validation {
 		parent::__construct($key, $message, true);
 	}
 	
-	static public function valid($data) {
+	public function valid($data) {
 		if ($data['data']) {
 			return true;
 		} else {
