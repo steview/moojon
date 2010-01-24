@@ -160,7 +160,11 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 	}
 	$form_id = $id .= '_'.get_class($model).'_form';
 	$attributes = try_set_attribute($attributes, 'id', $form_id);
-	foreach ($column_names as $column_name) {
+	foreach ($column_names as $key => $column_name) {
+		if (!is_numeric($key)) {
+			$model->$key = $column_name;
+			$column_name = $key;
+		}
 		$column = $model->get_column($column_name);
 		if (get_class($column) == 'moojon_string_column' && $column->is_file()) {
 			$attributes['enctype'] = 'multipart/form-data';
@@ -177,7 +181,6 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 		$children[] = new moojon_dl_tag($d_tags, array('id' => $form_id.'_errors', 'class' => 'errors'));
 	}
 	$children[] = new moojon_fieldset_tag($controls, array('id' => $form_id.'_controls', 'class' => 'controls'));
-	//$children[] = actions_ul(array(submit_tag($submit_value), cancel_button()));
 	$children[] = actions_ul(array(submit_tag($submit_value)));
 	return new moojon_form_tag($children, $attributes);
 }
