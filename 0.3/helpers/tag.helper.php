@@ -207,7 +207,6 @@ function month_select_options($attributes = null, $selected = null, $format = nu
 	if (!$selected) {
 		$selected = time();
 	}
-	echo "**".date('n', $selected)."**<br />";
 	return select_options(month_options($format), date('n', $selected), $attributes);
 }
 
