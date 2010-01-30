@@ -230,7 +230,7 @@ function dl_for(moojon_base_model $model, $column_names = array(), $attributes =
 }
 
 function paginator_ul_for($records, $page_symbol_name = null, $limit_symbol_name = null, $attributes = array()) {
-	$limit_symbol_name = ($limit_symbol_name) ? $limit_symbol_name : moojon_config::get('paginator_limit_symbol_name');
+	/*$limit_symbol_name = ($limit_symbol_name) ? $limit_symbol_name : moojon_config::get('paginator_limit_symbol_name');
 	$limit = (moojon_uri::has($limit_symbol_name)) ? moojon_uri::get($limit_symbol_name) : moojon_config::get('paginator_limit');
 	if ($records > $limit) {
 		$page_symbol_name = ($page_symbol_name) ? $page_symbol_name : moojon_config::get('paginator_page_symbol_name');
@@ -259,7 +259,7 @@ function paginator_ul_for($records, $page_symbol_name = null, $limit_symbol_name
 	} else {
 		$return = '';
 	}
-	return $return;
+	return $return;*/
 }
 
 function table_for(moojon_model_collection $models, $column_names = array(), $attributes = array(), $no_records_message = null) {
