@@ -168,7 +168,15 @@ final class moojon_rest_route extends moojon_base_route {
 	
 	static public function get_collection_uri(moojon_base_model $model) {
 		$route = self::get_collection_rest_route($model);
-		$parent_resource = (moojon_uri::get_or_null('resource') == $route->get_resource() && $model->has_belongs_to_relationship(get_class($model))) ? '' : moojon_uri::get_uri().'/';
+		$parent_resource = '';
+		if (moojon_uri::get_or_null('resource') != $route->get_resource()) {
+			$parent_resource = moojon_uri::get_uri().'/';
+		} else {
+			if ($model->is_belongs_to_relationship_column(get_class($model))) {
+				$parent_resource = moojon_uri::get_uri().'/';
+			}
+		}
+		//$parent_resource = (moojon_uri::get_or_null('resource') == $route->get_resource() && $model->has_belongs_to_relationship(get_class($model))) ? '' : moojon_uri::get_uri().'/';
 		return moojon_config::get('index_file').$parent_resource.$route->get_pattern().'/';
 	}
 	
