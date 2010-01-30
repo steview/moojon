@@ -11,13 +11,13 @@ abstract class moojon_base_model extends moojon_base {
 	protected $to_string_column = moojon_primary_key::NAME;
 	
 	final public function __construct($data = array()) {
+		$this->class = get_class($this);
+		$this->table = moojon_inflect::pluralize($this->class);
 		$this->add_columns();
 		$this->add_relationships();
 		$this->set($data);
 		$this->validator = new moojon_validator;
 		$this->add_validations();
-		$this->class = get_class($this);
-		$this->table = moojon_inflect::pluralize($this->class);
 		$this->new_record = true;
 	}
 	
@@ -54,17 +54,22 @@ abstract class moojon_base_model extends moojon_base {
 			}
 			return $this->relationship_data[$key];
 		} else {
-			if ($this->has_column($key)) {
-				return $this->columns[$key]->get_value();
+			$get_method = "get_$key";
+			if (method_exists($this, $get_method)) {
+				$return = $this->$get_method();
 			} else {
-				$get_method = "get_$key";
-				if (method_exists($this, $get_method)) {
-					return $this->$get_method();
+				if ($this->has_column($key)) {
+					$return = $this->columns[$key]->get_value();
 				} else {
 					throw new moojon_exception("unknown property ($key)");
 				}
 			}
-		}	
+			$class = get_class($this);
+			if ($this->has_belongs_to_relationship($class) && $this->relationships[$class]->has_shared_column($key)) {
+				return $this->$class->$key;
+			}
+			return $return;
+		}
 	}
 	
 	final public function has_property($key) {
@@ -95,6 +100,17 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final public function has_has_many_to_many_relationship($key) {
 		return array_key_exists($key, $this->get_has_many_to_many_relationships());
+	}
+	
+	final public function has_belongs_to_relationship($key) {
+		if (array_key_exists($key, $this->get_belongs_to_relationships())) {
+			$relationship = $this->relationships[$key];
+			$foreign_key = $relationship->get_foreign_key();
+			if ($this->get_column($foreign_key)->get_value()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	final private function get_relationship_type($key) {
@@ -148,6 +164,10 @@ abstract class moojon_base_model extends moojon_base {
 		return $this->get_relationships_of_type('moojon_has_many_to_many_relationship');
 	}
 	
+	final public function get_belongs_to_relationships() {
+		return $this->get_relationships_of_type('moojon_belongs_to_relationship');
+	}
+	
 	final public function get_relationship_by_column($key) {
 		foreach ($this->relationships as $relationship) {
 			if ($relationship->get_foreign_key() == $key) {
@@ -185,6 +205,10 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final public function is_has_many_to_many_relationship_column($key) {
 		return $this->is_relationship_of_type_column($key, 'moojon_has_many_to_many_relationship');
+	}
+	
+	final public function is_belongs_to_relationship_column($key) {
+		return $this->is_relationship_of_type_column($key, 'moojon_belongs_to_relationship');
 	}
 	
 	final protected function add_relationship($relationship_type, $name, $foreign_table, $foreign_key, $key) {
@@ -269,6 +293,14 @@ abstract class moojon_base_model extends moojon_base {
 		$this->add_validation(new moojon_uri_validation($key, $message, $required));
 	}
 	
+	final protected function validate_future($key, $message, $required = true) {
+		$this->add_validation(new moojon_future_validation($key, $message, $required));
+	}
+	
+	final protected function validate_past($key, $message, $required = true) {
+		$this->add_validation(new moojon_past_validation($key, $message, $required));
+	}
+	
 	final public function has_column($key) {
 		return array_key_exists($key, $this->columns);
 	}
@@ -340,7 +372,23 @@ abstract class moojon_base_model extends moojon_base {
 	final protected function has_many_to_many($name, $foreign_table = null, $foreign_key = null, $key = null) {
 		$this->add_relationship('moojon_has_many_to_many_relationship', $name, $foreign_table, $foreign_key, $key);
 	}
-		
+	
+	final protected function belongs_to($name = null, $foreign_table = null, $foreign_key = null, $key = null, $shared_columns = array()) {
+		$name = ($name) ? $name : $this->class;
+		$foreign_table = $this->table;
+		$foreign_key = ($foreign_key) ? $foreign_key : moojon_primary_key::get_foreign_key($foreign_table);
+		$key = ($key) ? $key : moojon_primary_key::NAME;
+		if ($this->has_property($name)) {
+			throw new moojon_exception("Duplicate property when adding relationship ($name)");
+		}
+		if (!$this->has_column($key)) {
+			throw new moojon_exception("No such column to use as key for relationship ($key)");
+		}
+		$relationship = new moojon_belongs_to_relationship($name, $foreign_table, $foreign_key, $key, $this->get_column($key));
+		$relationship->set_shared_columns($shared_columns);
+		$this->relationships[$name] = $relationship;
+	}
+	
 	final public function get_class() {
 		return $this->class;
 	}
@@ -372,7 +420,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final public function get_column($column_name) {
-		foreach ($this->get_columns() as $column) {
+		foreach ($this->columns as $column) {
 			if ($column->get_name() == $column_name) {
 				return $column;
 			}
@@ -409,6 +457,10 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final public function get_columns($exceptions = array()) {
 		$return = array();
+		$class = get_class($this);
+		if ($this->has_belongs_to_relationship($class)) {
+			$exceptions = array_merge($exceptions, $this->relationships[$class]->get_shared_columns($exceptions));
+		}
 		foreach ($this->columns as $column) {
 			if (!in_array($column->get_name(), $exceptions)) {
 				$return[] = $column;

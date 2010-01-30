@@ -73,7 +73,8 @@ final class moojon_rest_route extends moojon_base_route {
 		$id = array_shift($uris);
 		$uri = implode('/', $uris);
 		$id_property = $this->id_property;
-		$params = array_merge($this->params, array($id_property => $id));
+		$resource_id = moojon_primary_key::get_foreign_key($this->resource);
+		$params = array_merge($this->params, array($id_property => $id, $resource_id => $id));
 		$relationship_routes = $this->get_relationship_routes();
 		$params['relationship_routes'] = $relationship_routes;
 		$pattern = '';
@@ -167,7 +168,7 @@ final class moojon_rest_route extends moojon_base_route {
 	
 	static public function get_collection_uri(moojon_base_model $model) {
 		$route = self::get_collection_rest_route($model);
-		$parent_resource = (moojon_uri::get_or_null('resource') == $route->get_resource()) ? '' : moojon_uri::get_uri().'/';
+		$parent_resource = (moojon_uri::get_or_null('resource') == $route->get_resource() && $model->has_belongs_to_relationship(get_class($model))) ? '' : moojon_uri::get_uri().'/';
 		return moojon_config::get('index_file').$parent_resource.$route->get_pattern().'/';
 	}
 	

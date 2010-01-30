@@ -339,25 +339,27 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function get_relationship_where(moojon_base_relationship $relationship, moojon_base_model $accessor) {
+		$key = $relationship->get_key();
 		switch (get_class($relationship)) {
 			case 'moojon_has_one_relationship':
 				$foreign_table = $relationship->get_foreign_table();
 				$foreign_key = $relationship->get_foreign_key();
-				$key = $relationship->get_key();
 				return "`$foreign_table`.`$key` = :$foreign_key";
 				break;
 			case 'moojon_has_many_relationship':
 				$foreign_table = $relationship->get_foreign_table();
 				$foreign_key = moojon_primary_key::get_foreign_key(get_class($accessor));
-				$key = $relationship->get_key();
 				return "`$foreign_table`.`$foreign_key` = :$key";
 				break;
 			case 'moojon_has_many_to_many_relationship':
 				$foreign_table = moojon_inflect::pluralize($relationship->get_class($accessor));
 				$foreign_key1 = moojon_primary_key::get_foreign_key($relationship->get_foreign_table());
 				$foreign_key2 = moojon_primary_key::get_foreign_key(get_class($accessor));
-				$key = $relationship->get_key();
 				return "`$key` IN (SELECT `$foreign_key1` FROM `$foreign_table` WHERE `$foreign_key2` = :key)";
+				break;
+			case 'moojon_belongs_to_relationship':
+				$foreign_key = moojon_primary_key::get_foreign_key(get_class($accessor));
+				return "`$key` = :$foreign_key";
 				break;
 		}
 	}
@@ -365,13 +367,11 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	static public function get_relationship_param_values(moojon_base_relationship $relationship, moojon_base_model $accessor) {
 		switch (get_class($relationship)) {
 			case 'moojon_has_one_relationship':
+			case 'moojon_belongs_to_relationship':
 				$foreign_key = $relationship->get_foreign_key();
 				return array(":$foreign_key" => $accessor->$foreign_key);
 				break;
 			case 'moojon_has_many_relationship':
-				$key = $relationship->get_key();
-				return array(":$key" => $accessor->$key);
-				break;
 			case 'moojon_has_many_to_many_relationship':
 				$key = $relationship->get_key();
 				return array(":$key" => $accessor->$key);
@@ -382,6 +382,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	static public function get_relationship_param_data_types(moojon_base_relationship $relationship, moojon_base_model $accessor) {
 		switch (get_class($relationship)) {
 			case 'moojon_has_one_relationship':
+			case 'moojon_belongs_to_relationship':
 				$foreign_key = $relationship->get_foreign_key();
 				$column = $accessor->get_column($foreign_key);
 				return array(":$foreign_key" => $column->get_data_type());

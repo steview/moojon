@@ -149,7 +149,9 @@ abstract class moojon_base_tag extends moojon_base {
 	final public function add_class($class) {
 		if (in_array('class', $this->legal_attributes)) {
 			if ($this->has_attribute('class')) {
-				$this->class = $this->class.' '.$class;
+				if (!strpos($this->get_attribute('class'), $class)) {
+					$this->class = $this->class.' '.$class;
+				}
 			} else {
 				$this->class = $class;
 			}

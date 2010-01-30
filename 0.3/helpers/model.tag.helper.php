@@ -5,10 +5,10 @@ function actions_ul($actions = array(), $attributes = array()) {
 	}
 	$children = array();
 	foreach ($actions as $action) {
-		$children[] = new moojon_li_tag($action);
+		$children[] = li_tag($action);
 	}
 	$attributes = try_set_attribute($attributes, 'class', 'actions');
-	return new moojon_ul_tag($children, $attributes);
+	return ul_tag($children, $attributes);
 }
 
 function uploaded_file_tag(moojon_base_model $model, $column_name, $mime_type_column = null) {
@@ -20,43 +20,34 @@ function uploaded_file_tag(moojon_base_model $model, $column_name, $mime_type_co
 		$mime_type = ($model->has_column($mime_type_column)) ? $model->$mime_type_column : moojon_files::get_mime_content_type($value);
 		$path = moojon_paths::get_public_column_upload_path($model, $column_name);
 		if (substr($mime_type, 0, 5) == 'image') {
-			$content = new moojon_img_tag(array('src' => $path, 'alt' => $model));
+			$content = img_tag($path, $model);
 		} else {
 			$content = $path;
 		}
-		return new moojon_a_tag($content, array('href' => $path, 'target' => '_blank'));
+		return a_tag($content, $path, array('target' => '_blank'));
 	} else {
-		return new moojon_p_tag('Not set');
+		return p_tag('Not set');
 	}
-	
 }
 
 function edit_member_tag(moojon_base_model $model, $attributes = array()) {
-	$attributes['href'] = moojon_rest_route::get_edit_member_uri($model);
-	return new moojon_a_tag('Edit', $attributes);
+	return a_tag('Edit', moojon_rest_route::get_edit_member_uri($model), $attributes);
 }
 
 function delete_member_tag(moojon_base_model $model, $attributes = array()) {
-	$attributes['href'] = moojon_rest_route::get_delete_member_uri($model);
-	return new moojon_a_tag('Delete', $attributes);
+	return a_tag('Delete', moojon_rest_route::get_delete_member_uri($model), $attributes);
 }
 
 function new_member_tag(moojon_base_model $model, $attributes = array()) {
-	$attributes['href'] = moojon_rest_route::get_new_member_uri($model);
-	return new moojon_a_tag('New', $attributes);
+	return a_tag('New', moojon_rest_route::get_new_member_uri($model), $attributes);
 }
 
 function member_tag(moojon_base_model $model = null, $attributes = array()) {
-	$return = '-';
-	if ($model) {
-		$attributes['href'] = moojon_rest_route::get_member_uri($model);
-		$return = new moojon_a_tag($model, $attributes);
-	}
-	return $return;
+	return ($model) ? a_tag($model, moojon_rest_route::get_member_uri($model), $attributes) : '-';
 }
 
 function find_has_one_relationship(moojon_base_model $model, $column_name) {
-	if ($model->is_has_one_relationship_column($column_name)) {
+	if ($model->is_has_one_relationship_column($column_name) || $model->is_belongs_to_relationship_column($column_name)) {
 		return $model->get_relationship_by_column($column_name);
 	} else {
 		return false;
@@ -140,7 +131,9 @@ function format_content(moojon_base_model $model, moojon_base_column $column, $c
 
 function form_for(moojon_base_model $model, $column_names = array(), $attributes = array(), $error_message = null) {
 	if (!$column_names) {
-		$column_names = $model->get_editable_column_names();
+		foreach ($model->get_editable_columns() as $column) {
+			$column_names[] = $column->get_name();
+		}
 	}
 	if (!$error_message) {
 		$error_message = moojon_config::get('validation_error_message');
@@ -174,15 +167,11 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 	$controls[] = primary_key_tag($model, $model->get_column(get_primary_key_id_property($model)));
 	$children = array();
 	if ($model->has_validator_messages()) {
-		$d_tags = array(new moojon_dt_tag($error_message, array('id' => $form_id.'_errors_dt')));
-		foreach ($model->get_validator_messages() as $key => $value) {
-			$d_tags[] = new moojon_dd_tag(new moojon_label_tag($value, array('id' => $key.'_error_label', 'class' => 'column_error_label', 'for' => $key)), array('id' => $key.'_error_dd', 'class' => 'column_error_dd'));
-		}
-		$children[] = new moojon_dl_tag($d_tags, array('id' => $form_id.'_errors', 'class' => 'errors'));
+		$children[] = error_dl($error_message, $model->get_validator_messages(), array('id' => $form_id.'_errors'));
 	}
-	$children[] = new moojon_fieldset_tag($controls, array('id' => $form_id.'_controls', 'class' => 'controls'));
-	$children[] = actions_ul(array(submit_tag($submit_value)));
-	return new moojon_form_tag($children, $attributes);
+	$children[] = fieldset_tag($controls);
+	$children[] = actions_ul(array(image_input_tag('button_'.strtolower($submit_value), array('value' => $submit_value, 'class' => 'submit', 'name' => 'submit'))));
+	return form_tag($children, $attributes);
 }
 
 function delete_form_for(moojon_base_model $model, $attributes = array(), $message = null) {
@@ -193,12 +182,12 @@ function delete_form_for(moojon_base_model $model, $attributes = array(), $messa
 	$attributes = try_set_attribute($attributes, 'class', 'generated');
 	$attributes = try_set_action_attribute($model, $attributes);
 	$attributes = try_set_attribute($attributes, 'id', 'delete_'.get_class($model).'_form');
-	$controls = array(new moojon_p_tag($message));
+	$controls = array(p_tag($message));
 	$controls[] = primary_key_tag($model, $model->get_column(get_primary_key_id_property($model)));
 	$controls[] = method_tag('delete');
 	$controls[] = redirection_tag(moojon_server::redirection());
-	$controls[] = actions_ul(array(submit_tag('Delete')));
-	return new moojon_form_tag($controls, $attributes);
+	$controls[] = actions_ul(array(actions_ul(array(image_input_tag('button_delete', array('value' => 'Delete', 'class' => 'submit', 'name' => 'submit'))))));
+	return form_tag($controls, $attributes);
 }
 
 function boolean_form_for(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
@@ -211,12 +200,12 @@ function boolean_form_for(moojon_base_model $model, moojon_base_column $column, 
 	$attributes = try_set_action_attribute($model, $attributes);
 	$src = '/'.moojon_config::get('images_directory').'/button_boolean'.$column->get_value().'.'.moojon_config::get('default_image_ext');
 	$value = ($column->get_value()) ? '0' : '1';
-	$children[] = new moojon_input_tag(array('type' => 'hidden', 'name' => model_control_name($model, $column_name), 'value' => $value));
+	$children[] = hidden_input_tag(array('name' => model_control_name($model, $column_name), 'value' => $value));
 	$children[] = method_tag('put');
 	$children[] = redirection_tag(moojon_server::get('REQUEST_URI')."#$id");
-	$children[] = new moojon_input_tag(array('type' => 'hidden', 'name' => model_control_name($model, $id_property), 'value' => $model->$id_property));
-	$children[] = new moojon_input_tag(array('type' => 'image', 'value' => "Set $column_name to $value", 'alt' => "Set $column_name to $value", 'value' => "Set $column_name to $value", 'src' => $src, 'class' => 'button_boolean'));
-	return new moojon_form_tag($children, $attributes);
+	$children[] = hidden_input_tag(array('name' => model_control_name($model, $id_property), 'value' => $model->$id_property));
+	$children[] = image_input_tag($src, array('value' => "Set $column_name to $value", 'alt' => "Set $column_name to $value", 'value' => "Set $column_name to $value", 'class' => 'button_boolean'));
+	return form_tag($children, $attributes);
 }
 
 function dl_for(moojon_base_model $model, $column_names = array(), $attributes = array()) {
@@ -234,10 +223,10 @@ function dl_for(moojon_base_model $model, $column_names = array(), $attributes =
 		} else {
 			$content = $column->get_value();
 		}
-		$dt_dd_tags[] = new moojon_dt_tag(title_text($column_name).':');
-		$dt_dd_tags[] = new moojon_dd_tag(format_content($model, $column, $content));
+		$dt_dd_tags[] = dt_tag(title_text($column_name).':');
+		$dt_dd_tags[] = dd_tag(format_content($model, $column, $content));
 	}
-	return new moojon_dl_tag($dt_dd_tags, $attributes);
+	return dl_tag($dt_dd_tags, $attributes);
 }
 
 function paginator_ul_for($records, $page_symbol_name = null, $limit_symbol_name = null, $attributes = array()) {
@@ -264,10 +253,9 @@ function paginator_ul_for($records, $page_symbol_name = null, $limit_symbol_name
 		for ($i = 1; $i < (ceil($records / $limit) + 1); $i ++) {
 			$params[$page_symbol_name] = $i;
 			$attributes = ($i == $page) ? array('class' => 'selected') : array();
-			$attributes['href'] = moojon_base::parse_symbols($match_pattern, $params);
-			$children[] = new moojon_li_tag(new moojon_a_tag($i, $attributes));
+			$children[] = li_tag(a_tag($i, moojon_base::parse_symbols($match_pattern, $params), $attributes));
 		}
-		$return = new moojon_ul_tag($children, array('class' => 'pagination'));
+		$return = ul_tag($children, array('class' => 'pagination'));
 	} else {
 		$return = '';
 	}
@@ -281,64 +269,62 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 		$attributes = try_set_attribute($attributes, 'cellspacing', '0');
 		$attributes = try_set_attribute($attributes, 'class', 'generated');
 		$model = $models->first;
-		$column_names = ($column_names) ? $column_names : $model->get_editable_column_names();
+		if (!$column_names) {
+			foreach ($model->get_editable_columns() as $column) {
+				$column_names[] = $column->get_name();
+			}
+		}
 		$model_class = get_class($model);
-		$ths = array(new moojon_th_tag(title_text($model->get_to_string_column()), array('id' => $model->to_string_column.'_th')));
+		$ths = array(th_tag(title_text($model->get_to_string_column())));
 		foreach ($column_names as $column_name) {
 			if ($model->to_string_column != $column_name) {
 				$column = $model->get_column($column_name);
-				$ths[] = new moojon_th_tag(title_text($column_name), array('id' => $column_name.'_th'));
+				$ths[] = th_tag(title_text($column_name));
 			}
 		}
-		$ths[] = new moojon_th_tag('Edit');
-		$ths[] = new moojon_th_tag('Delete');
+		$ths[] = th_tag('Edit');
+		$ths[] = th_tag('Delete');
 		$trs = array();
 		$primary_key = moojon_primary_key::NAME;
 		$counter = 0;
 		foreach ($models as $model) {
 			$counter ++;
-			$tds = array(new moojon_td_tag(member_tag($model)));
+			$tds = array(td_tag(member_tag($model)));
 			foreach ($column_names as $column_name) {
 				if ($model->to_string_column != $column_name) {
 					$column = $model->get_column($column_name);
 					if (!$relationship = find_has_one_relationship($model, $column_name)) {
-						$content = $column->get_value();
+						//$content = $column->get_value();
+						$content = $model->$column_name;
 					} else {
 						$name = $relationship->get_name();
 						$content = member_tag($model->$name);
 					}
-					$tds[] = new moojon_td_tag(format_content($model, $column, $content), array('id' => $model_class.'_'.$column_name.'_'.$model->$primary_key.'_td'));
+					$tds[] = td_tag(format_content($model, $column, $content));
 				}
 			}
-			$tds[] = new moojon_td_tag(edit_member_tag($model, array('class' => 'edit', 'id' => $model_class.'_edit_'.$model->$primary_key.'_a')));
-			$tds[] = new moojon_td_tag(delete_member_tag($model, array('class' => 'delete', 'id' => $model_class.'_delete_'.$model->$primary_key.'_a')));
-			$trs[] = new moojon_tr_tag($tds, array('id' => $model_class.'_'.$model->$primary_key.'_tr', 'class' => 'row'.($counter % 2)));
+			$tds[] = td_tag(edit_member_tag($model));
+			$tds[] = td_tag(delete_member_tag($model));
+			$trs[] = tr_tag($tds, array('class' => 'row'.($counter % 2)));
 		}
-		$children = array(
-			new moojon_thead_tag(new moojon_tr_tag($ths)),
-			new moojon_tbody_tag($trs), 
-			new moojon_tfoot_tag(new moojon_tr_tag(new moojon_td_tag(paginator_ul_for(count($model->read())), array('colspan' => count($ths)))))
-		);
-		$child = new moojon_table_tag($children);
-		foreach ($attributes as $key => $value) {
-			$child->$key = $value;
-		}
+		$children = array(thead_tag(tr_tag($ths)), tbody_tag($trs), tfoot_tag(tr_tag(td_tag(paginator_ul_for(count($model->read())), array('colspan' => count($ths))))));
+		$child = table_tag($children, $attributes);
 	} else {
-		$child = new moojon_p_tag($no_records_message);
+		$child = p_tag($no_records_message);
 	}
-	return new moojon_div_tag($child);
+	return div_tag($child);
 }
 
 function relationship_tables(moojon_base_model $model) {
 	if ($model->has_relationships()) {
-		$div = new moojon_div_tag();
+		$div = div_tag();
 		foreach ($model->get_relationships() as $key => $value) {
 			switch (get_class($value)) {
 				case 'moojon_has_many_relationship':
 				case 'moojon_has_many_to_many_relationship':
 					$relationship_class = $value->get_class();
 					$relationship = new $relationship_class;
-					$div->add_child(new moojon_h3_tag(ucfirst(str_replace('_', ' ', $key))));
+					$div->add_child(h3_tag(title_text($key)));
 					$div->add_child(actions_ul(array(new_member_tag($relationship))));
 					$div->add_child('<br /><br /><br />');
 					$relationship_class = moojon_inflect::singularize($value->get_foreign_table());
@@ -358,7 +344,7 @@ function relationship_tables(moojon_base_model $model) {
 
 function control(moojon_base_model $model, $column_name) {
 	$column = $model->get_column($column_name);
-	$return = new moojon_div_tag(new moojon_label_tag(title_text($column_name).':', array('for' => $column_name)));
+	$return = div_tag(label_tag(title_text($column_name).':', $column_name));
 	if (!find_has_one_relationship($model, $column_name)) {
 		switch (get_class($column)) {
 			case 'moojon_binary_column':
@@ -420,8 +406,7 @@ function has_one_tag(moojon_base_model $model, moojon_base_column $column, $attr
 	if ($value = moojon_request::get_or_null($name)) {
 		$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 		$attributes['value'] = $value;
-		$attributes['type'] = 'hidden';
-		$return = new moojon_div_tag(array(new moojon_input_tag($attributes), redirection_tag(moojon_server::redirection())));
+		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
 		$relationship = find_has_one_relationship($model, $name);
 		$key = $relationship->get_key();
@@ -452,7 +437,7 @@ function boolean_tag(moojon_base_model $model, moojon_base_column $column, $attr
 	if ($column->get_value()) {
 		$attributes['checked'] = 'checked';
 	}
-	return new moojon_div_tag(array(new moojon_input_tag(array('type' => 'hidden', 'value' => 0, 'name' => $attributes['name'])), new moojon_input_tag($attributes)), array('class' => 'boolean', 'id' => $attributes['id'].'_div'));
+	return div_tag(array(hidden_input_tag(array('value' => 0, 'name' => $attributes['name'])), input_tag($attributes)), array('class' => 'boolean'));
 }
 
 function date_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
@@ -482,18 +467,15 @@ function integer_tag(moojon_base_model $model, moojon_base_column $column, $attr
 function primary_key_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['value'] = $column->get_value();
-	$attributes['type'] = 'hidden';
-	$attributes['class'] = 'hidden';
-	return new moojon_input_tag($attributes);
+	return hidden_input_tag($attributes);
 }
 
 function string_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['maxlength'] = $column->get_limit();
 	$attributes['value'] = $column->get_value();
-	$attributes['type'] = 'text';
 	$attributes['class'] = 'text';
-	return new moojon_input_tag($attributes);
+	return text_input_tag($attributes);
 }
 
 function text_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
@@ -501,7 +483,7 @@ function text_tag(moojon_base_model $model, moojon_base_column $column, $attribu
 	$attributes['cols'] = 40;
 	$attributes['rows'] = 6;
 	$attributes['class'] = 'textarea';
-	return new moojon_textarea_tag($column->get_value(), $attributes);
+	return textarea_tag($column->get_value(), $attributes);
 }
 
 function time_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
@@ -516,39 +498,36 @@ function timestamp_tag(moojon_base_model $model, moojon_base_column $column, $at
 
 function password_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
 	$column_name = $column->get_name();
-	$return = new moojon_div_tag;
-	$return->add_child(new moojon_label_tag(title_text($column_name).':', array('for' => $column_name)));
+	$return = div_tag();
+	$return->add_child(label_tag(title_text($column_name).':', $column_name));
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$attributes['value'] = $column->get_value();
-	$attributes['type'] = 'password';
 	$attributes['class'] = 'password';
-	$return->add_child(new moojon_input_tag($attributes));
-	$return->add_child(new moojon_label_tag(title_text("Confirm $column_name").':', array('for' => "confirm_$column_name")));
+	$return->add_child(password_input_tag($attributes));
+	$return->add_child(label_tag(title_text("Confirm $column_name").':', "confirm_$column_name"));
 	$attributes['id'] = "confirm_$column_name";
-	$attributes['name'] = get_class($model)."[confirm_$column_name]";
-	$return->add_child(new moojon_input_tag($attributes));
+	$attributes['name'] = model_control_name($model, "confirm_$column_name");
+	$return->add_child(password_input_tag($attributes));
 	return $return;
 }
 
 function file_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
 	$column_name = $column->get_name();
 	$value = $column->get_value();
-	$return = new moojon_div_tag;
-	$return->add_child(new moojon_input_tag(array('type' => 'hidden', 'name' => model_control_name($model, $column_name), 'value' => $value)));
-	$return->add_child(new moojon_label_tag(title_text($column_name).':', array('for' => $column_name)));
+	$return = div_tag();
+	$return->add_child(hidden_input_tag(array('name' => model_control_name($model, $column_name), 'value' => $value)));
+	$return->add_child(label_tag(title_text($column_name).':', $column_name));
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
-	$attributes['type'] = 'file';
 	$attributes['class'] = 'file';
-	$return->add_child(new moojon_input_tag($attributes));
+	$return->add_child(file_input_tag($attributes));
 	if (!$column->get_null() && $value) {
 		$return->add_child(uploaded_file_tag($model, $column_name));
 		$attributes['id'] = "clear_$column_name";
-		$attributes['name'] = get_class($model)."[clear_$column_name]";
-		$attributes['type'] = 'checkbox';
+		$attributes['name'] = model_control_name($model, "clear_$column_name");
 		$attributes['class'] = 'checkbox';
 		$attributes['value'] = 1;
-		$return->add_child(new moojon_label_tag(title_text("Clear $column_name").':', array('for' => "clear_$column_name")));
-		$return->add_child(new moojon_input_tag($attributes));
+		$return->add_child(label_tag(title_text("Clear $column_name").':', "clear_$column_name"));
+		$return->add_child(checkbox_input_tag($attributes));
 	}
 	return $return;
 }
