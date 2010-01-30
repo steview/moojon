@@ -47,7 +47,18 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final public function __get($key) {
+		$class = get_class($this);
+		$belongs_to_relationship = ($this->has_belongs_to_relationship($class)) ? $this->get_relationship($class) : null;
 		if ($this->has_relationship($key)) {
+			$relationship = $this->get_relationship($key);
+			$foreign_key = $relationship->get_foreign_key();
+			if ($belongs_to_relationship && array_key_exists($foreign_key, $belongs_to_relationship->get_shared_columns())) {
+				$relationship = null;
+			}
+		} else {
+			$relationship = null;
+		}
+		if ($relationship) {
 			if (!array_key_exists($key, $this->relationship_data)) {
 				$records = new moojon_model_collection($this, $this->get_relationship($key));
 				$this->relationship_data[$key] = $records->get();
@@ -64,8 +75,8 @@ abstract class moojon_base_model extends moojon_base {
 					throw new moojon_exception("unknown property ($key)");
 				}
 			}
-			$class = get_class($this);
-			if ($this->has_belongs_to_relationship($class) && $this->relationships[$class]->has_shared_column($key)) {
+			
+			if ($belongs_to_relationship && $this->relationships[$class]->has_shared_column($key)) {
 				return $this->$class->$key;
 			}
 			return $return;
