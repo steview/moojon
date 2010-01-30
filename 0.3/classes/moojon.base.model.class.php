@@ -75,9 +75,8 @@ abstract class moojon_base_model extends moojon_base {
 					throw new moojon_exception("unknown property ($key)");
 				}
 			}
-			
 			if ($belongs_to_relationship && $this->relationships[$class]->has_shared_column($key)) {
-				return $this->$class->$key;
+				$return = $this->$class->$key;
 			}
 			return $return;
 		}

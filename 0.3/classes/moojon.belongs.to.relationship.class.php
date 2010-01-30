@@ -3,7 +3,7 @@ final class moojon_belongs_to_relationship extends moojon_base_relationship {
 	private $shared_columns = array();
 	
 	public function has_shared_column($key) {
-		return array_key_exists($key, $this->shared_columns);
+		return in_array($key, $this->shared_columns);
 	}
 	
 	public function set_shared_columns($shared_columns = array()) {
