@@ -368,15 +368,33 @@ final class moojon_paths extends moojon_base {
 		);
 	}
 	
-	static public function get_view_paths($app, $controller) {
-		return array(
-			self::get_project_views_app_controller_directory($app, $controller),
-			self::get_project_views_app_directory($app),
-			self::get_project_views_directory(),
-			self::get_moojon_views_app_controller_directory($app, $controller),
-			self::get_moojon_views_app_directory($app),
-			self::get_moojon_views_directory()
-		);
+	static public function get_view_paths($app, $controller, $dirname = '') {
+		$return = array();
+		if ($dirname == '.') {
+			$return[] = self::get_project_views_directory()."$app/$controller/";
+			$return[] = self::get_moojon_views_app_controller_directory($app, $controller);
+		} else {
+			$return[] = self::get_project_views_directory()."$app/$controller/$dirname/";
+			$dirnames = explode('/', $dirname);
+			if (count($dirnames) > 0) {
+				$element1 = array_shift($dirnames);
+ 				$implosion = (count($dirnames)) ? implode('/', $dirnames).'/' : '';
+				$return[] = self::get_project_views_app_controller_directory($app, $element1).$implosion;
+				$return[] = self::get_moojon_views_app_controller_directory($app, $element1).$implosion;
+			}
+			if (count($dirnames) > 0) {
+				$element2 = array_shift($dirnames);
+ 				$implosion = (count($dirnames)) ? implode('/', $dirnames).'/' : '';
+				$return2 = array();
+				$return2[] = $return[0];
+				$return2[] = $return[1];
+				$return2[] = self::get_project_views_app_controller_directory($element1, $element2).$implosion;
+				$return2[] = $return[2];
+				$return2[] = self::get_moojon_views_app_controller_directory($element1, $element2).$implosion;
+				$return = $return2;
+			}
+		}
+		return $return;
 	}
 	
 	static public function get_helper_paths() {
@@ -428,11 +446,21 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_view_path($app, $controller, $view) {
-		return self::get_path(self::get_view_paths($app, $controller), "$view.view.php");
+		$dirname = dirname($view);
+		$view = basename($view, '.php');
+		$view = basename($view, '.view');
+		$view = "$view.view.php";
+		return self::get_path(self::get_view_paths($app, $controller, $dirname), $view);
 	}
 	
 	static public function get_partial_path($app, $controller, $partial) {
-		return self::get_path(self::get_view_paths($app, $controller), "_$partial.php");
+		$dirname = dirname($partial);
+		$partial = basename($partial, '.php');
+		if (substr($partial, 0, 1) == '_') {
+			$partial = substr($partial, 1);
+		}
+		$partial = "_$partial.php";
+		return self::get_path(self::get_view_paths($app, $controller, $dirname), $partial);
 	}
 	
 	static public function get_helper_path($helper) {

@@ -50,19 +50,24 @@ final class moojon_runner extends moojon_singleton {
 		return $app->render();
 	}
 	
-	static public function render($path, moojon_base $object = null) {
-		if ($object) {
-			foreach (get_object_vars($object) as $key => $value) {
-				$$key = $value;
-			}
+	static public function render($path, $variables = array()) {
+		if (!is_array($variables)) {
+			$variables = get_object_vars($variables);
 		}
 		ob_start();
-		require_once($path);
+		self::partial($path, $variables);
 		$return = ob_get_clean();
 		if (ob_get_length()) {
 			ob_end_clean();
 		}
 		return $return;
+	}
+	
+	static public function partial($path, $variables = array()) {
+		foreach ($variables as $key => $value) {
+			$$key = $value;
+		}
+		require_once($path);
 	}
 }
 ?>

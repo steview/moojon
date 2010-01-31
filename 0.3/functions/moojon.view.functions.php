@@ -21,13 +21,13 @@ function helpers() {
 }
 
 function partial($partial, $variables = array()) {
-	if ($partial_path = moojon_paths::get_partial_path(APP, CONTROLLER, $partial)) {
-		foreach ($variables as $key => $value) {
-			$$key = $value;
-		}
-		require_once($partial_path);
-	} else {
+	$backtrace = debug_backtrace();
+	$view_directory = dirname($backtrace[0]['file']).'/';
+	$controller = basename($view_directory, '/');
+	$app = basename(dirname($view_directory));
+	if (!$partial_path = moojon_paths::get_partial_path($app, $controller, $partial)) {
 		throw new moojon_exception("Unknown partial ($partial)");
 	}
+	moojon_runner::partial($partial_path, $variables);
 }
 ?>
