@@ -30,7 +30,7 @@ final class moojon_query_result extends ArrayObject {
 			}
 			$data_types .= ')';
 			$log .= "\n\n$parsed_query\n\n$values\n\n$data_types";
-			//moojon_base::log($log);
+			moojon_base::log($log);
 		}
 		foreach ($param_values as $key => $value) {
 			if ($value !== null) {
