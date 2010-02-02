@@ -47,8 +47,7 @@ function member_tag(moojon_base_model $model = null, $attributes = array()) {
 }
 
 function find_has_one_relationship(moojon_base_model $model, $column_name) {
-	//if ($model->is_has_one_relationship_column($column_name) || $model->is_belongs_to_relationship_column($column_name)) {
-	if ($model->is_has_one_relationship_column($column_name)) {
+	if ($model->is_has_one_relationship_column($column_name) || $model->is_belongs_to_relationship_column($column_name)) {
 		return $model->get_relationship_by_column($column_name);
 	} else {
 		return false;
