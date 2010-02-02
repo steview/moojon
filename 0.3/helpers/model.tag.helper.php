@@ -325,7 +325,7 @@ function relationship_tables(moojon_base_model $model, $relationship_names = arr
 			switch (get_class($value)) {
 				case 'moojon_has_many_relationship':
 				case 'moojon_has_many_to_many_relationship':
-					$relationship_class = $value->get_class();
+					/*$relationship_class = $value->get_class();
 					$relationship = new $relationship_class;
 					$div->add_child(h3_tag(title_text($key)));
 					$div->add_child(actions_ul(array(new_member_tag($relationship))));
@@ -335,7 +335,7 @@ function relationship_tables(moojon_base_model $model, $relationship_names = arr
 					$foreign_key = moojon_primary_key::get_foreign_key($model->get_table());
 					$key = $value->get_key();
 					$key_column = $model->get_column($key);
-					$div->add_child(table_for($relationship->read("$foreign_key = :$key", null, null, array(":$key" => $key_column->get_value()), array(":$key" => $key_column->get_data_type()), $model), $relationship->get_editable_column_names(array($foreign_key))));
+					$div->add_child(table_for($relationship->read("$foreign_key = :$key", null, null, array(":$key" => $key_column->get_value()), array(":$key" => $key_column->get_data_type()), $model), $relationship->get_editable_column_names(array($foreign_key))));*/
 					break;
 			}
 		}
