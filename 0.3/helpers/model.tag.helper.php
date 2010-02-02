@@ -315,10 +315,13 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 	return div_tag($child);
 }
 
-function relationship_tables(moojon_base_model $model) {
+function relationship_tables(moojon_base_model $model, $relationship_names = array()) {
 	if ($model->has_relationships()) {
+		$relationship_names = ($relationship_names) ? $relationship_names : $model->get_relationship_names();
 		$div = div_tag();
-		foreach ($model->get_relationships() as $key => $value) {
+		foreach ($relationship_names as $relationship_name) {
+			$key = $relationship_name;
+			$value = $model->get_relationship($relationship_name);
 			switch (get_class($value)) {
 				case 'moojon_has_many_relationship':
 				case 'moojon_has_many_to_many_relationship':
