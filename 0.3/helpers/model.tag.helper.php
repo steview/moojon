@@ -47,7 +47,8 @@ function member_tag(moojon_base_model $model = null, $attributes = array()) {
 }
 
 function find_has_one_relationship(moojon_base_model $model, $column_name) {
-	if ($model->is_has_one_relationship_column($column_name) || $model->is_belongs_to_relationship_column($column_name)) {
+	//if ($model->is_has_one_relationship_column($column_name) || $model->is_belongs_to_relationship_column($column_name)) {
+	if ($model->is_has_one_relationship_column($column_name)) {
 		return $model->get_relationship_by_column($column_name);
 	} else {
 		return false;
@@ -335,7 +336,7 @@ function relationship_tables(moojon_base_model $model, $relationship_names = arr
 					$foreign_key = moojon_primary_key::get_foreign_key($model->get_table());
 					$key = $value->get_key();
 					$key_column = $model->get_column($key);
-					/*$div->add_child(table_for($relationship->read("$foreign_key = :$key", null, null, array(":$key" => $key_column->get_value()), array(":$key" => $key_column->get_data_type()), $model), $relationship->get_editable_column_names(array($foreign_key))));*/
+					$div->add_child(table_for($relationship->read("$foreign_key = :$key", null, null, array(":$key" => $key_column->get_value()), array(":$key" => $key_column->get_data_type()), $model), $relationship->get_editable_column_names(array($foreign_key))));
 					break;
 			}
 		}
