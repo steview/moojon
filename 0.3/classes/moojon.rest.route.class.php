@@ -169,14 +169,20 @@ final class moojon_rest_route extends moojon_base_route {
 	static public function get_collection_uri(moojon_base_model $model) {
 		$route = self::get_collection_rest_route($model);
 		$parent_resource = '';
-		if (moojon_uri::get_or_null('resource') != $route->get_resource()) {
-			$parent_resource = moojon_uri::get_uri().'/';
-		} else {
-			if ($model->is_belongs_to_relationship_column(get_class($model))) {
+		if ($resource = moojon_uri::get_or_null('resource')) {
+			$resource = moojon_inflect::singularize($resource);
+			$resource_model = new $resource;
+			$table = $model->get_table();
+			$class = $model->get_class();
+			if ($resource_model->has_has_many_relationship($table) || $resource_model->has_has_many_to_many_relationship($table)) {
 				$parent_resource = moojon_uri::get_uri().'/';
+			} else if ($resource_model->has_relationship($class)) {
+				$belongs_to_relationship = $resource_model->get_relationship($class);
+				if (get_class($belongs_to_relationship) == 'moojon_belongs_to_relationship') {
+					$parent_resource = moojon_uri::get_uri().'/';
+				}
 			}
 		}
-		//$parent_resource = (moojon_uri::get_or_null('resource') == $route->get_resource() && $model->has_belongs_to_relationship(get_class($model))) ? '' : moojon_uri::get_uri().'/';
 		return moojon_config::get('index_file').$parent_resource.$route->get_pattern().'/';
 	}
 	
