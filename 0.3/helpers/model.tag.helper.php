@@ -426,7 +426,6 @@ function has_one_tag(moojon_base_model_collection $models = null, moojon_base_mo
 		$attributes['value'] = $value;
 		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
-		$models = ($models) ? $models : $relationship->read();
 		$foreign_key = $relationship->get_foreign_key();
 		$key = $relationship->get_key();
 		$relationship_name = $relationship->get_class($model);
@@ -435,6 +434,7 @@ function has_one_tag(moojon_base_model_collection $models = null, moojon_base_mo
 		if ($column->get_null()) {
 			$options['Please select...'] = 0;
 		}
+		$models = ($models) ? $models : $relationship->read();
 		foreach($models as $option) {
 			$options[(String)$option] = $option->$key;
 		}
@@ -453,11 +453,11 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 		$attributes['value'] = $value;
 		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
-		$models = ($models) ? $models : $relationship->read("$foreign_key != :$foreign_key", null, null, array(":$foreign_key" => $model->$foreign_key));
 		$key = $relationship->get_key();
 		$relationship_name = $relationship->get_class($model);
 		$relationship = new $relationship_name;
 		$options = array('Please select...' => 0);
+		$models = ($models) ? $models : $relationship->read("$foreign_key != :$foreign_key", null, null, array(":$foreign_key" => $model->$foreign_key));
 		foreach($models as $option) {
 			$options[(String)$option] = $option->$key;
 		}
