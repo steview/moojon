@@ -449,23 +449,17 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 	$name = $column->get_name();
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$foreign_key = $relationship->get_foreign_key();
-	$value = moojon_request::get_or_null($name);
-	if ($value && $model->$foreign_key && $model->$foreign_key != $value) {
-		$attributes['value'] = $value;
-		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
-	} else {
-		$key = $relationship->get_key();
-		$relationship_name = $relationship->get_class($model);
-		$relationship = new $relationship_name;
-		$options = array('Please select...' => 0);
-		$key_value = ($model->$key) ? $model->$key : 0;
-		$models = ($models) ? $models : $relationship->read("$key != :$key", null, null, array(":$key" => $key_value));
-		foreach($models as $option) {
-			$options[(String)$option] = $option->$key;
+	$return = div_tag();
+	if ($value = moojon_request::get_or_null($name)) {
+		if ($model->$foreign_key == $value) {
+			$value = 0;
 		}
-		$selected = ($model->$name) ? $model->$name : moojon_uri::get_or_null($foreign_key);
-		$return = select_options($options, $selected, $attributes);
+		$return->add_child(redirection_tag(moojon_server::redirection()));
+	} else {
+		$value = 0;
 	}
+	$attributes['value'] = $value;
+	$return->add_child(hidden_input_tag($attributes));
 	return $return;
 }
 
