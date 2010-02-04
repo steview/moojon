@@ -403,7 +403,7 @@ function control(moojon_base_model $model, $column_name) {
 	return $return;
 }
 
-function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojon_has_one_relationship $relationship, $attributes = array()) {
+function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
 	$return = null;
 	$name = $column->get_name();
 	$foreign_key = $relationship->get_foreign_key();
