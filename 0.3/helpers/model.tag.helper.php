@@ -406,15 +406,13 @@ function control(moojon_base_model $model, $column_name) {
 function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
 	$return = null;
 	$name = $column->get_name();
-	$foreign_key = $relationship->get_foreign_key();
-	$key = $relationship->get_key();
-	$value = moojon_request::get_or_null($name);
-	echo "<h1>$foreign_key $key ".$model->$key." $value</h1>";
-	if ($value && $model->$key != $value) {
-		$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
+	if ($value = moojon_request::get_or_null($name)) {
 		$attributes['value'] = $value;
 		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
+		$foreign_key = $relationship->get_foreign_key();
+		$key = $relationship->get_key();
 		$relationship_name = $relationship->get_class($model);
 		$relationship = new $relationship_name;
 		$options = array();
@@ -425,7 +423,29 @@ function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojo
 			$options[(String)$option] = $option->$key;
 		}
 		$selected = ($model->$name) ? $model->$name : moojon_uri::get_or_null($foreign_key);
-		$return = select_options($options, $selected, try_set_name_and_id_attributes($attributes, $model, $column));
+		$return = select_options($options, $selected, $attributes);
+	}
+	return $return;
+}
+
+function belongs_to_tag(moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
+	$return = false;
+	$name = $column->get_name();
+	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
+	$foreign_key = $relationship->get_foreign_key();
+	if ($value = moojon_request::get_or_null($name) && $model->$foreign_key != $value) {
+		$attributes['value'] = $value;
+		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
+	} else {
+		$key = $relationship->get_key();
+		$relationship_name = $relationship->get_class($model);
+		$relationship = new $relationship_name;
+		$options = array('Please select...' => 0);
+		foreach($relationship->read() as $option) {
+			$options[(String)$option] = $option->$key;
+		}
+		$selected = ($model->$name) ? $model->$name : moojon_uri::get_or_null($foreign_key);
+		$return = select_options($options, $selected, $attributes);
 	}
 	return $return;
 }
