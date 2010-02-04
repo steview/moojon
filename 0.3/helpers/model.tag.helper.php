@@ -449,7 +449,8 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 	$name = $column->get_name();
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$foreign_key = $relationship->get_foreign_key();
-	if ($value = moojon_request::get_or_null($name) && $model->$foreign_key != $value) {
+	$value = moojon_request::get_or_null($name);
+	if ($value && $model->$foreign_key != $value) {
 		$attributes['value'] = $value;
 		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
