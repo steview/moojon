@@ -47,7 +47,15 @@ function member_tag(moojon_base_model $model = null, $attributes = array()) {
 }
 
 function find_has_one_relationship(moojon_base_model $model, $column_name) {
-	if ($model->is_has_one_relationship_column($column_name) || $model->is_belongs_to_relationship_column($column_name)) {
+	if ($model->is_has_one_relationship_column($column_name)) {
+		return $model->get_relationship_by_column($column_name);
+	} else {
+		return false;
+	}
+}
+
+function find_belongs_to_relationship(moojon_base_model $model, $column_name) {
+	if ($model->is_belongs_to_relationship_column($column_name)) {
 		return $model->get_relationship_by_column($column_name);
 	} else {
 		return false;
@@ -345,56 +353,63 @@ function relationship_tables(moojon_base_model $model, $relationship_names = arr
 	}
 }
 
-function control(moojon_base_model $model, $column_name) {
+function control(moojon_base_model $model, $column_name, $attributes = array()) {
 	$column = $model->get_column($column_name);
 	$return = div_tag(label_tag(title_text($column_name).':', $column_name));
-	if (!$relationship = find_has_one_relationship($model, $column_name)) {
+	$has_one_relationship = find_has_one_relationship($model, $column_name);
+	$belongs_to_relationship = find_belongs_to_relationship($model, $column_name);
+	if (!$has_one_relationship && !$belongs_to_relationship) {
 		switch (get_class($column)) {
 			case 'moojon_binary_column':
-				$control = binary_tag($model, $column);
+				$control = binary_tag($model, $column, $attributes);
 				break;
 			case 'moojon_boolean_column':
-				$control = boolean_tag($model, $column);
+				$control = boolean_tag($model, $column, $attributes);
 				break;
 			case 'moojon_date_column':
-				$control = date_tag($model, $column);
+				$control = date_tag($model, $column, $attributes);
 				break;
 			case 'moojon_datetime_column':
-				$control = datetime_tag($model, $column);
+				$control = datetime_tag($model, $column, $attributes);
 				break;
 			case 'moojon_decimal_column':
-				$control = decimal_tag($model, $column);
+				$control = decimal_tag($model, $column, $attributes);
 				break;
 			case 'moojon_float_column':
-				$control = float_tag($model, $column);
+				$control = float_tag($model, $column, $attributes);
 				break;
 			case 'moojon_integer_column':
-				$control = integer_tag($model, $column);
+				$control = integer_tag($model, $column, $attributes);
 				break;
 			case 'moojon_primary_key':
-				$control = primary_key_tag($model, $column);
+				$control = primary_key_tag($model, $column, $attributes);
 				break;
 			case 'moojon_string_column':
 				if ($column->is_password()) {
-					return password_tag($model, $column);
+					return password_tag($model, $column, $attributes);
 				} else if ($column->is_file()) {
-					return file_tag($model, $column);
+					return file_tag($model, $column, $attributes);
 				} else {
-					$control = string_tag($model, $column);
+					$control = string_tag($model, $column, $attributes);
 				}
 				break;
 			case 'moojon_text_column':
-				$control = text_tag($model, $column);
+				$control = text_tag($model, $column, $attributes);
 				break;
 			case 'moojon_time_column':
-				$control = time_tag($model, $column);
+				$control = time_tag($model, $column, $attributes);
 				break;
 			case 'moojon_timestamp_column':
-				$control = timestamp_tag($model, $column);
+				$control = timestamp_tag($model, $column, $attributes);
 				break;
 		}
-	} else {
-		$control = has_one_tag($model, $column, $relationship);
+	} else if ($has_one_relationship) {
+		$control = has_one_tag(null, $model, $column, $has_one_relationship, $attributes);
+		if (get_class($control) != 'moojon_select_tag') {
+			$return->clear_children();
+		}
+	} else if ($belongs_to_relationship) {
+		$control = belongs_to_tag(null, $model, $column, $belongs_to_relationship, $attributes);
 		if (get_class($control) != 'moojon_select_tag') {
 			$return->clear_children();
 		}
@@ -403,7 +418,7 @@ function control(moojon_base_model $model, $column_name) {
 	return $return;
 }
 
-function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
+function has_one_tag(moojon_base_model_collection $models = null, moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
 	$return = null;
 	$name = $column->get_name();
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
@@ -411,6 +426,7 @@ function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojo
 		$attributes['value'] = $value;
 		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
+		$models = ($models) ? $models : $relationship->read();
 		$foreign_key = $relationship->get_foreign_key();
 		$key = $relationship->get_key();
 		$relationship_name = $relationship->get_class($model);
@@ -419,7 +435,7 @@ function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojo
 		if ($column->get_null()) {
 			$options['Please select...'] = 0;
 		}
-		foreach($relationship->read() as $option) {
+		foreach($models as $option) {
 			$options[(String)$option] = $option->$key;
 		}
 		$selected = ($model->$name) ? $model->$name : moojon_uri::get_or_null($foreign_key);
@@ -428,7 +444,7 @@ function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojo
 	return $return;
 }
 
-function belongs_to_tag(moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
+function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
 	$return = false;
 	$name = $column->get_name();
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
@@ -437,11 +453,12 @@ function belongs_to_tag(moojon_base_model $model, moojon_base_column $column, mo
 		$attributes['value'] = $value;
 		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
+		$models = ($models) ? $models : $relationship->read("$foreign_key != :$foreign_key", null, null, array(":$foreign_key" => $model->$foreign_key));
 		$key = $relationship->get_key();
 		$relationship_name = $relationship->get_class($model);
 		$relationship = new $relationship_name;
 		$options = array('Please select...' => 0);
-		foreach($relationship->read() as $option) {
+		foreach($models as $option) {
 			$options[(String)$option] = $option->$key;
 		}
 		$selected = ($model->$name) ? $model->$name : moojon_uri::get_or_null($foreign_key);
