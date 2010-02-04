@@ -408,11 +408,12 @@ function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojo
 	$name = $column->get_name();
 	$foreign_key = $relationship->get_foreign_key();
 	$key = $relationship->get_key();
+	echo "<h1><!-- $foreign_key $key --></h1>";
 	$value = moojon_request::get_or_null($name);
 	if ($value && $model->$foreign_key != $value) {
 		$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 		$attributes['value'] = $value;
-		$return = "<!-- $foreign_key $key -->".div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
+		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
 		$relationship_name = $relationship->get_class($model);
 		$relationship = new $relationship_name;
