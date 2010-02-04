@@ -406,7 +406,8 @@ function control(moojon_base_model $model, $column_name) {
 function has_one_tag(moojon_base_model $model, moojon_base_column $column, $attributes = array()) {
 	$return = null;
 	$name = $column->get_name();
-	if ($value = moojon_request::get_or_null($name)) {
+	$value = moojon_request::get_or_null($name);
+	if ($value && $model->$name != $value) {
 		$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 		$attributes['value'] = $value;
 		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
