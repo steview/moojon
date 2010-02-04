@@ -408,6 +408,7 @@ function has_one_tag(moojon_base_model $model, moojon_base_column $column, moojo
 	$name = $column->get_name();
 	$foreign_key = $relationship->get_foreign_key();
 	$key = $relationship->get_key();
+	echo "<h1>$foreign_key $key ".$model->$key." $value</h1>";
 	$value = moojon_request::get_or_null($name);
 	if ($value && $model->$key != $value) {
 		$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
