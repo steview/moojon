@@ -29,14 +29,14 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 			}
 		}
 		if ($card_type == -1) {
-			echo(__LINE__);return false;
+			return false;
 		}
 		if (!strlen($card_number)) {
-			echo(__LINE__);return false;
+			return false;
 		}
 		$card_number = str_replace (' ', '', $card_number);
 		if (!eregi('^[0-9]{13,19}$', $card_number)) {
-			echo(__LINE__);return false;
+			return false;
 		}
 		if ($cards[$card_type]['checkdigit']) {
 			$checksum = 0;
@@ -56,7 +56,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 				}
 			}
 			if ($checksum % 10) {
-				echo(__LINE__);return false;
+				return false;
 			}
 		}
 		$prefix = split(',', $cards[$card_type]['prefixes']);
@@ -69,7 +69,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 			}
 		}
 		if (!$prefix_valid) {
-			echo(__LINE__);return false;
+			return false;
 		}
 		$length_valid = false;
 		$lengths = split(',', $cards[$card_type]['length']);
@@ -80,7 +80,7 @@ final class moojon_creditcard_validation extends moojon_base_validation {
 			}
 		}
 		if (!$length_valid) {
-			echo(__LINE__);return false;
+			return false;
 		}
 		return true;
 	}

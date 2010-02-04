@@ -458,7 +458,8 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 		$relationship_name = $relationship->get_class($model);
 		$relationship = new $relationship_name;
 		$options = array('Please select...' => 0);
-		$models = ($models) ? $models : $relationship->read("$key != :$key", null, null, array(":$key" => $model->$key));
+		$key_value = ($model->$key) ? $model->$key : 0;
+		$models = ($models) ? $models : $relationship->read("$key != :$key", null, null, array(":$key" => $key_value));
 		foreach($models as $option) {
 			$options[(String)$option] = $option->$key;
 		}
