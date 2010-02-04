@@ -450,7 +450,7 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$foreign_key = $relationship->get_foreign_key();
 	$value = moojon_request::get_or_null($name);
-	if ($value && $model->$foreign_key != $value) {
+	if ($value && $model->$foreign_key && $model->$foreign_key != $value) {
 		$attributes['value'] = $value;
 		$return = div_tag(array(hidden_input_tag($attributes), redirection_tag(moojon_server::redirection())));
 	} else {
@@ -458,7 +458,7 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 		$relationship_name = $relationship->get_class($model);
 		$relationship = new $relationship_name;
 		$options = array('Please select...' => 0);
-		$models = ($models) ? $models : $relationship->read("$foreign_key != :$foreign_key", null, null, array(":$foreign_key" => $model->$foreign_key));
+		$models = ($models) ? $models : $relationship->read("$key != :$key", null, null, array(":$key" => $model->$key));
 		foreach($models as $option) {
 			$options[(String)$option] = $option->$key;
 		}
