@@ -228,6 +228,9 @@ function dl_for(moojon_base_model $model, $column_names = array(), $attributes =
 		if ($relationship = find_has_one_relationship($model, $column_name)) {
 			$name = $relationship->get_name();
 			$content = member_tag($model->$name);
+		} else if ($relationship = find_belongs_to_relationship($model, $column_name)) {
+			$name = $relationship->get_name();
+			$content = member_tag($model->$name);
 		} else {
 			$content = $column->get_value();
 		}
@@ -301,12 +304,14 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 			foreach ($column_names as $column_name) {
 				if ($model->to_string_column != $column_name) {
 					$column = $model->get_column($column_name);
-					if (!$relationship = find_has_one_relationship($model, $column_name)) {
-						//$content = $column->get_value();
-						$content = $model->$column_name;
-					} else {
+					if ($relationship = find_has_one_relationship($model, $column_name)) {
 						$name = $relationship->get_name();
 						$content = member_tag($model->$name);
+					} else if ($relationship = find_belongs_to_relationship($model, $column_name)) {
+						$name = $relationship->get_name();
+						$content = member_tag($model->$name);
+					} else {
+						$content = $model->$column_name;
 					}
 					$tds[] = td_tag(format_content($model, $column, $content));
 				}
@@ -452,6 +457,9 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 	$return = div_tag();
 	if ($value = moojon_request::get_or_null($name)) {
 		$return->add_child(redirection_tag(moojon_server::redirection()));
+		if ($this->$foreign_key == $value) {
+			$value = 0;
+		}
 	} else {
 		$value = 0;
 	}
