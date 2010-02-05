@@ -454,10 +454,11 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 	$name = $column->get_name();
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
 	$foreign_key = $relationship->get_foreign_key();
+	$key = $relationship->get_key();
 	$return = div_tag();
 	if ($value = moojon_request::get_or_null($name)) {
 		$return->add_child(redirection_tag(moojon_server::redirection()));
-		if ($model->$foreign_key == $value) {
+		if ($model->$key == $value) {
 			$value = 0;
 		}
 	} else {
