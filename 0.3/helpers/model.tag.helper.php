@@ -457,7 +457,7 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 	$return = div_tag();
 	if ($value = moojon_request::get_or_null($name)) {
 		$return->add_child(redirection_tag(moojon_server::redirection()));
-		if ($this->$foreign_key == $value) {
+		if ($model->$foreign_key == $value) {
 			$value = 0;
 		}
 	} else {
