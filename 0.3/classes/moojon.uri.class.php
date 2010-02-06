@@ -23,6 +23,7 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 			}
 			$this->match = $match;
 			$this->data = $this->match->get_params();
+			//die($this->match->get_pattern());
 			self::try_define('APP', $this->data['app']);
 			self::try_define('CONTROLLER', $this->data['controller']);
 			self::try_define('ACTION', $this->data['action']);
@@ -43,7 +44,7 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 	
 	static public function get_match_pattern() {
 		$instance = self::fetch();
-		return $instance->match->get_pattern();
+		return self::clean_uri($instance->match->get_pattern());
 	}
 	
 	static public function get_match_params() {

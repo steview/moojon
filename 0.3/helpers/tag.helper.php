@@ -58,7 +58,7 @@ function add_class(moojon_base_tag $tag, $class) {
 }
 
 function title_text($column_name) {
-	return ucfirst(str_replace('_', ' ', moojon_primary_key::get_table($column_name)));
+	return ucfirst(str_replace('_', ' ', moojon_primary_key::get_class($column_name)));
 }
 
 function a_tag($content, $href, $attributes = array()) {
@@ -511,5 +511,30 @@ function options($data, $selected = null) {
 		$return[] = option_tag($key, $attributes);
 	}
 	return $return;
+}
+
+function rest_actions(moojon_base_model $model) {
+	switch (strtolower(ACTION)) {
+		case 'index':
+			$lis = array(li_tag(new_member_tag($model)));
+			break;
+		case '_new':
+			$lis = array(li_tag(collection_tag($model)));
+			break;
+		case 'show':
+			$lis = array(li_tag(edit_member_tag($model)), li_tag(delete_member_tag($model)));
+			break;
+		case 'edit':
+			$lis = array(li_tag(member_tag($model)), li_tag(delete_member_tag($model)));
+			break;
+		case 'delete':
+			$lis = array(li_tag(member_tag($model)), li_tag(edit_member_tag($model)));
+			break;
+		default:
+			$lis = array();
+			break;
+	}
+	$ul = ul_tag($lis);
+	return div_tag($ul, array('class' => 'generated actions'));
 }
 ?>

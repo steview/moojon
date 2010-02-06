@@ -1,8 +1,5 @@
 <h1>Delete <[human]></h1>
-<ul class="actions">
-	<li><?php echo a_tag($<[singular]>, <[singular]>_uri($<[singular]>)); ?></li>
-	<li><?php echo a_tag('Edit', edit_<[singular]>_uri($<[singular]>)); ?></li>
-</ul>
+<?php echo rest_actions($<[singular]>); ?>
 <div class="hrule"></div>
 <div id="content_main">
 	<h2><?php echo $<[singular]>; ?></h2>

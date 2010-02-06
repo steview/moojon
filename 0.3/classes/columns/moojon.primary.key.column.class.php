@@ -24,7 +24,15 @@ final class moojon_primary_key extends moojon_base_column {
 	}
 	
 	static public function get_table($foreign_key) {
+		return moojon_inflect::pluralize(self::get_class($foreign_key));
+	}
+	
+	static public function get_class($foreign_key) {
 		return str_replace('_'.self::NAME, '', $foreign_key);
+	}
+	
+	static public function get_id_from_foreign_key($foreign_key) {
+		return substr($foreign_key, strlen(self::get_class($foreign_key).'_'));
 	}
 }
 ?>

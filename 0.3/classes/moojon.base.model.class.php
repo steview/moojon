@@ -21,9 +21,12 @@ abstract class moojon_base_model extends moojon_base {
 		$this->new_record = true;
 	}
 	
-	final static protected function init($class) {
+	final static protected function init($class, $data = array()) {
+		if (!$data || !is_array($data)) {
+			$data = array();
+		}
 		$class = self::strip_base($class);
-		return new $class;
+		return new $class($data);
 	}
 	
 	abstract protected function add_columns();
@@ -704,10 +707,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static protected function base_create($class, $data) {
-		if (!$data) {
-			$data = array();
-		}
-		$instance = self::init($class);
+		$instance = self::init($class, $data);
 		return $instance;
 	}
 	
@@ -830,6 +830,10 @@ abstract class moojon_base_model extends moojon_base {
 			$instance->$column_name = $value;
 			return $instance;
 		}
+	}
+	
+	final static public function factory($class, $data = null) {
+		return self::base_create($class, $data);
 	}
 }
 ?>

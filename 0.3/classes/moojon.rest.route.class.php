@@ -60,7 +60,7 @@ final class moojon_rest_route extends moojon_base_route {
 				$params = array_merge($params, $route->get_params());
 			} else if (!$uri) {
 				$params['action'] = 'index';
-				$pattern = 'index';
+				$pattern = '/';
 			} else if ($uri == 'new') {
 				$params['action'] = '_new';
 				$pattern = 'new';
@@ -73,18 +73,16 @@ final class moojon_rest_route extends moojon_base_route {
 		$id = array_shift($uris);
 		$uri = implode('/', $uris);
 		$id_property = $this->id_property;
-		$resource_id = moojon_primary_key::get_foreign_key($this->resource);
-		$params = array_merge($this->params, array($id_property => $id, $resource_id => $id));
+		$params = array_merge($this->params, array($id_property => $id));
 		$relationship_routes = $this->get_relationship_routes();
 		$params['relationship_routes'] = $relationship_routes;
 		$pattern = '';
 		$routes = array_merge((array_key_exists('member_routes', $this->params)) ? $this->params['member_routes'] : array(), $relationship_routes);
 		if ($routes && $route = moojon_routes::map($uri, $routes, false)) {
 			$new_params = $route->get_params();
-			if (array_key_exists('resource', $new_params) && $new_params['resource'] != $params['resource']) {
-				$foreign_key = moojon_primary_key::get_foreign_key($this->resource);
-				$id_property = $foreign_key;
-				$params[$foreign_key] = $id;
+			if (array_key_exists('resource', $new_params)) {
+				$id_property = moojon_primary_key::get_foreign_key($this->resource);
+				$params[$id_property] = $id;
 			}
 			$pattern = ":$id_property/".$route->get_pattern();
 			$params = array_merge($params, $new_params);
@@ -159,49 +157,6 @@ final class moojon_rest_route extends moojon_base_route {
 	
 	public function get_resource() {
 		return $this->resource;
-	}
-	
-	static private function get_collection_rest_route($model) {
-		$resource = (is_subclass_of($model, 'moojon_base_model')) ? moojon_inflect::pluralize(get_class($model)) : $model;
-		return moojon_routes::get_rest_route($resource);
-	}
-	
-	static public function get_collection_uri(moojon_base_model $model) {
-		$route = self::get_collection_rest_route($model);
-		$parent_resource = '';
-		if ($resource = moojon_uri::get_or_null('resource')) {
-			$resource = moojon_inflect::singularize($resource);
-			$resource_model = new $resource;
-			$table = $model->get_table();
-			$class = $model->get_class();
-			if ($resource_model->has_has_many_relationship($table) || $resource_model->has_has_many_to_many_relationship($table)) {
-				$parent_resource = moojon_uri::get_uri().'/';
-			} else if ($resource_model->has_relationship($class)) {
-				$belongs_to_relationship = $resource_model->get_relationship($class);
-				if (get_class($belongs_to_relationship) == 'moojon_belongs_to_relationship') {
-					$parent_resource = moojon_uri::get_uri().'/';
-				}
-			}
-		}
-		return moojon_config::get('index_file').$parent_resource.$route->get_pattern().'/';
-	}
-	
-	static public function get_member_uri(moojon_base_model $model) {
-		$route = self::get_collection_rest_route($model);
-		$id_property = $route->id_property;
-		return self::get_collection_uri($model).$model->$id_property.'/';
-	}
-	
-	static public function get_new_member_uri(moojon_base_model $model) {
-		return self::get_collection_uri($model).'new/';
-	}
-	
-	static public function get_edit_member_uri(moojon_base_model $model) {
-		return self::get_member_uri($model).'edit/';
-	}
-	
-	static public function get_delete_member_uri(moojon_base_model $model) {
-		return self::get_member_uri($model).'delete/';
 	}
 }
 ?>

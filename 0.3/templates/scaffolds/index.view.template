@@ -1,7 +1,5 @@
 <h1><[Humans]></h1>
-<ul class="actions">
-	<li><?php echo a_tag('New', new_<[singular]>_uri()); ?></li>
-</ul>
+<?php echo rest_actions(moojon_base_model::factory('<[singular]>')); ?>
 <div class="hrule"></div>
 <div id="content_main">
 	<?php echo table_for($<[plural]>); ?>

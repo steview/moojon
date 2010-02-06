@@ -30,22 +30,6 @@ function uploaded_file_tag(moojon_base_model $model, $column_name, $mime_type_co
 	}
 }
 
-function edit_member_tag(moojon_base_model $model, $attributes = array()) {
-	return a_tag('Edit', moojon_rest_route::get_edit_member_uri($model), $attributes);
-}
-
-function delete_member_tag(moojon_base_model $model, $attributes = array()) {
-	return a_tag('Delete', moojon_rest_route::get_delete_member_uri($model), $attributes);
-}
-
-function new_member_tag(moojon_base_model $model, $attributes = array()) {
-	return a_tag('New', moojon_rest_route::get_new_member_uri($model), $attributes);
-}
-
-function member_tag(moojon_base_model $model = null, $attributes = array()) {
-	return ($model) ? a_tag($model, moojon_rest_route::get_member_uri($model), $attributes) : '-';
-}
-
 function find_has_one_relationship(moojon_base_model $model, $column_name) {
 	if ($model->is_has_one_relationship_column($column_name)) {
 		return $model->get_relationship_by_column($column_name);
@@ -92,7 +76,7 @@ function find_end_year(moojon_base_model $model, moojon_base_column $column) {
 }
 
 function try_set_action_attribute(moojon_base_model $model, $attributes) {
-	$action = (moojon_routes::has_rest_route(moojon_inflect::pluralize(get_class($model)))) ? moojon_rest_route::get_collection_uri($model) : '#';
+	$action = (moojon_routes::has_rest_route(moojon_inflect::pluralize(get_class($model)))) ? get_collection_uri($model) : '#';
 	return try_set_attribute($attributes, 'action', $action);
 }
 
@@ -458,7 +442,9 @@ function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base
 	$return = div_tag();
 	if ($value = moojon_request::get_or_null($name)) {
 		$return->add_child(redirection_tag(moojon_server::redirection()));
-		if ($model->$key == $value) {
+		if ($foreign_key_value = moojon_request::get_or_null($foreign_key)) {
+			$value = $foreign_key_value;
+		} else if ($model->$key == $value) {
 			$value = 0;
 		}
 	} else {
