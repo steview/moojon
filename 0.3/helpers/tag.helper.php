@@ -498,6 +498,10 @@ function select_options($options, $selected = null, $attributes = null) {
 	return select_tag(options($options, $selected), $attributes);
 }
 
+function select_numeric_options($start, $end, $selected = null, $attributes = null) {
+	return select_tag(numeric_options($start, $end, $selected), $attributes);
+}
+
 function options($data, $selected = null) {
 	if (!is_array($data)) {
 		$data = array($data);
@@ -511,6 +515,14 @@ function options($data, $selected = null) {
 		$return[] = option_tag($key, $attributes);
 	}
 	return $return;
+}
+
+function numeric_options($start, $end, $selected = null) {
+	$options = array();
+	for ($i = $start; $i < ($end + 1); $i ++) {
+		$options[$i] = $i;
+	}
+	return options($options, $selected);
 }
 
 function rest_actions(moojon_base_model $model) {
