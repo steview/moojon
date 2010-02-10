@@ -1,4 +1,8 @@
 <?php
+function validate_email($email) {
+	return eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email);
+}
+
 function process_uri($uri) {
 	return moojon_server::process_uri($uri);
 }
@@ -63,6 +67,15 @@ function title_text($column_name) {
 
 function a_tag($content, $href, $attributes = array()) {
 	$attributes['href'] = process_uri($href);
+	return open_tag('a', $content, $attributes);
+}
+
+function mailto_tag($content, $href, $attributes = array()) {
+	$href = (substr($href, 0, 6) == 'mailto') ? substr($href, 6) : $href;
+	$href = (substr($href, 0, 1) == ':') ? substr($href, 1) : $href;
+	if (validate_email($href)) {
+		$attributes = try_set_attribute($attributes, 'href', "mailto:$href");
+	}
 	return open_tag('a', $content, $attributes);
 }
 
