@@ -7,8 +7,10 @@ final class moojon_rest_route extends moojon_base_route {
 	private $custom_collection_routes = array();
 	private $custom_member_routes = array();
 	private $relationship_routes = array();
+	private $actions = array();
 	
 	protected function init() {
+		$this->actions = (array_key_exists('actions', $this->params)) ? $this->params['actions'] : array('index', '_new', 'show', 'edit', 'delete', 'update', 'create', 'destroy');
 		$this->resource = moojon_inflect::pluralize($this->pattern);
 		$this->params['resource'] = $this->resource;
 		$this->app = (array_key_exists('app', $this->params)) ? $this->params['app'] : moojon_config::get_or_null('default_app');
@@ -116,7 +118,10 @@ final class moojon_rest_route extends moojon_base_route {
 	
 	private function match_route($pattern, $params = array(), $validate = true) {
 		if ($pattern && $this->validate_matches($params, $validate)) {
-			return new moojon_route_match($pattern, $params);
+			if (array_key_exists('action', $params) && !in_array($params['action'], $this->actions)) {
+				return false;
+			}
+			return new moojon_route_match($pattern, $params, $this);
 		} else {
 			return false;
 		}
@@ -157,6 +162,10 @@ final class moojon_rest_route extends moojon_base_route {
 	
 	public function get_resource() {
 		return $this->resource;
+	}
+	
+	public function get_actions() {
+		return $this->actions;
 	}
 }
 ?>

@@ -18,7 +18,7 @@ final class moojon_route extends moojon_base_route {
 				}
 			}
 			if ($test && $this->validate_matches($data, $validate)) {
-				return new moojon_route_match($this->pattern, $data);
+				return new moojon_route_match($this->pattern, $data, $this);
 			} else {
 				return false;
 			}

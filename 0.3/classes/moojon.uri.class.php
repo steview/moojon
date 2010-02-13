@@ -10,6 +10,7 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 	
 	private $match;
 	private $uri;
+	private $route;
 	
 	protected function __construct() {
 		$uri = (array_key_exists('REQUEST_URI', $_SERVER)) ? $_SERVER['REQUEST_URI'] : $_SERVER['PATH_INFO'];
@@ -18,12 +19,13 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 			$config = array_merge(moojon_config::get_data(), moojon_config::read(moojon_paths::get_project_config_environment_app_directory(ENVIRONMENT, $match->get('app'))));
 			if (array_key_exists('secure', $config) && $config['secure'] === true && !moojon_security::authenticate()) {
 				moojon_cache::disable();
-				$match = new moojon_route_match(':app/:controller/:action', array_merge($match->get_params(), array('app' => $config['security_app'], 'controller' => $config['security_controller'], 'action' => $config['security_action'])));
+				$pattern = ':app/:controller/:action';
+				$match = new moojon_route_match($pattern, array_merge($match->get_params(), array('app' => $config['security_app'], 'controller' => $config['security_controller'], 'action' => $config['security_action'])), new moojon_route($pattern));
 				$this->uri = $config['security_app'].'/'.$config['security_controller'].'/'.$config['security_action'];
 			}
 			$this->match = $match;
 			$this->data = $this->match->get_params();
-			//die($this->match->get_pattern());
+			$this->route = $this->match->get_route();
 			self::try_define('APP', $this->data['app']);
 			self::try_define('CONTROLLER', $this->data['controller']);
 			self::try_define('ACTION', $this->data['action']);
@@ -40,6 +42,11 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 	static public function get_match() {
 		$instance = self::fetch();
 		return $instance->match;
+	}
+	
+	static public function get_route() {
+		$instance = self::fetch();
+		return $instance->route;
 	}
 	
 	static public function get_match_pattern() {

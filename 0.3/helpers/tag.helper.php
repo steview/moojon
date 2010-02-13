@@ -537,29 +537,4 @@ function numeric_options($start, $end, $selected = null) {
 	}
 	return options($options, $selected);
 }
-
-function rest_actions(moojon_base_model $model) {
-	switch (strtolower(ACTION)) {
-		case 'index':
-			$lis = array(li_tag(new_member_tag($model)));
-			break;
-		case '_new':
-			$lis = array(li_tag(collection_tag($model)));
-			break;
-		case 'show':
-			$lis = array(li_tag(edit_member_tag($model)), li_tag(delete_member_tag($model)));
-			break;
-		case 'edit':
-			$lis = array(li_tag(member_tag($model)), li_tag(delete_member_tag($model)));
-			break;
-		case 'delete':
-			$lis = array(li_tag(member_tag($model)), li_tag(edit_member_tag($model)));
-			break;
-		default:
-			$lis = array();
-			break;
-	}
-	$ul = ul_tag($lis);
-	return div_tag($ul, array('class' => 'generated actions'));
-}
 ?>

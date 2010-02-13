@@ -314,6 +314,10 @@ abstract class moojon_base_model extends moojon_base {
 		$this->add_validation(new moojon_past_validation($key, $message, $required));
 	}
 	
+	final protected function validate_characters($characters, $key, $message, $required = true) {
+		$this->add_validation(new moojon_characters_validation($characters, $key, $message, $required));
+	}
+	
 	final public function has_column($key) {
 		return array_key_exists($key, $this->columns);
 	}

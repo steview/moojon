@@ -80,7 +80,17 @@ function get_collection_uri(moojon_base_model $model) {
 function get_member_uri(moojon_base_model $model) {
 	$route = get_collection_rest_route($model);
 	$id_property = $route->get_id_property();
-	return get_collection_uri($model).$model->$id_property.'/';
+	$current_uri = moojon_uri::get_uri();
+	$table_slash_id_slash = $model->get_table().'/'.$model->$id_property.'/';
+	$position = strpos($current_uri, $table_slash_id_slash);
+	if ($position !== false) {
+		return substr($current_uri, 0, ($position + strlen($table_slash_id_slash)));
+	} else {
+		$collection_uri = get_collection_uri($model);
+		//Need to test belongs_to exception
+		$id_property_uri = (substr($collection_uri, (0 - strlen($model->$id_property.'/'))) == $model->$id_property.'/') ? '' : $model->$id_property.'/';
+		return $collection_uri.$id_property_uri;
+	}
 }
 
 function get_new_member_uri(moojon_base_model $model) {
@@ -95,11 +105,59 @@ function get_delete_member_uri(moojon_base_model $model) {
 	return get_member_uri($model).'delete/';
 }
 
+function rest_actions(moojon_base_model $model, moojon_rest_route $route = null, $action = null) {
+	$action = ($action) ? $action : strtolower(ACTION);
+	$route = ($route) ? $route : moojon_routes::get_rest_route($model->get_table());
+	$actions = $route->get_actions();
+	$lis = array();
+	switch ($action) {
+		case 'index':
+			if (in_array('_new', $actions)) {
+				$lis[] = li_tag(new_member_tag($model));
+			}
+			break;
+		case '_new':
+			if (in_array('index', $actions)) {
+				$lis[] = li_tag(collection_tag($model));
+			}
+			break;
+		case 'show':
+			if (in_array('edit', $actions)) {
+				$lis[] = li_tag(edit_member_tag($model));
+			}
+			if (in_array('delete', $actions)) {
+				$lis[] = li_tag(delete_member_tag($model));
+			}
+			break;
+		case 'edit':
+			if (in_array('show', $actions)) {
+				$lis[] = li_tag(member_tag($model));
+			}
+			if (in_array('delete', $actions)) {
+				$lis[] = li_tag(delete_member_tag($model));
+			}
+			break;
+		case 'delete':
+			if (in_array('show', $actions)) {
+				$lis[] = li_tag(member_tag($model));
+			}
+			if (in_array('edit', $actions)) {
+				$lis[] = li_tag(edit_member_tag($model));
+			}
+			break;
+		default:
+			$lis = array();
+			break;
+	}
+	return div_tag(ul_tag($lis), array('class' => 'generated actions'));
+}
+
 function rest_breadcrumb() {
 	$segments = explode('/', moojon_uri::get_match_pattern());
 	$count = count($segments);
 	$ul = ul_tag();
 	$href = '/';
+	$in_parent = false;
 	for ($i = 0; $i < $count; $i ++) {
 		$segment = $segments[$i];
 		$attributes = ($i == ($count - 1)) ? array('class' => 'last') : array();
@@ -112,13 +170,21 @@ function rest_breadcrumb() {
 				$content = model_from_id($segments[($i - 1)]);
 			}
 		} else {
+			if (!$in_parent || $i == ($count - 1)) {
+				$in_parent = true;
+				$content = title_text($segment);
+			} else {
+				$content = null;
+			}
 			$href .= $segment.'/';
-			$content = title_text($segment);
+			
 		}
-		if ($i == ($count - 1)) {
-			$ul->add_child(li_tag($content, $attributes));
-		} else {
-			$ul->add_child(li_tag(a_tag($content, $href), $attributes));
+		if ($content) {
+			if ($i == ($count - 1)) {
+				$ul->add_child(li_tag($content, $attributes));
+			} else {
+				$ul->add_child(li_tag(a_tag($content, $href), $attributes));
+			}
 		}
 	}
 	return div_tag($ul, array('class' => 'generated breadcrumb'));
