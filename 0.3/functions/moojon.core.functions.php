@@ -1,21 +1,27 @@
 <?php
 function __autoload($class) {
 	$class_path = moojon_paths::get_class_path($class);
+	$class_paths = array($class_path);
 	if (!$class_path) {
 		$class_path = moojon_paths::get_model_path($class);
+		$class_paths[] = $class_path;
 	}
 	if (!$class_path) {
 		$class_path = moojon_paths::get_base_model_path($class);
+		$class_paths[] = $class_path;
 	}
 	if (!$class_path) {
 		$class_path = moojon_paths::get_interface_path($class);
+		$class_paths[] = $class_path;
 	}
 	if (!$class_path) {
 		$class_path = moojon_paths::get_column_path($class);
+		$class_paths[] = $class_path;
 	}
 	if ($class_path) {
 		require_once($class_path);
 	} else {
+		print_r($class_paths);
 		throw new moojon_exception("Not found ($class)");
 	}
 }
