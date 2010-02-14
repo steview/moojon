@@ -12,9 +12,13 @@ final class moojon_config extends moojon_singleton_immutable_collection {
 	
 	protected function __construct() {
 		$this->data = require_once(MOOJON_DIRECTORY.'config/moojon.config.php');
-		$project_config_environment = moojon_paths::get_project_config_environment_directory(ENVIRONMENT).'project.config.php';
-		if (defined('PROJECT_DIRECTORY') && is_file($project_config_environment)) {
-			foreach (require_once($project_config_environment) as $key => $value) {
+		$project_config_path = moojon_paths::get_project_config_directory().'project.config.php';
+		if (defined('PROJECT_DIRECTORY') && file_exists($project_config_path)) {
+			$this->data = array_merge($this->data, require_once($project_config_path));
+		}
+		$config_environment = moojon_paths::get_project_config_environment_directory(ENVIRONMENT).'environment.config.php';
+		if (defined('PROJECT_DIRECTORY') && is_file($config_environment)) {
+			foreach (require_once($config_environment) as $key => $value) {
 				$this->data[$key] = $value;
 			}
 		}
