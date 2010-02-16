@@ -63,9 +63,17 @@ function get_collection_uri(moojon_base_model $model) {
 			$parent_resource = moojon_uri::get_uri().'/';
 		} else if ($resource == $class) {
 			$parent_resource = moojon_uri::get_uri();
+			$parent_resource_id = substr($parent_resource, (strrpos($parent_resource, '/') + 1));
+			if ($parent_resource_id == $table) {
+				$parent_resource_id = '';
+			}
 			$parent_resource = substr($parent_resource, 0, strrpos($parent_resource, '/'));
 			if ($parent_resource) {
 				$pattern = '';
+			}
+			if ($resource_model->is_belongs_to_relationship_column(moojon_primary_key::get_foreign_key($class))) {
+				$slash = ($parent_resource_id) ? '/' : '';
+				$pattern .= "$slash$parent_resource_id/$table";
 			}
 		} else if ($resource_model->has_relationship($class)) {
 			$belongs_to_relationship = $resource_model->get_relationship($class);
@@ -157,10 +165,10 @@ function rest_breadcrumb() {
 	$count = count($segments);
 	$ul = ul_tag();
 	$href = '/';
-	$in_parent = false;
 	for ($i = 0; $i < $count; $i ++) {
 		$segment = $segments[$i];
 		$attributes = ($i == ($count - 1)) ? array('class' => 'last') : array();
+		$link = true;
 		if (moojon_base::is_symbol($segment)) {
 			$symbol_name = moojon_base::get_symbol_name($segment);
 			$href .= moojon_request::get($symbol_name).'/';
@@ -170,14 +178,11 @@ function rest_breadcrumb() {
 				$content = model_from_id($segments[($i - 1)]);
 			}
 		} else {
-			if (!$in_parent || $i == ($count - 1)) {
-				$in_parent = true;
-				$content = title_text($segment);
-			} else {
-				$content = null;
+			if ($i == ($count - 1)) {
+				$link = true;
 			}
+			$content = title_text($segment);
 			$href .= $segment.'/';
-			
 		}
 		if ($content) {
 			if ($i == ($count - 1)) {

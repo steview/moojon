@@ -122,11 +122,6 @@ function format_content(moojon_base_model $model, moojon_base_column $column, $c
 }
 
 function form_for(moojon_base_model $model, $column_names = array(), $attributes = array(), $error_message = null) {
-	if (!$column_names) {
-		foreach ($model->get_editable_columns() as $column) {
-			$column_names[] = $column->get_name();
-		}
-	}
 	if (!$error_message) {
 		$error_message = moojon_config::get('validation_error_message');
 	}
@@ -145,6 +140,7 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 	}
 	$form_id = $id .= '_'.get_class($model).'_form';
 	$attributes = try_set_attribute($attributes, 'id', $form_id);
+	$column_names = ($column_names) ? $column_names: $model->get_ui_editable_column_names();
 	foreach ($column_names as $key => $column_name) {
 		if (!is_numeric($key)) {
 			$model->$key = $column_name;
@@ -202,7 +198,7 @@ function boolean_form_for(moojon_base_model $model, moojon_base_column $column, 
 
 function dl_for(moojon_base_model $model, $column_names = array(), $attributes = array()) {
 	if (!$column_names) {
-		$column_names = $model->get_editable_column_names(array($model->get_to_string_column()));
+		$column_names = $model->get_ui_column_names(array($model->get_to_string_column()));
 	}
 	$attributes = try_set_attribute($attributes, 'id', 'show_'.get_class($model).'_dl');
 	$attributes = try_set_attribute($attributes, 'class', 'generated');
@@ -264,13 +260,9 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 		$attributes = try_set_attribute($attributes, 'cellspacing', '0');
 		$attributes = try_set_attribute($attributes, 'class', 'generated');
 		$model = $models->first;
-		if (!$column_names) {
-			foreach ($model->get_editable_columns() as $column) {
-				$column_names[] = $column->get_name();
-			}
-		}
 		$model_class = get_class($model);
 		$ths = array(th_tag(title_text($model->get_to_string_column())));
+		$column_names = ($column_names) ? $column_names: $model->get_ui_column_names();
 		foreach ($column_names as $column_name) {
 			if ($model->to_string_column != $column_name) {
 				$column = $model->get_column($column_name);
@@ -317,22 +309,14 @@ function relationship_tables(moojon_base_model $model, $relationship_names = arr
 		$relationship_names = ($relationship_names) ? $relationship_names : $model->get_relationship_names();
 		$div = div_tag();
 		foreach ($relationship_names as $relationship_name) {
-			$key = $relationship_name;
-			$value = $model->get_relationship($relationship_name);
-			switch (get_class($value)) {
+			switch ($model->get_relationship_type($relationship_name)) {
 				case 'moojon_has_many_relationship':
 				case 'moojon_has_many_to_many_relationship':
-					$relationship_class = $value->get_class();
-					$relationship = new $relationship_class;
-					$div->add_child(h3_tag(title_text($key)));
-					$div->add_child(actions_ul(array(new_member_tag($relationship))));
+					$div->add_child(h3_tag(title_text($relationship_name)));
+					$relationship_model = $model->get_relationship_model($relationship_name);
+					$div->add_child(actions_ul(array(new_member_tag($relationship_model))));
 					$div->add_child('<br /><br /><br />');
-					$relationship_class = moojon_inflect::singularize($value->get_foreign_table());
-					$relationship = new $relationship_class;
-					$foreign_key = moojon_primary_key::get_foreign_key($model->get_table());
-					$key = $value->get_key();
-					$key_column = $model->get_column($key);
-					$div->add_child(table_for($relationship->read("$foreign_key = :$key", null, null, array(":$key" => $key_column->get_value()), array(":$key" => $key_column->get_data_type()), $model), $relationship->get_editable_column_names(array($foreign_key))));
+					$div->add_child(table_for($model->$relationship_name, $relationship_model->get_ui_column_names(array(moojon_primary_key::get_foreign_key($model->get_table())))));
 					break;
 			}
 		}

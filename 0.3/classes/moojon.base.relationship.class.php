@@ -1,6 +1,7 @@
 <?php
 abstract class moojon_base_relationship extends moojon_base {
 	protected $name;
+	protected $foreign_class;
 	protected $foreign_table;
 	protected $foreign_key;
 	protected $key;
@@ -8,6 +9,7 @@ abstract class moojon_base_relationship extends moojon_base {
 	
 	final public function __construct($name, $foreign_table, $foreign_key, $key, moojon_base_column $column) {
 		$this->name = $name;
+		$this->foreign_class = moojon_inflect::singularize($foreign_table);
 		$this->foreign_table = moojon_inflect::pluralize($foreign_table);
 		$this->foreign_key = $foreign_key;
 		$this->key = $key;
@@ -31,6 +33,10 @@ abstract class moojon_base_relationship extends moojon_base {
 	
 	final public function get_name() {
 		return $this->name;
+	}
+	
+	final public function get_foreign_class() {
+		return $this->foreign_class;
 	}
 	
 	final public function get_foreign_table() {

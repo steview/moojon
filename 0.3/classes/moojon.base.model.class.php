@@ -53,6 +53,9 @@ abstract class moojon_base_model extends moojon_base {
 		$class = get_class($this);
 		$belongs_to_relationship = ($this->has_belongs_to_relationship($class)) ? $this->get_relationship($class) : null;
 		if ($this->has_relationship($key)) {
+			/*echo '('.$key.')';
+			print_r($this->relationships);
+			echo '<hr />';*/
 			$relationship = $this->get_relationship($key);
 			$foreign_key = $relationship->get_foreign_key();
 			if ($belongs_to_relationship && array_key_exists($foreign_key, $belongs_to_relationship->get_shared_columns())) {
@@ -62,9 +65,16 @@ abstract class moojon_base_model extends moojon_base {
 			$relationship = null;
 		}
 		if ($relationship) {
+			$get_method = 'get_'.$relationship->get_name();
 			if (!array_key_exists($key, $this->relationship_data)) {
-				$records = new moojon_model_collection($this, $this->get_relationship($key));
-				$this->relationship_data[$key] = $records->get();
+				//echo "<hr />$get_method<hr />";
+				if (method_exists($this, $get_method)) {
+					$records = $this->$get_method();
+				} else {
+					$collection = new moojon_model_collection($this, $this->get_relationship($key));
+					$records = $collection->get();
+				}
+				$this->relationship_data[$key] = $records;
 			}
 			return $this->relationship_data[$key];
 		} else {
@@ -126,8 +136,38 @@ abstract class moojon_base_model extends moojon_base {
 		return false;
 	}
 	
-	final private function get_relationship_type($key) {
+	final public function get_relationship_type($key) {
 		return get_class($this->get_relationship($key));
+	}
+	
+	final public function get_relationship_foreign_class($key) {
+		$relationship = $this->get_relationship($key);
+		return $relationship->get_foreign_class();
+	}
+	
+	final public function get_relationship_foreign_table($key) {
+		$relationship = $this->get_relationship($key);
+		return $relationship->get_foreign_table();
+	}
+	
+	final public function get_relationship_foreign_key($key) {
+		$relationship = $this->get_relationship($key);
+		return $relationship->get_foreign_key();
+	}
+	
+	final public function get_relationship_key($key) {
+		$relationship = $this->get_relationship($key);
+		return $relationship->get_key();
+	}
+	
+	final public function get_relationship_column($key) {
+		$relationship = $this->get_relationship($key);
+		return $relationship->get_column();
+	}
+	
+	final public function get_relationship_model($key) {
+		$model_class = $this->get_relationship_foreign_class($key);
+		return new $model_class;
 	}
 	
 	final public function get_relationship($key) {
@@ -715,7 +755,7 @@ abstract class moojon_base_model extends moojon_base {
 		return $instance;
 	}
 	
-	final static protected function base_update($class, $data, $where) {
+	final static protected function base_update($class, $data, $where, $param_values, $param_data_types) {
 		$instance = self::init($class);
 		$id_property = moojon_primary_key::NAME;
 		$placeholders = array();
@@ -724,8 +764,7 @@ abstract class moojon_base_model extends moojon_base {
 			$placeholders[$key]= ":$key";
 			$values[":$key"] = $value;
 		}
-		$statement = moojon_db::update($instance->table, $placeholders, $where);
-		return $statement->execute($values);
+		return moojon_db::update($instance->table, $placeholders, $where, array_merge($values, $param_values), $param_data_types);
 	}
 	
 	final static protected function base_destroy($class, $where, $param_values, $param_data_types) {
@@ -838,6 +877,14 @@ abstract class moojon_base_model extends moojon_base {
 	
 	final static public function factory($class, $data = null) {
 		return self::base_create($class, $data);
+	}
+	
+	public function get_ui_column_names($exceptions = array()) {
+		return $this->get_editable_column_names($exceptions);
+	}
+	
+	public function get_ui_editable_column_names($exceptions = array()) {
+		return $this->get_editable_column_names($exceptions);
 	}
 }
 ?>

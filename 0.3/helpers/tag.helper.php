@@ -231,7 +231,7 @@ function image_input_tag($src, $attributes = array()) {
 	return input_tag_type('image', $attributes);
 }
 
-function login_form($authenticated = false, $message = null, $attributes = array()) {
+function login_form($authenticated = false, $message = null, $redirect = null, $attributes = array()) {
 	if (!$authenticated) {
 		$security_identity_label = moojon_config::get('security_identity_label');
 		$security_password_label = moojon_config::get('security_password_label');
@@ -252,6 +252,9 @@ function login_form($authenticated = false, $message = null, $attributes = array
 			$security_checked_value = null;
 		}
 		$child = form_tag(null, array('action' => '#', 'method' => 'post', 'class' => 'generated'));
+		if ($redirect) {
+			$child->add_child(redirection_tag($redirect));
+		}
 		if ($message) {
 			$child->add_child(p_tag($message, array('class' => 'error')));
 		}

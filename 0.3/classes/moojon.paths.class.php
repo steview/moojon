@@ -184,8 +184,6 @@ final class moojon_paths extends moojon_base {
 		return self::get_moojon_config_directory()."$app/";
 	}
 	
-	
-	
 	static public function get_routes_path() {
 		return self::get_project_config_directory().'/routes.php';
 	}
@@ -277,7 +275,7 @@ final class moojon_paths extends moojon_base {
 				} else {
 					$value = self::get_column_upload_path($model, $column_name);
 				}
-				if ($column->get_error() == UPLOAD_ERR_OK) {
+				if (get_class($column) == 'moojon_uploaded_file' && $column->get_error() == UPLOAD_ERR_OK) {
 					$return[$column_name] = $value;
 				}
 			}
