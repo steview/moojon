@@ -4,6 +4,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	const DATE_FORMAT = 'Y-m-d';
 	const DATETIME_FORMAT = 'Y-m-d H:i:s';
 	const TIME_FORMAT = 'H:i:s';
+	const DEFAULT_ORDER_DIRECTION = 'ASC';
 	
 	static private function get_add_column_string(moojon_base_column $column) {
 		switch (get_class($column)) {

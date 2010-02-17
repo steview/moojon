@@ -16,6 +16,7 @@ abstract class base_<[model]> extends moojon_base_model {
 	final static public function get_editable_column_names($exceptions = array()) {return self::base_get_editable_column_names(get_class(), $exceptions);}
 	final static public function get_primary_key_column_names($exceptions = array()) {return self::base_get_primary_key_column_names(get_class(), $exceptions);}
 	final static public function get_file_column_names($exceptions = array()) {return self::base_get_file_column_names(get_class(), $exceptions);}
+	final static public function get_order_column_names($exceptions = array()) {return self::base_get_order_column_names(get_class(), $exceptions);}
 	
 	final static public function create($data = null, $param_values = array(), $param_data_types = array()) {return self::base_create(get_class(), $data, $param_values, $param_data_types);}
 	final static public function read($where = null, $order = null, $limit = null, $param_values = array(), $param_data_types = array(), moojon_base_model $accessor = null, $key = null) {return self::base_read(get_class(), $where, $order, $limit, $param_values, $param_data_types, $accessor, $key);}

@@ -1,7 +1,5 @@
 <?php
 final class moojon_string_column extends moojon_base_column {
-	private $not_special;
-	
 	public function __construct($name, $limit = 255, $null = false, $default = null, $not_special = false) {
 		$this->name = $name;
 		$this->limit = $limit;
@@ -19,7 +17,11 @@ final class moojon_string_column extends moojon_base_column {
 	}
 	
 	public function is_password() {
-		return (strpos($this->name, 'password') !== false);
+		if (strpos($this->name, 'password') !== false && !$this->not_special) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>

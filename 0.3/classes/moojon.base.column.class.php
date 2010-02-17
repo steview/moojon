@@ -1,5 +1,6 @@
 <?php
 abstract class moojon_base_column extends moojon_base {
+	protected $not_special = false;
 	protected $data_type = moojon_db::PARAM_STR;
 	protected $name;
 	protected $value = null;
@@ -69,6 +70,14 @@ abstract class moojon_base_column extends moojon_base {
 			return moojon_db::PARAM_NULL;
 		} else {
 			return $this->data_type;
+		}
+	}
+	
+	public function is_order() {
+		if (strpos($this->name, 'position') !== false && !$this->not_special) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

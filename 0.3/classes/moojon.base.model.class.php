@@ -9,6 +9,9 @@ abstract class moojon_base_model extends moojon_base {
 	private $validator;
 	private $new_record = false;
 	protected $to_string_column = moojon_primary_key::NAME;
+	protected $order_column = moojon_primary_key::NAME;
+	protected $order_direction = moojon_db_driver::DEFAULT_ORDER_DIRECTION;
+	
 	
 	final public function __construct($data = array()) {
 		$this->class = get_class($this);
@@ -556,6 +559,16 @@ abstract class moojon_base_model extends moojon_base {
 		return $return;
 	}
 	
+	final public function get_order_columns($exceptions = array()) {
+		$return = array();
+		foreach ($this->get_columns($exceptions) as $column) {
+			if ($column->is_order()) {
+				$return[] = $column;
+			}
+		}
+		return $return;
+	}
+	
 	final static protected function base_get_column_names($class, $exceptions = array()) {
 		$return = array();
 		$instance = self::init($class);
@@ -587,6 +600,15 @@ abstract class moojon_base_model extends moojon_base {
 		$return = array();
 		$instance = self::init($class);
 		foreach ($instance->get_file_columns($exceptions) as $column) {
+			$return[] = $column->get_name();
+		}
+		return $return;
+	}
+	
+	final static protected function base_get_order_column_names($class, $exceptions = array()) {
+		$return = array();
+		$instance = self::init($class);
+		foreach ($instance->get_order_columns($exceptions) as $column) {
 			$return[] = $column->get_name();
 		}
 		return $return;
@@ -731,6 +753,7 @@ abstract class moojon_base_model extends moojon_base {
 		$table = moojon_inflect::pluralize($class);
 		$instance = self::init($class);
 		$placeholders = array();
+		$order = self::process_order($class, $order);
 		$columns = $instance->get_columns();
 		foreach($columns as $column) {
 			$column_name = $column->get_name();
@@ -885,6 +908,24 @@ abstract class moojon_base_model extends moojon_base {
 	
 	public function get_ui_editable_column_names($exceptions = array()) {
 		return $this->get_editable_column_names($exceptions);
+	}
+	
+	final static private function process_order($class, $order = null) {
+		$instance = self::init($class);
+		if ($order) {
+			$return = $order;
+		} else {
+			$order_columns = $instance->get_order_column_names();
+			if (count($order_columns)) {
+				for ($i = 0; $i < count($order_columns); $i ++) {
+					$order_columns[$i] = $order_columns[$i].' '.$instance->order_direction;
+				}
+				$return = implode(', ', $order_columns);
+			} else {
+				$return = $instance->order_column.' '.$instance->order_direction;
+			}
+		}
+		return $return;
 	}
 }
 ?>
