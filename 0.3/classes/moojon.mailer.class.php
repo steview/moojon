@@ -25,8 +25,8 @@ final class moojon_mailer extends moojon_base {
 		$this->alt = "=-moojon_alt_" . md5(uniqid(rand()));
 		$this->charset = moojon_config::get('charset');
 		$this->subject = moojon_config::get('mail_subject');
-		$this->email = moojon_config::get('mail_from_email');
-		$this->name = moojon_config::get('mail_from_name');
+		$this->email = moojon_config::get('from_mail_from_email');
+		$this->name = moojon_config::get('from_mail_from_name');
 		$this->from = $this->name.' <'.$this->email.'>';
 	}
 	
