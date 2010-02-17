@@ -13,7 +13,11 @@ abstract class moojon_base_tag_attribute extends moojon_base {
 	abstract protected function init();
 	
 	final public function render() {
-		return $this->name.'="'.$this->value.'"'; 
+		if ($this->value) {
+			return $this->name.'="'.$this->value.'"'; 
+		} else {
+			return null;
+		}
 	}
 	
 	final public function set_value($value) {
