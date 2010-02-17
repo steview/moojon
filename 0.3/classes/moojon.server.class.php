@@ -43,6 +43,7 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 			$uri_segments['host'] = self::get('HTTP_HOST');
 			$uri_segments['port'] = '';
 		}
+		$uri_segments['port'] = '';
 		if (array_key_exists('port', $uri_segments) && $uri_segments['port']) {
 			$uri_segments['port'] = ':'.$uri_segments['port'];
 		}
@@ -57,7 +58,8 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 		if (array_key_exists('path', $uri_segments) && substr($uri_segments['path'], 0, 1) == '/') {
 			$uri_segments['path'] = substr($uri_segments['path'], 1);
 		}
-		return $uri_segments['scheme'].$uri_segments['host'].$uri_segments['port'].'/'.$uri_segments['path'];
+		$port = (array_key_exists('port', $uri_segments)) ? $uri_segments['port'] : '';
+		return $uri_segments['scheme'].$uri_segments['host']."$port/".$uri_segments['path'];
 	}
 	
 	static public function process_scheme($scheme) {

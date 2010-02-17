@@ -67,7 +67,10 @@ final class moojon_runner extends moojon_singleton {
 		foreach ($variables as $key => $value) {
 			$$key = $value;
 		}
-		require_once($path);
+		if (!moojon_partials::has($path)) {
+			moojon_partials::set($path, require_once($path));
+		}
+		eval(moojon_partials::get($path));
 	}
 }
 ?>

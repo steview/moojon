@@ -162,6 +162,9 @@ function rest_actions(moojon_base_model $model, moojon_rest_route $route = null,
 
 function rest_breadcrumb() {
 	$segments = explode('/', moojon_uri::get_match_pattern());
+	if ($segments[0] == APP) {
+		array_shift($segments);
+	}
 	$count = count($segments);
 	$ul = ul_tag();
 	$href = '/';
