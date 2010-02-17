@@ -70,7 +70,7 @@ final class moojon_runner extends moojon_singleton {
 		if (!moojon_partials::has($path)) {
 			moojon_partials::set($path, require_once($path));
 		}
-		eval(moojon_partials::get($path));
+		moojon_partials::get($path);
 	}
 }
 ?>
