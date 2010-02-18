@@ -8,7 +8,7 @@ final class moojon_query_result extends ArrayObject {
 		$this->iterator = $this->getIterator();
 		$query_string = $statement->queryString;
 		$log = $query_string;
-		if (ENVIRONMENT == 'development') {
+		//if (ENVIRONMENT == 'development') {
 			$values = 'Param values(';
 			$parsed_query = $log;
 			foreach ($param_values as $key => $value) {
@@ -31,7 +31,7 @@ final class moojon_query_result extends ArrayObject {
 			$data_types .= ')';
 			$log .= "\n\n$parsed_query\n\n$values\n\n$data_types";
 			moojon_base::log($log);
-		}
+		//}
 		foreach ($param_values as $key => $value) {
 			if ($value !== null) {
 				$data_type = (array_key_exists($key, $param_data_types)) ? $param_data_types[$key] : moojon_db::PARAM_STR;
