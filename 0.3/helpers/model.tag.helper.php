@@ -154,9 +154,7 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 	}
 	$controls[] = primary_key_tag($model, $model->get_column(get_primary_key_id_property($model)));
 	$children = array();
-	if ($model->has_validator_messages()) {
-		$children[] = error_dl($error_message, $model->get_validator_messages(), array('id' => $form_id.'_errors'));
-	}
+	$children[] = error_dl($error_message, $model->get_validator_messages(), array('id' => $form_id.'_errors'));
 	$children[] = fieldset_tag($controls);
 	$children[] = actions_ul(array(image_input_tag('button_'.strtolower($submit_value), array('value' => $submit_value, 'class' => 'submit', 'name' => 'submit'))));
 	return form_tag($children, $attributes);

@@ -35,6 +35,18 @@ function vet_tag_type($type, $parent) {
 	}
 }
 
+function vet_datetime_selected($selected = null) {
+	if (!$selected) {
+		$selected = time();
+	}
+	if (!is_int($selected)) {
+		$selected = (string)$selected;
+		$selected = date_parse($selected);
+		$selected = mktime($selected['hour'], $selected['minute'], $selected['second'], $selected['month'], $selected['day'], $selected['year']);
+	}
+	return $selected;
+}
+
 function open_tag($type, $content, $attributes = array()) {
 	$type = vet_tag_type($type, 'open');
 	return new $type($content, $attributes);
@@ -280,13 +292,19 @@ function login_form($authenticated = false, $message = null, $redirect = null, $
 	return div_tag($child, array('id' => 'login_div', 'class' => 'generated'));
 }
 
-function error_dl($error_message, $errors = array(), $attributes = array()) {
-	$children = array(dt_tag($error_message));
-	foreach ($errors as $key => $value) {
-		$children[] = dd_tag(label_tag($value, $key));
+function error_dl($message, $errors = array(), $attributes = array()) {
+	$children = array();
+	$attributes = try_set_attribute($attributes, 'class', 'errors generated');
+	if (count($errors)) {
+		$children[] = dt_tag($message);
+		foreach ($errors as $key => $value) {
+			$children[] = dd_tag(label_tag($value, $key));
+		}
+		$return = dl_tag($children, $attributes);
+	} else {
+		$return = div_tag($children, $attributes);
 	}
-	$attributes = try_set_attribute($attributes, 'class', 'generated');
-	return dl_tag($children, $attributes);
+	return $return;
 }
 
 function cancel_button($value = 'Cancel', $attributes = array()) {
@@ -312,9 +330,7 @@ function redirection_tag($value) {
 }
 
 function year_select_options($start = null, $end = null, $attributes = null, $selected = null, $format = null) {
-	if (!$selected) {
-		$selected = time();
-	}
+	$selected = vet_datetime_selected($selected);
 	return select_options(year_options($start, $end, $format), date('Y', $selected), $attributes);
 }
 
@@ -341,9 +357,7 @@ function year_options($start = null, $end = null, $format = null) {
 }
 
 function month_select_options($attributes = null, $selected = null, $format = null) {
-	if (!$selected) {
-		$selected = time();
-	}
+	$selected = vet_datetime_selected($selected);
 	return select_options(month_options($format), date('n', $selected), $attributes);
 }
 
@@ -364,9 +378,7 @@ function month_options($format = null) {
 }
 
 function day_select_options($attributes = null, $selected = null, $format = null) {
-	if (!$selected) {
-		$selected = time();
-	}
+	$selected = vet_datetime_selected($selected);
 	return select_options(day_options($format), date('j', $selected), $attributes);
 }
 
@@ -387,9 +399,7 @@ function day_options($format = null) {
 }
 
 function hour_select_options($attributes = null, $selected = null, $format = null) {
-	if (!$selected) {
-		$selected = time();
-	}
+	$selected = vet_datetime_selected($selected);
 	return select_options(hour_options($format), date('H', $selected), $attributes);
 }
 
@@ -410,9 +420,7 @@ function hour_options($format = null) {
 }
 
 function minute_select_options($attributes = null, $selected = null) {
-	if (!$selected) {
-		$selected = time();
-	}
+	$selected = vet_datetime_selected($selected);
 	return select_options(minute_options(), date('i', $selected), $attributes);
 }
 
@@ -430,9 +438,7 @@ function minute_options() {
 }
 
 function second_select_options($attributes = null, $selected = null) {
-	if (!$selected) {
-		$selected = time();
-	}
+	$selected = vet_datetime_selected($selected);
 	return select_options(second_options(), date('s', $selected), $attributes);
 }
 
@@ -453,7 +459,7 @@ function datetime_select_options($attributes = null, $format = null, $selected =
 	if (!$format) {
 		$format = moojon_config::get('datetime_format');
 	}
-	$return = div_tag(null, array('class' => 'datetime'));
+	$return = div_tag(null, array('class' => 'datetime generated'));
 	$attributes = try_set_attribute($attributes, 'name', 'datetime_select');
 	$attributes = try_set_attribute($attributes, 'id', $attributes['name']);
 	for ($i = 0; $i < (strlen($format) + 1); $i ++) {
