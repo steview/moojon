@@ -35,7 +35,7 @@ final class moojon_runner extends moojon_singleton {
 		}
 	}
 	
-	static public function render_app($uri) {
+	static public function app_from_uri($uri) {
 		$uri = moojon_uri::clean_uri($uri);
 		$route_match = moojon_routes::map($uri);
 		$data = $route_match->get_params();
@@ -46,7 +46,11 @@ final class moojon_runner extends moojon_singleton {
 		self::require_view_functions();
 		require_once(moojon_paths::get_app_path($app));
 		$app_class = self::get_app_class($app);
-		$app = new $app_class($uri);
+		return new $app_class($uri);
+	}
+	
+	static public function render_app($uri) {
+		$app = self::app_from_uri($uri);
 		return $app->render();
 	}
 	

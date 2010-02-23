@@ -11,11 +11,6 @@ final class moojon_exception extends Exception {
 		$backtrace = debug_backtrace();
 		$file = ($file) ? $file : $backtrace[0]['file'];
 		$line = ($line) ? $line : $backtrace[0]['line'];
-		echo("<h1>$message ($file: $line)</h1>");
-		foreach ($this->getTrace() as $call) {
-			print_r($call);
-			echo '<br /><br />';
-		}
 		parent::__construct($message, $code);
 		$this->severity = $severity;
 		$this->file = $file;
@@ -41,7 +36,6 @@ final class moojon_exception extends Exception {
 			new moojon_h1_tag(
 				$this->getMessage(), 
 				array(
-					'id' => 'exception_report_h1', 
 					'title' => $this->get_line($exception->getFile(), $exception->getLine())
 				)
 			), 
@@ -57,6 +51,7 @@ final class moojon_exception extends Exception {
 				return "$report\033[0m";
 				break;
 		}
+		return $div;
 	}
 	
 	private function get_trace_ol() {
