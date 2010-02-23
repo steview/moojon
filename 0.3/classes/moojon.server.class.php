@@ -48,8 +48,6 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 			$uri_segments['scheme'] = self::get('SCHEME');
 			$uri_segments['port'] = '';
 		}
-		print_r($uri_segments);
-		die();
 		$uri_segments['port'] = '';
 		if (array_key_exists('port', $uri_segments) && $uri_segments['port']) {
 			$uri_segments['port'] = ':'.$uri_segments['port'];
