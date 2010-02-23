@@ -63,8 +63,6 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 			$uri_segments['path'] = substr($uri_segments['path'], 1);
 		}
 		$port = (array_key_exists('port', $uri_segments)) ? $uri_segments['port'] : '';
-		print_r($uri_segments);
-		die();
 		return $uri_segments['scheme'].$uri_segments['host']."$port/".$uri_segments['path'];
 	}
 	
