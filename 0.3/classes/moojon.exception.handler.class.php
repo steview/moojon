@@ -9,7 +9,7 @@ final class moojon_exception_handler extends moojon_base_exception_handler {
 					$mailer->set_from(moojon_config::get('from_mail_email'), moojon_config::get('from_mail_name'));
 					$mailer->set_to(moojon_config::get('webmaster_mail_email'), moojon_config::get('webmaster_mail_name'));
 					$mailer->set_subject(moojon_config::get('exception_mail_subject'));
-					$mailer->set_html($exception);
+					$mailer->set_html($exception->getMessage().' '.$exception->getFile().' '.$exception->getLine());
 					$mailer->send();
 				}
 				echo $app->render();
