@@ -30,12 +30,12 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 			self::try_define('CONTROLLER', $this->data['controller']);
 			self::try_define('ACTION', $this->data['action']);
 		} else {
-			self::_404();
+			self::_404($this->uri);
 		}
 	}
 	
-	static public function _404() {
-		throw new moojon_exception('404');
+	static public function _404($uri) {
+		throw new moojon_exception("404 ($uri)");
 		die();
 	}
 	

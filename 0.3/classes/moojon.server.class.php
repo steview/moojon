@@ -21,7 +21,11 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 	
 	protected function __construct() {
 		if (array_key_exists('SERVER_PROTOCOL', $_SERVER)) {
-			$_SERVER['SCHEME'] = self::process_scheme($_SERVER['SERVER_PROTOCOL']);
+			if (array_key_exists('REDIRECT_HTTPS', $_SERVER) && $_SERVER['REDIRECT_HTTPS'] == 'on') {
+				$_SERVER['SCHEME'] = 'https://';
+			} else {
+				$_SERVER['SCHEME'] = self::process_scheme($_SERVER['SERVER_PROTOCOL']);
+			}
 		}
 		if (array_key_exists('SCHEME', $_SERVER) && array_key_exists('HTTP_HOST', $_SERVER)) {
 			$_SERVER['SCHEME_HTTP_HOST'] = $_SERVER['SCHEME'].$_SERVER['HTTP_HOST'].moojon_config::get('index_file');
