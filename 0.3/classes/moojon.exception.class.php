@@ -36,7 +36,7 @@ final class moojon_exception extends Exception {
 			new moojon_h1_tag(
 				$this->getMessage(), 
 				array(
-					'title' => $this->get_line($exception->getFile(), $exception->getLine())
+					//'title' => $this->get_line($exception->getFile(), $exception->getLine())
 				)
 			), 
 			array('id' => 'exception_report')
