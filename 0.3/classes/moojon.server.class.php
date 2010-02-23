@@ -45,6 +45,7 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 		}
 		if (!array_key_exists('host', $uri_segments)) {
 			$uri_segments['host'] = self::get('HTTP_HOST');
+			$uri_segments['scheme'] = self::get('SCHEME');
 			$uri_segments['port'] = '';
 		}
 		$uri_segments['port'] = '';
@@ -52,7 +53,7 @@ final class moojon_server extends moojon_singleton_mutable_collection {
 			$uri_segments['port'] = ':'.$uri_segments['port'];
 		}
 		if (!array_key_exists('scheme', $uri_segments)) {
-			$uri_segments['scheme'] = moojon_server::get('SCHEME');
+			$uri_segments['scheme'] = self::get('SCHEME');
 		} else {
 			$uri_segments['scheme'] = self::get('SCHEME');
 		}
