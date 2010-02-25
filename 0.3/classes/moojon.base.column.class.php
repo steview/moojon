@@ -74,11 +74,11 @@ abstract class moojon_base_column extends moojon_base {
 	}
 	
 	public function is_order() {
-		if (strpos($this->name, 'position') !== false && !$this->not_special) {
-			return true;
-		} else {
-			return false;
-		}
+		return $this->is_special_of_type('position');
+	}
+	
+	final protected function is_special_of_type($type) {
+		return (strpos($this->name, $type) !== false && !$this->not_special);
 	}
 }
 ?>

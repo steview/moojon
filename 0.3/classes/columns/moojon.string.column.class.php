@@ -9,19 +9,15 @@ final class moojon_string_column extends moojon_base_column {
 	}
 	
 	public function is_file() {
-		if (strpos($this->name, 'file') !== false && !$this->not_special) {
-			return true;
-		} else {
-			return false;
-		}
+		return $this->is_special_of_type('file');
 	}
 	
 	public function is_password() {
-		if (strpos($this->name, 'password') !== false && !$this->not_special) {
-			return true;
-		} else {
-			return false;
-		}
+		return $this->is_special_of_type('password');
+	}
+	
+	public function is_email() {
+		return $this->is_special_of_type('email');
 	}
 }
 ?>

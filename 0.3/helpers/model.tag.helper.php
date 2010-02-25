@@ -100,7 +100,11 @@ function format_content(moojon_base_model $model, moojon_base_column $column, $c
 			$return = moojon_base::get_datetime_format($content, moojon_config::get('date_format'));
 			break;
 		case 'moojon_datetime_column':
-			$return = moojon_base::get_datetime_format($content, moojon_config::get('datetime_format'));
+			if (strtotime($content)) {
+				$return = moojon_base::get_datetime_format($content, moojon_config::get('datetime_format'));
+			} else {
+				$return = '-';
+			}
 			break;
 		case 'moojon_time_column':
 			$return = moojon_base::get_datetime_format($content, moojon_config::get('time_format'));
@@ -110,6 +114,8 @@ function format_content(moojon_base_model $model, moojon_base_column $column, $c
 				$return = uploaded_file_tag($model, $column->get_name());
 			} else if ($column->is_password()) {
 				$return = str_pad('', strlen($content), '*');
+			} else if ($column->is_email()) {
+				$return = mailto_tag($content);
 			} else {
 				$return = $content;
 			}

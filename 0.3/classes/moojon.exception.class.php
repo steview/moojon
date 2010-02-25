@@ -11,7 +11,7 @@ final class moojon_exception extends Exception {
 		$backtrace = debug_backtrace();
 		$file = ($file) ? $file : $backtrace[0]['file'];
 		$line = ($line) ? $line : $backtrace[0]['line'];
-		echo "<h1>$file ($line)</h1>";
+		echo "<h1>$message: $file ($line)</h1>";
 		print_r($backtrace);
 		die();
 		parent::__construct($message, $code);

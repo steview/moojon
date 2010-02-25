@@ -82,7 +82,8 @@ function a_tag($content, $href, $attributes = array()) {
 	return open_tag('a', $content, $attributes);
 }
 
-function mailto_tag($content, $href, $attributes = array()) {
+function mailto_tag($content, $href = null, $attributes = array()) {
+	$href = ($href) ? $href : $content;
 	$href = (substr($href, 0, 6) == 'mailto') ? substr($href, 6) : $href;
 	$href = (substr($href, 0, 1) == ':') ? substr($href, 1) : $href;
 	if (validate_email($href)) {
@@ -129,6 +130,10 @@ function div_tag($content = null, $attributes = array()) {
 
 function p_tag($content = null, $attributes = array()) {
 	return open_tag('p', $content, $attributes);
+}
+
+function strong_tag($content = null, $attributes = array()) {
+	return open_tag('strong', $content, $attributes);
 }
 
 function ul_tag($content = null, $attributes = array()) {
