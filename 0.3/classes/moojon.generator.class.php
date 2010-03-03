@@ -88,16 +88,21 @@ final class moojon_generator extends moojon_base {
 		moojon_files::attempt_mkdir(moojon_paths::get_js_directory());
 		moojon_files::attempt_mkdir(moojon_paths::get_script_directory());
 		$project_config_directory = moojon_paths::get_project_config_directory();
-		self::run(moojon_paths::get_moojon_templates_directory().'constants.template', "$project_config_directory.constants.php", array('MOOJON_DIRECTORY' => dirname(MOOJON_DIRECTORY), 'MOOJON_VERSION' => MOOJON_VERSION), true, false);
-		self::run(moojon_paths::get_moojon_templates_directory().'config.template', "$project_config_directory.project.config.php", array(), true, false);
-		self::run(moojon_paths::get_moojon_templates_directory().'routes.template', "$project_config_directory.routes.php", array('default_app' => APP, 'default_controller' => CONTROLLER, 'default_action' => ACTION), true, false);
+		self::run(moojon_paths::get_moojon_templates_directory().'constants.template', $project_config_directory.'constants.php', array('MOOJON_DIRECTORY' => dirname(MOOJON_DIRECTORY), 'MOOJON_VERSION' => MOOJON_VERSION), true, false);
+		self::run(moojon_paths::get_moojon_templates_directory().'config.template', $project_config_directory.'project.config.php', array(), true, false);
+		self::run(moojon_paths::get_moojon_templates_directory().'routes.template', $project_config_directory.'routes.php', array('default_app' => APP, 'default_controller' => CONTROLLER, 'default_action' => ACTION), true, false);
 		self::run(moojon_paths::get_moojon_templates_directory().'index.template', moojon_paths::get_public_directory().'index.php', array(), true, false);
+		self::run(moojon_paths::get_moojon_templates_directory().'.htaccess', moojon_paths::get_public_directory().'.htaccess', array(), true, false);
 		self::run(moojon_paths::get_moojon_templates_directory().'cli.template', moojon_paths::get_script_directory().'generate',  array('cli_class' => 'moojon_generate_cli'), true, false);
 		self::run(moojon_paths::get_moojon_templates_directory().'cli.template', moojon_paths::get_script_directory().'migrate', array('cli_class' => 'moojon_migrate_cli'), true, false);
 		self::run(moojon_paths::get_moojon_templates_directory().'cli.template', moojon_paths::get_script_directory().'pluggin', array('cli_class' => 'moojon_pluggin_cli'), true, false);
 		self::run(moojon_paths::get_moojon_templates_images_directory().'logo.png', moojon_paths::get_images_directory().'logo.png', array(), true, false);
-		self::run(moojon_paths::get_moojon_templates_css_directory().'moojon.css', moojon_paths::get_css_directory().'moojon.css', array(), true, false);
+		self::run(moojon_paths::get_moojon_templates_images_directory().'button_boolean0.png', moojon_paths::get_images_directory().'button_boolean0.png', array(), true, false);
+		self::run(moojon_paths::get_moojon_templates_images_directory().'button_boolean1.png', moojon_paths::get_images_directory().'button_boolean1.png', array(), true, false);
+		self::run(moojon_paths::get_moojon_templates_css_directory().'project.css', moojon_paths::get_css_directory().'project.css', array(), true, false);
+		self::run(moojon_paths::get_moojon_templates_css_directory().'app.css', moojon_paths::get_css_directory()."$app.css", array(), true, false);
 		self::run(moojon_paths::get_moojon_templates_js_directory().'project.js', moojon_paths::get_js_directory().'project.js', array(), true, false);
+		self::run(moojon_paths::get_moojon_templates_js_directory().'app.js', moojon_paths::get_js_directory()."$app.js", array(), true, false);
 		self::app(APP, $controller, $action);
 	}
 	
@@ -194,7 +199,7 @@ final class moojon_generator extends moojon_base {
 	
 	static public function layout($layout) {
 		moojon_files::attempt_mkdir(moojon_paths::get_project_layouts_directory());
-		self::run(moojon_paths::get_moojon_templates_directory().'layout.template', moojon_paths::get_project_layouts_directory()."$layout.layout.php", array(), false, true);
+		self::run(moojon_paths::get_moojon_templates_directory().'layout.template', moojon_paths::get_project_layouts_directory()."$layout.layout.php", array('layout' => $layout), false, true);
 	}
 	
 	static public function scaffold($app, $model, $controller) {

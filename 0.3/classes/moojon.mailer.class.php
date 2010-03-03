@@ -46,6 +46,18 @@ final class moojon_mailer extends moojon_base {
 		return $instance;
 	}
 	
+	static public function from_html($html) {
+		$instance = new moojon_mailer;
+		$instance->set_html($html);
+		return $instance;
+	}
+	
+	static public function from_text($text) {
+		$instance = new moojon_mailer;
+		$instance->set_text($text);
+		return $instance;
+	}
+	
 	public function set_from($email, $name = '') {
 		if ($this->validate_email($email)) {
 			if (empty($name)) {

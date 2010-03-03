@@ -52,7 +52,7 @@ return array(
 	'default_helpers' => 'tag, model.tag, rest',
 	'default_js' => 'jquery, jquery.validate, project',
 	'default_css' => 'core, form, layout',
-	'index_file' => '/index.php/',
+	'index_file' => '/',
 	'flash_key' => 'flash',
 	'method_key' => '_method',
 	'redirection_key' => '_redirection',

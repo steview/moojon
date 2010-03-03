@@ -162,7 +162,7 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 	$children = array();
 	$children[] = error_dl($error_message, $model->get_validator_messages(), array('id' => $form_id.'_errors'));
 	$children[] = fieldset_tag($controls);
-	$children[] = actions_ul(array(image_input_tag('button_'.strtolower($submit_value), array('value' => $submit_value, 'class' => 'submit', 'name' => 'submit'))));
+	$children[] = actions_ul(array(submit_input_tag(array('value' => $submit_value, 'class' => 'submit', 'name' => 'submit'))));
 	return form_tag($children, $attributes);
 }
 
@@ -178,7 +178,7 @@ function delete_form_for(moojon_base_model $model, $attributes = array(), $messa
 	$controls[] = primary_key_tag($model, $model->get_column(get_primary_key_id_property($model)));
 	$controls[] = method_tag('delete');
 	$controls[] = redirection_tag(moojon_server::redirection());
-	$controls[] = actions_ul(array(actions_ul(array(image_input_tag('button_delete', array('value' => 'Delete', 'class' => 'submit', 'name' => 'submit'))))));
+	$controls[] = actions_ul(submit_input_tag(array('value' => 'Delete', 'class' => 'submit', 'name' => 'submit')));
 	return form_tag($controls, $attributes);
 }
 

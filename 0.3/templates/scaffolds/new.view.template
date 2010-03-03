@@ -1,3 +1,4 @@
+<?php echo rest_breadcrumb(); ?>
 <h1>New <[human]></h1>
 <?php echo rest_actions($<[singular]>); ?>
 <div class="hrule"></div>

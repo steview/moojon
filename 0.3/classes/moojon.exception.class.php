@@ -9,15 +9,15 @@ final class moojon_exception extends Exception {
 		$code = ($code) ? $code : 0;
 		$severity = ($severity) ? $severity : 0;
 		$backtrace = debug_backtrace();
+		die("<h1>$message: $file ($line)</h1>\n".print_r($backtrace, true));
 		$file = ($file) ? $file : $backtrace[0]['file'];
 		$line = ($line) ? $line : $backtrace[0]['line'];
-		echo "<h1>$message: $file ($line)</h1>";
-		print_r($backtrace);
-		die();
 		parent::__construct($message, $code);
 		$this->severity = $severity;
 		$this->file = $file;
 		$this->line = $line;
+		//$mailer = moojon_mailer::from_html("<h1>$message: $file ($line)</h1>".$this->get_trace_ol($backtrace));
+		die("<h1>$message: $file ($line)</h1>".(string)$this);
 		self::$instance = $this;
 	}
 	
@@ -45,7 +45,7 @@ final class moojon_exception extends Exception {
 			array('id' => 'exception_report')
 		);
 		$report = "\n".$this->getMessage()."\n\n".$this->get_trace_report($this->getTrace());
-		$div->add_child($this->get_trace_ol());
+		//$div->add_child($this->get_trace_ol());
 		switch (UI) {
 			case 'CGI':
 				return $div->render();
@@ -57,9 +57,8 @@ final class moojon_exception extends Exception {
 		return $div;
 	}
 	
-	private function get_trace_ol() {
+	private function get_trace_ol($trace = array()) {
 		$ol = new moojon_ol_tag();
-		$trace = $this->getTrace();
 		$counter = 0;
 		foreach ($trace[0]['args'][0]->getTrace() as $call) {
 			if (array_key_exists('file', $call) && array_key_exists('file', $call)) {
