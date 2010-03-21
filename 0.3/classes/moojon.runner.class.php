@@ -17,15 +17,10 @@ final class moojon_runner extends moojon_singleton {
 				ini_set('memory_limit', '256M');
 				$uri = moojon_uri::get_uri();
 				moojon_config::update(moojon_paths::get_project_config_environment_app_directory(ENVIRONMENT, APP));
-				/*$path = moojon_paths::get_cache_path($uri);
-				$from_cache = false;
-				if (moojon_cache::get_enabled() && moojon_cache::expired($uri)) {
-					moojon_files::put_file_contents($path, self::render_app());
-				}*/
-				//echo ($from_cache) ? moojon_files::get_file_contents($path) : self::render_app();
 				echo self::render_app($uri);
 				break;
 			case 'CLI':
+				moojon_config::get_data();
 				$cli_class = CLI;
 				new $cli_class;
 				break;
@@ -54,7 +49,19 @@ final class moojon_runner extends moojon_singleton {
 		return $app->render();
 	}
 	
-	static public function render($path, $variables = array()) {
+	static public function render($path, $variables = array(), $uri = null) {
+		if (moojon_cache::get_enabled() && $uri) {
+			$cache_path = moojon_paths::get_cache_path($uri);
+			if (moojon_cache::expired($uri)) {
+				moojon_files::put_file_contents($cache_path, self::expose($path, $variables));
+			}
+			return moojon_files::get_file_contents($cache_path);
+		} else {
+			return self::expose($path, $variables);
+		}
+	}
+	
+	static private function expose($path, $variables = array()) {
 		if (!is_array($variables)) {
 			$variables = get_object_vars($variables);
 		}

@@ -50,8 +50,10 @@ final class moojon_model_collection extends ArrayObject {
 		if ($this->relationship) {
 			$foreign_class_name = $this->relationship->get_class();
 			$foreign_class = new $foreign_class_name;
-			$param_values = moojon_db_driver::get_relationship_param_values($this->relationship, $this->accessor);
-			$records = $foreign_class->read(moojon_db_driver::get_relationship_where($this->relationship, $this->accessor),  null, null, $param_values, moojon_db_driver::get_relationship_param_data_types($this->relationship, $this->accessor), $this->accessor, $this->relationship->get_name());
+			$param_values = $this->relationship->get_param_values($this->accessor);
+			$param_data_types = $this->relationship->get_param_values($this->accessor);
+			$where = $this->relationship->get_object_where($this->accessor);
+			$records = $foreign_class->read($where,  null, null, $param_values, $param_data_types, $this->accessor, $this->relationship->get_name());
 			switch (get_class($this->relationship)) {
 				case 'moojon_has_one_relationship':
 				case 'moojon_belongs_to_relationship':

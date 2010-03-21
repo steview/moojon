@@ -1,7 +1,12 @@
 <?php
-define('ENVIRONMENT', 'development');
-//define('ENVIRONMENT', 'production');
-//define('ENVIRONMENT', 'testing');
+if (array_key_exists('MOOJON_ENVIRONMENT', $_SERVER)) {
+	$environment = $_SERVER['MOOJON_ENVIRONMENT'];
+} else if (defined('CLI')) {
+	$environment = 'cli';
+} else {
+	$environment = 'development';
+}
+define('ENVIRONMENT', $environment);
 define('MOOJON_VERSION', '<[MOOJON_VERSION]>');
 define('MOOJON_DIRECTORY', '<[MOOJON_DIRECTORY]>/'.MOOJON_VERSION.'/');
 define('PROJECT_DIRECTORY', dirname(dirname(__FILE__)).'/');

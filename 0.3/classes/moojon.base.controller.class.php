@@ -4,13 +4,8 @@ abstract class moojon_base_controller extends moojon_base {
 	protected $view;
 	protected $action;
 	
-	final public function __construct(moojon_base_app $app, $action, $data) {
-		$vars = get_object_vars($this);
-		foreach ($data as $key => $value) {
-			if (!array_key_exists($key, $vars)) {
-				$this->$key = $value;
-			}
-		}
+	final public function __construct(moojon_base_app $app, $action, $data = array()) {
+		$this->set_data($data);
 		self::require_view_functions();
 		$this->app = $app;
 		$this->init();
@@ -20,6 +15,15 @@ abstract class moojon_base_controller extends moojon_base {
 			$this->$action();
 		}
 		$this->close();
+	}
+	
+	final public function set_data($data) {
+		$vars = get_object_vars($this);
+		foreach ($data as $key => $value) {
+			if (!array_key_exists($key, $vars)) {
+				$this->$key = $value;
+			}
+		}
 	}
 	
 	final public function set_layout($layout) {

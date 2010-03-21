@@ -9,6 +9,7 @@ final class moojon_migrator extends moojon_base {
 			$migrations[] = $migration->version;
 		}
 		$migration_files = moojon_files::directory_files(moojon_paths::get_project_migrations_directory());
+		sort($migration_files);
 		foreach ($migration_files as $migration_file) {
 			if (!in_array(basename($migration_file), $migrations)) {
 				self::run_migration($migration_file, 'up');

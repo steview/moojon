@@ -5,12 +5,14 @@ abstract class moojon_base_app extends moojon_base {
 	private $controller_name;
 	private $app_name;
 	private $layout;
+	private $uri;
 	
 	final public function __construct($uri = null) {
+		$this->uri = moojon_uri::clean_uri($uri);
 		$this->init();
 		self::require_view_functions();
 		if ($uri) {
-			$this->set_location($uri);
+			$this->set_location($this->uri);
 		}
 		$this->close();
 	}
@@ -27,6 +29,10 @@ abstract class moojon_base_app extends moojon_base {
 			$this->redirect($location);
 		}
 		$this->set_controller();
+	}
+	
+	final public function transfer_data() {
+		$this->controller->set_data(get_object_vars($this));
 	}
 	
 	final public function redirect($uri) {
@@ -52,10 +58,10 @@ abstract class moojon_base_app extends moojon_base {
 		if (!$this->controller) {
 			$this->set_controller();
 		}
-		$return = moojon_runner::render(moojon_paths::get_view_path(self::get_app_name($this), self::get_controller_name($this->controller), $this->controller->get_view()), $this->controller);
+		$return = moojon_runner::render(moojon_paths::get_view_path(self::get_app_name($this), self::get_controller_name($this->controller), $this->controller->get_view()), $this->controller, $this->uri);
 		$layout = $this->get_layout();
 		if ($layout !== false) {
-			$return = str_replace('YIELD', $return, moojon_runner::render(moojon_paths::get_layout_path($layout), $this->controller));
+			$return = str_replace('YIELD', $return, moojon_runner::render(moojon_paths::get_layout_path($layout), $this->controller), $this->uri);
 		}
 		return $return;
 	}

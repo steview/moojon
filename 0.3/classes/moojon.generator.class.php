@@ -63,7 +63,7 @@ final class moojon_generator extends moojon_base {
 	static private function environment_config($environment) {
 		$project_config_environment_directory = moojon_paths::get_project_config_environment_directory($environment);
 		moojon_files::attempt_mkdir($project_config_environment_directory);
-		self::run(moojon_paths::get_moojon_templates_directory()."$environment.project.config.template", "$project_config_environment_directory/environment.config.php", array(), false, true);
+		self::run(moojon_paths::get_moojon_templates_directory()."$environment.environment.config.template", $project_config_environment_directory.'environment.config.php', array(), false, true);
 	}
 	
 	static public function project($app, $controller, $action) {

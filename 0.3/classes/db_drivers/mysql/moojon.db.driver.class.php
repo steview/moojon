@@ -121,25 +121,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		$where = self::require_prefix($where, 'WHERE ');
 		$order = self::require_prefix($order, 'ORDER BY ');
 		$limit = self::require_prefix($limit, 'LIMIT ');
-		$columns_string = '';
-		if (is_array($columns)) {
-			foreach(array_keys($columns) as $key) {
-				if (!is_string($key)) {
-					$column = '`'.str_replace('.', '`.`', $columns[$key]).'`';
-					$columns_string .= ", $column";
-				} else {
-					$column = $columns[$key];
-					$key = '`'.str_replace('.', '`.`', $key).'`';
-					$columns_string .= ", $key AS $column";
-				}
-			}
-			$columns_string = substr($columns_string, 2);
-			$columns = $columns_string;
-		} else {
-			if (!$columns) {
-				$columns = '*';
-			}
-		}
+		$columns = self::alias_columns($columns);
 		return "SELECT $columns FROM `$table` $where $order $limit;";
 	}
 	
@@ -339,30 +321,91 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return implode("\n\t", $read_or_create_bys);
 	}
 	
-	static public function get_relationship_where(moojon_base_relationship $relationship, moojon_base_model $accessor) {
+	static public function get_relationships_class_where(moojon_base_model $model) {
+		return implode(' AND ', $model->get_relationship_wheres());
+	}
+	
+	static public function alias_columns($columns = array()) {
+		if (is_array($columns)) {
+			$return = '';
+			foreach(array_keys($columns) as $key) {
+				if (!is_string($key)) {
+					$column = '`'.str_replace('.', '`.`', $columns[$key]).'`';
+					$return .= ", $column";
+				} else {
+					$column = $columns[$key];
+					$key = '`'.str_replace('.', '`.`', $key).'`';
+					$return .= ", $key AS $column";
+				}
+			}
+			$return = substr($return, 2);
+		} else {
+			if (!$columns) {
+				$columns = '*';
+			}
+			$return = $columns;
+		}
+		return $return;
+	}
+	
+	static public function column_address($table, $column_name) {
+		return "$table.$column_name";
+	}
+	
+	static public function full_column_name($class, $column_name) {
+		return strtoupper($class.'_'.$column_name);
+	}
+	
+	static public function get_relationship_class_where(moojon_base_relationship $relationship, moojon_base_model $accessor) {
+		$accessor_class = get_class($accessor);
+		$table = $accessor->get_table();
+		$key = $relationship->get_key();
+		$foreign_table = $relationship->get_foreign_table();
+		$foreign_key = $relationship->get_foreign_key();
+		$return = '';
+		switch (get_class($relationship)) {
+			case 'moojon_has_one_relationship':
+				$return = "`$foreign_table`.`$key` = `$table`.`$foreign_key`";
+				break;
+			case 'moojon_has_many_relationship':
+				$foreign_key = moojon_primary_key::get_foreign_key($accessor_class);
+				$return = "`$table`.`$key` = `$foreign_table`.`$foreign_key`";
+				break;
+			case 'moojon_has_many_to_many_relationship':
+				$return = 'many_to_many';
+				break;
+			case 'moojon_belongs_to_relationship':
+				$return = "`$table`.`$key` = `$foreign_table`.`$foreign_key`";
+				break;
+		}
+		return $return;
+	}
+	
+	static public function get_relationship_object_where(moojon_base_relationship $relationship, moojon_base_model $accessor) {
 		$key = $relationship->get_key();
 		switch (get_class($relationship)) {
 			case 'moojon_has_one_relationship':
 				$foreign_table = $relationship->get_foreign_table();
 				$foreign_key = $relationship->get_foreign_key();
-				return "`$foreign_table`.`$key` = :$foreign_key";
+				$return = "`$foreign_table`.`$key` = :$foreign_key";
 				break;
 			case 'moojon_has_many_relationship':
 				$foreign_table = $relationship->get_foreign_table();
 				$foreign_key = moojon_primary_key::get_foreign_key(get_class($accessor));
-				return "`$foreign_table`.`$foreign_key` = :$key";
+				$return = "`$foreign_table`.`$foreign_key` = :$key";
 				break;
 			case 'moojon_has_many_to_many_relationship':
 				$foreign_table = moojon_inflect::pluralize($relationship->get_class($accessor));
 				$foreign_key1 = moojon_primary_key::get_foreign_key($relationship->get_foreign_table());
 				$foreign_key2 = moojon_primary_key::get_foreign_key(get_class($accessor));
-				return "`$key` IN (SELECT `$foreign_key1` FROM `$foreign_table` WHERE `$foreign_key2` = :key)";
+				$return = "`$key` IN (SELECT `$foreign_key1` FROM `$foreign_table` WHERE `$foreign_key2` = :key)";
 				break;
 			case 'moojon_belongs_to_relationship':
 				$foreign_key = moojon_primary_key::get_foreign_key(get_class($accessor));
-				return "`$key` = :$foreign_key";
+				$return = "`$key` = :$foreign_key";
 				break;
 		}
+		return $return;
 	}
 	
 	static public function get_relationship_param_values(moojon_base_relationship $relationship, moojon_base_model $accessor) {

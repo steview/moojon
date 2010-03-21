@@ -113,7 +113,7 @@ function get_delete_member_uri(moojon_base_model $model) {
 	return get_member_uri($model).'delete/';
 }
 
-function rest_actions(moojon_base_model $model, moojon_rest_route $route = null, $action = null) {
+function rest_actions(moojon_base_model $model, moojon_rest_route $route = null, $action = null, $attributes = array()) {
 	$action = ($action) ? $action : strtolower(ACTION);
 	$route = ($route) ? $route : moojon_routes::get_rest_route($model->get_table());
 	$actions = $route->get_actions();
@@ -157,10 +157,11 @@ function rest_actions(moojon_base_model $model, moojon_rest_route $route = null,
 			$lis = array();
 			break;
 	}
-	return div_tag(ul_tag($lis), array('class' => 'generated actions'));
+	return div_tag(ul_tag($lis), $attributes);
 }
 
-function rest_breadcrumb() {
+function rest_breadcrumb($attributes = array()) {
+	$attributes = try_set_attribute($attributes, 'class', 'breadcrumb');
 	$segments = explode('/', moojon_uri::get_match_pattern());
 	if ($segments[0] == APP) {
 		array_shift($segments);
@@ -195,7 +196,7 @@ function rest_breadcrumb() {
 			}
 		}
 	}
-	return div_tag($ul, array('class' => 'generated breadcrumb'));
+	return div_tag($ul, $attributes);
 }
 
 function model_from_symbol($symbol) {

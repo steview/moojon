@@ -56,9 +56,6 @@ abstract class moojon_base_model extends moojon_base {
 		$class = get_class($this);
 		$belongs_to_relationship = ($this->has_belongs_to_relationship($class)) ? $this->get_relationship($class) : null;
 		if ($this->has_relationship($key)) {
-			/*echo '('.$key.')';
-			print_r($this->relationships);
-			echo '<hr />';*/
 			$relationship = $this->get_relationship($key);
 			$foreign_key = $relationship->get_foreign_key();
 			if ($belongs_to_relationship && array_key_exists($foreign_key, $belongs_to_relationship->get_shared_columns())) {
@@ -70,7 +67,6 @@ abstract class moojon_base_model extends moojon_base {
 		if ($relationship) {
 			$get_method = 'get_'.$relationship->get_name();
 			if (!array_key_exists($key, $this->relationship_data)) {
-				//echo "<hr />$get_method<hr />";
 				if (method_exists($this, $get_method)) {
 					$records = $this->$get_method();
 				} else {
@@ -96,6 +92,76 @@ abstract class moojon_base_model extends moojon_base {
 			}
 			return $return;
 		}
+	}
+	
+	final public function get_relationship_tables($classes = array()) {
+		$return = array();
+		$class = get_class($this);
+		if (!in_array($class, $classes)) {
+			$classes[] = $class;
+			foreach ($this->get_relationships() as $relationship) {
+				$foreign_table = $relationship->get_foreign_table();
+				if (!in_array($foreign_table, $return)) {
+					$return[] = $foreign_table;
+				}
+				$instance = self::factory($relationship->get_foreign_class());
+				foreach ($instance->get_relationship_tables($classes) as $relationship_table) {
+					if (!in_array($relationship_table, $return)) {
+						$return[] = $relationship_table;
+					}
+				}
+			}
+		}
+		return $return;
+	}
+	
+	final public function get_relationship_wheres($classes = array()) {
+		$return = array();
+		$class = get_class($this);
+		if (!in_array($class, $classes)) {
+			$classes[] = $class;
+			foreach ($this->get_relationships() as $relationship) {
+				$foreign_class = $relationship->get_foreign_class();
+				if ($foreign_class != $class) {
+					$where = $relationship->get_class_where($this);
+					if (!in_array($where, $return)) {
+						$return[] = $where;
+					}
+					$instance = self::factory($foreign_class);
+					foreach ($instance->get_relationship_wheres($classes) as $relationship_where) {
+						if (!in_array($relationship_where, $return)) {
+							$return[] = $relationship_where;
+						}
+					}
+				}
+			}
+		}
+		return $return;
+	}
+	
+	final public function get_relationship_select_columns($classes = array()) {
+		$return = array();
+		$class = get_class($this);
+		if (!in_array($class, $classes)) {
+			$classes[] = $class;
+			foreach ($this->get_relationships() as $relationship) {
+				$instance = self::factory($relationship->get_foreign_class());
+				$select_columns = moojon_db_driver::alias_columns($instance->get_select_columns());
+				if (!in_array($select_columns, $return)) {
+					$return[] = $select_columns;
+				}
+				foreach ($instance->get_relationship_select_columns($classes) as $relationship_select_columns) {
+					if (!in_array($relationship_select_columns, $return)) {
+						$return[] = $relationship_select_columns;
+					}
+				}
+			}
+		}
+		return $return;
+	}
+	
+	final public function get_relationships_class_where() {
+		return moojon_db_driver::get_relationships_class_where($this);
 	}
 	
 	final public function has_property($key) {
@@ -748,23 +814,36 @@ abstract class moojon_base_model extends moojon_base {
 		return $saved;
 	}
 	
-	final static protected function base_read($class, $where, $order, $limit, $param_values, $param_data_types, $accessor, $key) {
-		$class = self::strip_base($class);
-		$table = moojon_inflect::pluralize($class);
-		$instance = self::init($class);
-		$placeholders = array();
-		$order = self::process_order($class, $order);
-		$columns = $instance->get_columns();
-		foreach($columns as $column) {
-			$column_name = $column->get_name();
-			$placeholders["$table.$column_name"] = strtoupper($class.'_'.$column_name);
+	final protected function get_select_columns() {
+		$table = $this->get_table();
+		$return = array();
+		foreach($this->get_column_names() as $column_name) {
+			$return[moojon_db_driver::column_address($table, $column_name)] = moojon_db_driver::full_column_name($this->get_class(), $column_name);
 		}
+		return $return;
+	}
+	
+	final static protected function base_read($class, $where, $order, $limit, $param_values, $param_data_types, $accessor, $key) {
+		
+		$class = self::strip_base($class);
+		$instance = self::factory($class);
+		
+		/*$table = implode('`, `', $instance->get_relationship_tables());
+		$columns = $instance->get_relationship_select_columns();
+		$columns = implode(', ', $columns);
+		if ($where) {
+			$where = implode(' AND ', $instance->get_relationship_wheres())." AND $where";
+		}*/
+		
+		$table = $instance->get_table();
+		$columns = $instance->get_select_columns();
+		
 		$return = new moojon_model_collection($accessor);
-		foreach(moojon_db::select($table, $placeholders, $where, $order, $limit, $instance->compile_param_values($param_values), $instance->compile_param_data_types($param_data_types)) as $row) {
+		foreach(moojon_db::select($table, $columns, $where, self::process_order($class, $order), $limit, $instance->compile_param_values($param_values), $instance->compile_param_data_types($param_data_types)) as $row) {
 			$record = self::init($class);
 			foreach($instance->columns as $column) {
 				$column_name = $column->get_name();
-				$record->$column_name = $row[strtoupper($class.'_'.$column_name)];
+				$record->$column_name = $row[moojon_db_driver::full_column_name($class, $column_name)];
 				$record->reset();
 			}
 			$record->new_record = false;
@@ -911,7 +990,7 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final static private function process_order($class, $order = null) {
-		$instance = self::init($class);
+		$instance = self::factory($class);
 		if ($order) {
 			$return = $order;
 		} else {

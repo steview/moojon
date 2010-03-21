@@ -9,7 +9,18 @@ final class moojon_exception extends Exception {
 		$code = ($code) ? $code : 0;
 		$severity = ($severity) ? $severity : 0;
 		$backtrace = debug_backtrace();
-		die("<h1>$message: $file ($line)</h1>\n".print_r($backtrace, true));
+		echo("<h1>$message: $file ($line)</h1>\n");
+		foreach ($backtrace as $trace) {
+			self::trace($trace, 'file');
+			self::trace($trace, 'line');
+			self::trace($trace, 'function');
+			self::trace($trace, 'class');
+			//self::trace($trace, 'object');
+			self::trace($trace, 'type');
+			self::trace($trace, 'args');
+			echo '<br /><br /><br />';
+		}
+		die();
 		$file = ($file) ? $file : $backtrace[0]['file'];
 		$line = ($line) ? $line : $backtrace[0]['line'];
 		parent::__construct($message, $code);
@@ -19,6 +30,14 @@ final class moojon_exception extends Exception {
 		//$mailer = moojon_mailer::from_html("<h1>$message: $file ($line)</h1>".$this->get_trace_ol($backtrace));
 		die("<h1>$message: $file ($line)</h1>".(string)$this);
 		self::$instance = $this;
+	}
+	
+	static public function trace($trace, $key) {
+		if (array_key_exists($key, $trace)) {
+			echo "<strong>$key:</strong> ";
+			var_dump($trace[$key]);
+			echo '<hr />';
+		}
 	}
 	
 	static private function get() {

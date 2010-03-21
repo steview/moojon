@@ -268,7 +268,7 @@ function login_form($authenticated = false, $message = null, $redirect = null, $
 			$security_password_value = null;
 			$security_checked_value = null;
 		}
-		$child = form_tag(null, array('action' => '#', 'method' => 'post', 'class' => 'generated'));
+		$child = form_tag(null, array('action' => '#', 'method' => 'post'));
 		if ($redirect) {
 			$child->add_child(redirection_tag($redirect));
 		}
@@ -294,12 +294,12 @@ function login_form($authenticated = false, $message = null, $redirect = null, $
 	} else {
 		$child = p_tag('You are logged in.');
 	}
-	return div_tag($child, array('id' => 'login_div', 'class' => 'generated'));
+	return div_tag($child, array('id' => 'login_div'));
 }
 
 function error_dl($message, $errors = array(), $attributes = array()) {
 	$children = array();
-	$attributes = try_set_attribute($attributes, 'class', 'errors generated');
+	$attributes = try_set_attribute($attributes, 'class', 'errors');
 	if (count($errors)) {
 		$children[] = dt_tag($message);
 		foreach ($errors as $key => $value) {
@@ -464,7 +464,7 @@ function datetime_select_options($attributes = null, $format = null, $selected =
 	if (!$format) {
 		$format = moojon_config::get('datetime_format');
 	}
-	$return = div_tag(null, array('class' => 'datetime generated'));
+	$return = div_tag(null, array('class' => 'datetime'));
 	$attributes = try_set_attribute($attributes, 'name', 'datetime_select');
 	$attributes = try_set_attribute($attributes, 'id', $attributes['name']);
 	for ($i = 0; $i < (strlen($format) + 1); $i ++) {

@@ -80,6 +80,8 @@ final class moojon_db  extends moojon_base {
 		}
 		if (moojon_config::has('db_dsn')) {
 			$db_dsn = moojon_config::get('db_dsn');
+		} else if (moojon_config::has('cli_db_dsn')) {
+			$db_dsn = moojon_config::get('cli_db_dsn');
 		} else {
 			$keys = array();
 			switch($db_driver) {
@@ -101,19 +103,21 @@ final class moojon_db  extends moojon_base {
 					$keys['database'] = 'db_database';
 					$keys['hostname'] = 'db_hostname';
 					$keys['port'] = 'db_port';
-					$keys['username'] = 'db_username';
-					$keys['password'] = 'db_password';
+					$keys['username'] = (UI == 'CLI') ? 'cli_db_username' : 'db_username';
+					$keys['password'] = (UI == 'CLI') ? 'cli_db_password' : 'db_password';
 					break;
 				case 'informix':
 				case 'sqlite':
 				case 'sqlite2':
-					throw new moojon_excpetion("db_driver ($db_driver) requires db_dsn config key");
+					throw new moojon_exception("db_driver ($db_driver) requires db_dsn config key");
 					break;
 				case 'mysql':
 					$keys['host'] = 'db_host';
 					$keys['port'] = 'db_port';
 					$keys['dbname'] = 'db_dbname';
 					$keys['unix_socket'] = 'db_unix_socket';
+					$keys['username'] = (UI == 'CLI') ? 'cli_db_username' : 'db_username';
+					$keys['password'] = (UI == 'CLI') ? 'cli_db_password' : 'db_password';
 					break;
 				case 'oci':
 					$keys['dbname'] = 'db_dbname';
@@ -121,15 +125,15 @@ final class moojon_db  extends moojon_base {
 					break;
 				case 'odbc':
 					$keys['dsn'] = 'db_dsn_name';
-					$keys['uid'] = 'db_uid';
-					$keys['pwd'] = 'db_pwd';
+					$keys['uid'] = (UI == 'CLI') ? 'cli_db_uid' : 'db_uid';
+					$keys['pwd'] = (UI == 'CLI') ? 'cli_db_pwd' : 'db_pwd';
 					break;
 				case 'pgsql':
 					$keys['host'] = 'db_host';
 					$keys['port'] = 'db_port';
 					$keys['dbname'] = 'db_dbname';
-					$keys['user'] = 'db_user';
-					$keys['password'] = 'db_password';
+					$keys['user'] = (UI == 'CLI') ? 'cli_db_user' : 'db_user';
+					$keys['password'] = (UI == 'CLI') ? 'cli_db_password' : 'db_password';
 					break;
 				case '4D':
 					$keys['host'] = 'db_host';
@@ -149,8 +153,8 @@ final class moojon_db  extends moojon_base {
 			}
 			$db_dsn = substr($db_dsn, 0, (strlen($db_dsn) - 1));
 		}
-		$db_username = moojon_config::get_or_null('db_username');
-		$db_password = moojon_config::get_or_null('db_password');
+		$db_username = moojon_config::get_or_null(moojon_config::get_or_null('username', $keys));
+		$db_password = moojon_config::get_or_null(moojon_config::get_or_null('password', $keys));
 		$db_driver_options = moojon_config::get_or_null('db_driver_options');
 		$this->data = new PDO("$db_driver:$db_dsn", $db_username, $db_password, $db_driver_options);
 		$this->data->setAttribute(self::ATTR_ERRMODE, self::ERRMODE_EXCEPTION);

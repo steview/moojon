@@ -116,11 +116,11 @@ abstract class moojon_base_migration extends moojon_base {
 		if ($options) {
 			$data = "$data $options";
 		}
-		moojon_db::alter_table_add_index($table_name, $data);
+		moojon_db::add_index($table_name, $data);
 	}
 	
 	final protected function remove_index($table_name, $column_name) {
-		moojon_db::alter_table_remove_index($table_name, $column_name);
+		moojon_db::remove_index($table_name, $column_name);
 	}
 }
 ?>

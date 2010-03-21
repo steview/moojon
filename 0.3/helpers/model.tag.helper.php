@@ -132,7 +132,6 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 		$error_message = moojon_config::get('validation_error_message');
 	}
 	$attributes = try_set_attribute($attributes, 'method', 'post');
-	$attributes = try_set_attribute($attributes, 'class', 'generated');
 	$attributes = try_set_action_attribute($model, $attributes);
 	$controls = array();
 	if ($model->get_new_record()) {
@@ -171,7 +170,6 @@ function delete_form_for(moojon_base_model $model, $attributes = array(), $messa
 		$message = moojon_config::get('confirm_deletion_message');
 	}
 	$attributes = try_set_attribute($attributes, 'method', 'post');
-	$attributes = try_set_attribute($attributes, 'class', 'generated');
 	$attributes = try_set_action_attribute($model, $attributes);
 	$attributes = try_set_attribute($attributes, 'id', 'delete_'.get_class($model).'_form');
 	$controls = array(p_tag($message));
@@ -188,7 +186,6 @@ function boolean_form_for(moojon_base_model $model, moojon_base_column $column, 
 	$id = 'boolean_form_for_'.model_control_name($model, $column_name).$model->$id_property;
 	$attributes = try_set_attribute($attributes, 'id', $id);
 	$attributes = try_set_attribute($attributes, 'method', 'post');
-	$attributes = try_set_attribute($attributes, 'class', 'generated');
 	$attributes = try_set_action_attribute($model, $attributes);
 	$src = '/'.moojon_config::get('images_directory').'/button_boolean'.$column->get_value().'.'.moojon_config::get('default_image_ext');
 	$value = ($column->get_value()) ? '0' : '1';
@@ -205,7 +202,6 @@ function dl_for(moojon_base_model $model, $column_names = array(), $attributes =
 		$column_names = $model->get_ui_column_names(array($model->get_to_string_column()));
 	}
 	$attributes = try_set_attribute($attributes, 'id', 'show_'.get_class($model).'_dl');
-	$attributes = try_set_attribute($attributes, 'class', 'generated');
 	$dt_dd_tags = array();
 	foreach ($column_names as $column_name) {
 		$column = $model->get_column($column_name);
@@ -262,7 +258,6 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 	if ($models->count) {
 		$attributes = try_set_attribute($attributes, 'cellpadding', '0');
 		$attributes = try_set_attribute($attributes, 'cellspacing', '0');
-		$attributes = try_set_attribute($attributes, 'class', 'generated');
 		$model = $models->first;
 		$model_class = get_class($model);
 		$ths = array(th_tag(title_text($model->get_to_string_column())));
@@ -395,7 +390,7 @@ function control(moojon_base_model $model, $column_name, $attributes = array()) 
 	return $return;
 }
 
-function has_one_tag(moojon_base_model_collection $models = null, moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
+function has_one_tag(moojon_model_collection $models = null, moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
 	$return = null;
 	$name = $column->get_name();
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);
@@ -407,11 +402,11 @@ function has_one_tag(moojon_base_model_collection $models = null, moojon_base_mo
 		$key = $relationship->get_key();
 		$relationship_name = $relationship->get_class($model);
 		$relationship = new $relationship_name;
+		$models = ($models) ? $models : $relationship->read();
 		$options = array();
 		if ($column->get_null()) {
 			$options['Please select...'] = 0;
 		}
-		$models = ($models) ? $models : $relationship->read();
 		foreach($models as $option) {
 			$options[(String)$option] = $option->$key;
 		}
@@ -421,7 +416,11 @@ function has_one_tag(moojon_base_model_collection $models = null, moojon_base_mo
 	return $return;
 }
 
-function belongs_to_tag(moojon_base_model_collection $models = null, moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
+function collection_options_options() {
+	
+}
+
+function belongs_to_tag(moojon_model_collection $models = null, moojon_base_model $model, moojon_base_column $column, moojon_base_relationship $relationship, $attributes = array()) {
 	$return = false;
 	$name = $column->get_name();
 	$attributes = try_set_name_and_id_attributes($attributes, $model, $column);

@@ -54,5 +54,21 @@ abstract class moojon_base_relationship extends moojon_base {
 	final public function get_column() {
 		return $this->column;
 	}
+	
+	final public function get_class_where(moojon_base_model $accessor) {
+		return moojon_db_driver::get_relationship_class_where($this, $accessor);
+	}
+	
+	final public function get_object_where(moojon_base_model $accessor) {
+		return moojon_db_driver::get_relationship_object_where($this, $accessor);
+	}
+	
+	final public function get_param_values(moojon_base_model $accessor) {
+		return moojon_db_driver::get_relationship_param_values($this, $accessor);
+	}
+	
+	final public function get_param_data_types(moojon_base_model $accessor) {
+		return moojon_db_driver::get_relationship_param_data_types($this, $accessor);
+	}
 }
 ?>
