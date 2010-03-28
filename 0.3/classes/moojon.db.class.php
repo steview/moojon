@@ -273,12 +273,12 @@ final class moojon_db  extends moojon_base {
 		return self::run(self::prepare(moojon_db_driver::modify_column($table, $data)), $param_values, $param_data_types);
 	}
 	
-	static public function add_index($table, $data, $options = null, $param_values = array(), $param_data_types = array()) {
-		return self::run(self::prepare(moojon_db_driver::add_index($table, $data)), $param_values, $param_data_types);
+	static public function add_index($name, $table, $column, $options = null, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::add_index($name, $table, $column)), $param_values, $param_data_types);
 	}
 	
-	static public function remove_index($table, $data, $param_values = array(), $param_data_types = array()) {
-		return self::run(self::prepare(moojon_db_driver::remove_index($table, $data)), $param_values, $param_data_types);
+	static public function remove_index($name, $table, $param_values = array(), $param_data_types = array()) {
+		return self::run(self::prepare(moojon_db_driver::remove_index($name, $table)), $param_values, $param_data_types);
 	}
 	
 	static public function select($table, $data = null, $where = null, $order = null, $limit = null, $param_values = array(), $param_data_types = array()) {

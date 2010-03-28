@@ -18,9 +18,9 @@ interface moojon_db_driver_queries {
 	
 	static public function modify_column($table, $column);
 	
-	static public function add_index($table, $index);
+	static public function add_index($name, $table, $column);
 	
-	static public function remove_index($table, $index);
+	static public function remove_index($name, $table);
 	
 	static public function select($table, $columns = array(), $where = null, $order = null, $limit = null);
 	

@@ -109,12 +109,12 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return "ALTER TABLE `$table` MODIFY COLUMN $column;";
 	}
 	
-	static public function add_index($table, $index) {
-		return "ALTER TABLE `$table` ADD INDEX `$index`;";
+	static public function add_index($name, $table, $column) {
+		return  "CREATE INDEX $name ON $table($column);";
 	}
 	
-	static public function remove_index($table, $index) {
-		return "ALTER TABLE `$table` REMOVE INDEX `$index`;";
+	static public function remove_index($name, $table) {
+		return "DROP INDEX $name ON table";
 	}
 	
 	static public function select($table, $columns = array(), $where = null, $order = null, $limit = null) {

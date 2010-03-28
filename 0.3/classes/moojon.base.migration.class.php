@@ -111,16 +111,12 @@ abstract class moojon_base_migration extends moojon_base {
 		moojon_db::change_column($table_name, $column);
 	}
 	
-	final protected function add_index($table_name, $column_name, $options = null) {
-		$data = $column_name;
-		if ($options) {
-			$data = "$data $options";
-		}
-		moojon_db::add_index($table_name, $data);
+	final protected function add_index($index_name, $table_name, $column_name) {
+		moojon_db::add_index($index_name, $table_name, $column_name);
 	}
 	
-	final protected function remove_index($table_name, $column_name) {
-		moojon_db::remove_index($table_name, $column_name);
+	final protected function remove_index($index_name, $table_name) {
+		moojon_db::remove_index($index_name, $table_name);
 	}
 }
 ?>
