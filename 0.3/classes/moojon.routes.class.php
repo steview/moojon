@@ -20,7 +20,7 @@ final class moojon_routes extends moojon_singleton_immutable_collection {
 	
 	static public function map($uri, $data = null, $validate = true) {
 		foreach (self::get_data($data) as $route) {
-			if ($route_match = $route->map($uri, true)) {
+			if ($route_match = $route->map($uri, $validate)) {
 				return $route_match;
 			}
 		}

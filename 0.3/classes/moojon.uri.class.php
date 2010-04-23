@@ -93,6 +93,10 @@ final class moojon_uri extends moojon_singleton_immutable_collection {
 		return $uri;
 	}
 	
+	static public function reparse($data = array()) {
+		return self::parse_symbols(self::get_match_pattern(), array_merge(self::get_match_params(), $data));
+	}
+	
 	static public function get_app() {
 		$data = self::get_data();
 		return $data['app'];

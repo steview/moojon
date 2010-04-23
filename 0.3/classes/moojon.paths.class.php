@@ -103,7 +103,7 @@ final class moojon_paths extends moojon_base {
 	}
 	
 	static public function get_project_directory() {
-		return PROJECT_DIRECTORY;
+		return (defined('PROJECT_DIRECTORY')) ? PROJECT_DIRECTORY : $_SERVER['PWD'];
 	}
 	
 	static public function get_project_library_directory() {

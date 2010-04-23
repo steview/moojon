@@ -89,6 +89,7 @@ function get_member_uri(moojon_base_model $model) {
 	$route = get_collection_rest_route($model);
 	$id_property = $route->get_id_property();
 	$current_uri = moojon_uri::get_uri();
+	//die(moojon_uri::reparse(array($id_property => $model->$id_property)));
 	$table_slash_id_slash = $model->get_table().'/'.$model->$id_property.'/';
 	$position = strpos($current_uri, $table_slash_id_slash);
 	if ($position !== false) {
@@ -177,7 +178,9 @@ function rest_breadcrumb($attributes = array()) {
 			$symbol_name = moojon_base::get_symbol_name($segment);
 			$href .= moojon_request::get($symbol_name).'/';
 			if ($symbol_name != moojon_primary_key::NAME) {
-				$content = model_from_symbol($segment);
+				if (moojon_paths::get_model_path($segment)) {
+					$content = model_from_symbol($segment);
+				}
 			} else {
 				$content = model_from_id($segments[($i - 1)]);
 			}

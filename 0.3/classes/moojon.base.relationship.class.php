@@ -17,18 +17,26 @@ abstract class moojon_base_relationship extends moojon_base {
 	}
 	
 	final public function get_class(moojon_base_model $accessor = null) {
-		$return = null;
 		$foreign_table = moojon_inflect::singularize($this->foreign_table);
 		if (get_class($this) == 'moojon_has_many_to_many_relationship') {
 			$classes = array();
 			$classes[] = $foreign_table;
-			$classes[] = get_class($accessor);
+			$classes[] = $accessor->get_class();
 			sort($classes);
 			$return = $classes[0].'_'.$classes[1];
 		} else {
 			$return = $foreign_table;
 		}
-		return $foreign_table;
+		return $return;
+	}
+	
+	final public function get_table(moojon_base_model $accessor = null) {
+		if (get_class($this) == 'moojon_has_many_to_many_relationship') {
+			$return = ($accessor->get_table() == $this->foreign_table) ? $this->name : $this->foreign_table;
+		} else {
+			$return = $this->foreign_table;
+		}
+		return moojon_inflect::singularize($return);
 	}
 	
 	final public function get_name() {

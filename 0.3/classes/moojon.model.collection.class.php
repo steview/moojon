@@ -48,12 +48,13 @@ final class moojon_model_collection extends ArrayObject {
 	
 	public function get() {
 		if ($this->relationship) {
-			$foreign_class_name = $this->relationship->get_class();
+			$foreign_class_name = $this->relationship->get_table($this->accessor);
 			$foreign_class = new $foreign_class_name;
 			$param_values = $this->relationship->get_param_values($this->accessor);
 			$param_data_types = $this->relationship->get_param_values($this->accessor);
 			$where = $this->relationship->get_object_where($this->accessor);
 			$records = $foreign_class->read($where,  null, null, $param_values, $param_data_types, $this->accessor, $this->relationship->get_name());
+			$records->relationship = $this->relationship;
 			switch (get_class($this->relationship)) {
 				case 'moojon_has_one_relationship':
 				case 'moojon_belongs_to_relationship':
@@ -117,7 +118,7 @@ final class moojon_model_collection extends ArrayObject {
 	public function add(moojon_base_model $model) {
 		$key = $this->relationship->get_key();
 		$foreign_key = $this->relationship->get_foreign_key();
-		$accessor = $this->relationship->get_accessor();
+		$accessor = $this->accessor;
 		switch (get_class($this->relationship)) {
 			case 'moojon_has_many_relationship':
 				$model->$foreign_key = $accessor->$key;
@@ -126,11 +127,12 @@ final class moojon_model_collection extends ArrayObject {
 				if ($model->new_record) {
 					$model->save();
 				}
-				$class_name = $this->relationship->get_class();
+				$class_name = $this->relationship->get_class($accessor);
 				$class = new $class_name;
+				$key_property = moojon_primary_key::get_foreign_key($accessor->get_class());
 				$class->$foreign_key = $model->$key;
-				$key_property = moojon_primary_key::get_foreign_key($accessor);
 				$class->$key_property = $accessor->$key;
+				$model = $class;
 				break;
 		}
 		$this[] = $model;

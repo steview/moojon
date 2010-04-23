@@ -21,7 +21,6 @@ function __autoload($class) {
 	if ($class_path) {
 		require_once($class_path);
 	} else {
-		print_r($class_paths);
 		throw new moojon_exception("Not found ($class)");
 	}
 }

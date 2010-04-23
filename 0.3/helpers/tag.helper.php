@@ -28,6 +28,8 @@ function vet_tag_type($type, $parent) {
 	$type = "moojon_$type".'_tag';
 	$parent = str_replace('moojon_base_', '', str_replace('_tag', '', $parent));
 	$parent = "moojon_base_$parent".'_tag';
+	//die("$type, $parent");
+	return $type;
 	if (is_subclass_of($type, $parent)) {
 		return $type;
 	} else {

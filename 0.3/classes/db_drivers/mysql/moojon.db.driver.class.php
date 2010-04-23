@@ -118,39 +118,86 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function select($table, $columns = array(), $where = null, $order = null, $limit = null) {
-		$where = self::require_prefix($where, 'WHERE ');
-		$order = self::require_prefix($order, 'ORDER BY ');
-		$limit = self::require_prefix($limit, 'LIMIT ');
-		$columns = self::alias_columns($columns);
-		return "SELECT $columns FROM `$table` $where $order $limit;";
+		$columns = self::columns($columns);
+		$table = self::tables($table);
+		$where = self::where($where);
+		$order = self::order($order);
+		$limit = self::limit($limit);
+		return "SELECT $columns FROM $table $where $order $limit;";
 	}
 	
 	static public function insert($table, $columns = array(), $symbol = false) {
+		$table = self::tables($table);
 		$values = '';
 		foreach($columns as $value) {
 			$values .= ", $value";
 		}
 		$columns = implode('`, `', array_keys($columns));
 		$values = ' VALUES('.substr($values, 2).')';
-		return "INSERT INTO `$table` (`$columns`)$values;";
+		return "INSERT INTO $table (`$columns`)$values;";
 	}
 	
+	////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	//DO NOT FORGET COLUMN ADDRESS IN UPDATE!!!
+	////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	
 	static public function update($table, $columns = array(), $where = null) {
-		$where = self::require_prefix($where, ' WHERE ');
+		$table = self::tables($table);
 		$values = '';
 		foreach($columns as $key => $value) {
 			$values .= ", `$key` = $value";
 		}
-		return "UPDATE `$table` SET ".substr($values, 2)."$where;";
+		$where = self::where($where);
+		return "UPDATE $table SET ".substr($values, 2)."$where;";
 	}
 	
 	static public function delete($table, $where = null) {
-		$where = self::require_prefix($where, 'WHERE ');
-		return "DELETE FROM `$table` $where;";
+		$table = self::tables($table);
+		$where = self::where($where);
+		return "DELETE FROM $table $where;";
 	}
 	
-	static public function limit($start, $limit) {
-		return "$start, $limit";
+	static public function tables($tables) {
+		$tables = (is_array($tables)) ? $tables : array($tables);
+		return '`'.implode('`, `', $tables).'`';
+	}
+	
+	static public function columns($columns = array()) {
+		if (is_array($columns)) {
+			$return = '';
+			foreach(array_keys($columns) as $key) {
+				if (!is_string($key)) {
+					$return .= ', '.$columns[$key];
+				} else {
+					$column = $columns[$key];
+					$return .= ", $key AS $column";
+				}
+			}
+			$return = substr($return, 2);
+		} else {
+			if (!$columns) {
+				$columns = '*';
+			}
+			$return = $columns;
+		}
+		return $return;
+	}
+	
+	static public function where($where) {
+		if (is_array($where)) {
+			$where = implode(' AND ', $where);
+		}
+		return self::require_prefix($where, 'WHERE ');
+	}
+	
+	static public function order($order) {
+		return self::require_prefix($order, 'ORDER BY ');
+	}
+	
+	static public function limit($limit) {
+		return self::require_prefix($limit, 'LIMIT ');
 	}
 	
 	static public function get_null() {
@@ -325,31 +372,64 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return implode(' AND ', $model->get_relationship_wheres());
 	}
 	
-	static public function alias_columns($columns = array()) {
-		if (is_array($columns)) {
-			$return = '';
-			foreach(array_keys($columns) as $key) {
-				if (!is_string($key)) {
-					$column = '`'.str_replace('.', '`.`', $columns[$key]).'`';
-					$return .= ", $column";
-				} else {
-					$column = $columns[$key];
-					$key = '`'.str_replace('.', '`.`', $key).'`';
-					$return .= ", $key AS $column";
+	static private function in_string($string, $postion) {
+		$aposes = 0;
+		for ($i = 0; $i < $postion; $i ++) {
+			if (substr($string, $i, 1) == "'") {
+				$aposes ++;
+			}
+		}
+		return ($aposes % 2 != 0);
+	}
+	
+	static private function next_character($subject, $position) {
+		if (($position + 1) > strlen($subject)) {
+			return false;
+		} else {
+			return substr($subject, $position, 1);
+		}
+	}
+	
+	static private function previous_character($subject, $position) {
+		if ($position < 2) {
+			return false;
+		} else {
+			return substr($subject, ($position - 1), 1);
+		}
+	}
+	
+	static private function str_replace2($needle, $replace, $subject) {
+		if ($count = substr_count($subject, $needle)) {
+			$position = strpos($subject, $needle);
+			$valid_surrounding_characters = array(false, ' ', '.', ',', '=', '+', '-', '*', '/', '>', '<', '(', ')', '!');
+			for ($i = 0; $i < $count; $i ++) {
+				$length = strlen($needle);
+				if (!self::is_symbol(substr($subject, ($position - 1), ($length + 1))) && !self::in_string($subject, $position) && in_array(self::previous_character($subject, $position), $valid_surrounding_characters, true) && in_array(self::next_character($subject, ($position + $length)), $valid_surrounding_characters, true)) {
+					$subject = substr_replace($subject, $replace, $position, $length);
+					$position = strpos($subject, $needle, ($position + strlen($replace)));
 				}
 			}
-			$return = substr($return, 2);
-		} else {
-			if (!$columns) {
-				$columns = '*';
-			}
-			$return = $columns;
 		}
-		return $return;
+		return $subject;
+	}
+	
+	static public function column_addresses($subject, $table, $column_names = array()) {
+		foreach ($column_names as $column_name) {
+			$needle = self::column_address($table, $column_name);
+			$replace = "$table.$column_name";
+			$subject = self::str_replace2($needle, $replace, $subject);
+			$needle = "$table.$column_name";
+			$replace = $column_name;
+			$subject = self::str_replace2($needle, $replace, $subject);
+			$needle = $column_name;
+			$replace = self::column_address($table, $column_name);
+			$subject = self::str_replace2($needle, $replace, $subject);
+		}
+		return $subject;
 	}
 	
 	static public function column_address($table, $column_name) {
-		return "$table.$column_name";
+		return "`$table`.`$column_name`";
 	}
 	
 	static public function full_column_name($class, $column_name) {
@@ -358,7 +438,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	
 	static public function get_relationship_class_where(moojon_base_relationship $relationship, moojon_base_model $accessor) {
 		$accessor_class = get_class($accessor);
-		$table = $accessor->get_table();
+		$table = $accessor->get_table(false);
 		$key = $relationship->get_key();
 		$foreign_table = $relationship->get_foreign_table();
 		$foreign_key = $relationship->get_foreign_key();
@@ -398,7 +478,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 				$foreign_table = moojon_inflect::pluralize($relationship->get_class($accessor));
 				$foreign_key1 = moojon_primary_key::get_foreign_key($relationship->get_foreign_table());
 				$foreign_key2 = moojon_primary_key::get_foreign_key(get_class($accessor));
-				$return = "`$key` IN (SELECT `$foreign_key1` FROM `$foreign_table` WHERE `$foreign_key2` = :key)";
+				$return = "`$key` IN (SELECT `$foreign_key1` FROM `$foreign_table` WHERE `$foreign_key2` = :$key)";
 				break;
 			case 'moojon_belongs_to_relationship':
 				$foreign_key = moojon_primary_key::get_foreign_key(get_class($accessor));
