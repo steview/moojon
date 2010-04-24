@@ -878,7 +878,8 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final protected function get_limit($limit = null, $cascade = false) {
-		return ($limit) ? $limit : '0, 100';
+		//return ($limit) ? $limit : '0, 100';
+		return $limit;
 	}
 	
 	final public function set_full($data = array()) {

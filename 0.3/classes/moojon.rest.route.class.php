@@ -22,9 +22,6 @@ final class moojon_rest_route extends moojon_base_route {
 		$this->custom_member_routes = (array_key_exists('custom_member_routes', $this->params)) ? $this->params['custom_member_routes'] : array();
 		$model_class = moojon_inflect::singularize($this->pattern);
 		$model = new $model_class;
-		foreach ($model->get_relationships() as $relationship) {
-			$this->relationship_routes[] = $relationship->get_name();
-		}
 		$this->relationship_routes = $model->get_relationship_names();
 	}
 	
@@ -58,7 +55,7 @@ final class moojon_rest_route extends moojon_base_route {
 		$pattern = '';
 		$custom_collection_routes = (array_key_exists('custom_collection_routes', $this->params)) ? $this->params['custom_collection_routes'] : array();
 		if ($this->method == 'get') {
-			if ($route = moojon_routes::map($uri, $custom_collection_routes, false)) {
+			if ($custom_collection_routes && $route = moojon_routes::map($uri, $custom_collection_routes, false)) {
 				$pattern = $route->get_pattern();
 				$params = array_merge($params, $route->get_params());
 			} else if (!$uri) {
