@@ -73,7 +73,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		if ($where === null) {
 			$where = " WHERE $table_name_column != 'schema_migrations'";
 		}
-		foreach (moojon_db::run(moojon_db::prepare("SHOW TABLES$where;")) as $table) {
+		foreach (moojon_db::run(moojon_db::prepare("SHOW TABLES $where;")) as $table) {
 			$return[] = $table[$table_name_column];
 		}
 		return $return;
@@ -134,7 +134,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		}
 		$columns = implode('`, `', array_keys($columns));
 		$values = ' VALUES('.substr($values, 2).')';
-		return "INSERT INTO $table (`$columns`)$values;";
+		return "INSERT INTO $table (`$columns`) $values;";
 	}
 	
 	////////////////////////////////////////////////////////////////////
@@ -150,7 +150,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 			$values .= ", `$key` = $value";
 		}
 		$where = self::where($where);
-		return "UPDATE $table SET ".substr($values, 2)."$where;";
+		return "UPDATE $table SET ".substr($values, 2)." $where;";
 	}
 	
 	static public function delete($table, $where = null) {
