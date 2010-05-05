@@ -92,8 +92,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function add_column($table, $column) {
-		$column_string = self::get_add_column_string($column);
-		return "ALTER TABLE `$table` ADD COLUMN $column_string;";
+		return "ALTER TABLE `$table` ADD COLUMN ".self::get_add_column_string($column).';';
 	}
 	
 	static public function remove_column($table, $column) {
@@ -105,8 +104,7 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function modify_column($table, $column) {
-		$column_string = self::get_add_column_string($column);
-		return "ALTER TABLE `$table` MODIFY COLUMN $column;";
+		return "ALTER TABLE `$table` MODIFY COLUMN ".self::get_add_column_string($column).';';
 	}
 	
 	static public function add_index($name, $table, $column) {
@@ -118,8 +116,11 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function select($table, $columns = array(), $where = null, $order = null, $limit = null) {
-		$columns = self::columns($columns);
-		$table = self::tables($table);
+		$columns = self::aliases(self::columns($table, $columns));
+		if (is_array($columns)) {
+			$columns = implode(', ', $columns);
+		}
+		$table = implode(', ', self::tables($table));
 		$where = self::where($where);
 		$order = self::order($order);
 		$limit = self::limit($limit);
@@ -127,7 +128,6 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function insert($table, $columns = array(), $symbol = false) {
-		$table = self::tables($table);
 		$values = '';
 		foreach($columns as $value) {
 			$values .= ", $value";
@@ -144,7 +144,6 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	////////////////////////////////////////////////////////////////////
 	
 	static public function update($table, $columns = array(), $where = null) {
-		$table = self::tables($table);
 		$values = '';
 		foreach($columns as $key => $value) {
 			$values .= ", `$key` = $value";
@@ -154,40 +153,21 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 	}
 	
 	static public function delete($table, $where = null) {
-		$table = self::tables($table);
 		$where = self::where($where);
 		return "DELETE FROM $table $where;";
 	}
 	
-	static public function tables($tables) {
-		$tables = (is_array($tables)) ? $tables : array($tables);
-		return '`'.implode('`, `', $tables).'`';
-	}
-	
-	static public function columns($columns = array()) {
-		if (is_array($columns)) {
-			$return = '';
-			foreach(array_keys($columns) as $key) {
-				if (!is_string($key)) {
-					$return .= ', '.$columns[$key];
-				} else {
-					$column = $columns[$key];
-					$return .= ", $key AS $column";
-				}
-			}
-			$return = substr($return, 2);
-		} else {
-			if (!$columns) {
-				$columns = '*';
-			}
-			$return = $columns;
-		}
-		return $return;
+	static public function count($table, $column, $where = null) {
+		$where = self::where($where);
+		return "SELECT COUNT(*) AS $column FROM $table $where;";
 	}
 	
 	static public function where($where) {
 		if (is_array($where)) {
-			$where = implode(' AND ', $where);
+			$where = implode(') AND (', $where);
+		}
+		if ($where) {
+			$where = "($where)";
 		}
 		return self::require_prefix($where, 'WHERE ');
 	}
@@ -196,7 +176,12 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return self::require_prefix($order, 'ORDER BY ');
 	}
 	
-	static public function limit($limit) {
+	static public function limit($limit, $page = null) {
+		if (is_numeric($limit)) {
+			if (is_numeric($page)) {
+				$limit .= ", $page";
+			}
+		}
 		return self::require_prefix($limit, 'LIMIT ');
 	}
 	
@@ -372,68 +357,53 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 		return implode(' AND ', $model->get_relationship_wheres());
 	}
 	
-	static private function in_string($string, $postion) {
-		$aposes = 0;
-		for ($i = 0; $i < $postion; $i ++) {
-			if (substr($string, $i, 1) == "'") {
-				$aposes ++;
+	static public function tables($tables) {
+		$tables = (is_array($tables)) ? $tables : array($tables);
+		$return = array();
+		foreach ($tables as $table) {
+			$return[] = self::table($table);
+		}
+		return $return;
+	}
+	
+	static public function table($table) {
+		return self::object($table);
+	}
+	
+	static public function columns($table, $columns = array()) {
+		if ($columns && is_array($columns)) {
+			$return = array();
+			foreach(new RecursiveIteratorIterator(new RecursiveArrayIterator($columns)) as $key => $value) {
+				$return[$key] = $value;
+			}
+		} else {
+			$return = array(($columns) ? $columns : self::table($table).'.*');
+		}
+		return $return;
+	}
+	
+	static public function column($table, $column_name) {
+		return self::object($table).'.'.self::object($column_name);
+	}
+	
+	static public function aliases($columns = array()) {
+		$return = array();
+		foreach(array_keys($columns) as $key) {
+			if (is_string($key)) {
+				$return[] = self::alias(self::column(substr($key, 0, (strlen($key) - strlen($columns[$key]))), substr($key, (0 - strlen($columns[$key])))), $key);
+			} else {
+				$return[] = $columns[$key];
 			}
 		}
-		return ($aposes % 2 != 0);
+		return $return;
 	}
 	
-	static private function next_character($subject, $position) {
-		if (($position + 1) > strlen($subject)) {
-			return false;
-		} else {
-			return substr($subject, $position, 1);
-		}
+	static public function alias($column, $alias) {
+		return "$column AS $alias";
 	}
 	
-	static private function previous_character($subject, $position) {
-		if ($position < 2) {
-			return false;
-		} else {
-			return substr($subject, ($position - 1), 1);
-		}
-	}
-	
-	static private function str_replace2($needle, $replace, $subject) {
-		if ($count = substr_count($subject, $needle)) {
-			$position = strpos($subject, $needle);
-			$valid_surrounding_characters = array(false, ' ', '.', ',', '=', '+', '-', '*', '/', '>', '<', '(', ')', '!');
-			for ($i = 0; $i < $count; $i ++) {
-				$length = strlen($needle);
-				if (!self::is_symbol(substr($subject, ($position - 1), ($length + 1))) && !self::in_string($subject, $position) && in_array(self::previous_character($subject, $position), $valid_surrounding_characters, true) && in_array(self::next_character($subject, ($position + $length)), $valid_surrounding_characters, true)) {
-					$subject = substr_replace($subject, $replace, $position, $length);
-					$position = strpos($subject, $needle, ($position + strlen($replace)));
-				}
-			}
-		}
-		return $subject;
-	}
-	
-	static public function column_addresses($subject, $table, $column_names = array()) {
-		foreach ($column_names as $column_name) {
-			$needle = self::column_address($table, $column_name);
-			$replace = "$table.$column_name";
-			$subject = self::str_replace2($needle, $replace, $subject);
-			$needle = "$table.$column_name";
-			$replace = $column_name;
-			$subject = self::str_replace2($needle, $replace, $subject);
-			$needle = $column_name;
-			$replace = self::column_address($table, $column_name);
-			$subject = self::str_replace2($needle, $replace, $subject);
-		}
-		return $subject;
-	}
-	
-	static public function column_address($table, $column_name) {
-		return "`$table`.`$column_name`";
-	}
-	
-	static public function full_column_name($class, $column_name) {
-		return strtoupper($class.'_'.$column_name);
+	static public function object($object) {
+		return "`$object`";
 	}
 	
 	static public function get_relationship_class_where(moojon_base_relationship $relationship, moojon_base_model $accessor) {
@@ -518,6 +488,62 @@ final class moojon_db_driver extends moojon_base_db_driver implements moojon_db_
 				return array(":$key" => $column->get_data_type());
 				break;
 		}
+	}
+	
+	static private function in_string($string, $postion) {
+		$aposes = 0;
+		for ($i = 0; $i < $postion; $i ++) {
+			if (substr($string, $i, 1) == "'") {
+				$aposes ++;
+			}
+		}
+		return ($aposes % 2 != 0);
+	}
+	
+	static private function next_character($subject, $position) {
+		if (($position + 1) > strlen($subject)) {
+			return false;
+		} else {
+			return substr($subject, $position, 1);
+		}
+	}
+	
+	static private function previous_character($subject, $position) {
+		if ($position < 2) {
+			return false;
+		} else {
+			return substr($subject, ($position - 1), 1);
+		}
+	}
+	
+	static private function str_replace2($needle, $replace, $subject) {
+		if ($count = substr_count($subject, $needle)) {
+			$position = strpos($subject, $needle);
+			$valid_surrounding_characters = array(false, ' ', '.', ',', '=', '+', '-', '*', '/', '>', '<', '(', ')', '!');
+			for ($i = 0; $i < $count; $i ++) {
+				$length = strlen($needle);
+				if (!self::is_symbol(substr($subject, ($position - 1), ($length + 1))) && !self::in_string($subject, $position) && in_array(self::previous_character($subject, $position), $valid_surrounding_characters, true) && in_array(self::next_character($subject, ($position + $length)), $valid_surrounding_characters, true)) {
+					$subject = substr_replace($subject, $replace, $position, $length);
+					$position = strpos($subject, $needle, ($position + strlen($replace)));
+				}
+			}
+		}
+		return $subject;
+	}
+	
+	static public function escapes($subject, $table, $column_names = array()) {
+		foreach ($column_names as $column_name) {
+			$needle = self::column($table, $column_name);
+			$replace = "$table.$column_name";
+			$subject = self::str_replace2($needle, $replace, $subject);
+			$needle = "$table.$column_name";
+			$replace = $column_name;
+			$subject = self::str_replace2($needle, $replace, $subject);
+			$needle = $column_name;
+			$replace = self::column($table, $column_name);
+			$subject = self::str_replace2($needle, $replace, $subject);
+		}
+		return $subject;
 	}
 }
 ?>

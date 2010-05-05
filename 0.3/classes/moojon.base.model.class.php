@@ -567,11 +567,16 @@ abstract class moojon_base_model extends moojon_base {
 		return $return;
 	}
 	
+	final private function get_full_column_name($column_name) {
+		return $this->get_table(false).$column_name;
+	}
+	
 	final static protected function base_get_column_names($class, $exceptions = array()) {
 		$return = array();
 		$instance = self::init($class);
 		foreach ($instance->get_columns($exceptions) as $column) {
-			$return[] = $column->get_name();
+			$column_name = $column->get_name();
+			$return[$instance->get_full_column_name($column_name)] = $column_name;
 		}
 		return $return;
 	}
@@ -580,7 +585,8 @@ abstract class moojon_base_model extends moojon_base {
 		$return = array();
 		$instance = self::init($class);
 		foreach ($instance->get_editable_columns($exceptions) as $column) {
-			$return[] = $column->get_name();
+			$column_name = $column->get_name();
+			$return[$instance->get_full_column_name($column_name)] = $column_name;
 		}
 		return $return;
 	}
@@ -589,7 +595,8 @@ abstract class moojon_base_model extends moojon_base {
 		$return = array();
 		$instance = self::init($class);
 		foreach ($instance->get_primary_key_columns($exceptions) as $column) {
-			$return[] = $column->get_name();
+			$column_name = $column->get_name();
+			$return[$instance->get_full_column_name($column_name)] = $column_name;
 		}
 		return $return;
 	}
@@ -598,7 +605,8 @@ abstract class moojon_base_model extends moojon_base {
 		$return = array();
 		$instance = self::init($class);
 		foreach ($instance->get_file_columns($exceptions) as $column) {
-			$return[] = $column->get_name();
+			$column_name = $column->get_name();
+			$return[$instance->get_full_column_name($column_name)] = $column_name;
 		}
 		return $return;
 	}
@@ -607,7 +615,8 @@ abstract class moojon_base_model extends moojon_base {
 		$return = array();
 		$instance = self::init($class);
 		foreach ($instance->get_order_columns($exceptions) as $column) {
-			$return[] = $column->get_name();
+			$column_name = $column->get_name();
+			$return[$instance->get_full_column_name($column_name)] = $column_name;
 		}
 		return $return;
 	}
@@ -759,20 +768,6 @@ abstract class moojon_base_model extends moojon_base {
 		return $return;
 	}
 	
-	final protected function get_select_columns($cascade = false) {
-		if ($cascade) {
-			$return = $this->get_select_columns(false);
-			$return = array_merge($this->get_relationship_select_columns(), $return);
-		} else {
-			$table = $this->get_table(false);
-			$return = array();
-			foreach($this->get_column_names() as $column_name) {
-				$return[moojon_db_driver::column_address($table, $column_name)] = moojon_db_driver::full_column_name($this->get_class(), $column_name);
-			}
-		}
-		return $return;
-	}
-	
 	final public function get_relationship_tables($classes = array()) {
 		$return = array();
 		$class = get_class($this);
@@ -801,13 +796,14 @@ abstract class moojon_base_model extends moojon_base {
 			$classes[] = $class;
 			foreach ($this->get_relationships() as $relationship) {
 				$instance = self::factory($relationship->get_foreign_class());
-				$select_columns = moojon_db_driver::columns($instance->get_select_columns());
-				if (!in_array($select_columns, $return)) {
-					$return[] = $select_columns;
+				foreach ($instance->get_column_names() as $key => $value) {
+					if (!array_key_exists($key, $return)) {
+						$return[$key] = $value;
+					}
 				}
-				foreach ($instance->get_relationship_select_columns($classes) as $relationship_select_columns) {
-					if (!in_array($relationship_select_columns, $return)) {
-						$return[] = $relationship_select_columns;
+				foreach ($instance->get_relationship_select_columns($classes) as $key => $value) {
+					if (!array_key_exists($key, $return)) {
+						$return[$key] = $value;
 					}
 				}
 			}
@@ -840,11 +836,11 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final protected function get_where($where = null, $cascade = false) {
-		$where = moojon_db_driver::column_addresses($where, $this->get_table(), $this->get_column_names());
+		$where = moojon_db_driver::escapes($where, $this->get_table(), $this->get_column_names());
 		if ($cascade) {
 			foreach ($this->get_relationships() as $relationship) {
 				$instance = self::factory($relationship->get_foreign_class());
-				$where = moojon_db_driver::column_addresses($where, $instance->get_table(), $instance->get_column_names());
+				$where = moojon_db_driver::escapes($where, $instance->get_table(), $instance->get_column_names());
 			}
 			$return = $this->get_relationship_wheres();
 			$return[] = $where;
@@ -855,39 +851,42 @@ abstract class moojon_base_model extends moojon_base {
 	}
 	
 	final protected function get_order($order = null, $cascade = false) {
-		$order =  moojon_db_driver::column_addresses($order, $this->get_table(), $this->get_column_names());
+		$order =  moojon_db_driver::escapes($order, $this->get_table(), $this->get_column_names());
 		if (!$order) {
 			$order_columns = $this->get_order_column_names();
 			if (count($order_columns)) {
-				for ($i = 0; $i < count($order_columns); $i ++) {
-					$order_columns[$i] = $order_columns[$i].' '.$this->order_direction;
+				foreach ($order_columns as $key => $value) {
+					$order_columns[$key] = $order_columns[$key].' '.$this->order_direction;
 				}
 				$order = implode(', ', $order_columns);
 			} else {
 				$order = $this->order_column.' '.$this->order_direction;
 			}
-			$order =  moojon_db_driver::column_addresses($order, $this->get_table(), $this->get_column_names());
+			$order =  moojon_db_driver::escapes($order, $this->get_table(), $this->get_column_names());
 		}
 		if ($cascade) {
 			foreach ($this->get_relationships() as $relationship) {
 				$instance = self::factory($relationship->get_foreign_class());
-				$order = moojon_db_driver::column_addresses($order, $instance->get_table(), $instance->get_column_names());
+				$order = moojon_db_driver::escapes($order, $instance->get_table(), $instance->get_column_names());
 			}
 		}
 		return $order;
 	}
 	
 	final protected function get_limit($limit = null, $cascade = false) {
-		//return ($limit) ? $limit : '0, 100';
 		return $limit;
 	}
 	
 	final public function set_full($data = array()) {
-		foreach ($this->get_column_names() as $column_name) {
-			$full_column_name = moojon_db_driver::full_column_name($this->class, $column_name);
-			$this->$column_name = $data[$full_column_name];
+		foreach ($this->get_column_names() as $key => $value) {
+			$this->$value = $data[$key];
 			$this->reset();
 		}
+	}
+	
+	final protected function get_select_columns($cascade = false) {
+		$column_names = $this->get_column_names();
+		return ($cascade) ? array_merge($this->get_relationship_select_columns(), $column_names) : $column_names;
 	}
 	
 	final static protected function base_read($class, $where, $order, $limit, $param_values, $param_data_types, $accessor, $key) {
@@ -900,18 +899,35 @@ abstract class moojon_base_model extends moojon_base {
 		$order = $instance->get_order($order, $cascade);
 		$limit = $instance->get_limit($limit, $cascade);
 		$return = new moojon_model_collection($accessor);
-		$current_record = self::init($class);
+		if ($cascade) {
+			$current_record = self::init($class);
+		}
 		foreach(moojon_db::select($table, $columns, $where, $order, $limit, $instance->compile_param_values($param_values), $instance->compile_param_data_types($param_data_types)) as $row) {
 			$record = new $class;
 			$record->set_full($row);
 			$record->new_record = false;
 			$record->reset();
-			if ($current_record != $record) {
-				$current_record = $record;
-				$return[] = $current_record;
+			if ($cascade) {
+				if ($current_record != $record) {
+					$current_record = $record;
+					$return[] = $current_record;
+				}
+			} else {
+				$return[] = $record;
 			}
 		}
 		return $return;
+	}
+	
+	final static protected function base_count($class, $where, $param_values, $param_data_types) {
+		$cascade = false;
+		$class = self::strip_base($class);
+		$instance = self::factory($class);
+		$table = $instance->get_table($cascade);
+		$where = $instance->get_where($where, $cascade);
+		$column = $table.'count';
+		$return = moojon_db::count($table, $column, $where);
+		return (int)$return[$column];
 	}
 	
 	final static protected function base_create($class, $data) {

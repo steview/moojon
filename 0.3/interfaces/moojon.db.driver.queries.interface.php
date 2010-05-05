@@ -30,7 +30,7 @@ interface moojon_db_driver_queries {
 	
 	static public function delete($table, $where = null);
 	
-	static public function limit($limit);
+	static public function limit($limit, $page = null);
 	
 	static public function get_add_columns($table);
 	

@@ -102,9 +102,7 @@ abstract class moojon_base {
 	final static public function parse_symbols($subject, $symbols = array()) {
 		$return = $subject;
 		foreach ($symbols as $key => $value) {
-			if (is_string($value)) {
-				$return = self::parse_symbol($return, $key, $value);
-			}
+			$return = self::parse_symbol($return, $key, $value);
 		}
 		return $return;
 	}

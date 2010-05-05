@@ -297,6 +297,11 @@ final class moojon_db  extends moojon_base {
 		return self::run(self::prepare(moojon_db_driver::delete($table, $where)), $param_values, $param_data_types);
 	}
 	
+	static public function count($table, $column, $where = null, $param_values = array(), $param_data_types = array()) {
+		$return = self::run(self::prepare(moojon_db_driver::count($table, $column, $where)), $param_values, $param_data_types);
+		return $return[0];
+	}
+	
 	static public function run(PDOStatement $statement, $param_values = array(), $param_data_types = array(), $fetch_style = self::FETCH_ASSOC) {
 		return new moojon_query_result($statement, $param_values, $param_data_types, $fetch_style);
 	}

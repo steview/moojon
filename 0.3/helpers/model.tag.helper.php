@@ -147,10 +147,10 @@ function form_for(moojon_base_model $model, $column_names = array(), $attributes
 	$attributes = try_set_attribute($attributes, 'id', $form_id);
 	$column_names = ($column_names) ? $column_names: $model->get_ui_editable_column_names();
 	foreach ($column_names as $key => $column_name) {
-		if (!is_numeric($key)) {
+		/*if (!is_numeric($key)) {
 			$model->$key = $column_name;
 			$column_name = $key;
-		}
+		}*/
 		$column = $model->get_column($column_name);
 		if (get_class($column) == 'moojon_string_column' && $column->is_file()) {
 			$attributes['enctype'] = 'multipart/form-data';
@@ -220,7 +220,7 @@ function dl_for(moojon_base_model $model, $column_names = array(), $attributes =
 	return dl_tag($dt_dd_tags, $attributes);
 }
 
-function table_for(moojon_model_collection $models, $column_names = array(), $attributes = array(), $no_records_message = null) {
+function table_for(moojon_model_collection $models, $column_names = array(), $attributes = array(), $no_records_message = null, $count = null) {
 	$no_records_message = ($no_records_message) ? $no_records_message : moojon_config::get('no_records_message');
 	if ($models->count) {
 		$attributes = try_set_attribute($attributes, 'cellpadding', '0');
@@ -231,7 +231,6 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 		$column_names = ($column_names) ? $column_names: $model->get_ui_column_names();
 		foreach ($column_names as $column_name) {
 			if ($model->to_string_column != $column_name) {
-				$column = $model->get_column($column_name);
 				$ths[] = th_tag(title_text($column_name));
 			}
 		}
@@ -245,15 +244,26 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 			$tds = array(td_tag(member_tag($model)));
 			foreach ($column_names as $column_name) {
 				if ($model->to_string_column != $column_name) {
-					$column = $model->get_column($column_name);
-					if ($relationship = find_has_one_relationship($model, $column_name)) {
-						$name = $relationship->get_name();
-						$content = member_tag($model->$name);
-					} else if ($relationship = find_belongs_to_relationship($model, $column_name)) {
-						$name = $relationship->get_name();
-						$content = member_tag($model->$name);
-					} else {
+					if (method_exists($model, "get_$column_name") || method_exists($model, $column_name)) {
 						$content = $model->$column_name;
+						if (is_object($content) && is_subclass_of($content, 'moojon_base_column')) {
+							$column = $content;
+							$content = $column->get_value();
+						} else {
+							$column = new moojon_string_column($column_name);
+							$column->set_value($content);
+						}
+					} else {
+						$column = $model->get_column($column_name);
+						if ($relationship = find_has_one_relationship($model, $column_name)) {
+							$name = $relationship->get_name();
+							$content = member_tag($model->$name);
+						} else if ($relationship = find_belongs_to_relationship($model, $column_name)) {
+							$name = $relationship->get_name();
+							$content = member_tag($model->$name);
+						} else {
+							$content = $model->$column_name;
+						}
 					}
 					$tds[] = td_tag(format_content($model, $column, $content));
 				}
@@ -263,6 +273,10 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 			$trs[] = tr_tag($tds, array('class' => 'row'.($counter % 2)));
 		}
 		$children = array(thead_tag(tr_tag($ths)), tbody_tag($trs));
+		if ($count) {
+			$ul = paginator_ul($count);
+			$children[] = tfoot_tag(tr_tag(td_tag($ul, array('colspan' => (count($column_names) + 2)))));
+		}
 		$child = table_tag($children, $attributes);
 	} else {
 		$child = p_tag($no_records_message);
@@ -270,19 +284,31 @@ function table_for(moojon_model_collection $models, $column_names = array(), $at
 	return div_tag($child);
 }
 
-function relationship_tables(moojon_base_model $model, $relationship_names = array()) {
+function paginated_table_for($count, moojon_model_collection $models, $column_names = array(), $attributes = array(), $no_records_message = null) {
+	return table_for($models, $column_names, $attributes, $no_records_message, $count);
+}
+
+function relationship_tables(moojon_base_model $model, $relationships = array(), $column_names = array(), $attributes = array(), $no_records_messages = array(), $count = null) {
 	if ($model->has_relationships()) {
-		$relationship_names = ($relationship_names) ? $relationship_names : $model->get_relationship_names();
+		$relationships = ($relationships) ? $relationships : $model->get_relationships();
+		foreach ($relationships as $key => $value) {
+			if (is_subclass_of($value, 'moojon_base_relationship')) {
+				$relationships[$key] = $model->$key;
+			}
+		}
 		$div = div_tag();
-		foreach ($relationship_names as $relationship_name) {
-			switch ($model->get_relationship_type($relationship_name)) {
+		foreach ($relationships as $key => $value) {
+			switch ($model->get_relationship_type($key)) {
 				case 'moojon_has_many_relationship':
 				case 'moojon_has_many_to_many_relationship':
-					$div->add_child(h3_tag(title_text($relationship_name)));
-					$relationship_model = $model->get_relationship_model($relationship_name);
+					$div->add_child(h3_tag(title_text($key)));
+					$relationship_model = $model->get_relationship_model($key);
 					$div->add_child(actions_ul(array(new_member_tag($relationship_model))));
 					$div->add_child('<br /><br /><br />');
-					$div->add_child(table_for($model->$relationship_name, $relationship_model->get_ui_column_names(array(moojon_primary_key::get_foreign_key($model->get_table())))));
+					$child_column_names = (array_key_exists($key, $column_names)) ? $column_names[$key] : $relationship_model->get_ui_column_names(array(moojon_primary_key::get_foreign_key($model->get_table())));
+					$child_attributes = (array_key_exists($key, $attributes)) ? $attributes[$key] : array();
+					$child_no_records_message = (array_key_exists($key, $no_records_messages)) ? $no_records_messages[$key] : array();
+					$div->add_child(table_for($value, $child_column_names, $child_attributes, $child_no_records_message, $count));
 					break;
 			}
 		}
@@ -290,6 +316,10 @@ function relationship_tables(moojon_base_model $model, $relationship_names = arr
 	} else {
 		return null;
 	}
+}
+
+function paginated_relationship_tables($count, moojon_base_model $model, $relationships = array(), $column_names = array(), $attributes = array(), $no_records_messages = array()) {
+	return relationship_tables($model, $relationships, $column_names, $attributes, $no_records_messages, $count);
 }
 
 function control(moojon_base_model $model, $column_name, $attributes = array()) {

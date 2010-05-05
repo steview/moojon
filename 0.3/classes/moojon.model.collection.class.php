@@ -40,20 +40,25 @@ final class moojon_model_collection extends ArrayObject {
 						throw new moojon_exception("moojon_model_collection get what? ($key)");
 					}
 				} else {
-					throw new moojon_exception('moojon_model_collection empty');
+					throw new moojon_exception("moojon_model_collection empty ($key)");
 				}
 				break;
 		}
 	}
 	
-	public function get() {
+	public function get($where = null, $order = null, $limit = null) {
 		if ($this->relationship) {
+			if ($where) {
+				$where .= ' AND ';
+			} else {
+				$where = '';
+			}
+			$where .= $this->relationship->get_object_where($this->accessor);
 			$foreign_class_name = $this->relationship->get_table($this->accessor);
 			$foreign_class = new $foreign_class_name;
 			$param_values = $this->relationship->get_param_values($this->accessor);
 			$param_data_types = $this->relationship->get_param_values($this->accessor);
-			$where = $this->relationship->get_object_where($this->accessor);
-			$records = $foreign_class->read($where,  null, null, $param_values, $param_data_types, $this->accessor, $this->relationship->get_name());
+			$records = $foreign_class->read($where, $order, $limit, $param_values, $param_data_types, $this->accessor, $this->relationship->get_name());
 			$records->relationship = $this->relationship;
 			switch (get_class($this->relationship)) {
 				case 'moojon_has_one_relationship':
@@ -74,6 +79,18 @@ final class moojon_model_collection extends ArrayObject {
 				return $this;
 			}
 		}
+	}
+	
+	public function where($where, $order = null, $limit = null) {
+		return $this->get($where, $order, $limit);
+	}
+	
+	public function order($order, $where = null, $limit = null) {
+		return $this->get($where, $order, $limit);
+	}
+	
+	public function limit($limit, $where = null, $order = null) {
+		return $this->get($where, $order, $limit);
 	}
 	
 	public function get_relationship() {

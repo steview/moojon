@@ -320,30 +320,27 @@ function paginator_ul($records, $limit = null, $page_symbol_name = null, $limit_
 	}
 	$limit_symbol_name = ($limit_symbol_name) ? $limit_symbol_name : moojon_config::get('paginator_limit_symbol_name');
 	if (!$limit) {
-		$limit = (moojon_uri::has($limit_symbol_name)) ? moojon_uri::get($limit_symbol_name) : moojon_config::get('paginator_limit');
+		$limit = (moojon_request::has($limit_symbol_name)) ? moojon_request::get($limit_symbol_name) : moojon_config::get('paginator_limit');
 	}
 	if ($records > $limit) {
 		$page_symbol_name = ($page_symbol_name) ? $page_symbol_name : moojon_config::get('paginator_page_symbol_name');
-		$page = (moojon_uri::has($page_symbol_name)) ? moojon_uri::get($page_symbol_name) : 1;
+		$page = (moojon_request::has($page_symbol_name)) ? moojon_request::get($page_symbol_name) : 1;
 		$page = ($page < 1) ? 1 : (int)$page;
-		$params = array();
-		foreach (moojon_uri::get_data() as $key => $value) {
-			if (is_string($value)) {
-				$params[$key] = $value;
-			}
-		}
-		$match_pattern = moojon_uri::get_match_pattern();
-		$match_pattern = (substr($match_pattern, -1) != '/') ? "$match_pattern/" : $match_pattern;
-		if (!array_key_exists($page_symbol_name, $params)) {
-			$match_pattern .= "$page_symbol_name/:$page_symbol_name/";
-		}
-		$match_pattern = moojon_config::get('index_file').$match_pattern;
-		$params[$limit_symbol_name] = $limit;
 		$children = array();
+		$params = moojon_get::get_data();
+		$get = $params;
+		if (array_key_exists($limit_symbol_name, $get)) {
+			$get[$limit_symbol_name] = $limit;
+		}
+		$get[$page_symbol_name] = ":$page_symbol_name";
+		foreach ($get as $key => $value) {
+			$get[$key] = "$key=$value";
+		}
+		$querystring = moojon_uri::get_uri().'?'.implode('&', $get);
 		for ($i = 1; $i < (ceil($records / $limit) + 1); $i ++) {
 			$params[$page_symbol_name] = $i;
 			$attributes = ($i == $page) ? array('class' => 'selected') : array();
-			$children[] = li_tag(a_tag($i, moojon_base::parse_symbols($match_pattern, $params), $attributes));
+			$children[] = li_tag(a_tag($i, moojon_base::parse_symbols($querystring, $params), $attributes));
 		}
 		$return = ul_tag($children);
 	} else {

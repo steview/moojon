@@ -93,7 +93,7 @@ return array(
 	'paginator_page_symbol_name' => 'page',
 	'paginator_limit_symbol_name' => 'limit',
 	'paginator_all_symbol_name' => 'all',
-	'paginator_limit' => 10,
+	'paginator_limit' => 20,
 	'paginator_max_items' => 11,
 );
 ?>
